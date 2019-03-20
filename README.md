@@ -1,0 +1,7 @@
+# MineVis
+
+MineVis is a 3D visualization software designed to aid in Mining research.
+
+## TODO
+
+* Everything
