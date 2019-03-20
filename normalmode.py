@@ -40,6 +40,7 @@ class NormalMode():
             glClearColor(0.0, 0.0, 0.0, 1.0)
         elif event.button() == Qt.MouseButton.MiddleButton:
             print("Pressing in Normal Mode with MiddleButton")
+            glClearColor(0.0, 0.0, 0.0, 1.0)
         elif event.button() == Qt.MouseButton.RightButton:
             print("Pressing in Normal Mode with RightButton")
             glClearColor(0.0, 0.0, 0.0, 1.0)
