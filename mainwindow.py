@@ -44,16 +44,18 @@ class MainWindow(QMainWindow):
         self.status = self.statusBar()
         self.status.showMessage("Loaded")
 
+        # Central Widget
+        widget = OGLWidget(parent=self, mode_class=NormalMode)
+        self.setCentralWidget(widget)
+
     @Slot()
     def exit_app(self, checked):
         sys.exit()
 
     @Slot()
     def normal_mode_slot(self):
-        widget = OGLWidget(parent=self, mode_class=NormalMode)
-        self.setCentralWidget(widget)
+        self.centralWidget().currentMode = NormalMode(self.centralWidget())
 
     @Slot()
     def draw_mode_slot(self):
-        widget = OGLWidget(parent=self, mode_class=DrawMode)
-        self.setCentralWidget(widget)
+        self.centralWidget().currentMode = DrawMode(self.centralWidget())
