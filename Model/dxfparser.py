@@ -81,7 +81,7 @@ class DXFParser:
         string_builder.append(f'{V} {F} {E}')
 
         for v in self.vertices:
-            avg_tuple = self._avg_tuple(self.vertices)
+            avg_tuple = self._avg_tuple(self.vertices) # WARNING This is only used to center the triangulation
             string_builder.append(f'{v[0] - avg_tuple[0]} {v[1] - avg_tuple[1]} {v[2] - avg_tuple[2]}')
 
         for f in self.faces:
