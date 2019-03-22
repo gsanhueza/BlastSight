@@ -54,6 +54,12 @@ class DXFParser:
 
         return ans
 
+    def get_vertices(self):
+        return self.vertices
+
+    def get_faces(self):
+        return self.faces
+
     # Returns the average of each component of a list of n-tuples in a new n-tuple
     def _avg_tuple(self, tuple_list):
         if len(tuple_list) == 0:
@@ -72,20 +78,20 @@ class DXFParser:
     def _build_string(self):
         self._parse_entities()
 
-        V = len(self.vertices)
-        F = len(self.faces)
+        V = len(self.get_vertices())
+        F = len(self.get_faces())
         E = V + F - 2
 
         string_builder = []
         string_builder.append('OFF')
         string_builder.append(f'{V} {F} {E}')
 
-        for v in self.vertices:
-            avg_tuple = self._avg_tuple(self.vertices) # WARNING This is only used to center the triangulation
-            string_builder.append(f'{v[0] - avg_tuple[0]} {v[1] - avg_tuple[1]} {v[2] - avg_tuple[2]}')
+        for v in self.get_vertices():
+            avg_tuple = self._avg_tuple(self.get_vertices()) # WARNING This is only used to center the triangulation
+            string_builder.append(' '.join(map(str, tuple(map(lambda x, y: x - y, v, avg_tuple)))))
 
-        for f in self.faces:
-            string_builder.append(f'3 {f[0]} {f[1]} {f[2]}')
+        for f in self.get_faces():
+            string_builder.append(' '.join(map(str, tuple((3,) + f))))
 
         return '\n'.join(string_builder)
 
