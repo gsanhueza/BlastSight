@@ -33,10 +33,22 @@ class DXFParser:
             faces.append(tuple(face_pointers))
 
         self.vertices = tuple(vertices_dict.keys())
-        self.faces = faces
+        self.faces = self._parse_faces(faces)
+
+    # Converts a list of 4-tuples into a list of 3-tuples
+    def _parse_faces(self, faces):
+        ans = []
+        for f in faces:
+            # We need to convert 4-tuples in 3-tuples
+            if len(f) == 3:
+                ans.append(f)
+            elif len(f) == 4:
+                ans.append((f[0], f[1], f[2]))
+                ans.append((f[2], f[3], f[0]))
+
+        return ans
 
     # Create OFF file
-    # WARNING At the moment we're creating a 4-vertices OFF file
     def print_off(self):
         self._parse_entities()
 
@@ -49,8 +61,7 @@ class DXFParser:
             print(f'{v[0] - 73736.554} {v[1] - 57510.047} {v[2] - 362.913}')
 
         for f in self.faces:
-            print(f'4 {f[0]} {f[1]} {f[2]} {f[3]}')
-
+            print(f'3 {f[0]} {f[1]} {f[2]}')
 
 if __name__ == '__main__':
     parser = DXFParser('caseron.dxf')
