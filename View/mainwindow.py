@@ -21,14 +21,13 @@ class MainWindow(QMainWindow):
         self.statusBar.showMessage("Ready")
 
         ## Central Widget
-        widget = OpenGLWidget(parent=self, mode_class=NormalMode)
-        self.setCentralWidget(widget)
+        self.widget = OpenGLWidget(parent=self, mode_class=NormalMode)
+        self.setCentralWidget(self.widget)
 
     @Slot()
     def normal_mode_slot(self):
-        self.centralWidget.currentMode = NormalMode(self.centralWidget)
+        self.widget.currentMode = NormalMode(self.widget)
 
     @Slot()
     def draw_mode_slot(self):
-        print(type(self.centralWidget))
-        self.centralWidget.currentMode = DrawMode(self.centralWidget)
+        self.widget.currentMode = DrawMode(self.widget)

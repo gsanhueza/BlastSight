@@ -16,7 +16,7 @@
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout">
     <item row="0" column="0">
-     <widget class="OpenGLWidget" name="openGLWidget"/>
+     <widget class="QOpenGLWidget" name="openGLWidget"/>
     </item>
    </layout>
   </widget>
@@ -106,13 +106,6 @@
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <customwidgets>
-  <customwidget>
-   <class>OpenGLWidget</class>
-   <extends>QOpenGLWidget</extends>
-   <header>openglwidget.py</header>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections>
   <connection>
