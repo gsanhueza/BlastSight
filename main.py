@@ -11,8 +11,7 @@ if __name__ == "__main__":
     qt_app = QApplication(sys.argv)
 
     # MainWindow using QWidget as central widget
-    widget = QWidget()
-    window = MainWindow(widget)
+    window = MainWindow()
 
     window.show()
     sys.exit(qt_app.exec_())

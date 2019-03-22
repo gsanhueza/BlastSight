@@ -9,9 +9,9 @@ from PySide2.QtGui import QPainter
 from .normalmode import NormalMode
 
 
-class OGLWidget(QOpenGLWidget):
+class OpenGLWidget(QOpenGLWidget):
     def __init__(self, parent=None, mode_class=NormalMode):
-        print("Init: OGLWidget")
+        print("Init: OpenGLWidget")
         QOpenGLWidget.__init__(self, parent)
         self.setFocusPolicy(Qt.StrongFocus)
         self.currentMode = mode_class(self)
