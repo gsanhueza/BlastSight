@@ -1,9 +1,5 @@
 #!/usr/bin/env python
 
-# TODO Importar algun parser de DXF
-# TODO Leer solo los "entities"
-# TODO Transformar lo leido a un archivo OFF (por ejemplo)
-
 import dxfgrabber
 from collections import OrderedDict
 
@@ -37,6 +33,7 @@ if __name__ == '__main__':
         faces.append(tuple(face_pointers))
 
     # Create OFF file
+    # WARNING At the moment we're creating a 4-vertices OFF file
     print('OFF')
     V = len(vertices_dict)
     F = len(faces)
