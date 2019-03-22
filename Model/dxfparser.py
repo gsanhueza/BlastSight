@@ -44,9 +44,22 @@ class DXFParser:
                 ans.append(f)
             elif len(f) == 4:
                 ans.append((f[0], f[1], f[2]))
-                ans.append((f[2], f[3], f[0]))
+                #ans.append((f[2], f[3], f[0]))  # WARNING Is there a reason for this to work better if commented?
 
         return ans
+
+    # Returns the average of each component of a 3-tuple in a new 3-tuple
+    # FIXME Generalize for n-tuples
+    def _avg_tuple(self, _tuple):
+        len_tuple = len(_tuple)
+        accum = [0, 0, 0]
+
+        for elem in _tuple:
+            accum[0] += elem[0]
+            accum[1] += elem[1]
+            accum[2] += elem[2]
+
+        return(accum[0] / len_tuple, accum[1] / len_tuple, accum[2] / len_tuple)
 
     # Create OFF file
     def print_off(self):
@@ -58,7 +71,7 @@ class DXFParser:
         E = V + F - 2
         print(f'{V} {F} {E}')
         for v in self.vertices:
-            print(f'{v[0] - 73736.554} {v[1] - 57510.047} {v[2] - 362.913}')
+            print(f'{v[0] - self._avg_tuple(self.vertices)[0]} {v[1] - self._avg_tuple(self.vertices)[1]} {v[2] - self._avg_tuple(self.vertices)[2]}')
 
         for f in self.faces:
             print(f'3 {f[0]} {f[1]} {f[2]}')
