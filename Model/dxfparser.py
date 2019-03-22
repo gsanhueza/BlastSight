@@ -48,33 +48,44 @@ class DXFParser:
 
         return ans
 
-    # Returns the average of each component of a 3-tuple in a new 3-tuple
-    # FIXME Generalize for n-tuples
-    def _avg_tuple(self, _tuple):
-        len_tuple = len(_tuple)
-        accum = [0, 0, 0]
+    # Returns the average of each component of a list of n-tuples in a new n-tuple
+    def _avg_tuple(self, tuple_list):
+        if len(tuple_list) == 0:
+            return None
 
-        for elem in _tuple:
-            accum[0] += elem[0]
-            accum[1] += elem[1]
-            accum[2] += elem[2]
+        len_tuple = len(tuple_list[0])
+        accum = [0] * len_tuple
 
-        return(accum[0] / len_tuple, accum[1] / len_tuple, accum[2] / len_tuple)
+        for _tuple in tuple_list:
+            for i in range(len_tuple):
+                accum[i] += _tuple[i]
+
+        return tuple(map(lambda x: x / len(tuple_list), accum))
 
     # Create OFF file
-    def print_off(self):
+    def _build_string(self):
         self._parse_entities()
 
-        print('OFF')
         V = len(self.vertices)
         F = len(self.faces)
         E = V + F - 2
-        print(f'{V} {F} {E}')
+
+        string_builder = []
+        string_builder.append('OFF')
+        string_builder.append(f'{V} {F} {E}')
+
         for v in self.vertices:
-            print(f'{v[0] - self._avg_tuple(self.vertices)[0]} {v[1] - self._avg_tuple(self.vertices)[1]} {v[2] - self._avg_tuple(self.vertices)[2]}')
+            avg_tuple = self._avg_tuple(self.vertices)
+            string_builder.append(f'{v[0] - avg_tuple[0]} {v[1] - avg_tuple[1]} {v[2] - avg_tuple[2]}')
 
         for f in self.faces:
-            print(f'3 {f[0]} {f[1]} {f[2]}')
+            string_builder.append(f'3 {f[0]} {f[1]} {f[2]}')
+
+        return '\n'.join(string_builder)
+
+    def print_off(self):
+        print(self._build_string())
+
 
 if __name__ == '__main__':
     parser = DXFParser('caseron.dxf')
