@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 
 import numpy as np
-from OpenGL import GL
+from OpenGL import GL, GLUT
 from PySide2.QtWidgets import QOpenGLWidget
 from PySide2.QtCore import Qt
 from PySide2.QtGui import QPainter
 
-from normalmode import NormalMode
+from .normalmode import NormalMode
 
 
 class OGLWidget(QOpenGLWidget):

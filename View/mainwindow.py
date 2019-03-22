@@ -6,9 +6,9 @@ from PySide2.QtCore import Slot
 from PySide2.QtWidgets import QAction, QWidget, QMainWindow
 from PySide2.QtGui import *
 
-from openglwidget import OGLWidget
-from normalmode import NormalMode
-from drawmode import DrawMode
+from .openglwidget import OGLWidget
+from .normalmode import NormalMode
+from .drawmode import DrawMode
 
 
 class MainWindow(QMainWindow):

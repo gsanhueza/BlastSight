@@ -3,7 +3,7 @@
 import sys
 from PySide2.QtWidgets import QApplication, QWidget
 
-from mainwindow import MainWindow
+from View.mainwindow import MainWindow
 
 
 if __name__ == "__main__":
