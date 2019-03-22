@@ -5,10 +5,16 @@ from collections import OrderedDict
 
 
 class DXFParser:
-    def __init__(self, filepath):
+    def __init__(self, filepath=None):
+        self.vertices = tuple()
+        self.faces = tuple()
+        self.dxf = None
+
+        if filepath:
+            self.load(filepath)
+
+    def load_dxffile(self, filepath):
         self.dxf = dxfgrabber.readfile(filepath)
-        self.vertices = ()
-        self.faces = ()
 
     # Returns the entities of the DXF file
     def get_entities(self):
@@ -88,5 +94,6 @@ class DXFParser:
 
 
 if __name__ == '__main__':
-    parser = DXFParser('caseron.dxf')
+    parser = DXFParser()
+    parser.load_dxffile('caseron.dxf')
     parser.print_off()
