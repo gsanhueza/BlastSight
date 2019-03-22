@@ -6,9 +6,9 @@ from PySide2.QtCore import Slot
 from PySide2.QtWidgets import QAction, QWidget, QMainWindow
 from PySide2.QtGui import *
 
-from openglwidget import OGLWidget
-from normalmode import NormalMode
-from drawmode import DrawMode
+from .openglwidget import OGLWidget
+from .normalmode import NormalMode
+from .drawmode import DrawMode
 
 
 class MainWindow(QMainWindow):
@@ -44,16 +44,18 @@ class MainWindow(QMainWindow):
         self.status = self.statusBar()
         self.status.showMessage("Loaded")
 
+        # Central Widget
+        widget = OGLWidget(parent=self, mode_class=NormalMode)
+        self.setCentralWidget(widget)
+
     @Slot()
     def exit_app(self, checked):
         sys.exit()
 
     @Slot()
     def normal_mode_slot(self):
-        widget = OGLWidget(parent=self, mode_class=NormalMode)
-        self.setCentralWidget(widget)
+        self.centralWidget().currentMode = NormalMode(self.centralWidget())
 
     @Slot()
     def draw_mode_slot(self):
-        widget = OGLWidget(parent=self, mode_class=DrawMode)
-        self.setCentralWidget(widget)
+        self.centralWidget().currentMode = DrawMode(self.centralWidget())

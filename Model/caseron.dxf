@@ -1,0 +1,1068 @@
+999
+********************************
+999
+*   DXF File - Entities Only   *
+999
+*        3D Data Format        *
+999
+*     Output from ENVISAGE     *
+999
+*     28-Apr-2017 00:00:47     *
+999
+********************************
+  0
+SECTION 
+  2
+HEADER
+  9
+$ACADVER
+  1
+AC1009
+  9
+$EXTMIN
+ 10
+-10000.000
+ 20
+-10000.000
+ 30
+-10000.000
+  9
+$EXTMAX
+ 10
+10000.000
+ 20
+10000.000
+ 30
+10000.000
+  0
+ENDSEC
+  0
+SECTION
+  2
+TABLES
+  0
+TABLE
+  2
+APPID
+  2
+ACAD
+ 70
+     0
+  0
+APPID
+  2
+MAPTEK_VULCAN
+ 70
+     0
+  0
+ENDTAB
+  0
+ENDSEC
+  0
+SECTION
+  2
+ENTITIES
+  0
+3DFACE
+  8
+C__USERS_JEAN_DESKTOP_VULCANMEM_CANDELAR
+  6
+CONTINUOUS
+ 62
+5
+ 10
+73698.643
+ 20
+57518.109
+ 30
+376.217
+ 11
+73698.709
+ 21
+57517.992
+ 31
+358.503
+ 12
+73718.990
+ 22
+57481.515
+ 32
+350.250
+ 13
+73698.643
+ 23
+57518.109
+ 33
+376.217
+1001
+MAPTEK_VULCAN
+1000
+VulcanName=
+1000
+VulcanGroup=
+1000
+VulcanValue=0
+1000
+VulcanDescription=
+1000
+VulcanPrimitive=
+1000
+VulcanLine=0
+1000
+VulcanPattern=0
+1000
+VulcanFeature=
+  0
+3DFACE
+  8
+C__USERS_JEAN_DESKTOP_VULCANMEM_CANDELAR
+  6
+CONTINUOUS
+ 62
+5
+ 10
+73698.643
+ 20
+57518.109
+ 30
+376.217
+ 11
+73747.788
+ 21
+57542.901
+ 31
+358.436
+ 12
+73698.709
+ 22
+57517.992
+ 32
+358.503
+ 13
+73698.643
+ 23
+57518.109
+ 33
+376.217
+1001
+MAPTEK_VULCAN
+1000
+VulcanName=
+1000
+VulcanGroup=
+1000
+VulcanValue=0
+1000
+VulcanDescription=
+1000
+VulcanPrimitive=
+1000
+VulcanLine=0
+1000
+VulcanPattern=0
+1000
+VulcanFeature=
+  0
+3DFACE
+  8
+C__USERS_JEAN_DESKTOP_VULCANMEM_CANDELAR
+  6
+CONTINUOUS
+ 62
+5
+ 10
+73698.643
+ 20
+57518.109
+ 30
+376.217
+ 11
+73718.990
+ 21
+57481.515
+ 31
+350.250
+ 12
+73723.034
+ 22
+57474.243
+ 32
+376.217
+ 13
+73698.643
+ 23
+57518.109
+ 33
+376.217
+1001
+MAPTEK_VULCAN
+1000
+VulcanName=
+1000
+VulcanGroup=
+1000
+VulcanValue=0
+1000
+VulcanDescription=
+1000
+VulcanPrimitive=
+1000
+VulcanLine=0
+1000
+VulcanPattern=0
+1000
+VulcanFeature=
+  0
+3DFACE
+  8
+C__USERS_JEAN_DESKTOP_VULCANMEM_CANDELAR
+  6
+CONTINUOUS
+ 62
+5
+ 10
+73698.643
+ 20
+57518.109
+ 30
+376.217
+ 11
+73747.691
+ 21
+57543.077
+ 31
+376.217
+ 12
+73723.034
+ 22
+57474.243
+ 32
+376.217
+ 13
+73698.643
+ 23
+57518.109
+ 33
+376.217
+1001
+MAPTEK_VULCAN
+1000
+VulcanName=
+1000
+VulcanGroup=
+1000
+VulcanValue=0
+1000
+VulcanDescription=
+1000
+VulcanPrimitive=
+1000
+VulcanLine=0
+1000
+VulcanPattern=0
+1000
+VulcanFeature=
+  0
+3DFACE
+  8
+C__USERS_JEAN_DESKTOP_VULCANMEM_CANDELAR
+  6
+CONTINUOUS
+ 62
+5
+ 10
+73698.643
+ 20
+57518.109
+ 30
+376.217
+ 11
+73747.691
+ 21
+57543.077
+ 31
+376.217
+ 12
+73747.788
+ 22
+57542.901
+ 32
+358.436
+ 13
+73698.643
+ 23
+57518.109
+ 33
+376.217
+1001
+MAPTEK_VULCAN
+1000
+VulcanName=
+1000
+VulcanGroup=
+1000
+VulcanValue=0
+1000
+VulcanDescription=
+1000
+VulcanPrimitive=
+1000
+VulcanLine=0
+1000
+VulcanPattern=0
+1000
+VulcanFeature=
+  0
+3DFACE
+  8
+C__USERS_JEAN_DESKTOP_VULCANMEM_CANDELAR
+  6
+CONTINUOUS
+ 62
+5
+ 10
+73698.709
+ 20
+57517.992
+ 30
+358.503
+ 11
+73700.893
+ 21
+57514.063
+ 31
+350.183
+ 12
+73718.990
+ 22
+57481.515
+ 32
+350.250
+ 13
+73698.709
+ 23
+57517.992
+ 33
+358.503
+1001
+MAPTEK_VULCAN
+1000
+VulcanName=
+1000
+VulcanGroup=
+1000
+VulcanValue=0
+1000
+VulcanDescription=
+1000
+VulcanPrimitive=
+1000
+VulcanLine=0
+1000
+VulcanPattern=0
+1000
+VulcanFeature=
+  0
+3DFACE
+  8
+C__USERS_JEAN_DESKTOP_VULCANMEM_CANDELAR
+  6
+CONTINUOUS
+ 62
+5
+ 10
+73698.709
+ 20
+57517.992
+ 30
+358.503
+ 11
+73749.875
+ 21
+57539.148
+ 31
+350.384
+ 12
+73700.893
+ 22
+57514.063
+ 32
+350.183
+ 13
+73698.709
+ 23
+57517.992
+ 33
+358.503
+1001
+MAPTEK_VULCAN
+1000
+VulcanName=
+1000
+VulcanGroup=
+1000
+VulcanValue=0
+1000
+VulcanDescription=
+1000
+VulcanPrimitive=
+1000
+VulcanLine=0
+1000
+VulcanPattern=0
+1000
+VulcanFeature=
+  0
+3DFACE
+  8
+C__USERS_JEAN_DESKTOP_VULCANMEM_CANDELAR
+  6
+CONTINUOUS
+ 62
+5
+ 10
+73698.709
+ 20
+57517.992
+ 30
+358.503
+ 11
+73747.788
+ 21
+57542.901
+ 31
+358.436
+ 12
+73749.875
+ 22
+57539.148
+ 32
+350.384
+ 13
+73698.709
+ 23
+57517.992
+ 33
+358.503
+1001
+MAPTEK_VULCAN
+1000
+VulcanName=
+1000
+VulcanGroup=
+1000
+VulcanValue=0
+1000
+VulcanDescription=
+1000
+VulcanPrimitive=
+1000
+VulcanLine=0
+1000
+VulcanPattern=0
+1000
+VulcanFeature=
+  0
+3DFACE
+  8
+C__USERS_JEAN_DESKTOP_VULCANMEM_CANDELAR
+  6
+CONTINUOUS
+ 62
+5
+ 10
+73700.893
+ 20
+57514.063
+ 30
+350.183
+ 11
+73768.168
+ 21
+57506.249
+ 31
+350.384
+ 12
+73718.990
+ 22
+57481.515
+ 32
+350.250
+ 13
+73700.893
+ 23
+57514.063
+ 33
+350.183
+1001
+MAPTEK_VULCAN
+1000
+VulcanName=
+1000
+VulcanGroup=
+1000
+VulcanValue=0
+1000
+VulcanDescription=
+1000
+VulcanPrimitive=
+1000
+VulcanLine=0
+1000
+VulcanPattern=0
+1000
+VulcanFeature=
+  0
+3DFACE
+  8
+C__USERS_JEAN_DESKTOP_VULCANMEM_CANDELAR
+  6
+CONTINUOUS
+ 62
+5
+ 10
+73700.893
+ 20
+57514.063
+ 30
+350.183
+ 11
+73749.875
+ 21
+57539.148
+ 31
+350.384
+ 12
+73768.168
+ 22
+57506.249
+ 32
+350.384
+ 13
+73700.893
+ 23
+57514.063
+ 33
+350.183
+1001
+MAPTEK_VULCAN
+1000
+VulcanName=
+1000
+VulcanGroup=
+1000
+VulcanValue=0
+1000
+VulcanDescription=
+1000
+VulcanPrimitive=
+1000
+VulcanLine=0
+1000
+VulcanPattern=0
+1000
+VulcanFeature=
+  0
+3DFACE
+  8
+C__USERS_JEAN_DESKTOP_VULCANMEM_CANDELAR
+  6
+CONTINUOUS
+ 62
+5
+ 10
+73718.990
+ 20
+57481.515
+ 30
+350.250
+ 11
+73723.099
+ 21
+57474.126
+ 31
+359.644
+ 12
+73723.034
+ 22
+57474.243
+ 32
+376.217
+ 13
+73718.990
+ 23
+57481.515
+ 33
+350.250
+1001
+MAPTEK_VULCAN
+1000
+VulcanName=
+1000
+VulcanGroup=
+1000
+VulcanValue=0
+1000
+VulcanDescription=
+1000
+VulcanPrimitive=
+1000
+VulcanLine=0
+1000
+VulcanPattern=0
+1000
+VulcanFeature=
+  0
+3DFACE
+  8
+C__USERS_JEAN_DESKTOP_VULCANMEM_CANDELAR
+  6
+CONTINUOUS
+ 62
+5
+ 10
+73718.990
+ 20
+57481.515
+ 30
+350.250
+ 11
+73772.146
+ 21
+57499.094
+ 31
+359.644
+ 12
+73723.099
+ 22
+57474.126
+ 32
+359.644
+ 13
+73718.990
+ 23
+57481.515
+ 33
+350.250
+1001
+MAPTEK_VULCAN
+1000
+VulcanName=
+1000
+VulcanGroup=
+1000
+VulcanValue=0
+1000
+VulcanDescription=
+1000
+VulcanPrimitive=
+1000
+VulcanLine=0
+1000
+VulcanPattern=0
+1000
+VulcanFeature=
+  0
+3DFACE
+  8
+C__USERS_JEAN_DESKTOP_VULCANMEM_CANDELAR
+  6
+CONTINUOUS
+ 62
+5
+ 10
+73718.990
+ 20
+57481.515
+ 30
+350.250
+ 11
+73768.168
+ 21
+57506.249
+ 31
+350.384
+ 12
+73772.146
+ 22
+57499.094
+ 32
+359.644
+ 13
+73718.990
+ 23
+57481.515
+ 33
+350.250
+1001
+MAPTEK_VULCAN
+1000
+VulcanName=
+1000
+VulcanGroup=
+1000
+VulcanValue=0
+1000
+VulcanDescription=
+1000
+VulcanPrimitive=
+1000
+VulcanLine=0
+1000
+VulcanPattern=0
+1000
+VulcanFeature=
+  0
+3DFACE
+  8
+C__USERS_JEAN_DESKTOP_VULCANMEM_CANDELAR
+  6
+CONTINUOUS
+ 62
+5
+ 10
+73723.034
+ 20
+57474.243
+ 30
+376.217
+ 11
+73772.146
+ 21
+57499.094
+ 31
+359.644
+ 12
+73723.099
+ 22
+57474.126
+ 32
+359.644
+ 13
+73723.034
+ 23
+57474.243
+ 33
+376.217
+1001
+MAPTEK_VULCAN
+1000
+VulcanName=
+1000
+VulcanGroup=
+1000
+VulcanValue=0
+1000
+VulcanDescription=
+1000
+VulcanPrimitive=
+1000
+VulcanLine=0
+1000
+VulcanPattern=0
+1000
+VulcanFeature=
+  0
+3DFACE
+  8
+C__USERS_JEAN_DESKTOP_VULCANMEM_CANDELAR
+  6
+CONTINUOUS
+ 62
+5
+ 10
+73723.034
+ 20
+57474.243
+ 30
+376.217
+ 11
+73747.691
+ 21
+57543.077
+ 31
+376.217
+ 12
+73772.048
+ 22
+57499.270
+ 32
+376.217
+ 13
+73723.034
+ 23
+57474.243
+ 33
+376.217
+1001
+MAPTEK_VULCAN
+1000
+VulcanName=
+1000
+VulcanGroup=
+1000
+VulcanValue=0
+1000
+VulcanDescription=
+1000
+VulcanPrimitive=
+1000
+VulcanLine=0
+1000
+VulcanPattern=0
+1000
+VulcanFeature=
+  0
+3DFACE
+  8
+C__USERS_JEAN_DESKTOP_VULCANMEM_CANDELAR
+  6
+CONTINUOUS
+ 62
+5
+ 10
+73723.034
+ 20
+57474.243
+ 30
+376.217
+ 11
+73772.048
+ 21
+57499.270
+ 31
+376.217
+ 12
+73772.146
+ 22
+57499.094
+ 32
+359.644
+ 13
+73723.034
+ 23
+57474.243
+ 33
+376.217
+1001
+MAPTEK_VULCAN
+1000
+VulcanName=
+1000
+VulcanGroup=
+1000
+VulcanValue=0
+1000
+VulcanDescription=
+1000
+VulcanPrimitive=
+1000
+VulcanLine=0
+1000
+VulcanPattern=0
+1000
+VulcanFeature=
+  0
+3DFACE
+  8
+C__USERS_JEAN_DESKTOP_VULCANMEM_CANDELAR
+  6
+CONTINUOUS
+ 62
+5
+ 10
+73747.691
+ 20
+57543.077
+ 30
+376.217
+ 11
+73747.788
+ 21
+57542.901
+ 31
+358.436
+ 12
+73768.168
+ 22
+57506.249
+ 32
+350.384
+ 13
+73747.691
+ 23
+57543.077
+ 33
+376.217
+1001
+MAPTEK_VULCAN
+1000
+VulcanName=
+1000
+VulcanGroup=
+1000
+VulcanValue=0
+1000
+VulcanDescription=
+1000
+VulcanPrimitive=
+1000
+VulcanLine=0
+1000
+VulcanPattern=0
+1000
+VulcanFeature=
+  0
+3DFACE
+  8
+C__USERS_JEAN_DESKTOP_VULCANMEM_CANDELAR
+  6
+CONTINUOUS
+ 62
+5
+ 10
+73747.691
+ 20
+57543.077
+ 30
+376.217
+ 11
+73772.048
+ 21
+57499.270
+ 31
+376.217
+ 12
+73768.168
+ 22
+57506.249
+ 32
+350.384
+ 13
+73747.691
+ 23
+57543.077
+ 33
+376.217
+1001
+MAPTEK_VULCAN
+1000
+VulcanName=
+1000
+VulcanGroup=
+1000
+VulcanValue=0
+1000
+VulcanDescription=
+1000
+VulcanPrimitive=
+1000
+VulcanLine=0
+1000
+VulcanPattern=0
+1000
+VulcanFeature=
+  0
+3DFACE
+  8
+C__USERS_JEAN_DESKTOP_VULCANMEM_CANDELAR
+  6
+CONTINUOUS
+ 62
+5
+ 10
+73747.788
+ 20
+57542.901
+ 30
+358.436
+ 11
+73749.875
+ 21
+57539.148
+ 31
+350.384
+ 12
+73768.168
+ 22
+57506.249
+ 32
+350.384
+ 13
+73747.788
+ 23
+57542.901
+ 33
+358.436
+1001
+MAPTEK_VULCAN
+1000
+VulcanName=
+1000
+VulcanGroup=
+1000
+VulcanValue=0
+1000
+VulcanDescription=
+1000
+VulcanPrimitive=
+1000
+VulcanLine=0
+1000
+VulcanPattern=0
+1000
+VulcanFeature=
+  0
+3DFACE
+  8
+C__USERS_JEAN_DESKTOP_VULCANMEM_CANDELAR
+  6
+CONTINUOUS
+ 62
+5
+ 10
+73768.168
+ 20
+57506.249
+ 30
+350.384
+ 11
+73772.048
+ 21
+57499.270
+ 31
+376.217
+ 12
+73772.146
+ 22
+57499.094
+ 32
+359.644
+ 13
+73768.168
+ 23
+57506.249
+ 33
+350.384
+1001
+MAPTEK_VULCAN
+1000
+VulcanName=
+1000
+VulcanGroup=
+1000
+VulcanValue=0
+1000
+VulcanDescription=
+1000
+VulcanPrimitive=
+1000
+VulcanLine=0
+1000
+VulcanPattern=0
+1000
+VulcanFeature=
+  0
+ENDSEC
+  0
+EOF
