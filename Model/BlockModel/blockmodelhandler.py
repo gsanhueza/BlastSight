@@ -17,7 +17,7 @@ class BlockModelHandler:
     def get_handler(self):
         # FIXME If we have more than just a CSV handler, we might want to update this to use a dictionary with the extension as a key
         # {"csv": CSVHandler, "xls": ExcelHandler}, for example.
-        return self.handler_dict[current_extension]
+        return self.handler_dict[self.current_extension]
 
     # Lets the handler load the block model and update the internal model
     def load_blockmodel(self, model, filepath):

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-from Mesh.meshhandler import MeshHandler
-from BlockModel.blockmodelhandler import BlockModelHandler
+from .Mesh.meshhandler import MeshHandler
+from .BlockModel.blockmodelhandler import BlockModelHandler
 
 
 # Main class

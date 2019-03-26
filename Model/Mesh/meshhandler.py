@@ -17,7 +17,7 @@ class MeshHandler:
     def get_handler(self):
         # FIXME If we have more than just a DXF handler, we might want to update this to use a dictionary with the extension as a key
         # {"dxf": DXFHandler, "off": OFFHandler}, for example.
-        return self.handler_dict[current_extension]
+        return self.handler_dict[self.current_extension]
 
     # Lets the handler load the mesh and update the model
     def load_mesh(self, model, filepath):
