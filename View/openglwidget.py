@@ -9,16 +9,20 @@ from PySide2.QtGui import QPainter
 from .normalmode import NormalMode
 
 
+# TODO Create a slot that receives a notification of "Loaded DXF" on model
+# FIXME That means I need a method that re-updates the data in the VAO/VBO
 class OpenGLWidget(QOpenGLWidget):
-    def __init__(self, parent=None, mode_class=NormalMode):
+    def __init__(self, parent=None, mode_class=NormalMode, model=None):
         print("Init: OpenGLWidget")
         QOpenGLWidget.__init__(self, parent)
         self.setFocusPolicy(Qt.StrongFocus)
         self.current_mode = mode_class(self)
+        self.model = model
 
         self.rotation = 0
 
     def initializeGL(self):
+        print(self.model.get_vertices())
         vertices = np.array([0.0, 1.0, -1.0, -1.0, 1.0, -1.0], dtype=np.float32)
 
         bufferId = GL.glGenBuffers(1)

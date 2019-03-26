@@ -13,6 +13,12 @@ class Model:
         self.vertices = None
         self.faces = None
 
+    def get_vertices(self):
+        return self.vertices
+
+    def get_faces(self):
+        return self.faces
+
     # The mesh handler will load the mesh and update our own data
     # Returns a boolean
     def load_mesh(self, filepath):

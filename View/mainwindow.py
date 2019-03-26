@@ -21,7 +21,7 @@ class MainWindow(QMainWindow):
         self.model = model
 
         ## Central Widget
-        self.widget = OpenGLWidget(parent=self, mode_class=NormalMode)
+        self.widget = OpenGLWidget(parent=self, mode_class=NormalMode, model=self.model)
         self.setCentralWidget(self.widget)
 
         self.statusBar.showMessage('Ready')
