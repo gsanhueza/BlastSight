@@ -11,11 +11,11 @@ class CSVHandler:
         # TODO Read file on filepath
         # TODO Get positions and data of block model
         # TODO Update the model
-        pass
+        return False
 
     # Saves a CSV file and updates the model
     def save_blockmodel(self, filepath=None):
         # TODO Create a new file on filepath
         # TODO Write the DXF with the model's vertices and faces (dxfgrabber?)
         # TODO Close the file
-        pass
+        return False

@@ -24,14 +24,18 @@ class MainWindow(QMainWindow):
         self.widget = OpenGLWidget(parent=self, mode_class=NormalMode)
         self.setCentralWidget(self.widget)
 
-        self.statusBar.showMessage("Ready")
+        self.statusBar.showMessage('Ready')
 
     # Unless explicitly otherwise, slots are connected via Qt Designer
     @Slot()
     def load_mesh_slot(self):
-        (filepath, selected_filter) = QFileDialog.getOpenFileName(parent=self, dir=".", filter="DXF Files (*.dxf)")
-        self.model.load_mesh(filepath)
-        print(filepath)
+        # TODO Use QSettings (or something) to remember the last directory accessed to load the mesh.
+        (filepath, selected_filter) = QFileDialog.getOpenFileName(parent=self, dir='.', filter='DXF Files (*.dxf)')
+
+        if self.model.load_mesh(filepath):
+            self.statusBar.showMessage('Mesh loaded')
+        else:
+            self.statusBar.showMessage('Cannot load mesh')
 
     @Slot()
     def normal_mode_slot(self):
