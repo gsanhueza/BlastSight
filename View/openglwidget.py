@@ -1,16 +1,15 @@
 #!/usr/bin/env python
 
 import numpy as np
+
 from OpenGL import GL, GLUT
 from PySide2.QtWidgets import QOpenGLWidget
-from PySide2.QtCore import Qt
+from PySide2.QtCore import Qt, Slot
 from PySide2.QtGui import QPainter
 
 from .normalmode import NormalMode
 
 
-# TODO Create a slot that receives a notification of "Loaded DXF" on model
-# FIXME That means I need a method that re-updates the data in the VAO/VBO
 class OpenGLWidget(QOpenGLWidget):
     def __init__(self, parent=None, mode_class=NormalMode, model=None):
         print("Init: OpenGLWidget")
@@ -44,3 +43,8 @@ class OpenGLWidget(QOpenGLWidget):
 
     def mousePressEvent(self, event):
         self.current_mode.mousePressEvent(event)
+
+    @Slot()
+    def update_mesh():
+        # TODO On mesh load, delete current opengl vertices/faces, recreate them and update
+        self.update()
