@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import sys
-from PySide2.QtWidgets import QApplication, QWidget
+from PySide2.QtWidgets import QApplication
 
 from View.mainwindow import MainWindow
 

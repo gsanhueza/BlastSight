@@ -14,7 +14,7 @@ class OpenGLWidget(QOpenGLWidget):
         print("Init: OpenGLWidget")
         QOpenGLWidget.__init__(self, parent)
         self.setFocusPolicy(Qt.StrongFocus)
-        self.currentMode = mode_class(self)
+        self.current_mode = mode_class(self)
 
         self.rotation = 0
 
@@ -36,7 +36,7 @@ class OpenGLWidget(QOpenGLWidget):
 
     # Controller dependent on current mode
     def mouseMoveEvent(self, event):
-        self.currentMode.mouseMoveEvent(event)
+        self.current_mode.mouseMoveEvent(event)
 
     def mousePressEvent(self, event):
-        self.currentMode.mousePressEvent(event)
+        self.current_mode.mousePressEvent(event)
