@@ -18,7 +18,7 @@ Each development milestone will be recorded here.
 
 #### GUI
 
-- [ ] Connect to model to send a triangulation file
+- [x] Connect to model to send a triangulation file
 
 ### Milestone 2
 

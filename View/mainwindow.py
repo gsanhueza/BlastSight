@@ -26,7 +26,9 @@ class MainWindow(QMainWindow):
 
         self.statusBar.showMessage("Ready")
 
-    def load_mesh(self):
+    # Unless explicitly otherwise, slots are connected via Qt Designer
+    @Slot()
+    def load_mesh_slot(self):
         (filepath, selected_filter) = QFileDialog.getOpenFileName(parent=self, dir=".", filter="DXF Files (*.dxf)")
         self.model.load_mesh(filepath)
         print(filepath)
@@ -34,7 +36,6 @@ class MainWindow(QMainWindow):
     @Slot()
     def normal_mode_slot(self):
         self.widget.currentMode = NormalMode(self.widget)
-        self.load_mesh()
 
     @Slot()
     def draw_mode_slot(self):

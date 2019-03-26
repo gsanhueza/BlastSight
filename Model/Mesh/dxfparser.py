@@ -15,6 +15,7 @@ class DXFParser:
 
     def load_dxffile(self, filepath):
         self.dxf = dxfgrabber.readfile(filepath)
+        self._parse_entities()
 
     # Returns the entities of the DXF file
     def get_entities(self):
@@ -76,8 +77,6 @@ class DXFParser:
 
     # Create OFF file
     def _build_string(self):
-        self._parse_entities()
-
         V = len(self.get_vertices())
         F = len(self.get_faces())
         E = V + F - 2

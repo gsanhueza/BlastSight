@@ -15,7 +15,9 @@ class Model:
 
     # The mesh handler will load the mesh and update our own data
     def load_mesh(self, filepath):
+        print(f'Before loading: vertices = {self.vertices}')
         self.mesh_handler.load_mesh(self, filepath)
+        print(f'After loading : vertices = {self.vertices}')
 
     # The mesh handler will save the mesh by reading our own data
     def save_mesh(self, filepath):
