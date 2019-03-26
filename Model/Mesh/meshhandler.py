@@ -12,7 +12,7 @@ class MeshHandler:
         self.add_handler(self.current_extension, DXFHandler())
 
     # Adds a new handler for meshes
-    def add_handler(self, extension, handler):
+    def add_handler(self, extension: str, handler) -> None:
         self.handler_dict[extension] = handler
 
     # Returns the handler that matches the current extension
@@ -23,10 +23,10 @@ class MeshHandler:
 
     # Lets the handler load the mesh and update the model
     # Returns a boolean
-    def load_mesh(self, model, filepath):
+    def load_mesh(self, model, filepath: str) -> bool:
         return self.get_handler().load_mesh(model, filepath)
 
     # Lets the handler save the mesh and update the model
     # Returns a boolean
-    def save_mesh(self, model, filepath):
+    def save_mesh(self, model, filepath: str) -> bool:
         return self.get_handler().save_mesh(model, filepath)

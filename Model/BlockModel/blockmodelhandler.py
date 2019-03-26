@@ -12,7 +12,7 @@ class BlockModelHandler:
         self.add_handler(self.current_extension, CSVHandler())
 
     # Adds a new handler for meshes
-    def add_handler(self, extension, handler):
+    def add_handler(self, extension: str, handler: str) -> None:
         self.handler_dict[extension] = handler
 
     # Returns the handler that matches the current extension
@@ -23,10 +23,10 @@ class BlockModelHandler:
 
     # Lets the handler load the block model and update the internal model
     # Returns a boolean
-    def load_blockmodel(self, model, filepath):
+    def load_blockmodel(self, model, filepath: str) -> bool:
         self.get_handler().load_blockmodel(model, filepath)
 
     # Lets the handler save the block model by reading the internal model
     # Returns a boolean
-    def save_blockmodel(self, model, filepath):
+    def save_blockmodel(self, model, filepath: str) -> bool:
         self.get_handler().save_blockmodel(model, filepath)

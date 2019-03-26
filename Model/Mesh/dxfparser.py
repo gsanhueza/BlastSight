@@ -6,6 +6,7 @@ from collections import OrderedDict
 
 class DXFParser:
     def __init__(self, filepath=None):
+        # FIXME Do you really want to work with tuples?
         self.vertices = tuple()
         self.faces = tuple()
         self.dxf = None
@@ -13,7 +14,7 @@ class DXFParser:
         if filepath:
             self.load(filepath)
 
-    def load_dxffile(self, filepath):
+    def load_dxffile(self, filepath: str) -> None:
         self.dxf = dxfgrabber.readfile(filepath)
         self._parse_entities()
 
@@ -22,7 +23,7 @@ class DXFParser:
         return self.dxf.entities
 
     # Read the DXF file and create tuples of vertices and faces
-    def _parse_entities(self):
+    def _parse_entities(self) -> None:
         vertices_dict = OrderedDict()
         # Detect vertices and faces
         index = 0
@@ -43,7 +44,7 @@ class DXFParser:
         self.faces = self._parse_faces(faces)
 
     # Converts a list of 4-tuples into a list of 3-tuples
-    def _parse_faces(self, faces):
+    def _parse_faces(self, faces: list) -> list:
         ans = []
         for f in faces:
             # We need to convert 4-tuples in 3-tuples
@@ -62,7 +63,7 @@ class DXFParser:
         return self.faces
 
     # Returns the average of each component of a list of n-tuples in a new n-tuple
-    def _avg_tuple(self, tuple_list):
+    def _avg_tuple(self, tuple_list: list):
         if len(tuple_list) == 0:
             return None
 
