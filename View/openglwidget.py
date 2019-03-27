@@ -37,6 +37,9 @@ class OpenGLWidget(QOpenGLWidget):
         GL.glRotated(self.rotation, 0.0, 1.0, 0.0)
         GL.glDrawArrays(GL.GL_TRIANGLES, 0, 3)
 
+    def resizeGL(self, width, height):
+        super().resizeGL(width, height)
+
     # Controller dependent on current mode
     def mouseMoveEvent(self, event):
         self.current_mode.mouseMoveEvent(event)

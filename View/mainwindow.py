@@ -39,8 +39,8 @@ class MainWindow(QMainWindow):
 
     @Slot()
     def normal_mode_slot(self):
-        self.widget.currentMode = NormalMode(self.widget)
+        self.widget.current_mode = NormalMode(self.widget)
 
     @Slot()
     def draw_mode_slot(self):
-        self.widget.currentMode = DrawMode(self.widget)
+        self.widget.current_mode = DrawMode(self.widget)
