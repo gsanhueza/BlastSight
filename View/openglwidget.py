@@ -88,10 +88,6 @@ class OpenGLWidget(QOpenGLWidget):
         self.world.rotate(self.yRot / 16.0, 0, 1, 0)
         self.world.rotate(self.zRot / 16.0, 0, 0, 1)
 
-        glViewport(0, 0, self.width(), self.height())
-
-        self.proj.setToIdentity() # FIXME The setUniformValue works well despite the warning, but self.proj is the incorrect matrix
-
         # Bind data of shaders to program
         # self.shader_program.link()
         self.shader_program.setUniformValue(self.proj_matrix_loc, self.proj)
@@ -115,7 +111,11 @@ class OpenGLWidget(QOpenGLWidget):
 
     def resizeGL(self, w, h):
         self.proj.setToIdentity()
-        self.proj.perspective(45.0, (w / h), 0.01, 10000.0)
+        glMatrixMode(GL_PROJECTION)
+        glLoadIdentity()
+        glOrtho(-0.5, +0.5, -0.5, +0.5, 4.0, 15.0)
+        glMatrixMode(GL_MODELVIEW)
+        # self.proj.perspective(45.0, (w / h), 0.01, 10000.0)  # FIXME This makes it fail
 
     # Controller dependent on current mode
     def mouseMoveEvent(self, event):
@@ -124,6 +124,10 @@ class OpenGLWidget(QOpenGLWidget):
 
     def mousePressEvent(self, event):
         self.current_mode.mousePressEvent(event)
+        self.update()
+
+    def wheelEvent(self, event):
+        self.current_mode.wheelEvent(event)
         self.update()
 
     @Slot()

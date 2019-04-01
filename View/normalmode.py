@@ -25,6 +25,13 @@ class NormalMode:
 
         self.lastPos = QPoint(event.pos())
 
+    def wheelEvent(self, event):
+        self.widget.zCamPos += (event.delta() / 1200)
+        self.widget.camera.setToIdentity()
+        self.widget.camera.translate(self.widget.xCamPos,
+                                     self.widget.yCamPos,
+                                     self.widget.zCamPos)
+
     def setXRotation(self, angle):
         angle = self.normalizeAngle(angle)
         if angle != self.widget.xRot:
