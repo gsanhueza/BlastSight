@@ -6,9 +6,11 @@ from OpenGL.GL import *
 from PySide2.QtWidgets import QOpenGLWidget
 from PySide2.QtGui import *
 from PySide2.QtCore import Qt, Slot
-from PySide2.QtGui import QPainter
 
 from .normalmode import NormalMode
+
+_POSITION = 0
+_COLOR = 1
 
 
 class OpenGLWidget(QOpenGLWidget):
@@ -23,7 +25,7 @@ class OpenGLWidget(QOpenGLWidget):
         self.model = model
 
         # Shader utility
-        self.program = QOpenGLShaderProgram(self)
+        self.shader_program = QOpenGLShaderProgram(self)
         self.rotation = 0
 
         # VAO/VBO
@@ -39,58 +41,28 @@ class OpenGLWidget(QOpenGLWidget):
         # World
         self.world = QMatrix4x4()
 
+        # Projection
+        self.proj = QMatrix4x4()
+
         # Rotation
         self.xRot = 0
         self.yRot = 0
         self.zRot = 0
 
-        # Projection
-        self.proj = QMatrix4x4()
-
-
-    def setup_vertex_attribs(self):
-        _POSITION = 0
-        _COLOR = 1
-
-        position = np.array([-0.5, 0.5, 0.0, -0.5, -0.5, 0.0, 0.5, -0.5, 0.0, 0.5, 0.5, 0.0], np.float32)
-        color = np.array([1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0], np.float32)
-
-        self.vbo.bind()
-
-        glEnableVertexAttribArray(_POSITION)
-        glEnableVertexAttribArray(_COLOR)
-        print("TEST1")
-        glVertexAttribPointer(_POSITION, 3, GL_FLOAT, False, 0, position)
-        print("TEST2")
-        glVertexAttribPointer(_COLOR, 3, GL_FLOAT, False, 0, color)
-        print("TEST3")
-
-        self.vbo.release()
+        # Shaders
+        self.vertex_shader_source = 'View/Shaders/vertex.glsl'
+        self.fragment_shader_source = 'View/Shaders/fragment.glsl'
 
     def initializeGL(self):
-        # FIXME Are you sure you'll use just one shader for everything?
-        self.program.addShaderFromSourceFile(QOpenGLShader.Vertex, 'View/Shaders/vertex.glsl')
-        self.program.addShaderFromSourceFile(QOpenGLShader.Fragment, 'View/Shaders/fragment.glsl')
+        self.shader_program = QOpenGLShaderProgram(self.context())
+        self.shader_program.addShaderFromSourceFile(QOpenGLShader.Vertex, self.vertex_shader_source)
+        self.shader_program.addShaderFromSourceFile(QOpenGLShader.Fragment, self.fragment_shader_source)
 
-        self.program.bindAttributeLocation('vertex', 0)
-        self.program.bindAttributeLocation('color', 1)
-        self.program.link()
+        glBindAttribLocation(self.shader_program.programId(), _POSITION, 'a_position')
+        glBindAttribLocation(self.shader_program.programId(), _COLOR, 'a_color')
 
-        self.program.bind()
-
-        self.modelViewMatrixLoc = self.program.uniformLocation('modelViewMatrix')
-        self.projMatrixLoc = self.program.uniformLocation('projMatrix')
-
-        self.vao.create()
-
-        # Store the vertex attribute bindings for the program.
-        self.setup_vertex_attribs()
-
-        # Our camera has an initial position.
-        self.camera.setToIdentity()
-        self.camera.translate(self.xCamPos, self.yCamPos, self.zCamPos);
-
-        self.program.release()
+        self.shader_program.link()
+        self.shader_program.bind()
 
     def paintGL(self):
         # Clear screen
@@ -105,33 +77,23 @@ class OpenGLWidget(QOpenGLWidget):
         self.world.rotate(self.yRot / 16.0, 0, 1, 0)
         self.world.rotate(self.zRot / 16.0, 0, 0, 1)
 
-        # Bind VAO
-        vaoBinder = QOpenGLVertexArrayObject.Binder(self.vao)
+        glViewport(0, 0, self.width(), self.height())
 
         # Bind data of shaders to program
-        self.program.bind();
-        self.program.setUniformValue(self.projMatrixLoc, self.proj);
-        self.program.setUniformValue(self.modelViewMatrixLoc, self.camera * self.world);
+        # self.shader_program.bind()
+        # self.shader_program.setUniformValue(self.projMatrixLoc, self.proj)
+        # self.shader_program.setUniformValue(self.modelViewMatrixLoc, self.camera * self.world)
 
-        # Load new data only on model data change
-        self.dataAlreadyLoaded = False
-        if (not self.dataAlreadyLoaded):
+        position = np.array([-0.5, 0.5, -0.5, -0.5, 0.5, -0.5, 0.5, 0.5], np.float32)
+        glVertexAttribPointer(_POSITION, 2, GL_FLOAT, False, 0, position)
+        glEnableVertexAttribArray(_POSITION)
 
-            # Load data
-            def loadData():
-                pass
-            loadData()
+        color = np.array([1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0], np.float32)
+        glVertexAttribPointer(_COLOR, 3, GL_FLOAT, False, 0, color)
+        glEnableVertexAttribArray(_COLOR)
 
-            # Store the vertex attribute bindings for the program.
-            self.setup_vertex_attribs()
-
-            self.dataAlreadyLoaded = True
-
-        # Draw triangulation
-        # Last argument = Number of vertices in total
-        glDrawArrays(GL_TRIANGLES, 0, 3 * 4);
-
-        self.program.release();
+        # Draw data
+        glDrawArrays(GL_QUADS, 0, 4)
 
     def resizeGL(self, w, h):
         self.proj.setToIdentity()
@@ -145,6 +107,6 @@ class OpenGLWidget(QOpenGLWidget):
         self.current_mode.mousePressEvent(event)
 
     @Slot()
-    def update_mesh():
+    def update_mesh(self):
         # TODO On mesh load, delete current opengl vertices/faces, recreate them and update
         self.update()
