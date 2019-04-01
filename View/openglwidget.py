@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import numpy as np
+import math
 
 from OpenGL.GL import *
 from PySide2.QtWidgets import QOpenGLWidget
@@ -53,6 +54,10 @@ class OpenGLWidget(QOpenGLWidget):
         # MVP locations
         self.model_view_matrix_loc = None
         self.proj_matrix_loc = None
+        self.test_value_loc = None
+
+        # TODO Delete this
+        self.rotation = 0
 
     def initializeGL(self):
         self.shader_program = QOpenGLShaderProgram(self.context())
@@ -68,6 +73,7 @@ class OpenGLWidget(QOpenGLWidget):
         # MVP locations
         self.model_view_matrix_loc = self.shader_program.uniformLocation('model_view_matrix')
         self.proj_matrix_loc = self.shader_program.uniformLocation('proj_matrix')
+        self.test_value_loc = self.shader_program.uniformLocation('test_value')
 
     def paintGL(self):
         # Clear screen
@@ -86,6 +92,7 @@ class OpenGLWidget(QOpenGLWidget):
 
         # Bind data of shaders to program
         # self.shader_program.link()
+        self.shader_program.setUniformValue(self.test_value_loc, int(10 * self.rotation))
         # self.shader_program.setUniformValue(self.proj_matrix_loc, self.proj)
         # self.shader_program.setUniformValue(self.model_view_matrix_loc, self.camera * self.world)
         # self.shader_program.bind()
