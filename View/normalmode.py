@@ -1,27 +1,48 @@
 #!/usr/bin/env python
 
-from PySide2.QtCore import Qt
-from PySide2.QtGui import *
-from OpenGL import GL
+from PySide2.QtCore import Qt, QPoint
 
 
-class NormalMode():
+class NormalMode:
     def __init__(self, widget):
-        self.openglwidget = widget
-        self.openglwidget.parent().setWindowTitle("Normal Mode")
+        self.widget = widget
+        self.widget.parent().setWindowTitle("Normal Mode")
         print("MODE: Normal Mode")
 
-    def mouseMoveEvent(self, event):
-        print("Moving in Normal Mode")
-        self.openglwidget.rotation += 0.1
-        self.openglwidget.update()
-
     def mousePressEvent(self, event):
-        if event.button() == Qt.MouseButton.LeftButton:
-            print("Pressing in Normal Mode with LeftButton")
-        elif event.button() == Qt.MouseButton.MiddleButton:
-            print("Pressing in Normal Mode with MiddleButton")
-        elif event.button() == Qt.MouseButton.RightButton:
-            print("Pressing in Normal Mode with RightButton")
+        self.lastPos = QPoint(event.pos())
 
-        self.openglwidget.update()
+    def mouseMoveEvent(self, event):
+        dx = event.x() - self.lastPos.x()
+        dy = event.y() - self.lastPos.y()
+
+        if event.buttons() == Qt.LeftButton:
+            self.setXRotation(self.widget.xRot + 8 * dy)
+            self.setYRotation(self.widget.yRot + 8 * dx)
+        elif event.buttons() == Qt.RightButton:
+            self.setXRotation(self.widget.xRot + 8 * dy)
+            self.setZRotation(self.widget.zRot + 8 * dx)
+
+        self.lastPos = QPoint(event.pos())
+
+    def setXRotation(self, angle):
+        angle = self.normalizeAngle(angle)
+        if angle != self.widget.xRot:
+            self.widget.xRot = angle
+
+    def setYRotation(self, angle):
+        angle = self.normalizeAngle(angle)
+        if angle != self.widget.yRot:
+            self.widget.yRot = angle
+
+    def setZRotation(self, angle):
+        angle = self.normalizeAngle(angle)
+        if angle != self.widget.zRot:
+            self.widget.zRot = angle
+
+    def normalizeAngle(self, angle):
+        while angle < 0:
+            angle += 360 * 16
+        while angle > 360 * 16:
+            angle -= 360 * 16
+        return angle

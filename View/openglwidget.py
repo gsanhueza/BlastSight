@@ -43,9 +43,9 @@ class OpenGLWidget(QOpenGLWidget):
         self.zCamPos = 0.0
 
         # World rotation
-        self.xRot = 0
-        self.yRot = 0
-        self.zRot = 0
+        self.xRot = 0.0
+        self.yRot = 0.0
+        self.zRot = 0.0
 
         # Shader locations
         self.vertex_shader_source = 'View/Shaders/vertex.glsl'
@@ -64,8 +64,8 @@ class OpenGLWidget(QOpenGLWidget):
         self.shader_program.addShaderFromSourceFile(QOpenGLShader.Vertex, self.vertex_shader_source)
         self.shader_program.addShaderFromSourceFile(QOpenGLShader.Fragment, self.fragment_shader_source)
 
-        glBindAttribLocation(self.shader_program.programId(), _POSITION, 'a_position')
-        glBindAttribLocation(self.shader_program.programId(), _COLOR, 'a_color')
+        self.shader_program.bindAttributeLocation('a_position', _POSITION)
+        self.shader_program.bindAttributeLocation('a_color', _COLOR)
 
         self.shader_program.link()
         self.shader_program.bind()
@@ -90,10 +90,10 @@ class OpenGLWidget(QOpenGLWidget):
 
         glViewport(0, 0, self.width(), self.height())
 
+        self.proj.setToIdentity() # FIXME The setUniformValue works well despite the warning, but self.proj is the incorrect matrix
+
         # Bind data of shaders to program
         # self.shader_program.link()
-        # self.shader_program.setUniformValue(self.test_value_loc, math.sin(self.rotation))
-        self.shader_program.setUniformValue(self.test_value_loc, 1)
         self.shader_program.setUniformValue(self.proj_matrix_loc, self.proj)
         self.shader_program.setUniformValue(self.model_view_matrix_loc, self.camera * self.world)
         # self.shader_program.bind()
@@ -102,6 +102,7 @@ class OpenGLWidget(QOpenGLWidget):
                              -0.5, -0.5, 0.0,
                              0.5, -0.5, 0.0,
                              0.5, 0.5, 0.0], np.float32)
+
         glVertexAttribPointer(_POSITION, 3, GL_FLOAT, False, 0, position)
         glEnableVertexAttribArray(_POSITION)
 
@@ -119,9 +120,11 @@ class OpenGLWidget(QOpenGLWidget):
     # Controller dependent on current mode
     def mouseMoveEvent(self, event):
         self.current_mode.mouseMoveEvent(event)
+        self.update()
 
     def mousePressEvent(self, event):
         self.current_mode.mousePressEvent(event)
+        self.update()
 
     @Slot()
     def update_mesh(self):
