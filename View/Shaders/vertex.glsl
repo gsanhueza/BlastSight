@@ -1,14 +1,12 @@
-#version 120
+attribute vec3 a_position;
+attribute vec3 a_color;
+varying vec3 v_color;
 
-attribute vec3 vertex;
-attribute vec3 color;
+uniform mat4 proj_matrix;
+uniform mat4 model_view_matrix;
 
-varying vec3 f_color;
-
-uniform mat4 projMatrix;
-uniform mat4 modelViewMatrix;
-
-void main(){
-    f_color = color;
-    gl_Position = projMatrix * modelViewMatrix * vec4(vertex, 1.0);
+void main()
+{
+    gl_Position = proj_matrix * model_view_matrix * vec4(a_position, 1.0);
+    v_color = a_color;
 }

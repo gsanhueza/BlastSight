@@ -1,7 +1,6 @@
-#version 120
+varying vec3 v_color;
 
-varying highp vec3 f_color;
-
-void main() {
-    gl_FragColor = vec4(f_color, 0.0);
+void main()
+{
+    gl_FragColor = vec4(v_color, 1.0);
 }
