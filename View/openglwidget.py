@@ -26,32 +26,33 @@ class OpenGLWidget(QOpenGLWidget):
 
         # Shader utility
         self.shader_program = QOpenGLShaderProgram(self)
-        self.rotation = 0
 
         # VAO/VBO
         self.vao = QOpenGLVertexArrayObject()
         self.vbo = QOpenGLBuffer()
 
-        # Camera
+        # Camera/World/Projection
         self.camera = QMatrix4x4()
+        self.world = QMatrix4x4()
+        self.proj = QMatrix4x4()
+
+        # Camera position
         self.xCamPos = 0.0
         self.yCamPos = 0.0
         self.zCamPos = 0.0
 
-        # World
-        self.world = QMatrix4x4()
-
-        # Projection
-        self.proj = QMatrix4x4()
-
-        # Rotation
+        # World rotation
         self.xRot = 0
         self.yRot = 0
         self.zRot = 0
 
-        # Shaders
+        # Shader locations
         self.vertex_shader_source = 'View/Shaders/vertex.glsl'
         self.fragment_shader_source = 'View/Shaders/fragment.glsl'
+
+        # MVP locations
+        self.model_view_matrix_loc = None
+        self.proj_matrix_loc = None
 
     def initializeGL(self):
         self.shader_program = QOpenGLShaderProgram(self.context())
@@ -63,6 +64,10 @@ class OpenGLWidget(QOpenGLWidget):
 
         self.shader_program.link()
         self.shader_program.bind()
+
+        # MVP locations
+        self.model_view_matrix_loc = self.shader_program.uniformLocation('model_view_matrix')
+        self.proj_matrix_loc = self.shader_program.uniformLocation('proj_matrix')
 
     def paintGL(self):
         # Clear screen
@@ -80,12 +85,16 @@ class OpenGLWidget(QOpenGLWidget):
         glViewport(0, 0, self.width(), self.height())
 
         # Bind data of shaders to program
+        # self.shader_program.link()
+        # self.shader_program.setUniformValue(self.proj_matrix_loc, self.proj)
+        # self.shader_program.setUniformValue(self.model_view_matrix_loc, self.camera * self.world)
         # self.shader_program.bind()
-        # self.shader_program.setUniformValue(self.projMatrixLoc, self.proj)
-        # self.shader_program.setUniformValue(self.modelViewMatrixLoc, self.camera * self.world)
 
-        position = np.array([-0.5, 0.5, -0.5, -0.5, 0.5, -0.5, 0.5, 0.5], np.float32)
-        glVertexAttribPointer(_POSITION, 2, GL_FLOAT, False, 0, position)
+        position = np.array([-0.5, 0.5, 0.0,
+                             -0.5, -0.5, 0.0,
+                             0.5, -0.5, 0.0,
+                             0.5, 0.5, 0.0], np.float32)
+        glVertexAttribPointer(_POSITION, 3, GL_FLOAT, False, 0, position)
         glEnableVertexAttribArray(_POSITION)
 
         color = np.array([1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0], np.float32)
