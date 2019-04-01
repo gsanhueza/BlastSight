@@ -92,9 +92,10 @@ class OpenGLWidget(QOpenGLWidget):
 
         # Bind data of shaders to program
         # self.shader_program.link()
-        self.shader_program.setUniformValue(self.test_value_loc, int(10 * self.rotation))
-        # self.shader_program.setUniformValue(self.proj_matrix_loc, self.proj)
-        # self.shader_program.setUniformValue(self.model_view_matrix_loc, self.camera * self.world)
+        # self.shader_program.setUniformValue(self.test_value_loc, math.sin(self.rotation))
+        self.shader_program.setUniformValue(self.test_value_loc, 1)
+        self.shader_program.setUniformValue(self.proj_matrix_loc, self.proj)
+        self.shader_program.setUniformValue(self.model_view_matrix_loc, self.camera * self.world)
         # self.shader_program.bind()
 
         position = np.array([-0.5, 0.5, 0.0,
