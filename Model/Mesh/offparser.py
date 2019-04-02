@@ -4,10 +4,8 @@ from .parser import Parser
 
 
 class OFFParser(Parser):
-    def __init__(self, filepath=None):
-        self.vertices = None
-        self.faces = None
-        self.filepath = filepath
+    def __init__(self):
+        super().__init__()
 
     def load_file(self, filepath: str) -> None:
         pass

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from .Mesh.meshhandler import MeshHandler
+from .Mesh.meshmanager import MeshHandler
 from .BlockModel.blockmodelhandler import BlockModelHandler
 
 

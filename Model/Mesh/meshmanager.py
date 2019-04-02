@@ -1,4 +1,4 @@
-#/usr/bin/env python
+#!/usr/bin/env python
 
 from .dxfhandler import DXFHandler
 from .offhandler import OFFHandler

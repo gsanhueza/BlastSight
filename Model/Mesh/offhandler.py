@@ -1,10 +1,11 @@
-#/usr/bin/env python
+#!/usr/bin/env python
 
+from .handler import Handler
 from .offparser import OFFParser
 
 
-# DXF handler for mesh loading/saving
-class OFFHandler:
+# OFF handler for mesh loading/saving
+class OFFHandler(Handler):
     def __init__(self):
         self.parser = OFFParser()
 

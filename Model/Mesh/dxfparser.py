@@ -10,7 +10,7 @@ except ModuleNotFoundError:
 
 
 class DXFParser(Parser):
-    def __init__(self, filepath=None):
+    def __init__(self):
         super().__init__()
         self.dxf = None
 
