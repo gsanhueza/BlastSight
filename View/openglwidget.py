@@ -121,7 +121,7 @@ class OpenGLWidget(QOpenGLWidget):
         glVertexAttribPointer(_COLOR, 3, GL_FLOAT, False, 0, None)
 
         self.indices_ibo.bind()
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, self.indices, GL_STATIC_DRAW)  # FIXME Fails here
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, self.indices, GL_STATIC_DRAW)
 
     def paintGL(self):
         # Clear screen
@@ -143,7 +143,8 @@ class OpenGLWidget(QOpenGLWidget):
 
         # Draw data
         # glDrawArrays(GL_TRIANGLES, 0, self.position.size)
-        glDrawElements(GL_TRIANGLES, self.indices.size, GL_UNSIGNED_INT, 0)
+        self.indices_ibo.bind()
+        glDrawElements(GL_TRIANGLES, self.indices.size, GL_UNSIGNED_INT, None)
 
         self.shader_program.release()
 
