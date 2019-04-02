@@ -23,7 +23,7 @@ class NormalMode(Mode):
             self.set_Y_Rotation(self.widget.yRot + 8 * dx)
         elif event.buttons() == Qt.RightButton:
             self.set_X_rotation(self.widget.xRot + 8 * dy)
-            self.set_Z_Rotation(self.widget.zRot + 8 * dx)
+            self.set_Z_Rotation(self.widget.zRot - 8 * dx)
 
         self.lastPos = QPoint(event.pos())
 

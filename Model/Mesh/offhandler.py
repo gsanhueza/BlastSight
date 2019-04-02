@@ -1,18 +1,18 @@
 #/usr/bin/env python
 
-from .dxfparser import DXFParser
+from .offparser import OFFParser
 
 
 # DXF handler for mesh loading/saving
-class DXFHandler:
+class OFFHandler:
     def __init__(self):
-        self.parser = DXFParser()
+        self.parser = OFFParser()
 
     # Loads a DXF file and updates the model
     def load_mesh(self, model, filepath):
         try:
             self.parser.load_file(filepath)
-            model.vertices = self.parser.get_averaged_vertices()  # FIXME Not average vertices!
+            model.vertices = self.parser.get_vertices()
             model.faces = self.parser.get_faces()
             return True
         except Exception:
