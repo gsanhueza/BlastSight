@@ -33,6 +33,7 @@ class OpenGLWidget(QOpenGLWidget):
         self.vao = QOpenGLVertexArrayObject()
         self.position_vbo = QOpenGLBuffer()
         self.color_vbo = QOpenGLBuffer()
+        self.indices_ibo = QOpenGLBuffer(QOpenGLBuffer.IndexBuffer)
 
         # Camera/World/Projection
         self.camera = QMatrix4x4()
@@ -61,6 +62,7 @@ class OpenGLWidget(QOpenGLWidget):
         # Data
         self.position = None
         self.color = None
+        self.indices = None
 
     def initializeGL(self):
         self.shader_program = QOpenGLShaderProgram(self.context())
@@ -87,10 +89,11 @@ class OpenGLWidget(QOpenGLWidget):
                                0.0, 1.0, 0.0,
                                0.0, 0.0, 1.0], np.float32)
 
-        self.indices = np.array([0, 1, 2], np.int)
-        self.indices_ibo = QOpenGLBuffer(QOpenGLBuffer.IndexBuffer)
+        self.indices = np.array([0, 1, 2,
+                                 3, 4, 5,
+                                 6, 7, 8], np.int)
 
-        # VAO/VBO creation
+        # VAO/VBO/IBO creation
         self.vao.create()
         self.position_vbo.create()
         self.color_vbo.create()
@@ -139,8 +142,8 @@ class OpenGLWidget(QOpenGLWidget):
         self.shader_program.setUniformValue(self.model_view_matrix_loc, self.camera * self.world)
 
         # Draw data
-        glDrawArrays(GL_TRIANGLES, 0, self.position.size)
-        # glDrawElements(GL_TRIANGLES, self.indices.size, GL_UNSIGNED_INT, 0)
+        # glDrawArrays(GL_TRIANGLES, 0, self.position.size)
+        glDrawElements(GL_TRIANGLES, self.indices.size, GL_UNSIGNED_INT, 0)
 
         self.shader_program.release()
 
