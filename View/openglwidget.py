@@ -56,9 +56,6 @@ class OpenGLWidget(QOpenGLWidget):
         self.proj_matrix_loc = None
         self.test_value_loc = None
 
-        # TODO Delete this
-        self.rotation = 0
-
     def initializeGL(self):
         self.shader_program = QOpenGLShaderProgram(self.context())
         self.shader_program.addShaderFromSourceFile(QOpenGLShader.Vertex, self.vertex_shader_source)
