@@ -1,6 +1,7 @@
 #/usr/bin/env python
 
 from .dxfhandler import DXFHandler
+from .offhandler import OFFHandler
 
 
 # Generic handler for mesh loading
@@ -9,7 +10,8 @@ class MeshHandler:
     def __init__(self):
         self.handler_dict = {}
         self.current_extension = 'dxf'
-        self.add_handler(self.current_extension, DXFHandler())
+        self.add_handler('dxf', DXFHandler())
+        self.add_handler('off', OFFHandler())
 
     # Adds a new handler for meshes
     def add_handler(self, extension: str, handler) -> None:

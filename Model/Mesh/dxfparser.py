@@ -3,8 +3,10 @@
 import dxfgrabber
 from collections import OrderedDict
 
+from .parser import Parser
 
-class DXFParser:
+
+class DXFParser(Parser):
     def __init__(self, filepath=None):
         # FIXME Do you really want to work with tuples?
         self.vertices = tuple()
@@ -12,9 +14,9 @@ class DXFParser:
         self.dxf = None
 
         if filepath:
-            self.load(filepath)
+            self.load_file(filepath)
 
-    def load_dxffile(self, filepath: str) -> None:
+    def load_file(self, filepath: str) -> None:
         self.dxf = dxfgrabber.readfile(filepath)
         self._parse_entities()
 

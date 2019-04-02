@@ -1,12 +1,12 @@
 #/usr/bin/env python
 
-from .dxfparser import DXFParser
+from .offparser import OFFParser
 
 
 # DXF handler for mesh loading/saving
-class DXFHandler:
+class OFFHandler:
     def __init__(self):
-        self.parser = DXFParser()
+        self.parser = OFFParser()
 
     # Loads a DXF file and updates the model
     def load_mesh(self, model, filepath):
