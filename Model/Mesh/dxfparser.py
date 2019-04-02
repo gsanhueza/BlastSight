@@ -3,7 +3,10 @@
 import dxfgrabber
 from collections import OrderedDict
 
-from .parser import Parser
+try:
+    from .parser import Parser
+except ModuleNotFoundError:
+    from parser import Parser
 
 
 class DXFParser(Parser):
@@ -60,6 +63,13 @@ class DXFParser(Parser):
     def get_vertices(self):
         return self._flatten_tuple(self.vertices)
 
+    def get_averaged_vertices(self):
+        avg_tuple = self._avg_tuple(list(self.vertices))
+        return self._flatten_tuple(map(lambda x: (x[0] - avg_tuple[0],
+                                                  x[1] - avg_tuple[1],
+                                                  x[2] - avg_tuple[2]),
+                                       list(self.vertices)))
+
     def get_faces(self):
         return self._flatten_tuple(self.faces)
 
@@ -77,28 +87,10 @@ class DXFParser(Parser):
 
         return tuple(map(lambda x: x / len(tuple_list), accum))
 
-    # Create OFF file
-    def _build_string(self):
-        V = len(self.get_vertices())
-        F = len(self.get_faces())
-        E = V + F - 2
-
-        string_builder = ['OFF', f'{V} {F} {E}']
-
-        for v in self.get_vertices():
-            avg_tuple = self._avg_tuple(self.vertices)  # WARNING This is only used to center the triangulation
-            string_builder.append(' '.join(map(str, tuple(map(lambda x, y: x - y, v, avg_tuple)))))
-
-        for f in self.get_faces():
-            string_builder.append(' '.join(map(str, tuple((3,) + f))))
-
-        return '\n'.join(string_builder)
-
-    def print_off(self):
-        print(self._build_string())
-
 
 if __name__ == '__main__':
     parser = DXFParser()
     parser.load_file('caseron.dxf')
-    parser.print_off()
+    print(parser.get_vertices())
+    print(parser.vertices)
+    print(parser.get_averaged_vertices())
