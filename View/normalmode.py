@@ -28,7 +28,7 @@ class NormalMode(Mode):
         self.lastPos = QPoint(event.pos())
 
     def wheelEvent(self, event):
-        self.widget.zCamPos += (event.delta() / 1200)
+        self.widget.zCamPos += (event.delta() / 120)
         self.widget.camera.setToIdentity()
         self.widget.camera.translate(self.widget.xCamPos,
                                      self.widget.yCamPos,

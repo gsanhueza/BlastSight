@@ -58,6 +58,10 @@ class OpenGLWidget(QOpenGLWidget):
         self.proj_matrix_loc = None
         self.test_value_loc = None
 
+        # Data
+        self.position = None
+        self.color = None
+
     def initializeGL(self):
         self.shader_program = QOpenGLShaderProgram(self.context())
         self.shader_program.addShaderFromSourceFile(QOpenGLShader.Vertex, self.vertex_shader_source)
@@ -75,38 +79,39 @@ class OpenGLWidget(QOpenGLWidget):
         self.test_value_loc = self.shader_program.uniformLocation('test_value')
 
         # Data
-        position = np.array([-0.5, 0.5, 0.0,
-                             -0.5, -0.5, 0.0,
-                             0.5, -0.5, 0.0,
-                             0.5, 0.5, 0.0], np.float32)
+        self.position = np.array([-0.5, 0.5, 0.0,
+                                  -0.5, -0.5, 0.0,
+                                  0.5, -0.5, 0.0,
+                                  0.5, 0.5, 0.0], np.float32)
 
-        color = np.array([1.0, 0.0, 0.0,
-                          1.0, 0.0, 0.0,
-                          0.0, 1.0, 0.0,
-                          0.0, 1.0, 0.0], np.float32)
+        self.color = np.array([1.0, 0.0, 0.0,
+                               1.0, 0.0, 0.0,
+                               0.0, 1.0, 0.0,
+                               0.0, 1.0, 0.0], np.float32)
 
         # VAO/VBO creation
         self.vao.create()
         self.position_vbo.create()
         self.color_vbo.create()
-
-        # VAO
         self.vao.bind()
 
-        # VBOs
+        # Setup vertex attributes
+        self.setup_vertex_attribs()
+
+        # Camera setup
+        self.camera.translate(self.xCamPos, self.yCamPos, self.zCamPos)
+
+    def setup_vertex_attribs(self):
         self.position_vbo.bind()
-        glBufferData(GL_ARRAY_BUFFER, 4 * position.size, position, GL_STATIC_DRAW)
+        glBufferData(GL_ARRAY_BUFFER, 4 * self.position.size, self.position, GL_STATIC_DRAW)
         glVertexAttribPointer(_POSITION, 3, GL_FLOAT, False, 0, None)
 
         self.color_vbo.bind()
-        glBufferData(GL_ARRAY_BUFFER, 4 * color.size, color, GL_STATIC_DRAW)
+        glBufferData(GL_ARRAY_BUFFER, 4 * self.color.size, self.color, GL_STATIC_DRAW)
         glVertexAttribPointer(_COLOR, 3, GL_FLOAT, False, 0, None)
 
         glEnableVertexAttribArray(_POSITION)
         glEnableVertexAttribArray(_COLOR)
-
-        # Camera setup
-        self.camera.translate(self.xCamPos, self.yCamPos, self.zCamPos)
 
     def paintGL(self):
         # Clear screen
@@ -127,7 +132,7 @@ class OpenGLWidget(QOpenGLWidget):
         self.shader_program.setUniformValue(self.model_view_matrix_loc, self.camera * self.world)
 
         # Draw data
-        glDrawArrays(GL_QUADS, 0, 4)
+        glDrawArrays(GL_QUADS, 0, self.position.size)
 
         self.shader_program.release()
 
@@ -152,4 +157,12 @@ class OpenGLWidget(QOpenGLWidget):
     @Slot()
     def update_mesh(self):
         # TODO On mesh load, delete current opengl vertices/faces, recreate them and update
+        import random
+
+        # This works! But we need to update drawArrays to GL_TRIANGLES
+        # self.position = np.array(self.model.get_vertices(), np.float32)
+        self.color = np.array([random.random() for _ in range(self.position.size)], np.float32)
+
+        self.setup_vertex_attribs()
+
         self.update()

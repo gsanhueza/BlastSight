@@ -57,7 +57,7 @@ class DXFParser:
         return ans
 
     def get_vertices(self):
-        return self.vertices
+        return [item for sublist in self.vertices for item in sublist]  # Flatten list of tuples
 
     def get_faces(self):
         return self.faces
@@ -82,12 +82,10 @@ class DXFParser:
         F = len(self.get_faces())
         E = V + F - 2
 
-        string_builder = []
-        string_builder.append('OFF')
-        string_builder.append(f'{V} {F} {E}')
+        string_builder = ['OFF', f'{V} {F} {E}']
 
         for v in self.get_vertices():
-            avg_tuple = self._avg_tuple(self.get_vertices()) # WARNING This is only used to center the triangulation
+            avg_tuple = self._avg_tuple(self.get_vertices())  # WARNING This is only used to center the triangulation
             string_builder.append(' '.join(map(str, tuple(map(lambda x, y: x - y, v, avg_tuple)))))
 
         for f in self.get_faces():

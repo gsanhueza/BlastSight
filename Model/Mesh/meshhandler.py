@@ -17,7 +17,6 @@ class MeshHandler:
 
     # Returns the handler that matches the current extension
     def get_handler(self):
-        # FIXME If we have more than just a DXF handler, we might want to update this to use a dictionary with the extension as a key
         # {"dxf": DXFHandler, "off": OFFHandler}, for example.
         return self.handler_dict[self.current_extension]
 
