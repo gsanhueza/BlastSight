@@ -81,13 +81,11 @@ class OpenGLWidget(QOpenGLWidget):
         # Data
         self.position = np.array([-0.5, 0.5, 0.0,
                                   -0.5, -0.5, 0.0,
-                                  0.5, -0.5, 0.0,
                                   0.5, 0.5, 0.0], np.float32)
 
         self.color = np.array([1.0, 0.0, 0.0,
-                               1.0, 0.0, 0.0,
                                0.0, 1.0, 0.0,
-                               0.0, 1.0, 0.0], np.float32)
+                               0.0, 0.0, 1.0], np.float32)
 
         # VAO/VBO creation
         self.vao.create()
@@ -103,11 +101,12 @@ class OpenGLWidget(QOpenGLWidget):
 
     def setup_vertex_attribs(self):
         self.position_vbo.bind()
-        glBufferData(GL_ARRAY_BUFFER, 4 * self.position.size, self.position, GL_STATIC_DRAW)
+        _SIZE_OF_GL_FLOAT = 4
+        glBufferData(GL_ARRAY_BUFFER, _SIZE_OF_GL_FLOAT * self.position.size, self.position, GL_STATIC_DRAW)
         glVertexAttribPointer(_POSITION, 3, GL_FLOAT, False, 0, None)
 
         self.color_vbo.bind()
-        glBufferData(GL_ARRAY_BUFFER, 4 * self.color.size, self.color, GL_STATIC_DRAW)
+        glBufferData(GL_ARRAY_BUFFER, _SIZE_OF_GL_FLOAT * self.color.size, self.color, GL_STATIC_DRAW)
         glVertexAttribPointer(_COLOR, 3, GL_FLOAT, False, 0, None)
 
         glEnableVertexAttribArray(_POSITION)
@@ -132,7 +131,7 @@ class OpenGLWidget(QOpenGLWidget):
         self.shader_program.setUniformValue(self.model_view_matrix_loc, self.camera * self.world)
 
         # Draw data
-        glDrawArrays(GL_QUADS, 0, self.position.size)
+        glDrawArrays(GL_TRIANGLES, 0, self.position.size)
 
         self.shader_program.release()
 
@@ -161,6 +160,12 @@ class OpenGLWidget(QOpenGLWidget):
 
         # This works! But we need to update drawArrays to GL_TRIANGLES
         # self.position = np.array(self.model.get_vertices(), np.float32)
+        self.position = np.array([-0.5, 0.5, 0.0,
+                                  -0.5, -0.5, 0.0,
+                                  0.5, 0.5, 0.0,
+                                  -0.3, -0.5, 0.0,
+                                  0.7, -0.5, 0.0,
+                                  0.7, 0.5, 0.0], np.float32)
         self.color = np.array([random.random() for _ in range(self.position.size)], np.float32)
 
         self.setup_vertex_attribs()
