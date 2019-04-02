@@ -15,6 +15,7 @@ _COLOR = 1
 
 
 class OpenGLWidget(QOpenGLWidget):
+    # FIXME We might not get a model every time. We need to have a fallback option to only receive vertices, for example
     def __init__(self, parent=None, mode_class=NormalMode, model=None):
         QOpenGLWidget.__init__(self, parent)
         self.setFocusPolicy(Qt.StrongFocus)
@@ -40,7 +41,7 @@ class OpenGLWidget(QOpenGLWidget):
         # Camera position
         self.xCamPos = 0.0
         self.yCamPos = 0.0
-        self.zCamPos = 0.0
+        self.zCamPos = -3.0
 
         # World rotation
         self.xRot = 0.0
@@ -72,6 +73,18 @@ class OpenGLWidget(QOpenGLWidget):
         self.proj_matrix_loc = self.shader_program.uniformLocation('proj_matrix')
         self.test_value_loc = self.shader_program.uniformLocation('test_value')
 
+        # VAO/VBO
+        # self.vao.create()
+        # self.vao.bind()
+        # self.vbo.create()
+        # self.vbo.bind()
+
+        # Vertex attributes setup
+        # self.setup_vertex_attributes()
+
+        # Camera setup
+        self.camera.translate(self.xCamPos, self.yCamPos, self.zCamPos)
+
     def paintGL(self):
         # Clear screen
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
@@ -91,28 +104,30 @@ class OpenGLWidget(QOpenGLWidget):
         self.shader_program.setUniformValue(self.model_view_matrix_loc, self.camera * self.world)
         # self.shader_program.bind()
 
+        # Data
         position = np.array([-0.5, 0.5, 0.0,
                              -0.5, -0.5, 0.0,
                              0.5, -0.5, 0.0,
                              0.5, 0.5, 0.0], np.float32)
 
-        glVertexAttribPointer(_POSITION, 3, GL_FLOAT, False, 0, position)
-        glEnableVertexAttribArray(_POSITION)
+        color = np.array([1, 0, 0,
+                          1, 0, 0,
+                          0, 1, 0,
+                          0, 1, 0], np.float32)
 
-        color = np.array([1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0], np.float32)
-        glVertexAttribPointer(_COLOR, 3, GL_FLOAT, False, 0, color)
+        glEnableVertexAttribArray(_POSITION)
         glEnableVertexAttribArray(_COLOR)
+
+        glVertexAttribPointer(_POSITION, 3, GL_FLOAT, False, 0, position)
+        glVertexAttribPointer(_COLOR, 3, GL_FLOAT, False, 0, color)
 
         # Draw data
         glDrawArrays(GL_QUADS, 0, 4)
 
     def resizeGL(self, w, h):
+        # TODO Consider that we might need to change between perspective and orthogonal projection
         self.proj.setToIdentity()
-        glMatrixMode(GL_PROJECTION)
-        glLoadIdentity()
-        glOrtho(-0.5, +0.5, -0.5, +0.5, 4.0, 15.0)
-        glMatrixMode(GL_MODELVIEW)
-        # self.proj.perspective(45.0, (w / h), 0.01, 10000.0)  # FIXME This makes it fail
+        self.proj.perspective(45.0, (w / h), 0.01, 10000.0)
 
     # Controller dependent on current mode
     def mouseMoveEvent(self, event):
@@ -126,6 +141,15 @@ class OpenGLWidget(QOpenGLWidget):
     def wheelEvent(self, event):
         self.current_mode.wheelEvent(event)
         self.update()
+
+    def setup_vertex_attributes(self):
+        glEnableVertexAttribArray(_POSITION)
+        glEnableVertexAttribArray(_COLOR)
+
+        glVertexAttribPointer(_POSITION, 3, GL_FLOAT, False, 0, self.position)
+        glVertexAttribPointer(_COLOR, 3, GL_FLOAT, False, 0, self.color)
+
+        # self.vbo.release()
 
     @Slot()
     def update_mesh(self):
