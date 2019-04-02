@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-from .dxfparser import DXFParser
-from .handler import Handler
+from Model.Mesh.dxfparser import DXFParser
+from Model.handler import Handler
 
 
 # DXF handler for mesh loading/saving

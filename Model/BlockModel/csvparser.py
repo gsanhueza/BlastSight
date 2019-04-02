@@ -3,7 +3,7 @@
 from Model.parser import Parser
 
 
-class OFFParser(Parser):
+class CSVParser(Parser):
     def __init__(self):
         super().__init__()
 

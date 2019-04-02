@@ -4,7 +4,7 @@ import dxfgrabber
 from collections import OrderedDict
 
 try:
-    from .parser import Parser
+    from Model.parser import Parser
 except ModuleNotFoundError:
     from parser import Parser
 
