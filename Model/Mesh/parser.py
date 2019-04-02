@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+from abc import abstractmethod
 
 
 class Parser:
@@ -6,5 +7,6 @@ class Parser:
         self.vertices = None
         self.faces = None
 
+    @abstractmethod
     def load_file(self, filepath: str) -> None:
         pass
