@@ -31,7 +31,8 @@ class OpenGLWidget(QOpenGLWidget):
 
         # VAO/VBO
         self.vao = QOpenGLVertexArrayObject()
-        self.vbo = QOpenGLBuffer()
+        self.position_vbo = QOpenGLBuffer()
+        self.color_vbo = QOpenGLBuffer()
 
         # Camera/World/Projection
         self.camera = QMatrix4x4()
@@ -73,14 +74,38 @@ class OpenGLWidget(QOpenGLWidget):
         self.proj_matrix_loc = self.shader_program.uniformLocation('proj_matrix')
         self.test_value_loc = self.shader_program.uniformLocation('test_value')
 
-        # VAO/VBO
-        # self.vao.create()
-        # self.vao.bind()
-        # self.vbo.create()
-        # self.vbo.bind()
+        # Data
+        position = np.array([-0.5, 0.5, 0.0,
+                             -0.5, -0.5, 0.0,
+                             0.5, -0.5, 0.0,
+                             0.5, 0.5, 0.0], np.float32)
 
-        # Vertex attributes setup
-        # self.setup_vertex_attributes()
+        color = np.array([1.0, 0.0, 0.0,
+                          1.0, 0.0, 0.0,
+                          0.0, 1.0, 0.0,
+                          0.0, 1.0, 0.0], np.float32)
+
+        # VBOs
+        self.position_vbo.create()
+        self.position_vbo.bind()
+        glBufferData(GL_ARRAY_BUFFER, 4 * position.size, position, GL_STATIC_DRAW)
+
+        self.color_vbo.create()
+        self.color_vbo.bind()
+        glBufferData(GL_ARRAY_BUFFER, 4 * position.size, color, GL_STATIC_DRAW)
+
+        # VAO
+        self.vao.create()
+        self.vao.bind()
+
+        self.position_vbo.bind()
+        glVertexAttribPointer(_POSITION, 3, GL_FLOAT, False, 0, None)
+
+        self.color_vbo.bind()
+        glVertexAttribPointer(_COLOR, 3, GL_FLOAT, False, 0, None)
+
+        glEnableVertexAttribArray(_POSITION)
+        glEnableVertexAttribArray(_COLOR)
 
         # Camera setup
         self.camera.translate(self.xCamPos, self.yCamPos, self.zCamPos)
@@ -99,33 +124,17 @@ class OpenGLWidget(QOpenGLWidget):
         self.world.rotate(self.zRot / 16.0, 0, 0, 1)
 
         # Bind data of shaders to program
-        # self.shader_program.link()
+        self.shader_program.bind()
         self.shader_program.setUniformValue(self.proj_matrix_loc, self.proj)
         self.shader_program.setUniformValue(self.model_view_matrix_loc, self.camera * self.world)
-        # self.shader_program.bind()
-
-        # Data
-        position = np.array([-0.5, 0.5, 0.0,
-                             -0.5, -0.5, 0.0,
-                             0.5, -0.5, 0.0,
-                             0.5, 0.5, 0.0], np.float32)
-
-        color = np.array([1, 0, 0,
-                          1, 0, 0,
-                          0, 1, 0,
-                          0, 1, 0], np.float32)
-
-        glEnableVertexAttribArray(_POSITION)
-        glEnableVertexAttribArray(_COLOR)
-
-        glVertexAttribPointer(_POSITION, 3, GL_FLOAT, False, 0, position)
-        glVertexAttribPointer(_COLOR, 3, GL_FLOAT, False, 0, color)
 
         # Draw data
         glDrawArrays(GL_QUADS, 0, 4)
 
+        self.shader_program.release()
+
     def resizeGL(self, w, h):
-        # TODO Consider that we might need to change between perspective and orthogonal projection
+        # TODO Consider that we might need to change between perspective and orthogonal projection... in the controller (mode)
         self.proj.setToIdentity()
         self.proj.perspective(45.0, (w / h), 0.01, 10000.0)
 
@@ -141,15 +150,6 @@ class OpenGLWidget(QOpenGLWidget):
     def wheelEvent(self, event):
         self.current_mode.wheelEvent(event)
         self.update()
-
-    def setup_vertex_attributes(self):
-        glEnableVertexAttribArray(_POSITION)
-        glEnableVertexAttribArray(_COLOR)
-
-        glVertexAttribPointer(_POSITION, 3, GL_FLOAT, False, 0, self.position)
-        glVertexAttribPointer(_COLOR, 3, GL_FLOAT, False, 0, self.color)
-
-        # self.vbo.release()
 
     @Slot()
     def update_mesh(self):
