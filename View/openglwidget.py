@@ -87,10 +87,15 @@ class OpenGLWidget(QOpenGLWidget):
                                0.0, 1.0, 0.0,
                                0.0, 0.0, 1.0], np.float32)
 
+        self.indices = np.array([0, 1, 2], np.int)
+        self.indices_ibo = QOpenGLBuffer(QOpenGLBuffer.IndexBuffer)
+
         # VAO/VBO creation
         self.vao.create()
         self.position_vbo.create()
         self.color_vbo.create()
+        self.indices_ibo.create()
+
         self.vao.bind()
 
         # Setup vertex attributes
@@ -100,17 +105,20 @@ class OpenGLWidget(QOpenGLWidget):
         self.camera.translate(self.xCamPos, self.yCamPos, self.zCamPos)
 
     def setup_vertex_attribs(self):
-        self.position_vbo.bind()
         _SIZE_OF_GL_FLOAT = 4
+
+        self.position_vbo.bind()
+        glEnableVertexAttribArray(_POSITION)
         glBufferData(GL_ARRAY_BUFFER, _SIZE_OF_GL_FLOAT * self.position.size, self.position, GL_STATIC_DRAW)
         glVertexAttribPointer(_POSITION, 3, GL_FLOAT, False, 0, None)
 
         self.color_vbo.bind()
+        glEnableVertexAttribArray(_COLOR)
         glBufferData(GL_ARRAY_BUFFER, _SIZE_OF_GL_FLOAT * self.color.size, self.color, GL_STATIC_DRAW)
         glVertexAttribPointer(_COLOR, 3, GL_FLOAT, False, 0, None)
 
-        glEnableVertexAttribArray(_POSITION)
-        glEnableVertexAttribArray(_COLOR)
+        self.indices_ibo.bind()
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, self.indices, GL_STATIC_DRAW)  # FIXME Fails here
 
     def paintGL(self):
         # Clear screen
@@ -132,6 +140,7 @@ class OpenGLWidget(QOpenGLWidget):
 
         # Draw data
         glDrawArrays(GL_TRIANGLES, 0, self.position.size)
+        # glDrawElements(GL_TRIANGLES, self.indices.size, GL_UNSIGNED_INT, 0)
 
         self.shader_program.release()
 
