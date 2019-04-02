@@ -85,23 +85,21 @@ class OpenGLWidget(QOpenGLWidget):
                           0.0, 1.0, 0.0,
                           0.0, 1.0, 0.0], np.float32)
 
-        # VBOs
+        # VAO/VBO creation
+        self.vao.create()
         self.position_vbo.create()
-        self.position_vbo.bind()
-        glBufferData(GL_ARRAY_BUFFER, 4 * position.size, position, GL_STATIC_DRAW)
-
         self.color_vbo.create()
-        self.color_vbo.bind()
-        glBufferData(GL_ARRAY_BUFFER, 4 * position.size, color, GL_STATIC_DRAW)
 
         # VAO
-        self.vao.create()
         self.vao.bind()
 
+        # VBOs
         self.position_vbo.bind()
+        glBufferData(GL_ARRAY_BUFFER, 4 * position.size, position, GL_STATIC_DRAW)
         glVertexAttribPointer(_POSITION, 3, GL_FLOAT, False, 0, None)
 
         self.color_vbo.bind()
+        glBufferData(GL_ARRAY_BUFFER, 4 * color.size, color, GL_STATIC_DRAW)
         glVertexAttribPointer(_COLOR, 3, GL_FLOAT, False, 0, None)
 
         glEnableVertexAttribArray(_POSITION)
