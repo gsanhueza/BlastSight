@@ -1,21 +1,26 @@
 #!/usr/bin/env python
 
 import numpy as np
-import math
 
 from OpenGL.GL import *
 from PySide2.QtWidgets import QOpenGLWidget
-from PySide2.QtGui import *
-from PySide2.QtCore import Qt, Slot
+from PySide2.QtGui import QOpenGLShaderProgram
+from PySide2.QtGui import QOpenGLShader
+from PySide2.QtGui import QOpenGLBuffer
+from PySide2.QtGui import QOpenGLVertexArrayObject
+from PySide2.QtGui import QMatrix4x4
+from PySide2.QtCore import Qt
+from PySide2.QtCore import Slot
 
-from .normalmode import NormalMode
+from Controller.normalmode import NormalMode
 
 _POSITION = 0
 _COLOR = 1
 
 
 class OpenGLWidget(QOpenGLWidget):
-    # FIXME We might not get a model every time. We need to have a fallback option to only receive vertices, for example
+    # FIXME We might not get a model every time.
+    # FIXME We need to have a fallback option to only receive vertices, for example
     def __init__(self, parent=None, mode_class=NormalMode, model=None):
         QOpenGLWidget.__init__(self, parent)
         self.setFocusPolicy(Qt.StrongFocus)
@@ -70,7 +75,7 @@ class OpenGLWidget(QOpenGLWidget):
         self.indices = None
 
         # Wireframe (Shader toggling)
-        self.wireframe_enabled = False
+        self.wireframe_enabled = True
 
     def initializeGL(self):
         self.shader_program = QOpenGLShaderProgram(self.context())
@@ -81,7 +86,6 @@ class OpenGLWidget(QOpenGLWidget):
         self.geometry_shader = QOpenGLShader(QOpenGLShader.Geometry)
 
         # Compile shaders
-
         self.vertex_shader.compileSourceFile(self.vertex_shader_source)
         self.fragment_shader.compileSourceFile(self.fragment_shader_source)
         self.geometry_shader.compileSourceFile(self.geometry_shader_source)
