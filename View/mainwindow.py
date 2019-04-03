@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 from PySide2.QtCore import Slot
-from PySide2.QtWidgets import QMainWindow, QFileDialog
+from PySide2.QtWidgets import QMainWindow, QFileDialog, QMessageBox
 
 from View.ui_loader import load_ui
 
@@ -54,6 +54,12 @@ class MainWindow(QMainWindow):
     @Slot()
     def free_mode_slot(self):
         self.widget.current_mode = FreeMode(self.widget)
+
+    @Slot()
+    def help_slot(self):
+        QMessageBox.information(self,
+                                'MineVis - Help',
+                                'TO-DO: Create help message box')
 
     @Slot()
     def toggle_wireframe(self):

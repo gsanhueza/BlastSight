@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from PySide2.QtCore import Qt, QPoint
+from PySide2.QtCore import QPoint
 from Controller.mode import Mode
 
 

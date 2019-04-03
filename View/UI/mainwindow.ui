@@ -46,7 +46,7 @@
    </widget>
    <widget class="QMenu" name="menuView">
     <property name="title">
-     <string>View</string>
+     <string>&amp;View</string>
     </property>
     <addaction name="action_Normal_mode"/>
     <addaction name="action_Draw_mode"/>
@@ -251,6 +251,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>action_Help</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>help_slot()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>399</x>
+     <y>299</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>normal_mode_slot()</slot>
@@ -258,5 +274,6 @@
   <slot>load_mesh_slot()</slot>
   <slot>toggle_wireframe()</slot>
   <slot>free_mode_slot()</slot>
+  <slot>help_slot()</slot>
  </slots>
 </ui>
