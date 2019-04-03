@@ -52,7 +52,8 @@ class DXFParser(Parser):
                 ans.append(f)
             elif len(f) == 4:
                 ans.append((f[0], f[1], f[2]))
-                #ans.append((f[2], f[3], f[0]))  # WARNING Is there a reason for this to work better if commented?
+                # WARNING Why does this work when commented?
+                # ans.append((f[2], f[3], f[0]))
 
         return ans
 
@@ -69,7 +70,7 @@ class DXFParser(Parser):
     def get_indices(self):
         return self._flatten_tuple(self.indices)
 
-    # Returns the average of each component of a list of n-tuples in a new n-tuple
+    # Averages each component of a list of n-tuples in a new n-tuple
     def _avg_tuple(self, tuple_list: list):
         if len(tuple_list) == 0:
             return None

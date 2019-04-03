@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from PySide2.QtCore import QFile, QMetaObject
+from PySide2.QtCore import QMetaObject
 from PySide2.QtUiTools import QUiLoader
 
 

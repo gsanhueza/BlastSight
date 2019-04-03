@@ -1,9 +1,7 @@
 #!/usr/bin/env python
 
-import sys
-
-from PySide2.QtCore import Signal, Slot
-from PySide2.QtWidgets import QAction, QWidget, QMainWindow, QFileDialog
+from PySide2.QtCore import Slot
+from PySide2.QtWidgets import QMainWindow, QFileDialog
 
 from .ui_loader import load_ui
 
@@ -21,7 +19,9 @@ class MainWindow(QMainWindow):
         self.model = model
 
         # Central Widget
-        self.widget = OpenGLWidget(parent=self, mode_class=NormalMode, model=self.model)
+        self.widget = OpenGLWidget(parent=self,
+                                   mode_class=NormalMode,
+                                   model=self.model)
         self.setCentralWidget(self.widget)
 
         self.statusBar.showMessage('Ready')
@@ -29,7 +29,7 @@ class MainWindow(QMainWindow):
     # Unless explicitly otherwise, slots are connected via Qt Designer
     @Slot()
     def load_mesh_slot(self):
-        # TODO Use QSettings (or something) to remember the last directory accessed to load the mesh.
+        # TODO Use QSettings (or something) to remember last directory
         (filepath, selected_filter) = QFileDialog.getOpenFileName(
             parent=self,
             dir='.',
@@ -37,7 +37,8 @@ class MainWindow(QMainWindow):
 
         if self.model.load_mesh(filepath):
             self.statusBar.showMessage('Mesh loaded')
-            self.widget.update_mesh()  # Notification to OpenGLWidget (FIXME Maybe use signal/slot)
+            # FIXME Maybe use signal / slot
+            self.widget.update_mesh()  # Notification to OpenGLWidget
         else:
             self.statusBar.showMessage('Cannot load mesh')
 
