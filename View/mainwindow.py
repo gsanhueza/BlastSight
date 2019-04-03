@@ -48,3 +48,7 @@ class MainWindow(QMainWindow):
     @Slot()
     def draw_mode_slot(self):
         self.widget.current_mode = DrawMode(self.widget)
+
+    @Slot()
+    def toggle_wireframe(self):
+        self.widget.toggle_wireframe()
