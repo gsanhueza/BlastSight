@@ -1,12 +1,10 @@
-#/usr/bin/env python
+#!/usr/bin/env python
 
-from .dxfhandler import DXFHandler
-from .offhandler import OFFHandler
+from Model.Mesh.dxfhandler import DXFHandler
+from Model.Mesh.offhandler import OFFHandler
 
 
-# Generic handler for mesh loading
-# Receives a reference to the model and a default handler
-class MeshHandler:
+class MeshManager:
     def __init__(self):
         self.handler_dict = {}
         self.current_extension = 'dxf'

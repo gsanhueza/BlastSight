@@ -1,6 +1,6 @@
 #/usr/bin/env python
 
-from .csvhandler import CSVHandler
+from Model.BlockModel.csvhandler import CSVHandler
 
 
 # Generic handler for block model loading

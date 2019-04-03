@@ -4,13 +4,13 @@ import dxfgrabber
 from collections import OrderedDict
 
 try:
-    from .parser import Parser
+    from Model.parser import Parser
 except ModuleNotFoundError:
     from parser import Parser
 
 
 class DXFParser(Parser):
-    def __init__(self, filepath=None):
+    def __init__(self):
         super().__init__()
         self.dxf = None
 

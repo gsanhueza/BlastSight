@@ -1,14 +1,15 @@
-#/usr/bin/env python
+#!/usr/bin/env python
 
-from .offparser import OFFParser
+from Model.handler import Handler
+from Model.Mesh.offparser import OFFParser
 
 
-# DXF handler for mesh loading/saving
-class OFFHandler:
+# OFF handler for mesh loading/saving
+class OFFHandler(Handler):
     def __init__(self):
         self.parser = OFFParser()
 
-    # Loads a DXF file and updates the model
+    # Loads a OFF file and updates the model
     def load_mesh(self, model, filepath):
         try:
             self.parser.load_file(filepath)
@@ -18,9 +19,9 @@ class OFFHandler:
         except Exception:
             return False
 
-    # Saves a DXF file and updates the model
+    # Saves an OFF file and updates the model
     def save_mesh(self, filepath=None):
         # TODO Create a new file on filepath
-        # TODO Write the DXF with the model's vertices and faces (dxfgrabber?)
+        # TODO Write the OFF with the model's vertices and faces
         # TODO Close the file
         return False

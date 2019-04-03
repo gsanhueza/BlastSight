@@ -1,21 +1,27 @@
-#/usr/bin/env python
+#!/usr/bin/env python
+
+from Model.handler import Handler
+from Model.BlockModel.csvparser import CSVParser
 
 
-# CSV handler for block model loading/saving
-class CSVHandler:
+# OFF handler for mesh loading/saving
+class CSVHandler(Handler):
     def __init__(self):
-        pass
+        self.parser = CSVParser()
 
     # Loads a CSV file and updates the model
-    def load_blockmodel(self, model, filepath: str) -> bool:
-        # TODO Read file on filepath
-        # TODO Get positions and data of block model
-        # TODO Update the model
-        return False
+    def load_mesh(self, model, filepath):
+        try:
+            self.parser.load_file(filepath)
+            model.vertices = self.parser.get_vertices()
+            model.faces = self.parser.get_faces()
+            return True
+        except Exception:
+            return False
 
-    # Saves a CSV file and updates the model
-    def save_blockmodel(self, filepath: str) -> bool:
+    # Saves an CSV file
+    def save_mesh(self, filepath=None):
         # TODO Create a new file on filepath
-        # TODO Write the DXF with the model's vertices and faces (dxfgrabber?)
+        # TODO Write the CSV
         # TODO Close the file
         return False
