@@ -1,27 +1,57 @@
 #!/usr/bin/env python
 
-from PySide2.QtCore import Qt
-from PySide2.QtGui import *
-from OpenGL import GL
+from PySide2.QtCore import Qt, QPoint
+from .mode import Mode
 
 
-class NormalMode():
+class NormalMode(Mode):
     def __init__(self, widget):
-        self.openglwidget = widget
-        self.openglwidget.parent().setWindowTitle("Normal Mode")
+        self.widget = widget
+        self.widget.parent().setWindowTitle("Normal Mode")
+        self.lastPos = None
         print("MODE: Normal Mode")
 
-    def mouseMoveEvent(self, event):
-        print("Moving in Normal Mode")
-        self.openglwidget.rotation += 0.1
-        self.openglwidget.update()
-
     def mousePressEvent(self, event):
-        if event.button() == Qt.MouseButton.LeftButton:
-            print("Pressing in Normal Mode with LeftButton")
-        elif event.button() == Qt.MouseButton.MiddleButton:
-            print("Pressing in Normal Mode with MiddleButton")
-        elif event.button() == Qt.MouseButton.RightButton:
-            print("Pressing in Normal Mode with RightButton")
+        self.lastPos = QPoint(event.pos())
 
-        self.openglwidget.update()
+    def mouseMoveEvent(self, event):
+        dx = event.x() - self.lastPos.x()
+        dy = event.y() - self.lastPos.y()
+
+        if event.buttons() == Qt.LeftButton:
+            self.set_X_rotation(self.widget.xRot + 8 * dy)
+            self.set_Y_Rotation(self.widget.yRot + 8 * dx)
+        elif event.buttons() == Qt.RightButton:
+            self.set_X_rotation(self.widget.xRot + 8 * dy)
+            self.set_Z_Rotation(self.widget.zRot - 8 * dx)
+
+        self.lastPos = QPoint(event.pos())
+
+    def wheelEvent(self, event):
+        self.widget.zCamPos += (event.delta() / 120)
+        self.widget.camera.setToIdentity()
+        self.widget.camera.translate(self.widget.xCamPos,
+                                     self.widget.yCamPos,
+                                     self.widget.zCamPos)
+
+    def set_X_rotation(self, angle):
+        angle = self.normalize_angle(angle)
+        if angle != self.widget.xRot:
+            self.widget.xRot = angle
+
+    def set_Y_Rotation(self, angle):
+        angle = self.normalize_angle(angle)
+        if angle != self.widget.yRot:
+            self.widget.yRot = angle
+
+    def set_Z_Rotation(self, angle):
+        angle = self.normalize_angle(angle)
+        if angle != self.widget.zRot:
+            self.widget.zRot = angle
+
+    def normalize_angle(self, angle):
+        while angle < 0:
+            angle += 360 * 16
+        while angle > 360 * 16:
+            angle -= 360 * 16
+        return angle

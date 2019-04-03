@@ -3,25 +3,27 @@
 import dxfgrabber
 from collections import OrderedDict
 
+try:
+    from Model.parser import Parser
+except ModuleNotFoundError:
+    from parser import Parser
 
-class DXFParser:
-    def __init__(self, filepath=None):
-        self.vertices = tuple()
-        self.faces = tuple()
+
+class DXFParser(Parser):
+    def __init__(self):
+        super().__init__()
         self.dxf = None
 
-        if filepath:
-            self.load(filepath)
-
-    def load_dxffile(self, filepath):
+    def load_file(self, filepath: str) -> None:
         self.dxf = dxfgrabber.readfile(filepath)
+        self._parse_entities()
 
     # Returns the entities of the DXF file
     def get_entities(self):
         return self.dxf.entities
 
     # Read the DXF file and create tuples of vertices and faces
-    def _parse_entities(self):
+    def _parse_entities(self) -> None:
         vertices_dict = OrderedDict()
         # Detect vertices and faces
         index = 0
@@ -39,10 +41,10 @@ class DXFParser:
             faces.append(tuple(face_pointers))
 
         self.vertices = tuple(vertices_dict.keys())
-        self.faces = self._parse_faces(faces)
+        self.indices = self._parse_faces(faces)
 
     # Converts a list of 4-tuples into a list of 3-tuples
-    def _parse_faces(self, faces):
+    def _parse_faces(self, faces: list) -> list:
         ans = []
         for f in faces:
             # We need to convert 4-tuples in 3-tuples
@@ -54,8 +56,21 @@ class DXFParser:
 
         return ans
 
+    def get_vertices(self):
+        return self._flatten_tuple(self.vertices)
+
+    def get_averaged_vertices(self):
+        avg_tuple = self._avg_tuple(list(self.vertices))
+        return self._flatten_tuple(map(lambda x: (x[0] - avg_tuple[0],
+                                                  x[1] - avg_tuple[1],
+                                                  x[2] - avg_tuple[2]),
+                                       list(self.vertices)))
+
+    def get_indices(self):
+        return self._flatten_tuple(self.indices)
+
     # Returns the average of each component of a list of n-tuples in a new n-tuple
-    def _avg_tuple(self, tuple_list):
+    def _avg_tuple(self, tuple_list: list):
         if len(tuple_list) == 0:
             return None
 
@@ -68,32 +83,10 @@ class DXFParser:
 
         return tuple(map(lambda x: x / len(tuple_list), accum))
 
-    # Create OFF file
-    def _build_string(self):
-        self._parse_entities()
-
-        V = len(self.vertices)
-        F = len(self.faces)
-        E = V + F - 2
-
-        string_builder = []
-        string_builder.append('OFF')
-        string_builder.append(f'{V} {F} {E}')
-
-        for v in self.vertices:
-            avg_tuple = self._avg_tuple(self.vertices)
-            string_builder.append(f'{v[0] - avg_tuple[0]} {v[1] - avg_tuple[1]} {v[2] - avg_tuple[2]}')
-
-        for f in self.faces:
-            string_builder.append(f'3 {f[0]} {f[1]} {f[2]}')
-
-        return '\n'.join(string_builder)
-
-    def print_off(self):
-        print(self._build_string())
-
 
 if __name__ == '__main__':
     parser = DXFParser()
-    parser.load_dxffile('caseron.dxf')
-    parser.print_off()
+    parser.load_file('caseron.dxf')
+    print(parser.get_vertices())
+    print(parser.vertices)
+    print(parser.get_averaged_vertices())

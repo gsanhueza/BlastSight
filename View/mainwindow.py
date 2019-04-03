@@ -2,60 +2,49 @@
 
 import sys
 
-from PySide2.QtCore import Slot
-from PySide2.QtWidgets import QAction, QWidget, QMainWindow
-from PySide2.QtGui import *
+from PySide2.QtCore import Signal, Slot
+from PySide2.QtWidgets import QAction, QWidget, QMainWindow, QFileDialog
 
-from .openglwidget import OGLWidget
+from .ui_loader import load_ui
+
+from .openglwidget import OpenGLWidget
 from .normalmode import NormalMode
 from .drawmode import DrawMode
 
 
 class MainWindow(QMainWindow):
-    def __init__(self, widget):
+    def __init__(self, model=None):
         QMainWindow.__init__(self)
-        self.setWindowTitle("Start")
-        self.resize(800, 600)
+        load_ui('View/UI/mainwindow.ui', self)
 
-        # Menu
-        self.menu = self.menuBar()
-        self.file_menu = self.menu.addMenu("File")
-
-        # Exit QAction
-        exit_action = QAction("Exit", self)
-        exit_action.setShortcut("Ctrl+Q")
-        exit_action.triggered.connect(self.exit_app)
-
-        # Normal Widget
-        normal_widget_action = QAction("Normal mode", self)
-        normal_widget_action.setShortcut("Ctrl+N")
-        normal_widget_action.triggered.connect(self.normal_mode_slot)
-
-        # Fast Widget
-        fast_widget_action = QAction("Draw Mode", self)
-        fast_widget_action.setShortcut("Ctrl+D")
-        fast_widget_action.triggered.connect(self.draw_mode_slot)
-
-        self.file_menu.addAction(normal_widget_action)
-        self.file_menu.addAction(fast_widget_action)
-        self.file_menu.addAction(exit_action)
-
-        # Status Bar
-        self.status = self.statusBar()
-        self.status.showMessage("Loaded")
+        # Model
+        self.model = model
 
         # Central Widget
-        widget = OGLWidget(parent=self, mode_class=NormalMode)
-        self.setCentralWidget(widget)
+        self.widget = OpenGLWidget(parent=self, mode_class=NormalMode, model=self.model)
+        self.setCentralWidget(self.widget)
 
+        self.statusBar.showMessage('Ready')
+
+    # Unless explicitly otherwise, slots are connected via Qt Designer
     @Slot()
-    def exit_app(self, checked):
-        sys.exit()
+    def load_mesh_slot(self):
+        # TODO Use QSettings (or something) to remember the last directory accessed to load the mesh.
+        (filepath, selected_filter) = QFileDialog.getOpenFileName(
+            parent=self,
+            dir='.',
+            filter='DXF Files (*.dxf);;OFF Files (*.off);;All files (*.*)')
+
+        if self.model.load_mesh(filepath):
+            self.statusBar.showMessage('Mesh loaded')
+            self.widget.update_mesh()  # Notification to OpenGLWidget (FIXME Maybe use signal/slot)
+        else:
+            self.statusBar.showMessage('Cannot load mesh')
 
     @Slot()
     def normal_mode_slot(self):
-        self.centralWidget().currentMode = NormalMode(self.centralWidget())
+        self.widget.current_mode = NormalMode(self.widget)
 
     @Slot()
     def draw_mode_slot(self):
-        self.centralWidget().currentMode = DrawMode(self.centralWidget())
+        self.widget.current_mode = DrawMode(self.widget)
