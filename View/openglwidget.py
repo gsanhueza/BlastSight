@@ -70,7 +70,7 @@ class OpenGLWidget(QOpenGLWidget):
         self.indices = None
 
         # Wireframe (Shader toggling)
-        self.wireframe_enabled = False
+        self.wireframe_enabled = True
 
     def initializeGL(self):
         self.shader_program = QOpenGLShaderProgram(self.context())
@@ -81,7 +81,6 @@ class OpenGLWidget(QOpenGLWidget):
         self.geometry_shader = QOpenGLShader(QOpenGLShader.Geometry)
 
         # Compile shaders
-
         self.vertex_shader.compileSourceFile(self.vertex_shader_source)
         self.fragment_shader.compileSourceFile(self.fragment_shader_source)
         self.geometry_shader.compileSourceFile(self.geometry_shader_source)
