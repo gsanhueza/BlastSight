@@ -22,7 +22,6 @@ class NormalMode(Mode):
         print("MODE: Normal Mode")
 
     def mousePressEvent(self, event):
-        print(event.pos())
         self.lastPos = QPoint(event.pos())
 
     def mouseMoveEvent(self, event):

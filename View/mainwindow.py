@@ -8,6 +8,7 @@ from View.ui_loader import load_ui
 from View.openglwidget import OpenGLWidget
 from Controller.normalmode import NormalMode
 from Controller.drawmode import DrawMode
+from Controller.freemode import FreeMode
 
 
 class MainWindow(QMainWindow):
@@ -49,6 +50,10 @@ class MainWindow(QMainWindow):
     @Slot()
     def draw_mode_slot(self):
         self.widget.current_mode = DrawMode(self.widget)
+
+    @Slot()
+    def free_mode_slot(self):
+        self.widget.current_mode = FreeMode(self.widget)
 
     @Slot()
     def toggle_wireframe(self):

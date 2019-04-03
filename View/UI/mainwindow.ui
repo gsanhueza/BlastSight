@@ -50,6 +50,7 @@
     </property>
     <addaction name="action_Normal_mode"/>
     <addaction name="action_Draw_mode"/>
+    <addaction name="action_Free_mode"/>
     <addaction name="separator"/>
     <addaction name="action_Toggle_wireframe"/>
    </widget>
@@ -128,13 +129,26 @@
   </action>
   <action name="action_Toggle_wireframe">
    <property name="icon">
-    <iconset theme="draw-triangle"/>
+    <iconset theme="draw-triangle">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>&amp;Toggle wireframe</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+W</string>
+   </property>
+  </action>
+  <action name="action_Free_mode">
+   <property name="icon">
+    <iconset theme="transform-move">
+     <normaloff>.</normaloff>.</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Free mode</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+F</string>
    </property>
   </action>
  </widget>
@@ -221,11 +235,28 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>action_Free_mode</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>free_mode_slot()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>399</x>
+     <y>299</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>normal_mode_slot()</slot>
   <slot>draw_mode_slot()</slot>
   <slot>load_mesh_slot()</slot>
   <slot>toggle_wireframe()</slot>
+  <slot>free_mode_slot()</slot>
  </slots>
 </ui>
