@@ -19,6 +19,7 @@ class OpenGLWidget(QOpenGLWidget):
     def __init__(self, parent=None, mode_class=NormalMode, model=None):
         QOpenGLWidget.__init__(self, parent)
         self.setFocusPolicy(Qt.StrongFocus)
+        self.setAcceptDrops(True)
 
         # Visualization mode
         self.current_mode = mode_class(self)
@@ -154,7 +155,7 @@ class OpenGLWidget(QOpenGLWidget):
         self.shader_program.release()
 
     def resizeGL(self, w, h):
-        # TODO Consider that we might need to change between perspective and orthogonal projection... in the controller (mode)
+        # FIXME We might need to change between perspective and orthogonal projection... in the controller (mode)
         self.proj.setToIdentity()
         self.proj.perspective(45.0, (w / h), 0.01, 10000.0)
 
@@ -173,7 +174,7 @@ class OpenGLWidget(QOpenGLWidget):
 
     @Slot()
     def update_mesh(self):
-        # TODO On mesh load, delete current opengl vertices/faces, recreate them and update
+        # TODO Set a decent color, not a random one
         import random
 
         self.position = np.array(self.model.get_vertices(), np.float32)
@@ -182,3 +183,17 @@ class OpenGLWidget(QOpenGLWidget):
 
         self.setup_vertex_attribs()
         self.update()
+
+    # FIXME Should we (openglwidget) or mainwindow handle this? Should we notify mainwindow of an error?
+    def dragEnterEvent(self, event):
+        if event.mimeData().hasFormat("text/plain"):
+            event.acceptProposedAction()
+
+    def dropEvent(self, event):
+        file_path = event.mimeData().urls()[0].toLocalFile()
+        self.model.load_mesh(file_path)
+        self.update_mesh()
+
+        # Check if we're part of a MainWindow or a standalone widget
+        if self.parent():
+            self.parent().statusBar.showMessage('Drop')
