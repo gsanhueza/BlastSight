@@ -89,9 +89,7 @@ class OpenGLWidget(QOpenGLWidget):
                                0.0, 1.0, 0.0,
                                0.0, 0.0, 1.0], np.float32)
 
-        self.indices = np.array([0, 1, 2,
-                                 3, 4, 5,
-                                 6, 7, 8], np.int)
+        self.indices = np.array([0, 1, 2], np.uint32)  # Finally! This wasn't np.int, but np.uint32
 
         # VAO/VBO/IBO creation
         self.vao.create()
@@ -110,18 +108,23 @@ class OpenGLWidget(QOpenGLWidget):
     def setup_vertex_attribs(self):
         _SIZE_OF_GL_FLOAT = 4
 
+        self.vao.bind()
+
         self.position_vbo.bind()
-        glEnableVertexAttribArray(_POSITION)
         glBufferData(GL_ARRAY_BUFFER, _SIZE_OF_GL_FLOAT * self.position.size, self.position, GL_STATIC_DRAW)
         glVertexAttribPointer(_POSITION, 3, GL_FLOAT, False, 0, None)
 
         self.color_vbo.bind()
-        glEnableVertexAttribArray(_COLOR)
         glBufferData(GL_ARRAY_BUFFER, _SIZE_OF_GL_FLOAT * self.color.size, self.color, GL_STATIC_DRAW)
         glVertexAttribPointer(_COLOR, 3, GL_FLOAT, False, 0, None)
 
         self.indices_ibo.bind()
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, self.indices, GL_STATIC_DRAW)
+
+        glEnableVertexAttribArray(_POSITION)
+        glEnableVertexAttribArray(_COLOR)
+
+        self.vao.release()
 
     def paintGL(self):
         # Clear screen
@@ -142,9 +145,11 @@ class OpenGLWidget(QOpenGLWidget):
         self.shader_program.setUniformValue(self.model_view_matrix_loc, self.camera * self.world)
 
         # Draw data
+        self.vao.bind()
         # glDrawArrays(GL_TRIANGLES, 0, self.position.size)
         self.indices_ibo.bind()
         glDrawElements(GL_TRIANGLES, self.indices.size, GL_UNSIGNED_INT, None)
+        self.vao.release()
 
         self.shader_program.release()
 
@@ -180,7 +185,7 @@ class OpenGLWidget(QOpenGLWidget):
                                   0.7, -0.5, 0.0,
                                   0.7, 0.5, 0.0], np.float32)
         self.color = np.array([random.random() for _ in range(self.position.size)], np.float32)
+        self.indices = np.array([3, 4, 5], np.uint32)
 
         self.setup_vertex_attribs()
-
         self.update()
