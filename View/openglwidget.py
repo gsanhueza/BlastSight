@@ -176,16 +176,9 @@ class OpenGLWidget(QOpenGLWidget):
         # TODO On mesh load, delete current opengl vertices/faces, recreate them and update
         import random
 
-        # This works! But we need to update drawArrays to GL_TRIANGLES
-        # self.position = np.array(self.model.get_vertices(), np.float32)
-        self.position = np.array([-0.5, 0.5, 0.0,
-                                  -0.5, -0.5, 0.0,
-                                  0.5, 0.5, 0.0,
-                                  -0.3, -0.5, 0.0,
-                                  0.7, -0.5, 0.0,
-                                  0.7, 0.5, 0.0], np.float32)
+        self.position = np.array(self.model.get_vertices(), np.float32)
+        self.indices = np.array(self.model.get_indices(), np.uint32)
         self.color = np.array([random.random() for _ in range(self.position.size)], np.float32)
-        self.indices = np.array([3, 4, 5], np.uint32)
 
         self.setup_vertex_attribs()
         self.update()

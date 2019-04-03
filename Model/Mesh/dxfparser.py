@@ -22,10 +22,6 @@ class DXFParser(Parser):
     def get_entities(self):
         return self.dxf.entities
 
-    # Flatten list of tuples
-    def _flatten_tuple(self, l):
-        return [item for sublist in l for item in sublist]
-
     # Read the DXF file and create tuples of vertices and faces
     def _parse_entities(self) -> None:
         vertices_dict = OrderedDict()
@@ -45,7 +41,7 @@ class DXFParser(Parser):
             faces.append(tuple(face_pointers))
 
         self.vertices = tuple(vertices_dict.keys())
-        self.faces = self._parse_faces(faces)
+        self.indices = self._parse_faces(faces)
 
     # Converts a list of 4-tuples into a list of 3-tuples
     def _parse_faces(self, faces: list) -> list:
@@ -70,8 +66,8 @@ class DXFParser(Parser):
                                                   x[2] - avg_tuple[2]),
                                        list(self.vertices)))
 
-    def get_faces(self):
-        return self._flatten_tuple(self.faces)
+    def get_indices(self):
+        return self._flatten_tuple(self.indices)
 
     # Returns the average of each component of a list of n-tuples in a new n-tuple
     def _avg_tuple(self, tuple_list: list):
