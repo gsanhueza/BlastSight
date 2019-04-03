@@ -3,11 +3,11 @@
 from PySide2.QtCore import Slot
 from PySide2.QtWidgets import QMainWindow, QFileDialog
 
-from .ui_loader import load_ui
+from View.ui_loader import load_ui
 
-from .openglwidget import OpenGLWidget
-from .normalmode import NormalMode
-from .drawmode import DrawMode
+from View.openglwidget import OpenGLWidget
+from Controller.normalmode import NormalMode
+from Controller.drawmode import DrawMode
 
 
 class MainWindow(QMainWindow):

@@ -12,7 +12,7 @@ from PySide2.QtGui import QMatrix4x4
 from PySide2.QtCore import Qt
 from PySide2.QtCore import Slot
 
-from .normalmode import NormalMode
+from Controller.normalmode import NormalMode
 
 _POSITION = 0
 _COLOR = 1
