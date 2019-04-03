@@ -1,5 +1,6 @@
 attribute vec3 a_position;
 attribute vec3 a_color;
+
 varying vec3 v_color;
 
 uniform mat4 proj_matrix;

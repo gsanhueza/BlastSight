@@ -54,6 +54,7 @@ class OpenGLWidget(QOpenGLWidget):
         # Shader locations
         self.vertex_shader_source = 'View/Shaders/vertex.glsl'
         self.fragment_shader_source = 'View/Shaders/fragment.glsl'
+        self.geometry_shader_source = 'View/Shaders/geometry.glsl'
 
         # MVP locations
         self.model_view_matrix_loc = None
@@ -69,6 +70,7 @@ class OpenGLWidget(QOpenGLWidget):
         self.shader_program = QOpenGLShaderProgram(self.context())
         self.shader_program.addShaderFromSourceFile(QOpenGLShader.Vertex, self.vertex_shader_source)
         self.shader_program.addShaderFromSourceFile(QOpenGLShader.Fragment, self.fragment_shader_source)
+        self.shader_program.addShaderFromSourceFile(QOpenGLShader.Geometry, self.geometry_shader_source)
 
         self.shader_program.bindAttributeLocation('a_position', _POSITION)
         self.shader_program.bindAttributeLocation('a_color', _COLOR)
