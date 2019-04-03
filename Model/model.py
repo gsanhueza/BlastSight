@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 
 from Model.Mesh.meshmanager import MeshManager
-from Model.BlockModel.blockmodelhandler import BlockModelHandler
+from Model.BlockModel.blockmodelmanager import BlockModelManager
 
 
 # Main class
 class Model:
     def __init__(self):
         self.mesh_manager = MeshManager()
-        self.blockmodel_handler = BlockModelHandler()
+        self.block_model_manager = BlockModelManager()
 
         self.vertices = None
         self.faces = None
@@ -21,20 +21,20 @@ class Model:
 
     # The mesh handler will load the mesh and update our own data
     # Returns a boolean
-    def load_mesh(self, filepath: str) -> bool:
-        return self.mesh_manager.load_mesh(self, filepath)
+    def load_mesh(self, file_path: str) -> bool:
+        return self.mesh_manager.load_mesh(self, file_path)
 
     # The mesh handler will save the mesh by reading our own data
     # Returns a boolean
-    def save_mesh(self, filepath: str) -> bool:
-        return self.mesh_manager.save_mesh(self, filepath)
+    def save_mesh(self, file_path: str) -> bool:
+        return self.mesh_manager.save_mesh(self, file_path)
 
     # The block model handler will load the block model and update our own data
     # Returns a boolean
-    def load_blockmodel(self, filepath: str) -> bool:
-        return self.blockmodel_handler.load_mesh(self, filepath)
+    def load_blockmodel(self, file_path: str) -> bool:
+        return self.block_model_manager.load_mesh(self, file_path)
 
     # The block model handler will save the block model by reading our own data
     # Returns a boolean
-    def save_blockmodel(self, filepath: str) -> bool:
-        return self.blockmodel_handler.save_mesh(self, filepath)
+    def save_blockmodel(self, file_path: str) -> bool:
+        return self.block_model_manager.save_mesh(self, file_path)
