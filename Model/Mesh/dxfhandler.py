@@ -14,7 +14,7 @@ class DXFHandler(Handler):
         try:
             self.parser.load_file(file_path)
             model.vertices = self.parser.get_averaged_vertices()  # FIXME Not average vertices!
-            model.faces = self.parser.get_indices()
+            model.indices = self.parser.get_indices()
             return True
         except Exception:
             return False

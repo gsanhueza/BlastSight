@@ -30,7 +30,10 @@ class MainWindow(QMainWindow):
     @Slot()
     def load_mesh_slot(self):
         # TODO Use QSettings (or something) to remember the last directory accessed to load the mesh.
-        (filepath, selected_filter) = QFileDialog.getOpenFileName(parent=self, dir='.', filter='DXF Files (*.dxf)')
+        (filepath, selected_filter) = QFileDialog.getOpenFileName(
+            parent=self,
+            dir='.',
+            filter='DXF Files (*.dxf);;OFF Files (*.off);;All files (*.*)')
 
         if self.model.load_mesh(filepath):
             self.statusBar.showMessage('Mesh loaded')
