@@ -21,19 +21,22 @@ class OpenGLWidget(QOpenGLWidget):
         self.setFocusPolicy(Qt.StrongFocus)
         self.setAcceptDrops(True)
 
-        # Visualization mode
+        # Controller mode
         self.current_mode = mode_class(self)
 
         # Model
         self.model = model
 
-        # Shader utility
+        # Shaders
         self.shader_program = QOpenGLShaderProgram(self)
+        self.vertex_shader = None
+        self.fragment_shader = None
+        self.geometry_shader = None
 
         # VAO/VBO
         self.vao = QOpenGLVertexArrayObject()
-        self.position_vbo = QOpenGLBuffer()
-        self.color_vbo = QOpenGLBuffer()
+        self.position_vbo = QOpenGLBuffer(QOpenGLBuffer.VertexBuffer)
+        self.color_vbo = QOpenGLBuffer(QOpenGLBuffer.VertexBuffer)
         self.indices_ibo = QOpenGLBuffer(QOpenGLBuffer.IndexBuffer)
 
         # Camera/World/Projection
@@ -66,12 +69,29 @@ class OpenGLWidget(QOpenGLWidget):
         self.color = None
         self.indices = None
 
+        # Wireframe (Shader toggling)
+        self.wireframe_enabled = False
+
     def initializeGL(self):
         self.shader_program = QOpenGLShaderProgram(self.context())
-        self.shader_program.addShaderFromSourceFile(QOpenGLShader.Vertex, self.vertex_shader_source)
-        self.shader_program.addShaderFromSourceFile(QOpenGLShader.Fragment, self.fragment_shader_source)
-        self.shader_program.addShaderFromSourceFile(QOpenGLShader.Geometry, self.geometry_shader_source)
 
+        # Create shaders
+        self.vertex_shader = QOpenGLShader(QOpenGLShader.Vertex)
+        self.fragment_shader = QOpenGLShader(QOpenGLShader.Fragment)
+        self.geometry_shader = QOpenGLShader(QOpenGLShader.Geometry)
+
+        # Compile shaders
+
+        self.vertex_shader.compileSourceFile(self.vertex_shader_source)
+        self.fragment_shader.compileSourceFile(self.fragment_shader_source)
+        self.geometry_shader.compileSourceFile(self.geometry_shader_source)
+
+        # Add shaders to program
+        self.shader_program.addShader(self.vertex_shader)
+        self.shader_program.addShader(self.fragment_shader)
+        self.shader_program.addShader(self.geometry_shader)
+
+        # Bind attribute locations
         self.shader_program.bindAttributeLocation('a_position', _POSITION)
         self.shader_program.bindAttributeLocation('a_color', _COLOR)
 
@@ -184,6 +204,17 @@ class OpenGLWidget(QOpenGLWidget):
         self.color = np.array([random.random() for _ in range(self.position.size)], np.float32)
 
         self.setup_vertex_attribs()
+        self.update()
+
+    @Slot()
+    def toggle_wireframe(self):
+        if self.wireframe_enabled:
+            self.shader_program.removeShader(self.geometry_shader)
+            self.wireframe_enabled = False
+        else:
+            self.shader_program.addShader(self.geometry_shader)
+            self.wireframe_enabled = True
+
         self.update()
 
     # FIXME Should we (openglwidget) or mainwindow handle this? Should we notify mainwindow of an error?
