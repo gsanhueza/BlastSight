@@ -15,7 +15,7 @@ class DrawMode(Mode):
         self.lastPos = None
 
     def mouseMoveEvent(self, event):
-        print("Unable to move in Draw Mode")
+        # print("Unable to move in Draw Mode")
         self.lastPos = event.pos()
 
     def mousePressEvent(self, event):
@@ -23,16 +23,22 @@ class DrawMode(Mode):
         self.initPos = event.pos()
         self.lastPos = event.pos()
 
-        if event.button() == Qt.MouseButton.LeftButton:
-            print("Pressing in Draw Mode with LeftButton")
-        elif event.button() == Qt.MouseButton.MiddleButton:
-            print("Pressing in Draw Mode with MiddleButton")
-        elif event.button() == Qt.MouseButton.RightButton:
-            print("Pressing in Draw Mode with RightButton")
+        # if event.button() == Qt.MouseButton.LeftButton:
+        #     print("Pressing in Draw Mode with LeftButton")
+        # elif event.button() == Qt.MouseButton.MiddleButton:
+        #     print("Pressing in Draw Mode with MiddleButton")
+        # elif event.button() == Qt.MouseButton.RightButton:
+        #     print("Pressing in Draw Mode with RightButton")
 
     def mouseReleaseEvent(self, event):
         self.lastPos = event.pos()
+        print(f'Camera: {self.widget.camera}')
+        print(f'World : {self.widget.world}')
+        print(f'Proj  : {self.widget.proj}')
+        print(f'P * V * M = : {self.widget.proj * self.widget.camera * self.widget.world}')
 
+        # TODO Get some matrices
+        # TODO Multiply/invert/do something to get the world coordinates from the click on screen
         self.active = False
 
     def modify_paintgl(self):
