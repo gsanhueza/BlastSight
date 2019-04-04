@@ -4,6 +4,7 @@ import numpy as np
 
 from OpenGL.GL import *
 from PySide2.QtWidgets import QOpenGLWidget
+from PySide2.QtGui import QPainter
 from PySide2.QtGui import QOpenGLShaderProgram
 from PySide2.QtGui import QOpenGLShader
 from PySide2.QtGui import QOpenGLBuffer
@@ -158,9 +159,13 @@ class OpenGLWidget(QOpenGLWidget):
         self.vao.release()
 
     def paintGL(self):
+        painter = QPainter()
+
+        painter.begin(self)
         # Clear screen
+        glClearColor(0.8, 0.5, 0.0, 1.0)  # FIXME Background is just temporal, delete this
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-        glEnable(GL_DEPTH_TEST)
+        # glEnable(GL_DEPTH_TEST)  # If this is uncommented, overpainting stops working
         glDisable(GL_CULL_FACE)
 
         self.world.setToIdentity()
@@ -181,8 +186,11 @@ class OpenGLWidget(QOpenGLWidget):
         self.indices_ibo.bind()
         glDrawElements(GL_TRIANGLES, self.indices.size, GL_UNSIGNED_INT, None)
         self.vao.release()
-
         self.shader_program.release()
+
+        # QPainter can draw *after* OpenGL finishes
+        painter.drawText(200, 50, str(self.current_mode))  # FIXME Draw something more useful
+        painter.end()
 
     def resizeGL(self, w, h):
         # TODO Allow perspective/orthogonal in the controller (mode)
@@ -209,7 +217,8 @@ class OpenGLWidget(QOpenGLWidget):
 
         self.position = np.array(self.model.get_vertices(), np.float32)
         self.indices = np.array(self.model.get_indices(), np.uint32)
-        self.color = np.array([random.random() for _ in range(self.position.size)], np.float32)
+        color = [random.random() for _ in range(self.position.size)]
+        self.color = np.array(color, np.float32)
 
         self.setup_vertex_attribs()
         self.update()
