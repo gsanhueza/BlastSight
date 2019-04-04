@@ -20,7 +20,7 @@ _COLOR = 1
 
 class OpenGLWidget(QOpenGLWidget):
     # FIXME We might not get a model every time.
-    # FIXME We need to have a fallback option to only receive vertices, for example
+    # FIXME We need to have a fallback option to only receive vertices
     def __init__(self, parent=None, mode_class=NormalMode, model=None):
         QOpenGLWidget.__init__(self, parent)
         self.setFocusPolicy(Qt.StrongFocus)
@@ -95,9 +95,14 @@ class OpenGLWidget(QOpenGLWidget):
         self.shader_program.addShader(self.fragment_shader)
         self.shader_program.addShader(self.geometry_shader)
 
-        # Bind attribute locations
-        self.shader_program.bindAttributeLocation('a_position', _POSITION)
-        self.shader_program.bindAttributeLocation('a_color', _COLOR)
+        # If the shader uses 'layout (location = 0) in vec3 a_position;', then
+        # it's unnecessary to bind a name. We only need to remember that in
+        # glVertexAttribPointer(_POSITION, 3, GL_FLOAT, False, 0, None),
+        # that '_POSITION' is 0 here, and 0 in the shader (or 1, or 2...)
+
+        # Bind attribute locations (Unneeded if shader has layout(location))
+        # self.shader_program.bindAttributeLocation('a_position', _POSITION)
+        # self.shader_program.bindAttributeLocation('a_color', _COLOR)
 
         self.shader_program.link()
         self.shader_program.bind()
@@ -172,7 +177,7 @@ class OpenGLWidget(QOpenGLWidget):
 
         # Draw data
         self.vao.bind()
-        # glDrawArrays(GL_TRIANGLES, 0, self.position.size)
+        # glDrawArrays(GL_TRIANGLES, 0, self.position.size)  # This works on its own
         self.indices_ibo.bind()
         glDrawElements(GL_TRIANGLES, self.indices.size, GL_UNSIGNED_INT, None)
         self.vao.release()
@@ -180,7 +185,7 @@ class OpenGLWidget(QOpenGLWidget):
         self.shader_program.release()
 
     def resizeGL(self, w, h):
-        # FIXME We might need to change between perspective and orthogonal projection... in the controller (mode)
+        # TODO Allow perspective/orthogonal in the controller (mode)
         self.proj.setToIdentity()
         self.proj.perspective(45.0, (w / h), 0.01, 10000.0)
 
