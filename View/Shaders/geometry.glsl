@@ -1,9 +1,9 @@
-#version 410
+#version 410 core
 
 layout(triangles) in;
 layout(line_strip, max_vertices = 4) out;
 
-in vec3 v_color[];
+in vec3 v_color[3];
 out layout(location=1) vec3 f_color;
 
 void main()

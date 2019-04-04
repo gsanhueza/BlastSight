@@ -1,7 +1,9 @@
-attribute vec3 a_position;
-attribute vec3 a_color;
+#version 410 core
 
-varying vec3 v_color;
+in vec3 a_position;
+in vec3 a_color;
+
+out vec3 v_color;
 
 uniform mat4 proj_matrix;
 uniform mat4 model_view_matrix;
