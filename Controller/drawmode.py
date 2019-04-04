@@ -11,6 +11,7 @@ class DrawMode(Mode):
         print("MODE: Draw Mode")
 
         self.active = False
+        self.initPos = None
         self.lastPos = None
 
     def mouseMoveEvent(self, event):
@@ -19,6 +20,7 @@ class DrawMode(Mode):
 
     def mousePressEvent(self, event):
         self.active = True
+        self.initPos = event.pos()
         self.lastPos = event.pos()
 
         if event.button() == Qt.MouseButton.LeftButton:
@@ -30,6 +32,7 @@ class DrawMode(Mode):
 
     def mouseReleaseEvent(self, event):
         self.lastPos = event.pos()
+
         self.active = False
 
     def modify_paintgl(self):
@@ -37,5 +40,9 @@ class DrawMode(Mode):
             self.widget.painter.begin(self.widget)
             self.widget.painter.setPen(Qt.yellow)
             self.widget.painter.drawText(200, 50, f'Draw enabled = {self.active}')
-            self.widget.painter.drawText(200, 80, f'event.pos()  = {self.lastPos}')
+            self.widget.painter.drawText(200, 70, f'initPos      = {self.initPos}')
+            self.widget.painter.drawText(200, 90, f'eventPos     = {self.lastPos}')
+
+            self.widget.painter.drawLine(self.initPos, self.lastPos)
+
             self.widget.painter.end()
