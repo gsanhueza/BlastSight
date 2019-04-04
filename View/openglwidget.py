@@ -164,7 +164,6 @@ class OpenGLWidget(QOpenGLWidget):
     def paintGL(self):
         self.painter.begin(self)
         # Clear screen
-        glClearColor(0.8, 0.5, 0.0, 1.0)  # FIXME Background is just temporal, delete this
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
         # glEnable(GL_DEPTH_TEST)  # If this is uncommented, overpainting stops working
         glDisable(GL_CULL_FACE)
