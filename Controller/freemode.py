@@ -6,8 +6,7 @@ from Controller.mode import Mode
 
 class FreeMode(Mode):
     def __init__(self, widget):
-        super().__init__(self)
-        self.widget = widget
+        super().__init__(widget)
         self.widget.parent().setWindowTitle("Free Mode")
         self.lastPos = None
         print("MODE: Free Mode")

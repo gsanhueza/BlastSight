@@ -4,6 +4,7 @@
 class Mode:
     def __init__(self, widget):
         self.widget = widget
+        self.widget.update()
 
     def mousePressEvent(self, event):
         pass

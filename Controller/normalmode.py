@@ -15,8 +15,7 @@ def normalize_angle(angle):
 
 class NormalMode(Mode):
     def __init__(self, widget):
-        super().__init__(self)
-        self.widget = widget
+        super().__init__(widget)
         self.widget.parent().setWindowTitle("Normal Mode")
         self.lastPos = None
         print("MODE: Normal Mode")

@@ -6,8 +6,7 @@ from Controller.mode import Mode
 
 class DrawMode(Mode):
     def __init__(self, widget):
-        super().__init__(self)
-        self.widget = widget
+        super().__init__(widget)
         self.widget.parent().setWindowTitle("Draw Mode")
         print("MODE: Draw Mode")
 
@@ -21,3 +20,5 @@ class DrawMode(Mode):
             print("Pressing in Draw Mode with MiddleButton")
         elif event.button() == Qt.MouseButton.RightButton:
             print("Pressing in Draw Mode with RightButton")
+
+        print(f'Pos: {event.pos()}, widget.painter: {self.widget.painter}')

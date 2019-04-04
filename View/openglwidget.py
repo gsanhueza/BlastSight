@@ -78,6 +78,9 @@ class OpenGLWidget(QOpenGLWidget):
         # Wireframe (Shader toggling)
         self.wireframe_enabled = True
 
+        # QPainter (after OpenGL)
+        self.painter = QPainter()
+
     def initializeGL(self):
         self.shader_program = QOpenGLShaderProgram(self.context())
 
@@ -159,9 +162,7 @@ class OpenGLWidget(QOpenGLWidget):
         self.vao.release()
 
     def paintGL(self):
-        painter = QPainter()
-
-        painter.begin(self)
+        self.painter.begin(self)
         # Clear screen
         glClearColor(0.8, 0.5, 0.0, 1.0)  # FIXME Background is just temporal, delete this
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
@@ -189,8 +190,8 @@ class OpenGLWidget(QOpenGLWidget):
         self.shader_program.release()
 
         # QPainter can draw *after* OpenGL finishes
-        painter.drawText(200, 50, str(self.current_mode))  # FIXME Draw something more useful
-        painter.end()
+        self.painter.drawText(200, 50, str(self.current_mode))  # FIXME Draw something more useful
+        self.painter.end()
 
     def resizeGL(self, w, h):
         # TODO Allow perspective/orthogonal in the controller (mode)
