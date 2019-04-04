@@ -12,5 +12,11 @@ class Mode:
     def mouseMoveEvent(self, event):
         pass
 
+    def mouseReleaseEvent(self, event):
+        pass
+
     def wheelEvent(self, event):
+        pass
+
+    def modify_paintgl(self):
         pass

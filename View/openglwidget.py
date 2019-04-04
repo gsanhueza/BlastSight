@@ -189,9 +189,10 @@ class OpenGLWidget(QOpenGLWidget):
         self.vao.release()
         self.shader_program.release()
 
-        # QPainter can draw *after* OpenGL finishes
-        self.painter.drawText(200, 50, str(self.current_mode))  # FIXME Draw something more useful
         self.painter.end()
+
+        # QPainter can draw *after* OpenGL finishes
+        self.current_mode.modify_paintgl()
 
     def resizeGL(self, w, h):
         # TODO Allow perspective/orthogonal in the controller (mode)
@@ -199,15 +200,19 @@ class OpenGLWidget(QOpenGLWidget):
         self.proj.perspective(45.0, (w / h), 0.01, 10000.0)
 
     # Controller dependent on current mode
-    def mouseMoveEvent(self, event):
+    def mouseMoveEvent(self, event, *args, **kwargs):
         self.current_mode.mouseMoveEvent(event)
         self.update()
 
-    def mousePressEvent(self, event):
+    def mousePressEvent(self, event, *args, **kwargs):
         self.current_mode.mousePressEvent(event)
         self.update()
 
-    def wheelEvent(self, event):
+    def mouseReleaseEvent(self, event, *args, **kwargs):
+        self.current_mode.mouseReleaseEvent(event)
+        self.update()
+
+    def wheelEvent(self, event, *args, **kwargs):
         self.current_mode.wheelEvent(event)
         self.update()
 
