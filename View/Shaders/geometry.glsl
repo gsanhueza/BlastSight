@@ -2,11 +2,11 @@
 #extension GL_ARB_separate_shader_objects : enable
 #extension GL_EXT_geometry_shader4 : enable
 
-layout(triangles) in;
-layout(line_strip, max_vertices = 4) out;
+layout (triangles) in;
+layout (line_strip, max_vertices = 4) out;
 
-in vec3 v_color[3];
-out layout(location=1) vec3 f_color;
+layout (location = 1) in vec3 v_color[3];
+layout (location = 1) out vec3 f_color;
 
 void main()
 {

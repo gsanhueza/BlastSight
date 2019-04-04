@@ -105,7 +105,6 @@ class OpenGLWidget(QOpenGLWidget):
         # MVP locations
         self.model_view_matrix_loc = self.shader_program.uniformLocation('model_view_matrix')
         self.proj_matrix_loc = self.shader_program.uniformLocation('proj_matrix')
-        self.test_value_loc = self.shader_program.uniformLocation('test_value')
 
         # Data
         self.position = np.array([-0.5, 0.5, 0.0,
