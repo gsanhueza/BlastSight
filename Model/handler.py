@@ -1,19 +1,22 @@
 #!/usr/bin/env python
 
-from abc import abstractmethod
 from PySide2.QtCore import QFileInfo
 
 
 class Handler:
     def __init__(self):
-        pass
+        self.parser = None
 
-    @abstractmethod
-    def load_mesh(self, model, file_path):
-        return False
+    # Loads a DXF file and updates the model
+    def load_mesh(self, model, file_path: str) -> bool:
+        self.parser.load_file(file_path)
+        model.vertices = self.parser.get_vertices()
+        model.indices = self.parser.get_indices()
+        model.values = self.parser.get_values()
+        return True
 
-    @abstractmethod
     def save_mesh(self, model, file_path):
+        # TODO Save mesh
         return False
 
     @staticmethod

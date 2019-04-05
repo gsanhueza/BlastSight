@@ -9,16 +9,14 @@ class DXFHandler(Handler):
     def __init__(self):
         self.parser = DXFParser()
 
-    # Loads a DXF file and updates the model
     def load_mesh(self, model, file_path):
-        try:
-            self.parser.load_file(file_path)
-            # FIXME Not average vertices!
-            model.vertices = self.parser.get_averaged_vertices()
-            model.indices = self.parser.get_indices()
-            return True
-        except Exception:
-            return False
+        # FIXME Not average vertices!
+        self.parser.load_file(file_path)
+        model.vertices = self.parser.get_averaged_vertices()
+        model.indices = self.parser.get_indices()
+        model.values = self.parser.get_values()
+
+        return True
 
     # Saves a DXF file and updates the model
     def save_mesh(self, model, file_path):

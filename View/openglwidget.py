@@ -72,8 +72,8 @@ class OpenGLWidget(QOpenGLWidget):
 
         # Data
         self.position = None
-        self.color = None
         self.indices = None
+        self.values = None
 
         # Wireframe (Shader toggling)
         self.wireframe_enabled = True
@@ -120,9 +120,9 @@ class OpenGLWidget(QOpenGLWidget):
                                   -0.5, -0.5, 0.0,
                                   0.5, 0.5, 0.0], np.float32)
 
-        self.color = np.array([1.0, 0.0, 0.0,
-                               0.0, 1.0, 0.0,
-                               0.0, 0.0, 1.0], np.float32)
+        self.values = np.array([1.0, 0.0, 0.0,
+                                0.0, 1.0, 0.0,
+                                0.0, 0.0, 1.0], np.float32)
 
         self.indices = np.array([0, 1, 2], np.uint32)  # Finally! This wasn't np.int, but np.uint32
 
@@ -150,7 +150,7 @@ class OpenGLWidget(QOpenGLWidget):
         glVertexAttribPointer(_POSITION, 3, GL_FLOAT, False, 0, None)
 
         self.color_vbo.bind()
-        glBufferData(GL_ARRAY_BUFFER, _SIZE_OF_GL_FLOAT * self.color.size, self.color, GL_STATIC_DRAW)
+        glBufferData(GL_ARRAY_BUFFER, _SIZE_OF_GL_FLOAT * self.values.size, self.values, GL_STATIC_DRAW)
         glVertexAttribPointer(_COLOR, 3, GL_FLOAT, False, 0, None)
 
         self.indices_ibo.bind()
@@ -165,7 +165,7 @@ class OpenGLWidget(QOpenGLWidget):
         self.painter.begin(self)
         # Clear screen
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-        # glEnable(GL_DEPTH_TEST)  # If this is uncommented, overpainting stops working
+        glEnable(GL_DEPTH_TEST)  # If uncommented, overpainting seems to stop working (maybe)
         glDisable(GL_CULL_FACE)
 
         self.world.setToIdentity()
@@ -183,10 +183,8 @@ class OpenGLWidget(QOpenGLWidget):
         # Draw data
         self.vao.bind()
         # glDrawArrays(GL_TRIANGLES, 0, self.position.size)  # This works on its own
-        self.indices_ibo.bind()
         glDrawElements(GL_TRIANGLES, self.indices.size, GL_UNSIGNED_INT, None)
         self.vao.release()
-        self.shader_program.release()
 
         self.painter.end()
 
@@ -197,6 +195,10 @@ class OpenGLWidget(QOpenGLWidget):
         # TODO Allow perspective/orthogonal in the controller (mode)
         self.proj.setToIdentity()
         self.proj.perspective(45.0, (w / h), 0.01, 10000.0)
+
+        # ortho(float left, float right, float bottom, float top, float nearPlane, float farPlane)
+        # scale_factor = -self.zCamPos * 200
+        # self.proj.ortho(-w/scale_factor, w/scale_factor, -h/scale_factor, h/scale_factor, 0.01, 10000)
 
     # Controller dependent on current mode
     def mouseMoveEvent(self, event, *args, **kwargs):
@@ -217,13 +219,9 @@ class OpenGLWidget(QOpenGLWidget):
 
     @Slot()
     def update_mesh(self):
-        # TODO Set a decent color, not a random one
-        import random
-
         self.position = np.array(self.model.get_vertices(), np.float32)
         self.indices = np.array(self.model.get_indices(), np.uint32)
-        color = [random.random() for _ in range(self.position.size)]
-        self.color = np.array(color, np.float32)
+        self.values = np.array(self.model.get_values(), np.float32)
 
         self.setup_vertex_attribs()
         self.update()
