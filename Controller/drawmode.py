@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 from PySide2.QtCore import Qt
+from PySide2.QtGui import QVector4D
 from Controller.mode import Mode
 
 
@@ -32,12 +33,19 @@ class DrawMode(Mode):
 
     def mouseReleaseEvent(self, event):
         self.lastPos = event.pos()
-        print(f'Camera: {self.widget.camera}')
-        print(f'World : {self.widget.world}')
-        print(f'Proj  : {self.widget.proj}')
-        print(f'P * V * M = : {self.widget.proj * self.widget.camera * self.widget.world}')
 
-        # TODO Get some matrices
+        P = self.widget.proj
+        V = self.widget.camera
+        M = self.widget.world
+
+        pos = self.screen_to_normalized(self.lastPos)
+
+        print(f'World coordinates (bad z) = : {v}')
+
+        # If P * V * M * v = position in screen...
+        # M^-1 * V^-1 * P^-1 * P * V * M * v = M^-1 * V^-1 * P^-1 * pos = v
+        # With pos = ((2*r_x / res_x) - 1, (2*r_x / res_x) - 1, get_z_depth(), 1.0)
+        # That means we need to implement get_z_depth().
         # TODO Multiply/invert/do something to get the world coordinates from the click on screen
         self.active = False
 
@@ -52,3 +60,18 @@ class DrawMode(Mode):
             self.widget.painter.drawLine(self.initPos, self.lastPos)
 
             self.widget.painter.end()
+
+    def screen_to_normalized(self, event_pos):
+        res_x = 800  # FIXME Get from screen
+        res_y = 530  # FIXME Get from screen
+
+        x = (2 * event_pos.x() / res_x) - 1
+        y = (2 * event_pos.y() / res_y) - 1
+        z = self.get_z_depth(event_pos)
+        w = 1  # Constant
+
+        return QVector4D(x, -y, z, w)
+
+    def get_z_depth(self, event_pos):
+        # TODO Get Z depth
+        return 0
