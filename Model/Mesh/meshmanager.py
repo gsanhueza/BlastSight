@@ -3,7 +3,6 @@
 from Model.handler import Handler
 from Model.Mesh.dxfhandler import DXFHandler
 from Model.Mesh.offhandler import OFFHandler
-from Model.BlockModel.csvhandler import CSVHandler
 
 
 # Generic handler for mesh loading/saving
@@ -12,7 +11,6 @@ class MeshManager:
         self.handler_dict = {}
         self.add_handler('dxf', DXFHandler())
         self.add_handler('off', OFFHandler())
-        self.add_handler('csv', CSVHandler())
 
     # Adds a new handler for meshes
     def add_handler(self, extension: str, handler: Handler) -> None:

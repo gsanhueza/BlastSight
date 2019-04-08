@@ -44,6 +44,21 @@ class MainWindow(QMainWindow):
             self.statusBar.showMessage('Cannot load mesh')
 
     @Slot()
+    def load_block_model_slot(self):
+        # TODO Use QSettings (or something) to remember last directory
+        (filepath, selected_filter) = QFileDialog.getOpenFileName(
+            parent=self,
+            dir='.',
+            filter='CSV Files (*.csv);;All files (*.*)')
+
+        if self.model.load_block_model(filepath):
+            self.statusBar.showMessage('Block model loaded')
+            # FIXME Maybe use signal / slot
+            self.widget.update_block_model()  # Notification to OpenGLWidget
+        else:
+            self.statusBar.showMessage('Cannot load block model')
+
+    @Slot()
     def normal_mode_slot(self):
         self.widget.current_mode = NormalMode(self.widget)
 

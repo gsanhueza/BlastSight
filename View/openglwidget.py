@@ -271,14 +271,15 @@ class OpenGLWidget(QOpenGLWidget):
     # Draws the mesh only
     def draw_mesh(self):
         self.mesh_vao.bind()
-        # glDrawArrays(GL_TRIANGLES, 0, self.position.size)  # This works on its own
+        # glDrawArrays(GL_TRIANGLES, 0, self.mesh_positions.size)  # This works on its own
         glDrawElements(GL_TRIANGLES, self.mesh_indices.size, GL_UNSIGNED_INT, None)
         self.mesh_vao.release()
 
     # Draws the block model only
     def draw_block_model(self):
         self.block_model_vao.bind()
-        # glDrawArrays(GL_TRIANGLES, 0, self.position.size)  # This works on its own
+        # glDrawArrays(GL_POINTS, 0, self.block_model_positions.size)  # This works on its own
+        # glDrawElements(GL_POINTS, self.block_model_indices.size, GL_UNSIGNED_INT, None)
         glDrawElements(GL_TRIANGLES, self.block_model_indices.size, GL_UNSIGNED_INT, None)
         self.block_model_vao.release()
 
@@ -312,14 +313,20 @@ class OpenGLWidget(QOpenGLWidget):
         self.update()
 
     # FIXME Should we (openglwidget) or mainwindow handle this? Should we notify mainwindow of an error?
-    def dragEnterEvent(self, event):
-        if event.mimeData().hasFormat("text/plain"):
+    def dragEnterEvent(self, event, *args, **kwargs):
+        if event.mimeData().hasFormat('text/plain'):
             event.acceptProposedAction()
 
-    def dropEvent(self, event):
+    def dropEvent(self, event, *args, **kwargs):
         file_path = event.mimeData().urls()[0].toLocalFile()
-        self.model.load_mesh(file_path)
-        self.update_mesh()
+
+        # FIXME We should know beforehand if this is a mesh or a block model
+        try:
+            self.model.load_mesh(file_path)
+            self.update_mesh()
+        except KeyError:
+            self.model.load_block_model(file_path)
+            self.update_block_model()
 
         # Check if we're part of a MainWindow or a standalone widget
         if self.parent():

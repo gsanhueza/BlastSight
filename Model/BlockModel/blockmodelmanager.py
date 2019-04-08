@@ -22,9 +22,9 @@ class BlockModelManager:
     # Lets the handler load the block model and update the model
     def load_block_model(self, model, file_path: str) -> bool:
         ext = Handler.get_file_extension(file_path)
-        return self.get_handler(ext).load_mesh(model, file_path)
+        return self.get_handler(ext).load_block_model(model, file_path)
 
     # Lets the handler save the block model
     def save_block_model(self, model, file_path: str) -> bool:
         ext = Handler.get_file_extension(file_path)
-        return self.get_handler(ext).save_mesh(model, file_path)
+        return self.get_handler(ext).save_block_model(model, file_path)

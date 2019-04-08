@@ -16,73 +16,31 @@ class CSVParser(Parser):
             reader = csv.reader(csv_file, delimiter=',')
             list_reader = list(reader)
 
-            x = []
-            y = []
-            z = []
             CuT = []
-
+            idx = 0
             for elem in list_reader:
                 try:
-                    x.append(float(elem[0]) - 5185)
-                    y.append(float(elem[1]) - 5920)
-                    z.append(float(elem[2]) - 2000)
+                    self.vertices.append((float(elem[0]), float(elem[1]), float(elem[2])))
+                    self.indices.append(idx)
                     CuT.append(float(elem[3]))
                 except ValueError:
                     continue
 
-            for i in range(x.__len__()):
-                self.generate_cube(x[i], y[i], z[i], CuT[i], CuT, i)
+            min_CuT = min(CuT)
+            max_CuT = max(CuT)
+
+            for cut in CuT:
+                self.values.append(
+                    (min(1.0, 2 * (1.0 - self.normalize(cut, min_CuT, max_CuT))),
+                     min(1.0, 2 * self.normalize(cut, min_CuT, max_CuT)),
+                     0.0)
+                )
 
     def get_indices(self) -> list:
-        return self.indices
+        return self.indices  # Don't flatten
 
-    def normalize(self, x: float, m: float, M: float) -> float:
+    def normalize(self, x: float, min_val: float, max_val: float) -> float:
         try:
-            return (x - m)/(M - m)
+            return (x - min_val)/(max_val - min_val)
         except ZeroDivisionError:
             return 1
-
-    def generate_cube(self, x, y, z, value, value_list, index):
-        # 8 vertices
-        self.vertices.append((x - 1, y - 1, z - 1))
-        self.vertices.append((x + 1, y - 1, z - 1))
-        self.vertices.append((x - 1, y + 1, z - 1))
-        self.vertices.append((x + 1, y + 1, z - 1))
-
-        self.vertices.append((x - 1, y - 1, z + 1))
-        self.vertices.append((x + 1, y - 1, z + 1))
-        self.vertices.append((x - 1, y + 1, z + 1))
-        self.vertices.append((x + 1, y + 1, z + 1))
-
-        # 12 triangles
-        # Front
-        self.indices.append((self._vertex_pos(index, 0), self._vertex_pos(index, 1), self._vertex_pos(index, 2)))
-        self.indices.append((self._vertex_pos(index, 1), self._vertex_pos(index, 3), self._vertex_pos(index, 2)))
-
-        # Back
-        self.indices.append((self._vertex_pos(index, 4), self._vertex_pos(index, 5), self._vertex_pos(index, 6)))
-        self.indices.append((self._vertex_pos(index, 5), self._vertex_pos(index, 7), self._vertex_pos(index, 6)))
-
-        # Left
-        self.indices.append((self._vertex_pos(index, 0), self._vertex_pos(index, 2), self._vertex_pos(index, 6)))
-        self.indices.append((self._vertex_pos(index, 0), self._vertex_pos(index, 4), self._vertex_pos(index, 6)))
-        # Right
-        self.indices.append((self._vertex_pos(index, 1), self._vertex_pos(index, 3), self._vertex_pos(index, 7)))
-        self.indices.append((self._vertex_pos(index, 1), self._vertex_pos(index, 5), self._vertex_pos(index, 7)))
-
-        # Top
-        self.indices.append((self._vertex_pos(index, 2), self._vertex_pos(index, 3), self._vertex_pos(index, 7)))
-        self.indices.append((self._vertex_pos(index, 2), self._vertex_pos(index, 6), self._vertex_pos(index, 7)))
-
-        # Bottom
-        self.indices.append((self._vertex_pos(index, 0), self._vertex_pos(index, 1), self._vertex_pos(index, 5)))
-        self.indices.append((self._vertex_pos(index, 1), self._vertex_pos(index, 4), self._vertex_pos(index, 5)))
-
-        # 8 values
-        for i in range(8):
-            self.values.append((min(1.0, 2.0 * (1.0 - self.normalize(value, min(value_list), max(value_list)))),
-                                min(1.0, 2.0 * self.normalize(value, min(value_list), max(value_list))),
-                                0.0))
-
-    def _vertex_pos(self, index, num):
-        return 8 * index + num
