@@ -168,6 +168,8 @@ class OpenGLWidget(QOpenGLWidget):
     def setup_vertex_attribs_mesh(self):
         _SIZE_OF_GL_FLOAT = 4
 
+        self.makeCurrent()
+
         self.mesh_vao.bind()
 
         self.mesh_positions_vbo.bind()
@@ -189,16 +191,16 @@ class OpenGLWidget(QOpenGLWidget):
     def setup_vertex_attribs_block_model(self):
         _SIZE_OF_GL_FLOAT = 4
 
+        self.makeCurrent()
+
         self.block_model_vao.bind()
 
         self.block_model_positions_vbo.bind()
-        glBufferData(GL_ARRAY_BUFFER, _SIZE_OF_GL_FLOAT * self.block_model_positions.size, self.block_model_positions,
-                     GL_STATIC_DRAW)
+        glBufferData(GL_ARRAY_BUFFER, _SIZE_OF_GL_FLOAT * self.block_model_positions.size, self.block_model_positions, GL_STATIC_DRAW)
         glVertexAttribPointer(_POSITION, 3, GL_FLOAT, False, 0, None)
 
         self.block_model_colors_vbo.bind()
-        glBufferData(GL_ARRAY_BUFFER, _SIZE_OF_GL_FLOAT * self.block_model_values.size, self.block_model_values,
-                     GL_STATIC_DRAW)
+        glBufferData(GL_ARRAY_BUFFER, _SIZE_OF_GL_FLOAT * self.block_model_values.size, self.block_model_values, GL_STATIC_DRAW)
         glVertexAttribPointer(_COLOR, 3, GL_FLOAT, False, 0, None)
 
         self.block_model_indices_ibo.bind()

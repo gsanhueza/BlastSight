@@ -21,7 +21,6 @@ class CSVParser(Parser):
             for elem in list_reader:
                 try:
                     self.vertices.append((float(elem[0]), float(elem[1]), float(elem[2])))
-                    self.indices.append(idx)
                     CuT.append(float(elem[3]))
                 except ValueError:
                     continue
@@ -35,6 +34,8 @@ class CSVParser(Parser):
                      min(1.0, 2 * self.normalize(cut, min_CuT, max_CuT)),
                      0.0)
                 )
+                self.indices.append(idx)
+                idx += 1
 
     def get_indices(self) -> list:
         return self.indices  # Don't flatten
