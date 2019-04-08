@@ -236,7 +236,7 @@ class OpenGLWidget(QOpenGLWidget):
 
         self.block_model_colors_vbo.bind()
         glBufferData(GL_ARRAY_BUFFER, _SIZE_OF_GL_FLOAT * self.block_model_values.size, self.block_model_values, GL_STATIC_DRAW)
-        glVertexAttribPointer(_COLOR, 1, GL_FLOAT, False, 0, None)
+        glVertexAttribPointer(_COLOR, 3, GL_FLOAT, False, 0, None)
 
         self.block_model_indices_ibo.bind()
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, self.block_model_indices, GL_STATIC_DRAW)

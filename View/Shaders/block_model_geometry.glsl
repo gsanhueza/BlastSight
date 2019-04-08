@@ -3,13 +3,16 @@
 #extension GL_EXT_geometry_shader4 : enable
 
 layout (points) in;
-layout (triangle_strip, max_vertices = 4) out;
+layout (triangle_strip, max_vertices = 24) out;
 
 layout (location = 1) in vec3 v_color[1];
 layout (location = 1) out vec3 f_color;
 
-uniform float voxSize = 5.0;
-uniform mat4 mvp = proj_matrix * model_view_matrix;
+uniform float voxSize = 0.5;
+uniform mat4 proj_matrix;
+uniform mat4 model_view_matrix;
+
+mat4 mvp = proj_matrix * model_view_matrix;
 
 void AddQuad(vec4 center, vec4 dy, vec4 dx)
 {
@@ -32,34 +35,18 @@ void AddQuad(vec4 center, vec4 dy, vec4 dx)
     EndPrimitive();
 }
 
-void build_house(vec4 position)
-{
-    gl_Position = position + vec4(-0.2, -0.2, 0.0, 0.0);    // 1:bottom-left
-    f_color = v_color[0];
-    EmitVertex();
-
-    gl_Position = position + vec4( 0.2, -0.2, 0.0, 0.0);    // 2:bottom-right
-    f_color = v_color[0];
-    EmitVertex();
-
-    gl_Position = position + vec4(-0.2,  0.2, 0.0, 0.0);    // 3:top-left
-    f_color = v_color[0];
-    EmitVertex();
-
-    gl_Position = position + vec4( 0.2,  0.2, 0.0, 0.0);    // 4:top-right
-    f_color = v_color[0];
-    EmitVertex();
-
-    EndPrimitive();
-}
-
 void main()
 {
+    vec4 center = gl_in[0].gl_Position;
+
     vec4 dx = mvp[0] / 2.0f * voxSize;
     vec4 dy = mvp[1] / 2.0f * voxSize;
     vec4 dz = mvp[2] / 2.0f * voxSize;
 
-    vec4 center = gl_in[0].gl_Position;
-//    AddQuad(center + dx, dy, dz);
-    build_house(center);
+    AddQuad(center + dx, dy, dz);  // Right
+    AddQuad(center - dx, dz, dy);  // Left
+    AddQuad(center + dy, dz, dx);  // Top
+    AddQuad(center - dy, dx, dz);  // Bottom
+    AddQuad(center + dz, dx, dy);  // Front
+    AddQuad(center - dz, dy, dx);  // Back
 }
