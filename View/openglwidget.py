@@ -232,7 +232,7 @@ class OpenGLWidget(QOpenGLWidget):
 
         self.block_model_positions_vbo.bind()
         glBufferData(GL_ARRAY_BUFFER, _SIZE_OF_GL_FLOAT * self.block_model_positions.size, self.block_model_positions, GL_STATIC_DRAW)
-        glVertexAttribPointer(_POSITION, 1, GL_FLOAT, False, 0, None)  # A point is one (1) vertex
+        glVertexAttribPointer(_POSITION, 3, GL_FLOAT, False, 0, None)
 
         self.block_model_colors_vbo.bind()
         glBufferData(GL_ARRAY_BUFFER, _SIZE_OF_GL_FLOAT * self.block_model_values.size, self.block_model_values, GL_STATIC_DRAW)

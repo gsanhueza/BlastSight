@@ -37,6 +37,7 @@ void AddQuad(vec4 center, vec4 dy, vec4 dx)
 
 void main()
 {
+    // FIXME This can be made with half the vertices (Hint: Visibility)
     vec4 center = gl_in[0].gl_Position;
 
     vec4 dx = mvp[0] / 2.0f * voxSize;
