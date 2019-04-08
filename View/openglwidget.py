@@ -104,7 +104,7 @@ class OpenGLWidget(QOpenGLWidget):
         # QPainter (after OpenGL)
         self.painter = QPainter()
 
-    def initializeGL(self):
+    def initialize_mesh_shader(self):
         self.shader_program = QOpenGLShaderProgram(self.context())
 
         # Create shaders
@@ -122,7 +122,18 @@ class OpenGLWidget(QOpenGLWidget):
         self.shader_program.addShader(self.fragment_shader)
         self.shader_program.addShader(self.geometry_shader)
 
-        # Repeat for Block Model
+        # If the shader uses 'layout (location = 0) in vec3 a_position;', then
+        # it's unnecessary to bind a name. We only need to remember that in
+        # glVertexAttribPointer(_POSITION, 3, GL_FLOAT, False, 0, None),
+        # that '_POSITION' is 0 here, and 0 in the shader (or 1, or 2...)
+
+        # Bind attribute locations (Unneeded if shader has layout(location))
+        # self.shader_program.bindAttributeLocation('a_position', _POSITION)
+        # self.shader_program.bindAttributeLocation('a_color', _COLOR)
+
+        self.shader_program.link()
+
+    def initialize_block_model_shader(self):
         self.block_model_shader_program = QOpenGLShaderProgram(self.context())
 
         # Create shaders
@@ -146,11 +157,14 @@ class OpenGLWidget(QOpenGLWidget):
         # that '_POSITION' is 0 here, and 0 in the shader (or 1, or 2...)
 
         # Bind attribute locations (Unneeded if shader has layout(location))
-        # self.shader_program.bindAttributeLocation('a_position', _POSITION)
-        # self.shader_program.bindAttributeLocation('a_color', _COLOR)
+        # self.block_model_shader_program.bindAttributeLocation('a_position', _POSITION)
+        # self.block_model_shader_program.bindAttributeLocation('a_color', _COLOR)
 
-        self.shader_program.link()
         self.block_model_shader_program.link()
+
+    def initializeGL(self):
+        self.initialize_mesh_shader()
+        self.initialize_block_model_shader()
 
         self.shader_program.bind()
 
@@ -204,7 +218,6 @@ class OpenGLWidget(QOpenGLWidget):
         _SIZE_OF_GL_FLOAT = 4
 
         self.makeCurrent()
-
         self.mesh_vao.bind()
 
         self.mesh_positions_vbo.bind()
@@ -227,7 +240,6 @@ class OpenGLWidget(QOpenGLWidget):
         _SIZE_OF_GL_FLOAT = 4
 
         self.makeCurrent()
-
         self.block_model_vao.bind()
 
         self.block_model_positions_vbo.bind()
