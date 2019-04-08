@@ -108,7 +108,7 @@ class OpenGLWidget(QOpenGLWidget):
         # Add shaders to program
         self.shader_program.addShader(self.vertex_shader)
         self.shader_program.addShader(self.fragment_shader)
-        self.shader_program.addShader(self.geometry_shader)
+        self.shader_program.addShader(self.geometry_shader)  # FIXME If we're going to draw a point, we need a different geometry shader
 
         # If the shader uses 'layout (location = 0) in vec3 a_position;', then
         # it's unnecessary to bind a name. We only need to remember that in
@@ -197,7 +197,7 @@ class OpenGLWidget(QOpenGLWidget):
 
         self.block_model_positions_vbo.bind()
         glBufferData(GL_ARRAY_BUFFER, _SIZE_OF_GL_FLOAT * self.block_model_positions.size, self.block_model_positions, GL_STATIC_DRAW)
-        glVertexAttribPointer(_POSITION, 3, GL_FLOAT, False, 0, None)
+        glVertexAttribPointer(_POSITION, 1, GL_FLOAT, False, 0, None)  # A point is one (1) vertex
 
         self.block_model_colors_vbo.bind()
         glBufferData(GL_ARRAY_BUFFER, _SIZE_OF_GL_FLOAT * self.block_model_values.size, self.block_model_values, GL_STATIC_DRAW)
@@ -274,15 +274,16 @@ class OpenGLWidget(QOpenGLWidget):
     def draw_mesh(self):
         self.mesh_vao.bind()
         # glDrawArrays(GL_TRIANGLES, 0, self.mesh_positions.size)  # This works on its own
+        # glDrawElements(GL_POINTS, self.mesh_indices.size, GL_UNSIGNED_INT, None)
         glDrawElements(GL_TRIANGLES, self.mesh_indices.size, GL_UNSIGNED_INT, None)
         self.mesh_vao.release()
 
     # Draws the block model only
     def draw_block_model(self):
         self.block_model_vao.bind()
-        # glDrawArrays(GL_POINTS, 0, self.block_model_positions.size)  # This works on its own
-        # glDrawElements(GL_POINTS, self.block_model_indices.size, GL_UNSIGNED_INT, None)
-        glDrawElements(GL_TRIANGLES, self.block_model_indices.size, GL_UNSIGNED_INT, None)
+        # glDrawArrays(GL_TRIANGLES, 0, self.block_model_positions.size)  # This works on its own
+        glDrawElements(GL_POINTS, self.block_model_indices.size, GL_UNSIGNED_INT, None)
+        # glDrawElements(GL_TRIANGLES, self.block_model_indices.size, GL_UNSIGNED_INT, None)
         self.block_model_vao.release()
 
     @Slot()
