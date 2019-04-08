@@ -33,11 +33,17 @@ class OpenGLWidget(QOpenGLWidget):
         # Model
         self.model = model
 
-        # Shaders
+        # Shaders (Mesh)
         self.shader_program = QOpenGLShaderProgram(self)
         self.vertex_shader = None
         self.fragment_shader = None
         self.geometry_shader = None
+
+        # Shaders (Block Model)
+        self.block_model_shader_program = QOpenGLShaderProgram(self)
+        self.block_model_vertex_shader = None
+        self.block_model_fragment_shader = None
+        self.block_model_geometry_shader = None
 
         # VAO/VBO (Mesh)
         self.mesh_vao = QOpenGLVertexArrayObject()
@@ -67,14 +73,20 @@ class OpenGLWidget(QOpenGLWidget):
         self.zRot = 0.0
 
         # Shader locations
-        self.vertex_shader_source = 'View/Shaders/vertex.glsl'
-        self.fragment_shader_source = 'View/Shaders/fragment.glsl'
-        self.geometry_shader_source = 'View/Shaders/geometry.glsl'
+        self.vertex_shader_source = 'View/Shaders/mesh_vertex.glsl'
+        self.fragment_shader_source = 'View/Shaders/mesh_fragment.glsl'
+        self.geometry_shader_source = 'View/Shaders/mesh_geometry.glsl'
+
+        self.block_model_vertex_shader_source = 'View/Shaders/block_model_vertex.glsl'
+        self.block_model_fragment_shader_source = 'View/Shaders/block_model_fragment.glsl'
+        self.block_model_geometry_shader_source = 'View/Shaders/block_model_geometry.glsl'
 
         # MVP locations
         self.model_view_matrix_loc = None
         self.proj_matrix_loc = None
-        self.test_value_loc = None
+
+        self.block_model_model_view_matrix_loc = None
+        self.block_model_proj_matrix_loc = None
 
         # Data (Mesh)
         self.mesh_positions = None
@@ -108,7 +120,25 @@ class OpenGLWidget(QOpenGLWidget):
         # Add shaders to program
         self.shader_program.addShader(self.vertex_shader)
         self.shader_program.addShader(self.fragment_shader)
-        self.shader_program.addShader(self.geometry_shader)  # FIXME If we're going to draw a point, we need a different geometry shader
+        self.shader_program.addShader(self.geometry_shader)
+
+        # Repeat for Block Model
+        self.block_model_shader_program = QOpenGLShaderProgram(self.context())
+
+        # Create shaders
+        self.block_model_vertex_shader = QOpenGLShader(QOpenGLShader.Vertex)
+        self.block_model_fragment_shader = QOpenGLShader(QOpenGLShader.Fragment)
+        self.block_model_geometry_shader = QOpenGLShader(QOpenGLShader.Geometry)
+
+        # Compile shaders
+        self.block_model_vertex_shader.compileSourceFile(self.block_model_vertex_shader_source)
+        self.block_model_fragment_shader.compileSourceFile(self.block_model_fragment_shader_source)
+        self.block_model_geometry_shader.compileSourceFile(self.block_model_geometry_shader_source)
+
+        # Add shaders to program
+        self.block_model_shader_program.addShader(self.block_model_vertex_shader)
+        self.block_model_shader_program.addShader(self.block_model_fragment_shader)
+        self.block_model_shader_program.addShader(self.block_model_geometry_shader)
 
         # If the shader uses 'layout (location = 0) in vec3 a_position;', then
         # it's unnecessary to bind a name. We only need to remember that in
@@ -120,11 +150,16 @@ class OpenGLWidget(QOpenGLWidget):
         # self.shader_program.bindAttributeLocation('a_color', _COLOR)
 
         self.shader_program.link()
+        self.block_model_shader_program.link()
+
         self.shader_program.bind()
 
         # MVP locations
         self.model_view_matrix_loc = self.shader_program.uniformLocation('model_view_matrix')
         self.proj_matrix_loc = self.shader_program.uniformLocation('proj_matrix')
+
+        self.block_model_model_view_matrix_loc = self.block_model_shader_program.uniformLocation('model_view_matrix')
+        self.block_model_proj_matrix_loc = self.block_model_shader_program.uniformLocation('proj_matrix')
 
         # Data (Mesh)
         self.mesh_positions = np.array([-0.5, 0.5, 0.0,
@@ -201,7 +236,7 @@ class OpenGLWidget(QOpenGLWidget):
 
         self.block_model_colors_vbo.bind()
         glBufferData(GL_ARRAY_BUFFER, _SIZE_OF_GL_FLOAT * self.block_model_values.size, self.block_model_values, GL_STATIC_DRAW)
-        glVertexAttribPointer(_COLOR, 3, GL_FLOAT, False, 0, None)
+        glVertexAttribPointer(_COLOR, 1, GL_FLOAT, False, 0, None)
 
         self.block_model_indices_ibo.bind()
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, self.block_model_indices, GL_STATIC_DRAW)
@@ -236,6 +271,11 @@ class OpenGLWidget(QOpenGLWidget):
 
         # Draw mesh
         self.draw_mesh()
+
+        # Bind data of shaders to program
+        self.block_model_shader_program.bind()
+        self.block_model_shader_program.setUniformValue(self.block_model_proj_matrix_loc, self.proj)
+        self.block_model_shader_program.setUniformValue(self.block_model_model_view_matrix_loc, self.camera * self.world)
 
         # Draw block model
         self.draw_block_model()
