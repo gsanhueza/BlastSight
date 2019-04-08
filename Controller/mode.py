@@ -18,5 +18,5 @@ class Mode:
     def wheelEvent(self, event):
         pass
 
-    def modify_paintgl(self):
+    def overpaint(self):
         pass

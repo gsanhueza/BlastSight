@@ -23,9 +23,9 @@ class CSVParser(Parser):
 
             for elem in list_reader:
                 try:
-                    x.append(float(elem[0]))
-                    y.append(float(elem[1]))
-                    z.append(float(elem[2]))
+                    x.append(float(elem[0]) - 5185)
+                    y.append(float(elem[1]) - 5920)
+                    z.append(float(elem[2]) - 2000)
                     CuT.append(float(elem[3]))
                 except ValueError:
                     continue

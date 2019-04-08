@@ -49,7 +49,7 @@ class DrawMode(Mode):
         # TODO Multiply/invert/do something to get the world coordinates from the click on screen
         self.active = False
 
-    def modify_paintgl(self):
+    def overpaint(self):
         if self.active or True:
             self.widget.painter.begin(self.widget)
             self.widget.painter.setPen(Qt.yellow)

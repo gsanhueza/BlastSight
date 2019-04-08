@@ -10,18 +10,18 @@ class Model:
         self.mesh_manager = MeshManager()
         self.block_model_manager = BlockModelManager()
 
-        self.vertices = None
-        self.indices = None
-        self.values = None
+        self.mesh_vertices = None
+        self.mesh_indices = None
+        self.mesh_values = None
 
-    def get_vertices(self):
-        return self.vertices
+    def get_mesh_vertices(self):
+        return self.mesh_vertices
 
-    def get_indices(self):
-        return self.indices
+    def get_mesh_indices(self):
+        return self.mesh_indices
 
-    def get_values(self):
-        return self.values
+    def get_mesh_values(self):
+        return self.mesh_values
 
     # The mesh handler will load the mesh and update our own data
     def load_mesh(self, file_path: str) -> bool:

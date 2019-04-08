@@ -12,9 +12,9 @@ class DXFHandler(Handler):
     def load_mesh(self, model, file_path):
         # FIXME Not average vertices!
         self.parser.load_file(file_path)
-        model.vertices = self.parser.get_averaged_vertices()
-        model.indices = self.parser.get_indices()
-        model.values = self.parser.get_values()
+        model.mesh_vertices = self.parser.get_averaged_vertices()
+        model.mesh_indices = self.parser.get_indices()
+        model.mesh_values = self.parser.get_values()
 
         return True
 

@@ -39,11 +39,17 @@ class OpenGLWidget(QOpenGLWidget):
         self.fragment_shader = None
         self.geometry_shader = None
 
-        # VAO/VBO
-        self.vao = QOpenGLVertexArrayObject()
-        self.position_vbo = QOpenGLBuffer(QOpenGLBuffer.VertexBuffer)
-        self.color_vbo = QOpenGLBuffer(QOpenGLBuffer.VertexBuffer)
-        self.indices_ibo = QOpenGLBuffer(QOpenGLBuffer.IndexBuffer)
+        # VAO/VBO (Mesh)
+        self.mesh_vao = QOpenGLVertexArrayObject()
+        self.mesh_positions_vbo = QOpenGLBuffer(QOpenGLBuffer.VertexBuffer)
+        self.mesh_indices_ibo = QOpenGLBuffer(QOpenGLBuffer.IndexBuffer)
+        self.mesh_colors_vbo = QOpenGLBuffer(QOpenGLBuffer.VertexBuffer)
+
+        # VAO/VBO (Block Model)
+        self.block_model_vao = QOpenGLVertexArrayObject()
+        self.block_model_positions_vbo = QOpenGLBuffer(QOpenGLBuffer.VertexBuffer)
+        self.block_model_indices_ibo = QOpenGLBuffer(QOpenGLBuffer.IndexBuffer)
+        self.block_model_colors_vbo = QOpenGLBuffer(QOpenGLBuffer.VertexBuffer)
 
         # Camera/World/Projection
         self.camera = QMatrix4x4()
@@ -70,10 +76,15 @@ class OpenGLWidget(QOpenGLWidget):
         self.proj_matrix_loc = None
         self.test_value_loc = None
 
-        # Data
-        self.position = None
-        self.indices = None
-        self.values = None
+        # Data (Mesh)
+        self.mesh_positions = None
+        self.mesh_indices = None
+        self.mesh_values = None
+
+        # Data (Block Model)
+        self.block_model_positions = None
+        self.block_model_indices = None
+        self.block_model_values = None
 
         # Wireframe (Shader toggling)
         self.wireframe_enabled = True
@@ -115,24 +126,38 @@ class OpenGLWidget(QOpenGLWidget):
         self.model_view_matrix_loc = self.shader_program.uniformLocation('model_view_matrix')
         self.proj_matrix_loc = self.shader_program.uniformLocation('proj_matrix')
 
-        # Data
-        self.position = np.array([-0.5, 0.5, 0.0,
-                                  -0.5, -0.5, 0.0,
-                                  0.5, 0.5, 0.0], np.float32)
+        # Data (Mesh)
+        self.mesh_positions = np.array([-0.5, 0.5, 0.0,
+                                        -0.5, -0.5, 0.0,
+                                        0.5, 0.5, 0.0], np.float32)
 
-        self.values = np.array([1.0, 0.0, 0.0,
-                                0.0, 1.0, 0.0,
-                                0.0, 0.0, 1.0], np.float32)
+        self.mesh_values = np.array([1.0, 0.0, 0.0,
+                                     0.0, 1.0, 0.0,
+                                     0.0, 0.0, 1.0], np.float32)
 
-        self.indices = np.array([0, 1, 2], np.uint32)  # Finally! This wasn't np.int, but np.uint32
+        self.mesh_indices = np.array([0, 1, 2], np.uint32)  # GL_UNSIGNED_INT = np.uint32
+
+        # Data (Block Model)
+        self.block_model_positions = np.array([-1.5, 1.5, 0.0,
+                                               -1.5, -1.5, 0.0,
+                                               1.5, 1.5, 0.0], np.float32)
+
+        self.block_model_values = np.array([1.0, 0.0, 0.0,
+                                            0.0, 1.0, 0.0,
+                                            0.0, 0.0, 1.0], np.float32)
+
+        self.block_model_indices = np.array([0, 1, 2], np.uint32)  # GL_UNSIGNED_INT = np.uint32
 
         # VAO/VBO/IBO creation
-        self.vao.create()
-        self.position_vbo.create()
-        self.color_vbo.create()
-        self.indices_ibo.create()
+        self.mesh_vao.create()
+        self.mesh_positions_vbo.create()
+        self.mesh_colors_vbo.create()
+        self.mesh_indices_ibo.create()
 
-        self.vao.bind()
+        self.block_model_vao.create()
+        self.block_model_positions_vbo.create()
+        self.block_model_colors_vbo.create()
+        self.block_model_indices_ibo.create()
 
         # Setup vertex attributes
         self.setup_vertex_attribs()
@@ -140,26 +165,53 @@ class OpenGLWidget(QOpenGLWidget):
         # Camera setup
         self.camera.translate(self.xCamPos, self.yCamPos, self.zCamPos)
 
-    def setup_vertex_attribs(self):
+    def setup_vertex_attribs_mesh(self):
         _SIZE_OF_GL_FLOAT = 4
 
-        self.vao.bind()
+        self.mesh_vao.bind()
 
-        self.position_vbo.bind()
-        glBufferData(GL_ARRAY_BUFFER, _SIZE_OF_GL_FLOAT * self.position.size, self.position, GL_STATIC_DRAW)
+        self.mesh_positions_vbo.bind()
+        glBufferData(GL_ARRAY_BUFFER, _SIZE_OF_GL_FLOAT * self.mesh_positions.size, self.mesh_positions, GL_STATIC_DRAW)
         glVertexAttribPointer(_POSITION, 3, GL_FLOAT, False, 0, None)
 
-        self.color_vbo.bind()
-        glBufferData(GL_ARRAY_BUFFER, _SIZE_OF_GL_FLOAT * self.values.size, self.values, GL_STATIC_DRAW)
+        self.mesh_colors_vbo.bind()
+        glBufferData(GL_ARRAY_BUFFER, _SIZE_OF_GL_FLOAT * self.mesh_values.size, self.mesh_values, GL_STATIC_DRAW)
         glVertexAttribPointer(_COLOR, 3, GL_FLOAT, False, 0, None)
 
-        self.indices_ibo.bind()
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, self.indices, GL_STATIC_DRAW)
+        self.mesh_indices_ibo.bind()
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, self.mesh_indices, GL_STATIC_DRAW)
 
         glEnableVertexAttribArray(_POSITION)
         glEnableVertexAttribArray(_COLOR)
 
-        self.vao.release()
+        self.mesh_vao.release()
+
+    def setup_vertex_attribs_block_model(self):
+        _SIZE_OF_GL_FLOAT = 4
+
+        self.block_model_vao.bind()
+
+        self.block_model_positions_vbo.bind()
+        glBufferData(GL_ARRAY_BUFFER, _SIZE_OF_GL_FLOAT * self.block_model_positions.size, self.block_model_positions,
+                     GL_STATIC_DRAW)
+        glVertexAttribPointer(_POSITION, 3, GL_FLOAT, False, 0, None)
+
+        self.block_model_colors_vbo.bind()
+        glBufferData(GL_ARRAY_BUFFER, _SIZE_OF_GL_FLOAT * self.block_model_values.size, self.block_model_values,
+                     GL_STATIC_DRAW)
+        glVertexAttribPointer(_COLOR, 3, GL_FLOAT, False, 0, None)
+
+        self.block_model_indices_ibo.bind()
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, self.block_model_indices, GL_STATIC_DRAW)
+
+        glEnableVertexAttribArray(_POSITION)
+        glEnableVertexAttribArray(_COLOR)
+
+        self.block_model_vao.release()
+
+    def setup_vertex_attribs(self):
+        self.setup_vertex_attribs_mesh()
+        self.setup_vertex_attribs_block_model()
 
     def paintGL(self):
         self.painter.begin(self)
@@ -180,16 +232,15 @@ class OpenGLWidget(QOpenGLWidget):
         self.shader_program.setUniformValue(self.proj_matrix_loc, self.proj)
         self.shader_program.setUniformValue(self.model_view_matrix_loc, self.camera * self.world)
 
-        # Draw data
-        self.vao.bind()
-        # glDrawArrays(GL_TRIANGLES, 0, self.position.size)  # This works on its own
-        glDrawElements(GL_TRIANGLES, self.indices.size, GL_UNSIGNED_INT, None)
-        self.vao.release()
+        # Draw mesh
+        self.draw_mesh()
 
-        self.painter.end()
+        # Draw block model
+        self.draw_block_model()
 
         # QPainter can draw *after* OpenGL finishes
-        self.current_mode.modify_paintgl()
+        self.painter.end()
+        self.current_mode.overpaint()
 
     def resizeGL(self, w, h):
         # TODO Allow perspective/orthogonal in the controller (mode)
@@ -217,13 +268,36 @@ class OpenGLWidget(QOpenGLWidget):
         self.current_mode.wheelEvent(event)
         self.update()
 
+    # Draws the mesh only
+    def draw_mesh(self):
+        self.mesh_vao.bind()
+        # glDrawArrays(GL_TRIANGLES, 0, self.position.size)  # This works on its own
+        glDrawElements(GL_TRIANGLES, self.mesh_indices.size, GL_UNSIGNED_INT, None)
+        self.mesh_vao.release()
+
+    # Draws the block model only
+    def draw_block_model(self):
+        self.block_model_vao.bind()
+        # glDrawArrays(GL_TRIANGLES, 0, self.position.size)  # This works on its own
+        glDrawElements(GL_TRIANGLES, self.block_model_indices.size, GL_UNSIGNED_INT, None)
+        self.block_model_vao.release()
+
     @Slot()
     def update_mesh(self):
-        self.position = np.array(self.model.get_vertices(), np.float32)
-        self.indices = np.array(self.model.get_indices(), np.uint32)
-        self.values = np.array(self.model.get_values(), np.float32)
+        self.mesh_positions = np.array(self.model.get_mesh_vertices(), np.float32)
+        self.mesh_indices = np.array(self.model.get_mesh_indices(), np.uint32)
+        self.mesh_values = np.array(self.model.get_mesh_values(), np.float32)
 
-        self.setup_vertex_attribs()
+        self.setup_vertex_attribs_mesh()
+        self.update()
+
+    @Slot()
+    def update_block_model(self):
+        self.block_model_positions = np.array(self.model.get_block_model_vertices(), np.float32)
+        self.block_model_indices = np.array(self.model.get_block_model_indices(), np.uint32)
+        self.block_model_values = np.array(self.model.get_block_model_values(), np.float32)
+
+        self.setup_vertex_attribs_block_model()
         self.update()
 
     @Slot()
