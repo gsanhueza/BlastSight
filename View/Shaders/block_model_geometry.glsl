@@ -3,7 +3,7 @@
 #extension GL_EXT_geometry_shader4 : enable
 
 layout (points) in;
-layout (line_strip, max_vertices = 2) out;
+layout (triangle_strip, max_vertices = 4) out;
 
 layout (location = 1) in vec3 v_color[1];
 layout (location = 1) out vec3 f_color;
@@ -13,20 +13,41 @@ uniform mat4 mvp = proj_matrix * model_view_matrix;
 
 void AddQuad(vec4 center, vec4 dy, vec4 dx)
 {
-    f_color = v_color[0];
     gl_Position = center + (dx - dy);
+    f_color = v_color[0];
     EmitVertex();
 
-    f_color = v_color[0];
     gl_Position = center + (-dx - dy);
+    f_color = v_color[0];
     EmitVertex();
 
-    f_color = v_color[0];
     gl_Position = center + (dx + dy);
+    f_color = v_color[0];
     EmitVertex();
 
-    f_color = v_color[0];
     gl_Position = center + (-dx + dy);
+    f_color = v_color[0];
+    EmitVertex();
+
+    EndPrimitive();
+}
+
+void build_house(vec4 position)
+{
+    gl_Position = position + vec4(-0.2, -0.2, 0.0, 0.0);    // 1:bottom-left
+    f_color = v_color[0];
+    EmitVertex();
+
+    gl_Position = position + vec4( 0.2, -0.2, 0.0, 0.0);    // 2:bottom-right
+    f_color = v_color[0];
+    EmitVertex();
+
+    gl_Position = position + vec4(-0.2,  0.2, 0.0, 0.0);    // 3:top-left
+    f_color = v_color[0];
+    EmitVertex();
+
+    gl_Position = position + vec4( 0.2,  0.2, 0.0, 0.0);    // 4:top-right
+    f_color = v_color[0];
     EmitVertex();
 
     EndPrimitive();
@@ -34,28 +55,11 @@ void AddQuad(vec4 center, vec4 dy, vec4 dx)
 
 void main()
 {
-    vec4 center = gl_in[0].gl_Position;
-
     vec4 dx = mvp[0] / 2.0f * voxSize;
     vec4 dy = mvp[1] / 2.0f * voxSize;
     vec4 dz = mvp[2] / 2.0f * voxSize;
 
+    vec4 center = gl_in[0].gl_Position;
 //    AddQuad(center + dx, dy, dz);
-//    AddQuad(center - dx, dz, dy);
-//    AddQuad(center + dy, dz, dx);
-//    AddQuad(center - dy, dx, dz);
-//    AddQuad(center + dz, dx, dy);
-//    AddQuad(center - dz, dy, dx);
-
-    gl_Position = gl_in[0].gl_Position + vec4(1.0, 0.0, 0.0, 1.0);
-    f_color = v_color[0];
-
-    EmitVertex();
-
-    gl_Position = gl_in[0].gl_Position + vec4(-1.0, 0.0, 0.0, 1.0);
-    f_color = v_color[0];
-
-    EmitVertex();
-
-    EndPrimitive();
+    build_house(center);
 }
