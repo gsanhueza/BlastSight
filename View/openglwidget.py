@@ -10,6 +10,7 @@ from PySide2.QtGui import QOpenGLShader
 from PySide2.QtGui import QOpenGLBuffer
 from PySide2.QtGui import QOpenGLVertexArrayObject
 from PySide2.QtGui import QMatrix4x4
+from PySide2.QtGui import QVector2D
 from PySide2.QtCore import Qt
 from PySide2.QtCore import Slot
 
@@ -87,6 +88,7 @@ class OpenGLWidget(QOpenGLWidget):
 
         self.block_model_model_view_matrix_loc = None
         self.block_model_proj_matrix_loc = None
+        self.block_model_block_size_loc = None
 
         # Data (Mesh)
         self.mesh_positions = None
@@ -97,6 +99,7 @@ class OpenGLWidget(QOpenGLWidget):
         self.block_model_positions = None
         self.block_model_indices = None
         self.block_model_values = None
+        self.block_size = 0.5
 
         # Wireframe (Shader toggling)
         self.wireframe_enabled = True
@@ -174,6 +177,7 @@ class OpenGLWidget(QOpenGLWidget):
 
         self.block_model_model_view_matrix_loc = self.block_model_shader_program.uniformLocation('model_view_matrix')
         self.block_model_proj_matrix_loc = self.block_model_shader_program.uniformLocation('proj_matrix')
+        self.block_model_block_size_loc = self.block_model_shader_program.uniformLocation('block_size')
 
         # Data (Mesh)
         self.mesh_positions = np.array([-0.5, 0.5, 0.0,
@@ -288,6 +292,8 @@ class OpenGLWidget(QOpenGLWidget):
         self.block_model_shader_program.bind()
         self.block_model_shader_program.setUniformValue(self.block_model_proj_matrix_loc, self.proj)
         self.block_model_shader_program.setUniformValue(self.block_model_model_view_matrix_loc, self.camera * self.world)
+        self.block_model_shader_program.setUniformValue(self.block_model_block_size_loc, QVector2D(self.block_size, 0.0))
+
 
         # Draw block model
         self.draw_block_model()
