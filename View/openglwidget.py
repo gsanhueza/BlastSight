@@ -14,6 +14,7 @@ from PySide2.QtGui import QVector2D
 from PySide2.QtCore import Qt
 from PySide2.QtCore import Slot
 
+from View.drawable import Drawable
 from Controller.normalmode import NormalMode
 
 _POSITION = 0
@@ -34,23 +35,14 @@ class OpenGLWidget(QOpenGLWidget):
         # Model
         self.model = model
 
-        # Shaders (Mesh)
-        self.shader_program = QOpenGLShaderProgram(self)
-        self.vertex_shader = None
-        self.fragment_shader = None
-        self.geometry_shader = None
+        # Mesh
+        self.mesh = Drawable(self)
 
         # Shaders (Block Model)
         self.block_model_shader_program = QOpenGLShaderProgram(self)
         self.block_model_vertex_shader = None
         self.block_model_fragment_shader = None
         self.block_model_geometry_shader = None
-
-        # VAO/VBO (Mesh)
-        self.mesh_vao = QOpenGLVertexArrayObject()
-        self.mesh_positions_vbo = QOpenGLBuffer(QOpenGLBuffer.VertexBuffer)
-        self.mesh_indices_ibo = QOpenGLBuffer(QOpenGLBuffer.IndexBuffer)
-        self.mesh_colors_vbo = QOpenGLBuffer(QOpenGLBuffer.VertexBuffer)
 
         # VAO/VBO (Block Model)
         self.block_model_vao = QOpenGLVertexArrayObject()
@@ -73,11 +65,6 @@ class OpenGLWidget(QOpenGLWidget):
         self.yRot = 0.0
         self.zRot = 0.0
 
-        # Shader locations
-        self.vertex_shader_source = 'View/Shaders/mesh_vertex.glsl'
-        self.fragment_shader_source = 'View/Shaders/mesh_fragment.glsl'
-        self.geometry_shader_source = 'View/Shaders/mesh_geometry.glsl'
-
         self.block_model_vertex_shader_source = 'View/Shaders/block_model_vertex.glsl'
         self.block_model_fragment_shader_source = 'View/Shaders/block_model_fragment.glsl'
         self.block_model_geometry_shader_source = 'View/Shaders/block_model_geometry.glsl'
@@ -90,11 +77,6 @@ class OpenGLWidget(QOpenGLWidget):
         self.block_model_proj_matrix_loc = None
         self.block_model_block_size_loc = None
 
-        # Data (Mesh)
-        self.mesh_positions = None
-        self.mesh_indices = None
-        self.mesh_values = None
-
         # Data (Block Model)
         self.block_model_positions = None
         self.block_model_indices = None
@@ -106,35 +88,6 @@ class OpenGLWidget(QOpenGLWidget):
 
         # QPainter (after OpenGL)
         self.painter = QPainter()
-
-    def initialize_mesh_shader(self):
-        self.shader_program = QOpenGLShaderProgram(self.context())
-
-        # Create shaders
-        self.vertex_shader = QOpenGLShader(QOpenGLShader.Vertex)
-        self.fragment_shader = QOpenGLShader(QOpenGLShader.Fragment)
-        self.geometry_shader = QOpenGLShader(QOpenGLShader.Geometry)
-
-        # Compile shaders
-        self.vertex_shader.compileSourceFile(self.vertex_shader_source)
-        self.fragment_shader.compileSourceFile(self.fragment_shader_source)
-        self.geometry_shader.compileSourceFile(self.geometry_shader_source)
-
-        # Add shaders to program
-        self.shader_program.addShader(self.vertex_shader)
-        self.shader_program.addShader(self.fragment_shader)
-        self.shader_program.addShader(self.geometry_shader)
-
-        # If the shader uses 'layout (location = 0) in vec3 a_position;', then
-        # it's unnecessary to bind a name. We only need to remember that in
-        # glVertexAttribPointer(_POSITION, 3, GL_FLOAT, False, 0, None),
-        # that '_POSITION' is 0 here, and 0 in the shader (or 1, or 2...)
-
-        # Bind attribute locations (Unneeded if shader has layout(location))
-        # self.shader_program.bindAttributeLocation('a_position', _POSITION)
-        # self.shader_program.bindAttributeLocation('a_color', _COLOR)
-
-        self.shader_program.link()
 
     def initialize_block_model_shader(self):
         self.block_model_shader_program = QOpenGLShaderProgram(self.context())
@@ -166,29 +119,28 @@ class OpenGLWidget(QOpenGLWidget):
         self.block_model_shader_program.link()
 
     def initializeGL(self):
-        self.initialize_mesh_shader()
+        self.mesh.initialize_shader_program()
+        self.mesh.initialize_buffers()
+
         self.initialize_block_model_shader()
 
-        self.shader_program.bind()
+        self.mesh.shader_program.bind()
 
         # MVP locations
-        self.model_view_matrix_loc = self.shader_program.uniformLocation('model_view_matrix')
-        self.proj_matrix_loc = self.shader_program.uniformLocation('proj_matrix')
-
         self.block_model_model_view_matrix_loc = self.block_model_shader_program.uniformLocation('model_view_matrix')
         self.block_model_proj_matrix_loc = self.block_model_shader_program.uniformLocation('proj_matrix')
         self.block_model_block_size_loc = self.block_model_shader_program.uniformLocation('block_size')
 
         # Data (Mesh)
-        self.mesh_positions = np.array([-0.5, 0.5, 0.0,
-                                        -0.5, -0.5, 0.0,
-                                        0.5, 0.5, 0.0], np.float32)
+        self.mesh.update_positions(np.array([-0.5, 0.5, 0.0,
+                                             -0.5, -0.5, 0.0,
+                                             0.5, 0.5, 0.0], np.float32))
 
-        self.mesh_values = np.array([1.0, 0.0, 0.0,
-                                     0.0, 1.0, 0.0,
-                                     0.0, 0.0, 1.0], np.float32)
+        self.mesh.update_values(np.array([1.0, 0.0, 0.0,
+                                          0.0, 1.0, 0.0,
+                                          0.0, 0.0, 1.0], np.float32))
 
-        self.mesh_indices = np.array([0, 1, 2], np.uint32)  # GL_UNSIGNED_INT = np.uint32
+        self.mesh.update_indices(np.array([0, 1, 2], np.uint32))  # GL_UNSIGNED_INT = np.uint32
 
         # Data (Block Model)
         self.block_model_positions = np.array([-1.5, 1.5, 0.0,
@@ -202,43 +154,17 @@ class OpenGLWidget(QOpenGLWidget):
         self.block_model_indices = np.array([0, 1, 2], np.uint32)  # GL_UNSIGNED_INT = np.uint32
 
         # VAO/VBO/IBO creation
-        self.mesh_vao.create()
-        self.mesh_positions_vbo.create()
-        self.mesh_colors_vbo.create()
-        self.mesh_indices_ibo.create()
-
         self.block_model_vao.create()
         self.block_model_positions_vbo.create()
         self.block_model_colors_vbo.create()
         self.block_model_indices_ibo.create()
 
         # Setup vertex attributes
-        self.setup_vertex_attribs()
+        self.mesh.setup_vertex_attribs()
+        self.setup_vertex_attribs_block_model()
 
         # Camera setup
         self.camera.translate(self.xCamPos, self.yCamPos, self.zCamPos)
-
-    def setup_vertex_attribs_mesh(self):
-        _SIZE_OF_GL_FLOAT = 4
-
-        self.makeCurrent()
-        self.mesh_vao.bind()
-
-        self.mesh_positions_vbo.bind()
-        glBufferData(GL_ARRAY_BUFFER, _SIZE_OF_GL_FLOAT * self.mesh_positions.size, self.mesh_positions, GL_STATIC_DRAW)
-        glVertexAttribPointer(_POSITION, 3, GL_FLOAT, False, 0, None)
-
-        self.mesh_colors_vbo.bind()
-        glBufferData(GL_ARRAY_BUFFER, _SIZE_OF_GL_FLOAT * self.mesh_values.size, self.mesh_values, GL_STATIC_DRAW)
-        glVertexAttribPointer(_COLOR, 3, GL_FLOAT, False, 0, None)
-
-        self.mesh_indices_ibo.bind()
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, self.mesh_indices, GL_STATIC_DRAW)
-
-        glEnableVertexAttribArray(_POSITION)
-        glEnableVertexAttribArray(_COLOR)
-
-        self.mesh_vao.release()
 
     def setup_vertex_attribs_block_model(self):
         _SIZE_OF_GL_FLOAT = 4
@@ -262,10 +188,6 @@ class OpenGLWidget(QOpenGLWidget):
 
         self.block_model_vao.release()
 
-    def setup_vertex_attribs(self):
-        self.setup_vertex_attribs_mesh()
-        self.setup_vertex_attribs_block_model()
-
     def paintGL(self):
         self.painter.begin(self)
         # Clear screen
@@ -281,12 +203,9 @@ class OpenGLWidget(QOpenGLWidget):
         self.world.rotate(self.zRot / 16.0, 0, 0, 1)
 
         # Bind data of shaders to program
-        self.shader_program.bind()
-        self.shader_program.setUniformValue(self.proj_matrix_loc, self.proj)
-        self.shader_program.setUniformValue(self.model_view_matrix_loc, self.camera * self.world)
 
         # Draw mesh
-        self.draw_mesh()
+        self.mesh.draw()
 
         # Bind data of shaders to program
         self.block_model_shader_program.bind()
