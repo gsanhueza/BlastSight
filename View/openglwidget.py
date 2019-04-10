@@ -34,6 +34,7 @@ class OpenGLWidget(QOpenGLWidget):
 
         # Drawables
         self.mesh = MeshGL(self)
+        self.mesh_2 = MeshGL(self)
         self.block_model = BlockModelGL(self)
 
         # Camera/World/Projection
@@ -61,41 +62,31 @@ class OpenGLWidget(QOpenGLWidget):
         self.mesh.initialize_shader_program()
         self.mesh.initialize_buffers()
 
+        self.mesh_2.set_vertex_shader_source('View/Shaders/mesh_vertex.glsl')
+        self.mesh_2.set_fragment_shader_source('View/Shaders/mesh_fragment.glsl')
+        self.mesh_2.set_geometry_shader_source('View/Shaders/mesh_geometry.glsl')
+        self.mesh_2.initialize_shader_program()
+        self.mesh_2.initialize_buffers()
+
         self.block_model.set_vertex_shader_source('View/Shaders/block_model_vertex.glsl')
         self.block_model.set_fragment_shader_source('View/Shaders/block_model_fragment.glsl')
         self.block_model.set_geometry_shader_source('View/Shaders/block_model_geometry.glsl')
         self.block_model.initialize_shader_program()
         self.block_model.initialize_buffers()
 
-        # Data (Mesh)
-        self.mesh.update_positions(np.array([-0.5, 0.5, 0.0,
-                                             -0.5, -0.5, 0.0,
-                                             0.5, 0.5, 0.0], np.float32))
-
-        self.mesh.update_values(np.array([1.0, 0.0, 0.0,
-                                          0.0, 1.0, 0.0,
-                                          0.0, 0.0, 1.0], np.float32))
-
-        self.mesh.update_indices(np.array([0, 1, 2], np.uint32))  # GL_UNSIGNED_INT = np.uint32
-
-        # Data (Block Model)
-        self.block_model.update_positions(np.array([-1.5, 1.5, 0.0,
-                                                    -1.5, -1.5, 0.0,
-                                                    1.5, 1.5, 0.0], np.float32))
-
-        self.block_model.update_values(np.array([1.0, 0.0, 0.0,
-                                                 0.0, 1.0, 0.0,
-                                                 0.0, 0.0, 1.0], np.float32))
-
-        self.block_model.update_indices(np.array([0, 1, 2], np.uint32))  # GL_UNSIGNED_INT = np.uint32
-
         # Setup vertex attributes
         self.mesh.setup_vertex_attribs()
         self.block_model.setup_vertex_attribs()
 
+        self.mesh_2.update_positions(np.array([-1.5, 0.5, -1.0,
+                                               -1.5, -0.5, -2.0,
+                                               1.5, 0.5, -3.0], np.float32))
+        self.mesh_2.setup_vertex_attribs()
+
         # Setup uniforms
         self.mesh.setup_uniforms()
         self.block_model.setup_uniforms()
+        self.mesh_2.setup_uniforms()
 
         # Camera setup
         self.camera.translate(self.xCamPos, self.yCamPos, self.zCamPos)
@@ -114,10 +105,9 @@ class OpenGLWidget(QOpenGLWidget):
         self.world.rotate(self.yRot / 16.0, 0, 1, 0)
         self.world.rotate(self.zRot / 16.0, 0, 0, 1)
 
-        # Draw mesh
+        # Draw mesh and block model
         self.mesh.draw()
-
-        # Draw block model
+        self.mesh_2.draw()
         self.block_model.draw()
 
         # QPainter can draw *after* OpenGL finishes

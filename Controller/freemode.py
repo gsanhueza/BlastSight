@@ -24,7 +24,7 @@ class FreeMode(Mode):
         self.lastPos = QPoint(event.pos())
 
     def wheelEvent(self, event):
-        self.widget.block_size += (event.delta() / 12000)
+        self.widget.block_model.block_size += (event.delta() / 12000)
 
     def set_x_movement(self, position):
         if abs(position - self.widget.xCamPos) > 0.01:

@@ -1,11 +1,12 @@
 #!/usr/bin/env python
 
+import numpy as np
+
 from OpenGL.GL import *
 from PySide2.QtGui import QOpenGLShaderProgram
 from PySide2.QtGui import QOpenGLVertexArrayObject
 from PySide2.QtGui import QOpenGLBuffer
 from PySide2.QtGui import QOpenGLShader
-from PySide2.QtGui import QVector2D
 
 
 class GLDrawable:
@@ -32,6 +33,20 @@ class GLDrawable:
         self.positions = None
         self.indices = None
         self.values = None
+
+        # FIXME Just for testing
+        self.default_data()
+
+    def default_data(self):
+        self.update_positions(np.array([-0.5, 0.5, 0.0,
+                                        -0.5, -0.5, 0.0,
+                                        0.5, 0.5, 0.0], np.float32))
+
+        self.update_values(np.array([1.0, 0.0, 0.0,
+                                     0.0, 1.0, 0.0,
+                                     0.0, 0.0, 1.0], np.float32))
+
+        self.update_indices(np.array([0, 1, 2], np.uint32))  # GL_UNSIGNED_INT = np.uint32
 
     def set_vertex_shader_source(self, source: str):
         self.vertex_shader_source = source
