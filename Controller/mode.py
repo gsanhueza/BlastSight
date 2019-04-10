@@ -4,6 +4,7 @@
 class Mode:
     def __init__(self, widget):
         self.widget = widget
+        self.widget.update()
 
     def mousePressEvent(self, event):
         pass
@@ -11,5 +12,11 @@ class Mode:
     def mouseMoveEvent(self, event):
         pass
 
+    def mouseReleaseEvent(self, event):
+        pass
+
     def wheelEvent(self, event):
+        pass
+
+    def overpaint(self):
         pass

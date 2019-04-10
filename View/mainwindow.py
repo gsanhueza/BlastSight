@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
 from PySide2.QtCore import Slot
-from PySide2.QtWidgets import QMainWindow, QFileDialog
+from PySide2.QtWidgets import QMainWindow, QFileDialog, QMessageBox
 
-from View.ui_loader import load_ui
+from View.uiloader import load_ui
 
 from View.openglwidget import OpenGLWidget
 from Controller.normalmode import NormalMode
@@ -44,6 +44,21 @@ class MainWindow(QMainWindow):
             self.statusBar.showMessage('Cannot load mesh')
 
     @Slot()
+    def load_block_model_slot(self):
+        # TODO Use QSettings (or something) to remember last directory
+        (filepath, selected_filter) = QFileDialog.getOpenFileName(
+            parent=self,
+            dir='.',
+            filter='CSV Files (*.csv);;All files (*.*)')
+
+        if self.model.load_block_model(filepath):
+            self.statusBar.showMessage('Block model loaded')
+            # FIXME Maybe use signal / slot
+            self.widget.update_block_model()  # Notification to OpenGLWidget
+        else:
+            self.statusBar.showMessage('Cannot load block model')
+
+    @Slot()
     def normal_mode_slot(self):
         self.widget.current_mode = NormalMode(self.widget)
 
@@ -54,6 +69,12 @@ class MainWindow(QMainWindow):
     @Slot()
     def free_mode_slot(self):
         self.widget.current_mode = FreeMode(self.widget)
+
+    @Slot()
+    def help_slot(self):
+        QMessageBox.information(self,
+                                'MineVis - Help',
+                                'TO-DO: Create help message box')
 
     @Slot()
     def toggle_wireframe(self):

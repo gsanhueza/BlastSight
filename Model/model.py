@@ -10,31 +10,44 @@ class Model:
         self.mesh_manager = MeshManager()
         self.block_model_manager = BlockModelManager()
 
-        self.vertices = None
-        self.indices = None
+        self.mesh_vertices = None
+        self.mesh_indices = None
+        self.mesh_values = None
 
-    def get_vertices(self):
-        return self.vertices
+        self.block_model_vertices = None
+        self.block_model_indices = None
+        self.block_model_values = None
 
-    def get_indices(self):
-        return self.indices
+    def get_mesh_vertices(self):
+        return self.mesh_vertices
+
+    def get_mesh_indices(self):
+        return self.mesh_indices
+
+    def get_mesh_values(self):
+        return self.mesh_values
+
+    def get_block_model_vertices(self):
+        return self.block_model_vertices
+
+    def get_block_model_indices(self):
+        return self.block_model_indices
+
+    def get_block_model_values(self):
+        return self.block_model_values
 
     # The mesh handler will load the mesh and update our own data
-    # Returns a boolean
     def load_mesh(self, file_path: str) -> bool:
         return self.mesh_manager.load_mesh(self, file_path)
 
     # The mesh handler will save the mesh by reading our own data
-    # Returns a boolean
     def save_mesh(self, file_path: str) -> bool:
         return self.mesh_manager.save_mesh(self, file_path)
 
     # The block model handler will load the block model and update our own data
-    # Returns a boolean
     def load_block_model(self, file_path: str) -> bool:
         return self.block_model_manager.load_block_model(self, file_path)
 
     # The block model handler will save the block model by reading our own data
-    # Returns a boolean
     def save_block_model(self, file_path: str) -> bool:
         return self.block_model_manager.save_block_model(self, file_path)

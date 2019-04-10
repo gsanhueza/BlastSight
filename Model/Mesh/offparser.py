@@ -1,14 +1,12 @@
 #!/usr/bin/env python
 
-# from Model.parser import Parser
+import random
+from Model.parser import Parser
 
 
-# class OFFParser(Parser):
-class OFFParser:
+class OFFParser(Parser):
     def __init__(self):
         super().__init__()
-        self.vertices = None
-        self.indices = None
 
     def load_file(self, file_path: str) -> None:
         with open(file_path, 'r') as fp:
@@ -49,12 +47,9 @@ class OFFParser:
 
             self.vertices = vertices
             self.indices = faces
-
-    def get_vertices(self) -> list:
-        return self.vertices
-
-    def get_indices(self) -> list:
-        return self.indices
+            self.values = [(random.random(),
+                            random.random(),
+                            random.random()) for _ in range(self.vertices.__len__())]
 
 
 if __name__ == '__main__':

@@ -1,25 +1,25 @@
 #!/usr/bin/env python
 
-from abc import abstractmethod
-
 
 class Parser:
     def __init__(self):
         self.vertices = None
         self.indices = None
+        self.values = None
 
-    @abstractmethod
     def load_file(self, file_path: str) -> None:
-        raise NotImplementedError
+        pass
 
-    @abstractmethod
     def get_vertices(self) -> list:
-        raise NotImplementedError
+        return Parser.flatten_tuple(self.vertices)
 
-    @abstractmethod
     def get_indices(self) -> list:
-        raise NotImplementedError
+        return Parser.flatten_tuple(self.indices)
+
+    def get_values(self) -> list:
+        return Parser.flatten_tuple(self.values)
 
     # Flatten list of tuples
-    def _flatten_tuple(self, l):
+    @staticmethod
+    def flatten_tuple(l: list) -> list:
         return [item for sublist in l for item in sublist]

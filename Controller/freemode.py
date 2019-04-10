@@ -1,13 +1,12 @@
 #!/usr/bin/env python
 
-from PySide2.QtCore import Qt, QPoint
+from PySide2.QtCore import QPoint
 from Controller.mode import Mode
 
 
 class FreeMode(Mode):
     def __init__(self, widget):
-        super().__init__(self)
-        self.widget = widget
+        super().__init__(widget)
         self.widget.parent().setWindowTitle("Free Mode")
         self.lastPos = None
         print("MODE: Free Mode")
@@ -23,6 +22,9 @@ class FreeMode(Mode):
         self.set_y_movement(self.widget.yCamPos - (dy / 200.0))
 
         self.lastPos = QPoint(event.pos())
+
+    def wheelEvent(self, event):
+        self.widget.block_model.block_size += (event.delta() / 12000)
 
     def set_x_movement(self, position):
         if abs(position - self.widget.xCamPos) > 0.01:

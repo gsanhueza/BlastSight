@@ -1,13 +1,13 @@
 #!/usr/bin/env python
 
-import sys
 from PySide2.QtWidgets import QApplication
-
 from View.mainwindow import MainWindow
 from Model.model import Model
 
 
 if __name__ == "__main__":
+    import sys
+
     # Qt Application
     qt_app = QApplication(sys.argv)
 
