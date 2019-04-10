@@ -40,7 +40,7 @@ class DrawMode(Mode):
 
         pos = self.screen_to_normalized(self.lastPos)
 
-        print(f'World coordinates (bad z) = : {v}')
+        print(f'World coordinates (bad z) = : {pos}')
 
         # If P * V * M * v = position in screen...
         # M^-1 * V^-1 * P^-1 * P * V * M * v = M^-1 * V^-1 * P^-1 * pos = v
@@ -57,7 +57,8 @@ class DrawMode(Mode):
             self.widget.painter.drawText(200, 70, f'initPos      = {self.initPos}')
             self.widget.painter.drawText(200, 90, f'eventPos     = {self.lastPos}')
 
-            self.widget.painter.drawLine(self.initPos, self.lastPos)
+            if self.initPos and self.lastPos:
+                self.widget.painter.drawLine(self.initPos, self.lastPos)
 
             self.widget.painter.end()
 

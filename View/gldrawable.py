@@ -39,6 +39,8 @@ class GLDrawable:
 
     def initialize(self):
         # Remember to set shader sources in children of this class
+        # For example:
+
         # self.set_vertex_shader_source('View/Shaders/mesh_vertex.glsl')
         # self.set_fragment_shader_source('View/Shaders/mesh_fragment.glsl')
         # self.set_geometry_shader_source('View/Shaders/mesh_geometry.glsl')
@@ -112,7 +114,7 @@ class GLDrawable:
         _COLOR = 1
 
         _SIZE_OF_GL_FLOAT = 4
-
+        self.widget.makeCurrent()
         self.vao.bind()
 
         self.positions_vbo.bind()

@@ -125,6 +125,7 @@ class OpenGLWidget(QOpenGLWidget):
         self.block_model.update_values(np.array(self.model.get_block_model_values(), np.float32))
 
         self.block_model.setup_vertex_attribs()
+
         self.update()
 
     @Slot()
