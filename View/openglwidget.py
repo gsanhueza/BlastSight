@@ -66,9 +66,15 @@ class OpenGLWidget(QOpenGLWidget):
         self.painter = QPainter()
 
     def initializeGL(self):
+        self.mesh.set_vertex_shader_source('View/Shaders/mesh_vertex.glsl')
+        self.mesh.set_fragment_shader_source('View/Shaders/mesh_fragment.glsl')
+        self.mesh.set_geometry_shader_source('View/Shaders/mesh_geometry.glsl')
         self.mesh.initialize_shader_program()
         self.mesh.initialize_buffers()
 
+        self.block_model.set_vertex_shader_source('View/Shaders/block_model_vertex.glsl')
+        self.block_model.set_fragment_shader_source('View/Shaders/block_model_fragment.glsl')
+        self.block_model.set_geometry_shader_source('View/Shaders/block_model_geometry.glsl')
         self.block_model.initialize_shader_program()
         self.block_model.initialize_buffers()
 
@@ -175,13 +181,7 @@ class OpenGLWidget(QOpenGLWidget):
 
     @Slot()
     def toggle_wireframe(self):
-        if self.wireframe_enabled:
-            self.shader_program.removeShader(self.geometry_shader)
-            self.wireframe_enabled = False
-        else:
-            self.shader_program.addShader(self.geometry_shader)
-            self.wireframe_enabled = True
-
+        self.mesh.toggle_wireframe()
         self.update()
 
     # FIXME Should we (openglwidget) or mainwindow handle this? Should we notify mainwindow of an error?

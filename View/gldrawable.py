@@ -19,18 +19,15 @@ class GLDrawable:
         self.fragment_shader = None
         self.geometry_shader = None
 
-        self.vertex_shader_source = 'View/Shaders/mesh_vertex.glsl'
-        self.fragment_shader_source = 'View/Shaders/mesh_fragment.glsl'
-        self.geometry_shader_source = 'View/Shaders/mesh_geometry.glsl'
+        self.vertex_shader_source = None
+        self.fragment_shader_source = None
+        self.geometry_shader_source = None
 
         # Vertex {Array/Buffer} Objects
-        self.vao = QOpenGLVertexArrayObject()
-        self.positions_vbo = QOpenGLBuffer(QOpenGLBuffer.VertexBuffer)
-        self.values_vbo = QOpenGLBuffer(QOpenGLBuffer.VertexBuffer)
-        self.indices_ibo = QOpenGLBuffer(QOpenGLBuffer.IndexBuffer)
-
-        self.uniforms = OrderedDict()
-        self.attributes = OrderedDict()
+        self.vao = None
+        self.positions_vbo = None
+        self.values_vbo = None
+        self.indices_ibo = None
 
         self.model_view_matrix_loc = None
         self.proj_matrix_loc = None
@@ -41,6 +38,16 @@ class GLDrawable:
         self.positions = None
         self.indices = None
         self.values = None
+        self.wireframe_enabled = True
+
+    def set_vertex_shader_source(self, source: str):
+        self.vertex_shader_source = source
+
+    def set_fragment_shader_source(self, source: str):
+        self.fragment_shader_source = source
+
+    def set_geometry_shader_source(self, source: str):
+        self.geometry_shader_source = source
 
     def initialize_shader_program(self):
         self.vertex_shader = QOpenGLShader(QOpenGLShader.Vertex)
@@ -57,6 +64,11 @@ class GLDrawable:
         self.shader_program.link()
 
     def initialize_buffers(self):
+        self.vao = QOpenGLVertexArrayObject()
+        self.positions_vbo = QOpenGLBuffer(QOpenGLBuffer.VertexBuffer)
+        self.values_vbo = QOpenGLBuffer(QOpenGLBuffer.VertexBuffer)
+        self.indices_ibo = QOpenGLBuffer(QOpenGLBuffer.IndexBuffer)
+
         self.vao.create()
         self.positions_vbo.create()
         self.indices_ibo.create()
@@ -96,18 +108,18 @@ class GLDrawable:
 
         self.vao.release()
 
-    def add_uniform(self, uniform_name, value):
-        loc = self.shader_program.uniformLocation(uniform_name)
-        self.uniforms[loc] = value
-
     def setup_uniforms(self):
-        # self.add_uniform('model_view_matrix', self.widget.camera * self.widget.world)
-        # self.add_uniform('proj_matrix', self.widget.proj)
-        # self.add_uniform('block_size', QVector2D(self.block_size, 0.0))
-
         self.model_view_matrix_loc = self.shader_program.uniformLocation('model_view_matrix')
         self.proj_matrix_loc = self.shader_program.uniformLocation('proj_matrix')
         self.block_size_loc = self.shader_program.uniformLocation('block_size')
+
+    def toggle_wireframe(self):
+        if self.wireframe_enabled:
+            self.shader_program.removeShader(self.geometry_shader)
+            self.wireframe_enabled = False
+        else:
+            self.shader_program.addShader(self.geometry_shader)
+            self.wireframe_enabled = True
 
     def draw(self, gl_type=GL_TRIANGLES):
         self.shader_program.bind()
