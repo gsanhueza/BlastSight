@@ -14,7 +14,7 @@ from PySide2.QtGui import QVector2D
 from PySide2.QtCore import Qt
 from PySide2.QtCore import Slot
 
-from View.drawable import Drawable
+from View.gldrawable import GLDrawable
 from Controller.normalmode import NormalMode
 
 _POSITION = 0
@@ -36,8 +36,8 @@ class OpenGLWidget(QOpenGLWidget):
         self.model = model
 
         # Mesh
-        self.mesh = Drawable(self)
-        self.block_model = Drawable(self)
+        self.mesh = GLDrawable(self)
+        self.block_model = GLDrawable(self)
 
         # FIXME Enable a way to change this (factory pattern?)
         self.block_model.vertex_shader_source = 'View/Shaders/block_model_vertex.glsl'
@@ -166,9 +166,9 @@ class OpenGLWidget(QOpenGLWidget):
 
     @Slot()
     def update_block_model(self):
-        self.block_model.update_positions(np.array(self.model.get_mesh_vertices(), np.float32))
-        self.block_model.update_indices(np.array(self.model.get_mesh_indices(), np.uint32))
-        self.block_model.update_values(np.array(self.model.get_mesh_values(), np.float32))
+        self.block_model.update_positions(np.array(self.model.get_block_model_vertices(), np.float32))
+        self.block_model.update_indices(np.array(self.model.get_block_model_indices(), np.uint32))
+        self.block_model.update_values(np.array(self.model.get_block_model_values(), np.float32))
 
         self.block_model.setup_vertex_attribs()
         self.update()

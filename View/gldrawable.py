@@ -10,7 +10,7 @@ from PySide2.QtGui import QOpenGLShader
 from PySide2.QtGui import QVector2D
 
 
-class Drawable:
+class GLDrawable:
     def __init__(self, opengl_widget):
         self.widget = opengl_widget
         # Shaders
@@ -96,7 +96,15 @@ class Drawable:
 
         self.vao.release()
 
+    def add_uniform(self, uniform_name, value):
+        loc = self.shader_program.uniformLocation(uniform_name)
+        self.uniforms[loc] = value
+
     def setup_uniforms(self):
+        # self.add_uniform('model_view_matrix', self.widget.camera * self.widget.world)
+        # self.add_uniform('proj_matrix', self.widget.proj)
+        # self.add_uniform('block_size', QVector2D(self.block_size, 0.0))
+
         self.model_view_matrix_loc = self.shader_program.uniformLocation('model_view_matrix')
         self.proj_matrix_loc = self.shader_program.uniformLocation('proj_matrix')
         self.block_size_loc = self.shader_program.uniformLocation('block_size')
