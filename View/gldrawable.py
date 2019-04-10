@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 
-from collections import OrderedDict
-
 from OpenGL.GL import *
 from PySide2.QtGui import QOpenGLShaderProgram
 from PySide2.QtGui import QOpenGLVertexArrayObject
@@ -13,6 +11,7 @@ from PySide2.QtGui import QVector2D
 class GLDrawable:
     def __init__(self, opengl_widget):
         self.widget = opengl_widget
+
         # Shaders
         self.shader_program = QOpenGLShaderProgram(self.widget.context())
         self.vertex_shader = None
@@ -29,16 +28,10 @@ class GLDrawable:
         self.values_vbo = None
         self.indices_ibo = None
 
-        self.model_view_matrix_loc = None
-        self.proj_matrix_loc = None
-        self.block_size_loc = None
-        self.block_size = 0.5
-
         # Data
         self.positions = None
         self.indices = None
         self.values = None
-        self.wireframe_enabled = True
 
     def set_vertex_shader_source(self, source: str):
         self.vertex_shader_source = source
@@ -89,7 +82,6 @@ class GLDrawable:
 
         _SIZE_OF_GL_FLOAT = 4
 
-        self.widget.makeCurrent()
         self.vao.bind()
 
         self.positions_vbo.bind()
@@ -109,28 +101,7 @@ class GLDrawable:
         self.vao.release()
 
     def setup_uniforms(self):
-        self.model_view_matrix_loc = self.shader_program.uniformLocation('model_view_matrix')
-        self.proj_matrix_loc = self.shader_program.uniformLocation('proj_matrix')
-        self.block_size_loc = self.shader_program.uniformLocation('block_size')
+        pass
 
-    def toggle_wireframe(self):
-        if self.wireframe_enabled:
-            self.shader_program.removeShader(self.geometry_shader)
-            self.wireframe_enabled = False
-        else:
-            self.shader_program.addShader(self.geometry_shader)
-            self.wireframe_enabled = True
-
-    def draw(self, gl_type=GL_TRIANGLES):
-        self.shader_program.bind()
-        self.shader_program.setUniformValue(self.proj_matrix_loc, self.widget.proj)
-        self.shader_program.setUniformValue(self.model_view_matrix_loc, self.widget.camera * self.widget.world)
-        self.shader_program.setUniformValue(self.block_size_loc, QVector2D(self.block_size, 0.0))
-
-        self.vao.bind()
-
-        # glDrawArrays(GL_TRIANGLES, 0, self.positions.size)  # This works on its own
-        # glDrawElements(GL_POINTS, self.indices.size, GL_UNSIGNED_INT, None)
-        glDrawElements(gl_type, self.indices.size, GL_UNSIGNED_INT, None)
-
-        self.vao.release()
+    def draw(self):
+        pass

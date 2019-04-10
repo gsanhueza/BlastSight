@@ -3,7 +3,7 @@
 from PySide2.QtCore import Slot
 from PySide2.QtWidgets import QMainWindow, QFileDialog, QMessageBox
 
-from View.ui_loader import load_ui
+from View.uiloader import load_ui
 
 from View.openglwidget import OpenGLWidget
 from Controller.normalmode import NormalMode

@@ -5,16 +5,13 @@ import numpy as np
 from OpenGL.GL import *
 from PySide2.QtWidgets import QOpenGLWidget
 from PySide2.QtGui import QPainter
-from PySide2.QtGui import QOpenGLShaderProgram
-from PySide2.QtGui import QOpenGLShader
-from PySide2.QtGui import QOpenGLBuffer
-from PySide2.QtGui import QOpenGLVertexArrayObject
 from PySide2.QtGui import QMatrix4x4
-from PySide2.QtGui import QVector2D
 from PySide2.QtCore import Qt
 from PySide2.QtCore import Slot
 
-from View.gldrawable import GLDrawable
+from View.meshgl import MeshGL
+from View.blockmodelgl import BlockModelGL
+
 from Controller.normalmode import NormalMode
 
 _POSITION = 0
@@ -35,14 +32,9 @@ class OpenGLWidget(QOpenGLWidget):
         # Model
         self.model = model
 
-        # Mesh
-        self.mesh = GLDrawable(self)
-        self.block_model = GLDrawable(self)
-
-        # FIXME Enable a way to change this (factory pattern?)
-        self.block_model.vertex_shader_source = 'View/Shaders/block_model_vertex.glsl'
-        self.block_model.fragment_shader_source = 'View/Shaders/block_model_fragment.glsl'
-        self.block_model.geometry_shader_source = 'View/Shaders/block_model_geometry.glsl'
+        # Drawables
+        self.mesh = MeshGL(self)
+        self.block_model = BlockModelGL(self)
 
         # Camera/World/Projection
         self.camera = QMatrix4x4()
@@ -58,9 +50,6 @@ class OpenGLWidget(QOpenGLWidget):
         self.xRot = 0.0
         self.yRot = 0.0
         self.zRot = 0.0
-
-        # Wireframe (Shader toggling)
-        self.wireframe_enabled = True
 
         # QPainter (after OpenGL)
         self.painter = QPainter()
@@ -126,10 +115,10 @@ class OpenGLWidget(QOpenGLWidget):
         self.world.rotate(self.zRot / 16.0, 0, 0, 1)
 
         # Draw mesh
-        self.mesh.draw(GL_TRIANGLES)
+        self.mesh.draw()
 
         # Draw block model
-        self.block_model.draw(GL_POINTS)
+        self.block_model.draw()
 
         # QPainter can draw *after* OpenGL finishes
         self.painter.end()
