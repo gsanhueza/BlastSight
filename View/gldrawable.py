@@ -30,12 +30,28 @@ class GLDrawable:
         self.indices_ibo = None
 
         # Data
-        self.positions = None
-        self.indices = None
-        self.values = None
+        self.positions = np.array([], np.float32)
+        self.indices = np.array([], np.uint32)
+        self.values = np.array([], np.float32)
 
         # FIXME Just for testing
         self.default_data()
+
+    def initialize(self):
+        # Remember to set shader sources in children of this class
+        # self.set_vertex_shader_source('View/Shaders/mesh_vertex.glsl')
+        # self.set_fragment_shader_source('View/Shaders/mesh_fragment.glsl')
+        # self.set_geometry_shader_source('View/Shaders/mesh_geometry.glsl')
+
+        # Setup shaders and buffers
+        self.initialize_shader_program()
+        self.initialize_buffers()
+
+        # Setup vertex attributes
+        self.setup_vertex_attribs()
+
+        # Setup uniforms
+        self.setup_uniforms()
 
     def default_data(self):
         self.update_positions(np.array([-0.5, 0.5, 0.0,

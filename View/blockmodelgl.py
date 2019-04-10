@@ -17,6 +17,13 @@ class BlockModelGL(GLDrawable):
         # Block size
         self.block_size = 0.5
 
+    def initialize(self):
+        self.set_vertex_shader_source('View/Shaders/block_model_vertex.glsl')
+        self.set_fragment_shader_source('View/Shaders/block_model_fragment.glsl')
+        self.set_geometry_shader_source('View/Shaders/block_model_geometry.glsl')
+
+        super().initialize()
+
     def setup_uniforms(self):
         self.model_view_matrix_loc = self.shader_program.uniformLocation('model_view_matrix')
         self.proj_matrix_loc = self.shader_program.uniformLocation('proj_matrix')
