@@ -78,6 +78,10 @@ class DXFParser(Parser):
 
         return tuple(map(lambda x: x / len(tuple_list), accum))
 
+    def get_vertices(self) -> list:
+        # FIXME Not average vertices!
+        return self.get_averaged_vertices()
+
 
 if __name__ == '__main__':
     parser = DXFParser()
