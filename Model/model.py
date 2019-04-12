@@ -1,15 +1,14 @@
 #!/usr/bin/env python
 
-from Model.filemanager import FileManager
-from Model.modelelement import ModelElement
+from Model.Mesh.meshelement import MeshElement
+from Model.BlockModel.blockmodelelement import BlockModelElement
 
 
 # Main class
 class Model:
     def __init__(self):
-        self.file_manager = FileManager()
-        self.mesh = ModelElement()
-        self.block_model = ModelElement()
+        self.mesh = MeshElement()
+        self.block_model = BlockModelElement()
 
     def get_mesh_vertices(self):
         return self.mesh.get_vertices()
@@ -30,13 +29,13 @@ class Model:
         return self.block_model.get_values()
 
     def load_mesh(self, file_path: str) -> bool:
-        return self.file_manager.load_mesh(self.mesh, file_path)
+        return self.mesh.load(file_path)
 
     def save_mesh(self, file_path: str) -> bool:
-        return self.file_manager.save_mesh(self.mesh, file_path)
+        return self.mesh.save(file_path)
 
     def load_block_model(self, file_path: str) -> bool:
-        return self.file_manager.load_block_model(self.block_model, file_path)
+        return self.block_model.load(file_path)
 
     def save_block_model(self, file_path: str) -> bool:
-        return self.file_manager.save_block_model(self.block_model, file_path)
+        return self.block_model.save(file_path)
