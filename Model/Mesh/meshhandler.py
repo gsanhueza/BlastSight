@@ -12,15 +12,15 @@ class MeshHandler(Handler):
         self.add_parser('dxf', DXFParser())
         self.add_parser('off', OFFParser())
 
-    def load(self, model, file_path):
+    def load(self, model_element, file_path):
         ext = Handler.get_file_extension(file_path)
 
         parser = self.get_parser(ext)
         parser.load_file(file_path)
 
-        model.mesh_vertices = parser.get_vertices()
-        model.mesh_indices = parser.get_indices()
-        model.mesh_values = parser.get_values()
+        model_element.set_vertices(parser.get_vertices())
+        model_element.set_indices(parser.get_indices())
+        model_element.set_values(parser.get_values())
 
         return True
 
