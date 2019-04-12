@@ -111,21 +111,20 @@ class OpenGLWidget(QOpenGLWidget):
 
     @Slot()
     def update_mesh(self):
-        self.mesh.update_positions(np.array(self.model.get_mesh_vertices(), np.float32))
-        self.mesh.update_indices(np.array(self.model.get_mesh_indices(), np.uint32))
-        self.mesh.update_values(np.array(self.model.get_mesh_values(), np.float32))
+        self.mesh.update_positions(np.array(self.model.get_mesh().get_vertices(), np.float32))
+        self.mesh.update_indices(np.array(self.model.get_mesh().get_indices(), np.uint32))
+        self.mesh.update_values(np.array(self.model.get_mesh().get_values(), np.float32))
 
         self.mesh.setup_vertex_attribs()
         self.update()
 
     @Slot()
     def update_block_model(self):
-        self.block_model.update_positions(np.array(self.model.get_block_model_vertices(), np.float32))
-        self.block_model.update_indices(np.array(self.model.get_block_model_indices(), np.uint32))
-        self.block_model.update_values(np.array(self.model.get_block_model_values(), np.float32))
+        self.block_model.update_positions(np.array(self.model.get_block_model().get_vertices(), np.float32))
+        self.block_model.update_indices(np.array(self.model.get_block_model().get_indices(), np.uint32))
+        self.block_model.update_values(np.array(self.model.get_block_model().get_values(), np.float32))
 
         self.block_model.setup_vertex_attribs()
-
         self.update()
 
     @Slot()
@@ -143,10 +142,10 @@ class OpenGLWidget(QOpenGLWidget):
 
         # FIXME We should know beforehand if this is a mesh or a block model
         try:
-            self.model.load_mesh(file_path)
+            self.model.get_mesh().load(file_path)
             self.update_mesh()
         except KeyError:
-            self.model.load_block_model(file_path)
+            self.model.get_block_model().load(file_path)
             self.update_block_model()
 
         # Check if we're part of a MainWindow or a standalone widget
