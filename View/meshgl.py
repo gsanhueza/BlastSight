@@ -5,8 +5,8 @@ from OpenGL.GL import *
 
 
 class MeshGL(GLDrawable):
-    def __init__(self, opengl_widget):
-        super().__init__(opengl_widget)
+    def __init__(self, opengl_widget, model_element):
+        super().__init__(opengl_widget, model_element)
 
         # Uniforms
         self.model_view_matrix_loc = None
@@ -41,6 +41,6 @@ class MeshGL(GLDrawable):
 
         self.vao.bind()
 
-        glDrawElements(GL_TRIANGLES, self.indices.size, GL_UNSIGNED_INT, None)
+        glDrawElements(GL_TRIANGLES, self.model_element.get_indices().size, GL_UNSIGNED_INT, None)
 
         self.vao.release()

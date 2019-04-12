@@ -10,8 +10,9 @@ from PySide2.QtGui import QOpenGLShader
 
 
 class GLDrawable:
-    def __init__(self, opengl_widget):
+    def __init__(self, opengl_widget, model_element):
         self.widget = opengl_widget
+        self.model_element = model_element
 
         # Shaders
         self.shader_program = QOpenGLShaderProgram(self.widget.context())
@@ -28,14 +29,6 @@ class GLDrawable:
         self.positions_vbo = None
         self.values_vbo = None
         self.indices_ibo = None
-
-        # Data
-        self.positions = np.array([], np.float32)
-        self.indices = np.array([], np.uint32)
-        self.values = np.array([], np.float32)
-
-        # FIXME Just for testing
-        self.default_data()
 
     def initialize(self):
         # Remember to set shader sources in children of this class
@@ -54,17 +47,6 @@ class GLDrawable:
 
         # Setup uniforms
         self.setup_uniforms()
-
-    def default_data(self):
-        self.update_positions(np.array([-0.5, 0.5, 0.0,
-                                        -0.5, -0.5, 0.0,
-                                        0.5, 0.5, 0.0], np.float32))
-
-        self.update_values(np.array([1.0, 0.0, 0.0,
-                                     0.0, 1.0, 0.0,
-                                     0.0, 0.0, 1.0], np.float32))
-
-        self.update_indices(np.array([0, 1, 2], np.uint32))  # GL_UNSIGNED_INT = np.uint32
 
     def set_vertex_shader_source(self, source: str):
         self.vertex_shader_source = source
@@ -100,33 +82,29 @@ class GLDrawable:
         self.indices_ibo.create()
         self.values_vbo.create()
 
-    def update_positions(self, positions):
-        self.positions = positions
-
-    def update_indices(self, indices):
-        self.indices = indices
-
-    def update_values(self, values):
-        self.values = values
-
     def setup_vertex_attribs(self):
         _POSITION = 0
         _COLOR = 1
-
         _SIZE_OF_GL_FLOAT = 4
+
+        # Data
+        positions = self.model_element.get_vertices()
+        indices = self.model_element.get_indices()
+        values = self.model_element.get_values()
+
         self.widget.makeCurrent()
         self.vao.bind()
 
         self.positions_vbo.bind()
-        glBufferData(GL_ARRAY_BUFFER, _SIZE_OF_GL_FLOAT * self.positions.size, self.positions, GL_STATIC_DRAW)
+        glBufferData(GL_ARRAY_BUFFER, _SIZE_OF_GL_FLOAT * positions.size, positions, GL_STATIC_DRAW)
         glVertexAttribPointer(_POSITION, 3, GL_FLOAT, False, 0, None)
 
         self.values_vbo.bind()
-        glBufferData(GL_ARRAY_BUFFER, _SIZE_OF_GL_FLOAT * self.values.size, self.values, GL_STATIC_DRAW)
+        glBufferData(GL_ARRAY_BUFFER, _SIZE_OF_GL_FLOAT * values.size, values, GL_STATIC_DRAW)
         glVertexAttribPointer(_COLOR, 3, GL_FLOAT, False, 0, None)
 
         self.indices_ibo.bind()
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, self.indices, GL_STATIC_DRAW)
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices, GL_STATIC_DRAW)
 
         glEnableVertexAttribArray(_POSITION)
         glEnableVertexAttribArray(_COLOR)

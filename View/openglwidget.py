@@ -33,8 +33,8 @@ class OpenGLWidget(QOpenGLWidget):
         self.model = model
 
         # Drawables
-        self.mesh = MeshGL(self)
-        self.block_model = BlockModelGL(self)
+        self.mesh = MeshGL(self, self.model.get_mesh())
+        self.block_model = BlockModelGL(self, self.model.get_block_model())
 
         # Camera/World/Projection
         self.camera = QMatrix4x4()
@@ -111,19 +111,11 @@ class OpenGLWidget(QOpenGLWidget):
 
     @Slot()
     def update_mesh(self):
-        self.mesh.update_positions(np.array(self.model.get_mesh().get_vertices(), np.float32))
-        self.mesh.update_indices(np.array(self.model.get_mesh().get_indices(), np.uint32))
-        self.mesh.update_values(np.array(self.model.get_mesh().get_values(), np.float32))
-
         self.mesh.setup_vertex_attribs()
         self.update()
 
     @Slot()
     def update_block_model(self):
-        self.block_model.update_positions(np.array(self.model.get_block_model().get_vertices(), np.float32))
-        self.block_model.update_indices(np.array(self.model.get_block_model().get_indices(), np.uint32))
-        self.block_model.update_values(np.array(self.model.get_block_model().get_values(), np.float32))
-
         self.block_model.setup_vertex_attribs()
         self.update()
 
