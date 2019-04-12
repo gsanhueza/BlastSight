@@ -1,16 +1,18 @@
 #!/usr/bin/env python
 
-import numpy as np
-
 from OpenGL.GL import *
 from PySide2.QtGui import QOpenGLShaderProgram
 from PySide2.QtGui import QOpenGLVertexArrayObject
 from PySide2.QtGui import QOpenGLBuffer
 from PySide2.QtGui import QOpenGLShader
 
+from View.drawable import Drawable
 
-class GLDrawable:
+
+# Component of composite pattern
+class GLDrawable(Drawable):
     def __init__(self, opengl_widget, model_element):
+        super().__init__()
         self.widget = opengl_widget
         self.model_element = model_element
 

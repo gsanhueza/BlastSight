@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 
-import numpy as np
-
 from OpenGL.GL import *
 from PySide2.QtWidgets import QOpenGLWidget
 from PySide2.QtGui import QPainter
@@ -10,6 +8,7 @@ from PySide2.QtCore import Qt
 from PySide2.QtCore import Slot
 
 from View.meshgl import MeshGL
+from View.gldrawablecollection import GLDrawableCollection
 from View.blockmodelgl import BlockModelGL
 
 from Controller.normalmode import NormalMode
@@ -33,6 +32,7 @@ class OpenGLWidget(QOpenGLWidget):
         self.model = model
 
         # Drawables
+        self.mesh_collection = GLDrawableCollection()
         self.mesh = MeshGL(self, self.model.get_mesh())
         self.block_model = BlockModelGL(self, self.model.get_block_model())
 
@@ -112,19 +112,16 @@ class OpenGLWidget(QOpenGLWidget):
     @Slot()
     def update_mesh(self):
         self.mesh.setup_vertex_attribs()
-        self.update()
 
     @Slot()
     def update_block_model(self):
         self.block_model.setup_vertex_attribs()
-        self.update()
 
     @Slot()
     def toggle_wireframe(self):
         self.mesh.toggle_wireframe()
         self.update()
 
-    # FIXME Should we (openglwidget) or mainwindow handle this? Should we notify mainwindow of an error?
     def dragEnterEvent(self, event, *args, **kwargs):
         if event.mimeData().hasFormat('text/plain'):
             event.acceptProposedAction()
@@ -143,3 +140,6 @@ class OpenGLWidget(QOpenGLWidget):
         # Check if we're part of a MainWindow or a standalone widget
         if self.parent():
             self.parent().statusBar.showMessage('Drop')
+
+        # Update
+        self.update()
