@@ -20,12 +20,13 @@ class Model:
 
         return self.mesh_last_identifier
 
-    def add_block_model(self, file_path: str) -> int:
+    def add_block_model(self, file_path: str) -> None:
         self.block_model = BlockModelElement()
         self.block_model.load(file_path)
 
     def delete_mesh(self, _id: int) -> bool:
         self.mesh_collection[_id] = None
+        return True
 
     def get_mesh(self, _id: int) -> MeshElement:
         return self.mesh_collection[_id]

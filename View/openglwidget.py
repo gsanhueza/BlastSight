@@ -147,3 +147,8 @@ class OpenGLWidget(QOpenGLWidget):
 
         # Update
         self.update()
+
+    def set_camera_pos(self, x, y, z):
+        self.xCamPos = x
+        self.yCamPos = y
+        self.zCamPos = z
