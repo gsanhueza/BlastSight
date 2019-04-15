@@ -115,11 +115,15 @@ class OpenGLWidget(QOpenGLWidget):
 
     @Slot()
     def update_block_model(self):
-        self.block_model.setup_vertex_attribs()
+        block_model = BlockModelGL(self, self.model.get_block_model())
+        self.block_model_collection.add(block_model)
 
     @Slot()
     def toggle_wireframe(self):
-        self.mesh.toggle_wireframe()
+        _id = self.model.mesh_last_identifier
+        mesh = self.mesh_collection[_id - 1]
+        mesh.toggle_wireframe()
+
         self.update()
 
     def dragEnterEvent(self, event, *args, **kwargs):
@@ -134,7 +138,7 @@ class OpenGLWidget(QOpenGLWidget):
             _id = self.model.add_mesh(file_path)
             self.update_mesh()
         except KeyError:
-            self.model.get_block_model().load(file_path)
+            self.model.add_block_model(file_path)
             self.update_block_model()
 
         # Check if we're part of a MainWindow or a standalone widget

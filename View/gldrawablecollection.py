@@ -9,6 +9,9 @@ class GLDrawableCollection(Drawable):
         super().__init__()
         self.drawable_list = []
 
+    def __getitem__(self, item):
+        return self.drawable_list[item]
+
     def add(self, drawable):
         self.drawable_list.append(drawable)
 
