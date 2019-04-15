@@ -14,5 +14,9 @@ if __name__ == "__main__":
     model = Model()
     window = MainWindow(model)
 
+    # model.add_mesh('Model/Mesh/caseron.off')
+    # model.add_mesh('Model/Mesh/caseron.dxf')
+    # model.add_block_model('Model/BlockModel/mini.csv')
+
     window.show()
     sys.exit(qt_app.exec_())

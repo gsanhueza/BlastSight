@@ -14,4 +14,7 @@ class GLDrawableCollection(Drawable):
 
     def draw(self):
         for drawable in self.drawable_list:
+            if not drawable.is_initialized:
+                drawable.initialize()
+
             drawable.draw()

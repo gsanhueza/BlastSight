@@ -33,8 +33,9 @@ class OpenGLWidget(QOpenGLWidget):
 
         # Drawables
         self.mesh_collection = GLDrawableCollection()
-        self.mesh = MeshGL(self, self.model.get_mesh())
-        self.block_model = BlockModelGL(self, self.model.get_block_model())
+        self.block_model_collection = GLDrawableCollection()
+        # self.mesh = MeshGL(self, self.model.get_mesh())
+        # self.block_model = BlockModelGL(self, self.model.get_block_model())
 
         # Camera/World/Projection
         self.camera = QMatrix4x4()
@@ -55,9 +56,6 @@ class OpenGLWidget(QOpenGLWidget):
         self.painter = QPainter()
 
     def initializeGL(self):
-        self.mesh.initialize()
-        self.block_model.initialize()
-
         # Camera setup
         self.camera.translate(self.xCamPos, self.yCamPos, self.zCamPos)
 
@@ -76,8 +74,8 @@ class OpenGLWidget(QOpenGLWidget):
         self.world.rotate(self.zRot / 16.0, 0, 0, 1)
 
         # Draw mesh and block model
-        self.mesh.draw()
-        self.block_model.draw()
+        self.mesh_collection.draw()
+        self.block_model_collection.draw()
 
         # QPainter can draw *after* OpenGL finishes
         self.painter.end()
@@ -111,7 +109,9 @@ class OpenGLWidget(QOpenGLWidget):
 
     @Slot()
     def update_mesh(self):
-        self.mesh.setup_vertex_attribs()
+        _id = self.model.mesh_last_identifier
+        mesh = MeshGL(self, self.model.get_mesh(_id))
+        self.mesh_collection.add(mesh)
 
     @Slot()
     def update_block_model(self):
@@ -131,7 +131,7 @@ class OpenGLWidget(QOpenGLWidget):
 
         # FIXME We should know beforehand if this is a mesh or a block model
         try:
-            self.model.get_mesh().load(file_path)
+            _id = self.model.add_mesh(file_path)
             self.update_mesh()
         except KeyError:
             self.model.get_block_model().load(file_path)

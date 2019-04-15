@@ -32,6 +32,8 @@ class GLDrawable(Drawable):
         self.values_vbo = None
         self.indices_ibo = None
 
+        self.is_initialized = False
+
     def initialize(self):
         # Remember to set shader sources in children of this class
         # For example:
@@ -49,6 +51,8 @@ class GLDrawable(Drawable):
 
         # Setup uniforms
         self.setup_uniforms()
+
+        self.is_initialized = True
 
     def set_vertex_shader_source(self, source: str):
         self.vertex_shader_source = source

@@ -7,11 +7,28 @@ from Model.BlockModel.blockmodelelement import BlockModelElement
 # Main class
 class Model:
     def __init__(self):
-        self.mesh = MeshElement()
+        self.mesh_collection = {}
+        self.mesh_last_identifier = 0
+        self.block_model = None
+
+    def add_mesh(self, file_path: str) -> int:
+        self.mesh_last_identifier += 1
+
+        mesh = MeshElement()
+        mesh.load(file_path)
+        self.mesh_collection[self.mesh_last_identifier] = mesh
+
+        return self.mesh_last_identifier
+
+    def add_block_model(self, file_path: str) -> int:
         self.block_model = BlockModelElement()
+        self.block_model.load(file_path)
 
-    def get_mesh(self):
-        return self.mesh
+    def delete_mesh(self, _id: int) -> bool:
+        self.mesh_collection[_id] = None
 
-    def get_block_model(self):
+    def get_mesh(self, _id: int) -> MeshElement:
+        return self.mesh_collection[_id]
+
+    def get_block_model(self) -> BlockModelElement:
         return self.block_model
