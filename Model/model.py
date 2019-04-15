@@ -31,5 +31,8 @@ class Model:
     def get_mesh(self, _id: int) -> MeshElement:
         return self.mesh_collection[_id]
 
+    def get_meshes(self):
+        return self.mesh_collection.values()
+
     def get_block_model(self) -> BlockModelElement:
         return self.block_model

@@ -30,18 +30,23 @@ class Viewer:
 
     def add_block_model(self, file_path: str):
         self.model.add_block_model(file_path)
+        self.opengl_viewer.update_block_model()
 
     def delete_block_model(self):
         pass
 
     def toggle_mesh_wireframe(self, _id: int):
-        pass
+        self.queue.append(lambda: self.opengl_viewer.toggle_wireframe())
 
     def set_camera_position(self, x: float, y: float, z: float):
         self.opengl_viewer.set_camera_pos(x, y, z)
 
     def show(self):
         self.opengl_viewer.show()
+
+        # Execute queued commands needed *after* opengl shows itself
+        for command in self.queue:
+            command()
 
 
 if __name__ == '__main__':
@@ -52,8 +57,10 @@ if __name__ == '__main__':
     qt_app = QApplication()
     model = Model()
     viewer = Viewer(model)
-    viewer.set_camera_position(0, 0, -20)
+    viewer.set_camera_position(0, 0, -10)
     viewer.add_mesh('Model/Mesh/caseron.off')
+    # viewer.toggle_mesh_wireframe(-1)
+    viewer.add_block_model('Model/BlockModel/mini.csv')
 
     viewer.show()
 

@@ -21,3 +21,6 @@ class GLDrawableCollection(Drawable):
                 drawable.initialize()
 
             drawable.draw()
+
+    def clear(self):
+        self.drawable_list.clear()
