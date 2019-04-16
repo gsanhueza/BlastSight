@@ -7,9 +7,9 @@ from Controller.mode import Mode
 class FreeMode(Mode):
     def __init__(self, widget):
         super().__init__(widget)
-        self.widget.parent().setWindowTitle("Free Mode")
-        self.lastPos = None
         print("MODE: Free Mode")
+
+        self.lastPos = None
 
     def mousePressEvent(self, event):
         self.lastPos = QPoint(event.pos())

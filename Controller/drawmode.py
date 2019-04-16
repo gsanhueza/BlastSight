@@ -8,7 +8,6 @@ from Controller.mode import Mode
 class DrawMode(Mode):
     def __init__(self, widget):
         super().__init__(widget)
-        self.widget.parent().setWindowTitle("Draw Mode")
         print("MODE: Draw Mode")
 
         self.active = False

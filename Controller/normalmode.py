@@ -20,9 +20,9 @@ def normalize_angle(angle):
 class NormalMode(Mode):
     def __init__(self, widget):
         super().__init__(widget)
-        self.widget.parent().setWindowTitle("Normal Mode")
-        self.lastPos = None
         print("MODE: Normal Mode")
+
+        self.lastPos = None
 
     def mousePressEvent(self, event):
         self.lastPos = QPoint(event.pos())
