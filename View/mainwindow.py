@@ -6,9 +6,6 @@ from PySide2.QtWidgets import QMainWindow, QFileDialog, QMessageBox
 from View.uiloader import load_ui
 
 from View.openglwidget import OpenGLWidget
-from Controller.normalmode import NormalMode
-from Controller.drawmode import DrawMode
-from Controller.freemode import FreeMode
 
 
 class MainWindow(QMainWindow):
@@ -16,15 +13,10 @@ class MainWindow(QMainWindow):
         QMainWindow.__init__(self)
         load_ui('View/UI/mainwindow.ui', self)
 
-        # Model
-        self.model = model
-
         # Central Widget
-        self.widget = OpenGLWidget(parent=self,
-                                   mode_class=NormalMode,
-                                   model=self.model)
-        self.setCentralWidget(self.widget)
-
+        self.viewer = OpenGLWidget(parent=self,
+                                   model=model)
+        self.setCentralWidget(self.viewer)
         self.statusBar.showMessage('Ready')
 
     # Unless explicitly otherwise, slots are connected via Qt Designer
@@ -36,10 +28,8 @@ class MainWindow(QMainWindow):
             dir='.',
             filter='DXF Files (*.dxf);;OFF Files (*.off);;All files (*.*)')
 
-        if self.model.load_mesh(filepath):
+        if self.viewer.add_mesh(filepath):
             self.statusBar.showMessage('Mesh loaded')
-            # FIXME Maybe use signal / slot
-            self.widget.update_mesh()  # Notification to OpenGLWidget
         else:
             self.statusBar.showMessage('Cannot load mesh')
 
@@ -51,24 +41,22 @@ class MainWindow(QMainWindow):
             dir='.',
             filter='CSV Files (*.csv);;All files (*.*)')
 
-        if self.model.load_block_model(filepath):
+        if self.viewer.add_block_model(filepath):
             self.statusBar.showMessage('Block model loaded')
-            # FIXME Maybe use signal / slot
-            self.widget.update_block_model()  # Notification to OpenGLWidget
         else:
             self.statusBar.showMessage('Cannot load block model')
 
     @Slot()
     def normal_mode_slot(self):
-        self.widget.current_mode = NormalMode(self.widget)
+        self.viewer.set_normal_mode()
 
     @Slot()
     def draw_mode_slot(self):
-        self.widget.current_mode = DrawMode(self.widget)
+        self.viewer.set_draw_mode()
 
     @Slot()
     def free_mode_slot(self):
-        self.widget.current_mode = FreeMode(self.widget)
+        self.viewer.set_free_mode()
 
     @Slot()
     def help_slot(self):
@@ -78,4 +66,6 @@ class MainWindow(QMainWindow):
 
     @Slot()
     def toggle_wireframe(self):
-        self.widget.toggle_wireframe()
+        status = self.viewer.toggle_wireframe(0)
+        msg = 'enabled' if status else 'disabled'
+        self.statusBar.showMessage(f'Wireframe {msg}')

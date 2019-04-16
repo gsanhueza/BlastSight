@@ -15,7 +15,7 @@ class MeshGL(GLDrawable):
         # Wireframe
         self.wireframe_enabled = True
 
-    def initialize(self):
+    def initialize(self) -> None:
         self.set_vertex_shader_source('View/Shaders/mesh_vertex.glsl')
         self.set_fragment_shader_source('View/Shaders/mesh_fragment.glsl')
         self.set_geometry_shader_source('View/Shaders/mesh_geometry.glsl')
@@ -26,7 +26,7 @@ class MeshGL(GLDrawable):
         self.model_view_matrix_loc = self.shader_program.uniformLocation('model_view_matrix')
         self.proj_matrix_loc = self.shader_program.uniformLocation('proj_matrix')
 
-    def toggle_wireframe(self):
+    def toggle_wireframe(self) -> bool:
         if self.wireframe_enabled:
             self.shader_program.removeShader(self.geometry_shader)
             self.wireframe_enabled = False
@@ -34,7 +34,9 @@ class MeshGL(GLDrawable):
             self.shader_program.addShader(self.geometry_shader)
             self.wireframe_enabled = True
 
-    def _draw(self):
+        return self.wireframe_enabled
+
+    def _draw(self) -> None:
         self.shader_program.bind()
         self.shader_program.setUniformValue(self.proj_matrix_loc, self.widget.proj)
         self.shader_program.setUniformValue(self.model_view_matrix_loc, self.widget.camera * self.widget.world)
