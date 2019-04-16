@@ -63,7 +63,7 @@ if __name__ == '__main__':
     model.add_mesh('Model/Mesh/caseron.off')
     model.add_block_model('Model/BlockModel/mini.csv')
 
-    viewer = Viewer()
+    viewer = Viewer(model)
     viewer.show()
 
     sys.exit(qt_app.exec_())

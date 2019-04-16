@@ -55,16 +55,14 @@ class OpenGLWidget(QOpenGLWidget):
 
     def initializeGL(self):
         # Meshes currently in model
-        for mesh in self.model.get_mesh_collection():
+        for id_, mesh in self.model.get_mesh_collection():
             mesh_gl = MeshGL(self, mesh)
-            mesh_gl.initialize()
-            self.mesh_collection.add(mesh_gl)
+            self.mesh_collection.add(id_, mesh_gl)
 
-        # Block model currently in model
-        for block_model in self.model.get_block_model_collection():
+        # Block models currently in model
+        for id_, block_model in self.model.get_block_model_collection():
             block_model_gl = BlockModelGL(self, block_model)
-            block_model_gl.initialize()
-            self.block_model_collection.add(block_model_gl)
+            self.block_model_collection.add(id_, block_model_gl)
 
         # Camera setup
         self.camera.translate(self.xCamPos, self.yCamPos, self.zCamPos)
@@ -125,9 +123,22 @@ class OpenGLWidget(QOpenGLWidget):
 
     @Slot()
     def update_mesh(self):
+        print('no id')
         for mesh in self.model.get_mesh_collection():
             mesh_gl = MeshGL(self, mesh)
             self.mesh_collection.add(mesh_gl)
+
+    @Slot()
+    def update_block_model(self, id_):
+        block_model = self.model.get_block_model(id_)
+        block_model_gl = BlockModelGL(self, block_model)
+        self.block_model_collection[id_] = block_model_gl
+
+    @Slot()
+    def update_mesh(self, id_):
+        mesh = self.model.get_mesh(id_)
+        mesh_gl = MeshGL(self, mesh)
+        self.mesh_collection[id_] = mesh_gl
 
     @Slot()
     def toggle_wireframe(self):
@@ -145,11 +156,11 @@ class OpenGLWidget(QOpenGLWidget):
 
         # FIXME We should know beforehand if this is a mesh or a block model
         try:
-            _id = self.model.add_mesh(file_path)
-            self.update_mesh()
+            id_ = self.model.add_mesh(file_path)
+            self.update_mesh(id_)
         except KeyError:
-            self.model.add_block_model(file_path)
-            self.update_block_model()
+            id_ = self.model.add_block_model(file_path)
+            self.update_block_model(id_)
 
         # Check if we're part of a MainWindow or a standalone widget
         if self.parent():
