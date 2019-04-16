@@ -1,10 +1,7 @@
 #!/usr/bin/env python
 
-from View.drawable import Drawable
 
-
-# Composite Pattern
-class GLDrawableCollection(Drawable):
+class GLDrawableCollection:
     def __init__(self):
         super().__init__()
         self.drawable_list = []

@@ -34,8 +34,6 @@ class OpenGLWidget(QOpenGLWidget):
         # Drawables
         self.mesh_collection = GLDrawableCollection()
         self.block_model_collection = GLDrawableCollection()
-        # self.mesh = MeshGL(self, self.model.get_mesh())
-        # self.block_model = BlockModelGL(self, self.model.get_block_model())
 
         # Camera/World/Projection
         self.camera = QMatrix4x4()
@@ -154,3 +152,9 @@ class OpenGLWidget(QOpenGLWidget):
         self.xCamPos = x
         self.yCamPos = y
         self.zCamPos = z
+
+    def show_mesh(self, id_: int):
+        self.mesh_collection[id_].show()
+
+    def hide_mesh(self, id_: int):
+        self.mesh_collection[id_].hide()

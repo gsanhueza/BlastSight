@@ -24,12 +24,12 @@ class Model:
         self.block_model = BlockModelElement()
         self.block_model.load(file_path)
 
-    def delete_mesh(self, _id: int) -> bool:
-        self.mesh_collection[_id] = None
+    def delete_mesh(self, id_: int) -> bool:
+        self.mesh_collection[id_] = None
         return True
 
-    def get_mesh(self, _id: int) -> MeshElement:
-        return self.mesh_collection[_id]
+    def get_mesh(self, id_: int) -> MeshElement:
+        return self.mesh_collection[id_]
 
     def get_meshes(self):
         return self.mesh_collection.values()

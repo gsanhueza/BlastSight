@@ -6,11 +6,8 @@ from PySide2.QtGui import QOpenGLVertexArrayObject
 from PySide2.QtGui import QOpenGLBuffer
 from PySide2.QtGui import QOpenGLShader
 
-from View.drawable import Drawable
 
-
-# Component of composite pattern
-class GLDrawable(Drawable):
+class GLDrawable:
     def __init__(self, opengl_widget, model_element):
         super().__init__()
         self.widget = opengl_widget
@@ -33,6 +30,13 @@ class GLDrawable(Drawable):
         self.indices_ibo = None
 
         self.is_initialized = False
+        self.is_visible = True
+
+    def show(self):
+        self.is_visible = True
+
+    def hide(self):
+        self.is_visible = False
 
     def initialize(self):
         # Remember to set shader sources in children of this class
@@ -121,4 +125,8 @@ class GLDrawable(Drawable):
         pass
 
     def draw(self):
+        if self.is_visible:
+            self._draw()
+
+    def _draw(self):
         pass

@@ -34,7 +34,7 @@ class MeshGL(GLDrawable):
             self.shader_program.addShader(self.geometry_shader)
             self.wireframe_enabled = True
 
-    def draw(self):
+    def _draw(self):
         self.shader_program.bind()
         self.shader_program.setUniformValue(self.proj_matrix_loc, self.widget.proj)
         self.shader_program.setUniformValue(self.model_view_matrix_loc, self.widget.camera * self.widget.world)

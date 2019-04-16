@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 from View.openglwidget import OpenGLWidget
-from PySide2.QtWidgets import QWidget
 
 
 # Facade class (Extremely similar to MainWindow... but standalone)
@@ -16,17 +15,20 @@ class Viewer:
 
     def add_mesh(self, file_path: str):
         _id = self.model.add_mesh(file_path)
-        self.mesh_ids.append(_id)
+        self.mesh_ids.append(id_)
         self.opengl_viewer.update_mesh()
 
-    def update_mesh(self, _id: int):
-        self.model.update_mesh(_id)
+    def update_mesh(self, id_: int):
+        self.model.update_mesh(id_)
 
-    def hide_mesh(self, _id: int):
-        pass
+    def show_mesh(self, id_: int):
+        self.opengl_viewer.show_mesh(id_)
 
-    def delete_mesh(self, _id: int):
-        self.model.delete_mesh(_id)
+    def hide_mesh(self, id_: int):
+        self.opengl_viewer.hide_mesh(id_)
+
+    def delete_mesh(self, id_: int):
+        self.model.delete_mesh(id_)
 
     def add_block_model(self, file_path: str):
         self.model.add_block_model(file_path)
@@ -35,7 +37,7 @@ class Viewer:
     def delete_block_model(self):
         pass
 
-    def toggle_mesh_wireframe(self, _id: int):
+    def toggle_mesh_wireframe(self, id_: int):
         self.queue.append(lambda: self.opengl_viewer.toggle_wireframe())
 
     def set_camera_position(self, x: float, y: float, z: float):
