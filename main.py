@@ -12,7 +12,7 @@ if __name__ == "__main__":
     qt_app = QApplication(sys.argv)
 
     model = Model()
-    window = MainWindow(model)
+    window = MainWindow()
 
     window.show()
     sys.exit(qt_app.exec_())

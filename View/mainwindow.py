@@ -3,19 +3,14 @@
 from PyQt5.QtWidgets import QMainWindow, QFileDialog, QMessageBox
 from PyQt5 import uic
 
-from View.openglwidget import OpenGLWidget
-
 
 class MainWindow(QMainWindow):
-    def __init__(self, model=None):
-        QMainWindow.__init__(self)
+    def __init__(self, parent=None):
+        QMainWindow.__init__(self, parent)
         uic.loadUi('View/UI/mainwindow.ui', self)
 
         self.viewer = self.openGLWidget
-        # Central Widget
-        # self.viewer = OpenGLWidget(parent=self,
-        #                            model=model)
-        # self.setCentralWidget(self.viewer)
+
         self.statusBar.showMessage('Ready')
 
     # Unless explicitly otherwise, slots are connected via Qt Designer
