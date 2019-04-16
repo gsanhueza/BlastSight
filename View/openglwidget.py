@@ -117,16 +117,15 @@ class OpenGLWidget(QOpenGLWidget):
 
     @Slot()
     def update_block_model(self):
-        for block_model in self.model.get_block_model_collection():
+        for id_, block_model in self.model.get_block_model_collection():
             block_model_gl = BlockModelGL(self, block_model)
-            self.block_model_collection.add(block_model_gl)
+            self.block_model_collection.add(id_, block_model_gl)
 
     @Slot()
     def update_mesh(self):
-        print('no id')
-        for mesh in self.model.get_mesh_collection():
+        for id_, mesh in self.model.get_mesh_collection():
             mesh_gl = MeshGL(self, mesh)
-            self.mesh_collection.add(mesh_gl)
+            self.mesh_collection.add(id_, mesh_gl)
 
     @Slot()
     def update_block_model(self, id_):
