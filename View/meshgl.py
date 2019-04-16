@@ -43,6 +43,6 @@ class MeshGL(GLDrawable):
 
         self.vao.bind()
 
-        glDrawElements(GL_TRIANGLES, self.model_element.get_indices().size, GL_UNSIGNED_INT, None)
+        glDrawElements(GL_TRIANGLES, self.indices_size, GL_UNSIGNED_INT, None)
 
         self.vao.release()

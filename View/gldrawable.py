@@ -32,6 +32,11 @@ class GLDrawable:
         self.is_initialized = False
         self.is_visible = True
 
+        # Sizes
+        self.positions_size = 0
+        self.indices_size = 0
+        self.values_size = 0
+
     def show(self):
         self.is_visible = True
 
@@ -102,15 +107,19 @@ class GLDrawable:
         indices = self.model_element.get_indices()
         values = self.model_element.get_values()
 
+        self.positions_size = positions.size
+        self.indices_size = indices.size
+        self.values_size = values.size
+
         self.widget.makeCurrent()
         self.vao.bind()
 
         self.positions_vbo.bind()
-        glBufferData(GL_ARRAY_BUFFER, _SIZE_OF_GL_FLOAT * positions.size, positions, GL_STATIC_DRAW)
+        glBufferData(GL_ARRAY_BUFFER, _SIZE_OF_GL_FLOAT * self.positions_size, positions, GL_STATIC_DRAW)
         glVertexAttribPointer(_POSITION, 3, GL_FLOAT, False, 0, None)
 
         self.values_vbo.bind()
-        glBufferData(GL_ARRAY_BUFFER, _SIZE_OF_GL_FLOAT * values.size, values, GL_STATIC_DRAW)
+        glBufferData(GL_ARRAY_BUFFER, _SIZE_OF_GL_FLOAT * self.values_size, values, GL_STATIC_DRAW)
         glVertexAttribPointer(_COLOR, 3, GL_FLOAT, False, 0, None)
 
         self.indices_ibo.bind()

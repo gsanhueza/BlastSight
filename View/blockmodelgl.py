@@ -37,6 +37,6 @@ class BlockModelGL(GLDrawable):
 
         self.vao.bind()
 
-        glDrawElements(GL_POINTS, self.model_element.get_indices().size, GL_UNSIGNED_INT, None)
+        glDrawElements(GL_POINTS, self.indices_size, GL_UNSIGNED_INT, None)
 
         self.vao.release()
