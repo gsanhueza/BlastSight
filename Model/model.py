@@ -35,6 +35,10 @@ class Model:
         mesh.load(file_path)
         self.mesh_collection[id_] = mesh
 
+    def delete_block_model(self, id_: int) -> bool:
+        self.block_model_collection[id_] = None
+        return True
+
     def update_block_model(self, id_: int, file_path: str) -> None:
         block_model = BlockModelElement()
         block_model.load(file_path)

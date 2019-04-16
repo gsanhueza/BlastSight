@@ -4,7 +4,11 @@ from PySide2.QtCore import Qt, QPoint
 from Controller.mode import Mode
 
 
-# General methods
+"""
+General methods
+"""
+
+
 def normalize_angle(angle):
     while angle < 0:
         angle += 360 * 16
@@ -16,7 +20,7 @@ def normalize_angle(angle):
 class NormalMode(Mode):
     def __init__(self, widget):
         super().__init__(widget)
-        # self.widget.parent().setWindowTitle("Normal Mode")
+        self.widget.parent().setWindowTitle("Normal Mode")
         self.lastPos = None
         print("MODE: Normal Mode")
 
