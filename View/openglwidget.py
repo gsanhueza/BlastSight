@@ -118,23 +118,20 @@ class OpenGLWidget(QOpenGLWidget):
         self.update()
 
     @Slot()
-    def update_block(self):
-        self.block_model_collection.clear()
+    def update_block_model(self):
         for block_model in self.model.get_block_model_collection():
             block_model_gl = BlockModelGL(self, block_model)
             self.block_model_collection.add(block_model_gl)
 
     @Slot()
     def update_mesh(self):
-        self.mesh_collection.clear()
         for mesh in self.model.get_mesh_collection():
             mesh_gl = MeshGL(self, mesh)
             self.mesh_collection.add(mesh_gl)
 
     @Slot()
     def toggle_wireframe(self):
-        _id = self.model.mesh_last_identifier
-        mesh = self.mesh_collection[_id - 1]
+        mesh = self.mesh_collection[-1]
         mesh.toggle_wireframe()
 
         self.update()

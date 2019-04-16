@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+from collections import OrderedDict
 from Model.Mesh.meshelement import MeshElement
 from Model.BlockModel.blockmodelelement import BlockModelElement
 
@@ -7,18 +8,17 @@ from Model.BlockModel.blockmodelelement import BlockModelElement
 # Main class
 class Model:
     def __init__(self):
-        self.mesh_collection = {}
+        self.mesh_collection = OrderedDict()
         self.mesh_last_identifier = 0
         self.block_model_collection = []
 
     def add_mesh(self, file_path: str) -> int:
-        self.mesh_last_identifier += 1
-
         mesh = MeshElement()
         mesh.load(file_path)
         self.mesh_collection[self.mesh_last_identifier] = mesh
 
-        return self.mesh_last_identifier
+        self.mesh_last_identifier += 1
+        return self.mesh_last_identifier - 1
 
     def update_mesh(self, id_: int, file_path: str):
         mesh = MeshElement()
