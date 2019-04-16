@@ -54,6 +54,18 @@ class OpenGLWidget(QOpenGLWidget):
         self.painter = QPainter()
 
     def initializeGL(self):
+        # Meshes currently in model
+        for mesh in self.model.get_mesh_collection():
+            mesh_gl = MeshGL(self, mesh)
+            mesh_gl.initialize()
+            self.mesh_collection.add(mesh_gl)
+
+        # Block model currently in model
+        for block_model in self.model.get_block_model_collection():
+            block_model_gl = BlockModelGL(self, block_model)
+            block_model_gl.initialize()
+            self.block_model_collection.add(block_model_gl)
+
         # Camera setup
         self.camera.translate(self.xCamPos, self.yCamPos, self.zCamPos)
 
@@ -106,17 +118,18 @@ class OpenGLWidget(QOpenGLWidget):
         self.update()
 
     @Slot()
-    def update_mesh(self):
-        self.mesh_collection.clear()
-        for mesh in self.model.get_meshes():
-            mesh_gl = MeshGL(self, mesh)
-            self.mesh_collection.add(mesh_gl)
+    def update_block(self):
+        self.block_model_collection.clear()
+        for block_model in self.model.get_block_model_collection():
+            block_model_gl = BlockModelGL(self, block_model)
+            self.block_model_collection.add(block_model_gl)
 
     @Slot()
-    def update_block_model(self):
-        block_model = self.model.get_block_model()
-        block_model_gl = BlockModelGL(self, block_model)
-        self.block_model_collection.add(block_model_gl)
+    def update_mesh(self):
+        self.mesh_collection.clear()
+        for mesh in self.model.get_mesh_collection():
+            mesh_gl = MeshGL(self, mesh)
+            self.mesh_collection.add(mesh_gl)
 
     @Slot()
     def toggle_wireframe(self):

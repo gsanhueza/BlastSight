@@ -1,25 +1,26 @@
 #!/usr/bin/env python
 
 from View.openglwidget import OpenGLWidget
+from Model.model import Model
 
 
 # Facade class (Extremely similar to MainWindow... but standalone)
 class Viewer:
-    def __init__(self, model=None):
+    def __init__(self, model=Model()):
         self.model = model
-        self.opengl_viewer = OpenGLWidget(model=model)
+        self.opengl_viewer = OpenGLWidget(model=self.model)
 
         # Command queue
         self.queue = []
         self.mesh_ids = []
 
     def add_mesh(self, file_path: str):
-        _id = self.model.add_mesh(file_path)
+        id_ = self.model.add_mesh(file_path)
         self.mesh_ids.append(id_)
         self.opengl_viewer.update_mesh()
 
-    def update_mesh(self, id_: int):
-        self.model.update_mesh(id_)
+    def update_mesh(self, id_: int, file_path: str):
+        self.model.update_mesh(id_, file_path)
 
     def show_mesh(self, id_: int):
         self.opengl_viewer.show_mesh(id_)
@@ -58,12 +59,11 @@ if __name__ == '__main__':
 
     qt_app = QApplication()
     model = Model()
-    viewer = Viewer(model)
-    viewer.set_camera_position(0, 0, -10)
-    viewer.add_mesh('Model/Mesh/caseron.off')
-    # viewer.toggle_mesh_wireframe(-1)
-    viewer.add_block_model('Model/BlockModel/mini.csv')
 
+    model.add_mesh('Model/Mesh/caseron.off')
+    model.add_block_model('Model/BlockModel/mini.csv')
+
+    viewer = Viewer()
     viewer.show()
 
     sys.exit(qt_app.exec_())
