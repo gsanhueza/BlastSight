@@ -1,47 +1,57 @@
 #!/usr/bin/env python
 
-from Model.filemanager import FileManager
+from collections import OrderedDict
+from Model.Mesh.meshelement import MeshElement
+from Model.BlockModel.blockmodelelement import BlockModelElement
 
 
 # Main class
 class Model:
     def __init__(self):
-        self.file_manager = FileManager()
+        self.mesh_collection = OrderedDict()
+        self.mesh_last_identifier = 0
+        self.block_model_collection = OrderedDict()
+        self.block_model_last_identifier = 0
 
-        self.mesh_vertices = None
-        self.mesh_indices = None
-        self.mesh_values = None
+    def add_mesh(self, file_path: str) -> int:
+        mesh = MeshElement()
+        mesh.load(file_path)
+        self.mesh_collection[self.mesh_last_identifier] = mesh
 
-        self.block_model_vertices = None
-        self.block_model_indices = None
-        self.block_model_values = None
+        self.mesh_last_identifier += 1
+        return self.mesh_last_identifier - 1
 
-    def get_mesh_vertices(self):
-        return self.mesh_vertices
+    def add_block_model(self, file_path: str) -> int:
+        block_model = BlockModelElement()
+        block_model.load(file_path)
 
-    def get_mesh_indices(self):
-        return self.mesh_indices
+        self.block_model_collection[self.block_model_last_identifier] = block_model
 
-    def get_mesh_values(self):
-        return self.mesh_values
+        self.block_model_last_identifier += 1
+        return self.block_model_last_identifier - 1
 
-    def get_block_model_vertices(self):
-        return self.block_model_vertices
+    def update_mesh(self, id_: int, file_path: str) -> None:
+        mesh = MeshElement()
+        mesh.load(file_path)
+        self.mesh_collection[id_] = mesh
 
-    def get_block_model_indices(self):
-        return self.block_model_indices
+    def update_block_model(self, id_: int, file_path: str) -> None:
+        block_model = BlockModelElement()
+        block_model.load(file_path)
+        self.block_model_collection[id_] = block_model
 
-    def get_block_model_values(self):
-        return self.block_model_values
+    def delete_mesh(self, id_: int) -> bool:
+        self.mesh_collection[id_] = None
+        return True
 
-    def load_mesh(self, file_path: str) -> bool:
-        return self.file_manager.load_mesh(self, file_path)
+    def get_mesh(self, id_: int) -> MeshElement:
+        return self.mesh_collection[id_]
 
-    def save_mesh(self, file_path: str) -> bool:
-        return self.file_manager.save_mesh(self, file_path)
+    def get_mesh_collection(self):
+        return self.mesh_collection.items()
 
-    def load_block_model(self, file_path: str) -> bool:
-        return self.file_manager.load_block_model(self, file_path)
+    def get_block_model(self, id_: int) -> BlockModelElement:
+        return self.block_model_collection[id_]
 
-    def save_block_model(self, file_path: str) -> bool:
-        return self.file_manager.save_block_model(self, file_path)
+    def get_block_model_collection(self):
+        return self.block_model_collection.items()

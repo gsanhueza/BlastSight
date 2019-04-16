@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 
-import numpy as np
-
 from OpenGL.GL import *
 from PySide2.QtWidgets import QOpenGLWidget
 from PySide2.QtGui import QPainter
@@ -10,6 +8,7 @@ from PySide2.QtCore import Qt
 from PySide2.QtCore import Slot
 
 from View.meshgl import MeshGL
+from View.gldrawablecollection import GLDrawableCollection
 from View.blockmodelgl import BlockModelGL
 
 from Controller.normalmode import NormalMode
@@ -33,8 +32,8 @@ class OpenGLWidget(QOpenGLWidget):
         self.model = model
 
         # Drawables
-        self.mesh = MeshGL(self)
-        self.block_model = BlockModelGL(self)
+        self.mesh_collection = GLDrawableCollection()
+        self.block_model_collection = GLDrawableCollection()
 
         # Camera/World/Projection
         self.camera = QMatrix4x4()
@@ -55,8 +54,15 @@ class OpenGLWidget(QOpenGLWidget):
         self.painter = QPainter()
 
     def initializeGL(self):
-        self.mesh.initialize()
-        self.block_model.initialize()
+        # Meshes currently in model
+        for id_, mesh in self.model.get_mesh_collection():
+            mesh_gl = MeshGL(self, mesh)
+            self.mesh_collection.add(id_, mesh_gl)
+
+        # Block models currently in model
+        for id_, block_model in self.model.get_block_model_collection():
+            block_model_gl = BlockModelGL(self, block_model)
+            self.block_model_collection.add(id_, block_model_gl)
 
         # Camera setup
         self.camera.translate(self.xCamPos, self.yCamPos, self.zCamPos)
@@ -76,8 +82,8 @@ class OpenGLWidget(QOpenGLWidget):
         self.world.rotate(self.zRot / 16.0, 0, 0, 1)
 
         # Draw mesh and block model
-        self.mesh.draw()
-        self.block_model.draw()
+        self.mesh_collection.draw()
+        self.block_model_collection.draw()
 
         # QPainter can draw *after* OpenGL finishes
         self.painter.end()
@@ -110,30 +116,36 @@ class OpenGLWidget(QOpenGLWidget):
         self.update()
 
     @Slot()
-    def update_mesh(self):
-        self.mesh.update_positions(np.array(self.model.get_mesh_vertices(), np.float32))
-        self.mesh.update_indices(np.array(self.model.get_mesh_indices(), np.uint32))
-        self.mesh.update_values(np.array(self.model.get_mesh_values(), np.float32))
-
-        self.mesh.setup_vertex_attribs()
-        self.update()
+    def update_block_model(self):
+        for id_, block_model in self.model.get_block_model_collection():
+            block_model_gl = BlockModelGL(self, block_model)
+            self.block_model_collection.add(id_, block_model_gl)
 
     @Slot()
-    def update_block_model(self):
-        self.block_model.update_positions(np.array(self.model.get_block_model_vertices(), np.float32))
-        self.block_model.update_indices(np.array(self.model.get_block_model_indices(), np.uint32))
-        self.block_model.update_values(np.array(self.model.get_block_model_values(), np.float32))
+    def update_mesh(self):
+        for id_, mesh in self.model.get_mesh_collection():
+            mesh_gl = MeshGL(self, mesh)
+            self.mesh_collection.add(id_, mesh_gl)
 
-        self.block_model.setup_vertex_attribs()
+    @Slot()
+    def update_block_model(self, id_):
+        block_model = self.model.get_block_model(id_)
+        block_model_gl = BlockModelGL(self, block_model)
+        self.block_model_collection[id_] = block_model_gl
 
-        self.update()
+    @Slot()
+    def update_mesh(self, id_):
+        mesh = self.model.get_mesh(id_)
+        mesh_gl = MeshGL(self, mesh)
+        self.mesh_collection[id_] = mesh_gl
 
     @Slot()
     def toggle_wireframe(self):
-        self.mesh.toggle_wireframe()
+        mesh = self.mesh_collection[-1]
+        mesh.toggle_wireframe()
+
         self.update()
 
-    # FIXME Should we (openglwidget) or mainwindow handle this? Should we notify mainwindow of an error?
     def dragEnterEvent(self, event, *args, **kwargs):
         if event.mimeData().hasFormat('text/plain'):
             event.acceptProposedAction()
@@ -143,12 +155,26 @@ class OpenGLWidget(QOpenGLWidget):
 
         # FIXME We should know beforehand if this is a mesh or a block model
         try:
-            self.model.load_mesh(file_path)
-            self.update_mesh()
+            id_ = self.model.add_mesh(file_path)
+            self.update_mesh(id_)
         except KeyError:
-            self.model.load_block_model(file_path)
-            self.update_block_model()
+            id_ = self.model.add_block_model(file_path)
+            self.update_block_model(id_)
 
         # Check if we're part of a MainWindow or a standalone widget
         if self.parent():
             self.parent().statusBar.showMessage('Drop')
+
+        # Update
+        self.update()
+
+    def set_camera_pos(self, x, y, z):
+        self.xCamPos = x
+        self.yCamPos = y
+        self.zCamPos = z
+
+    def show_mesh(self, id_: int):
+        self.mesh_collection[id_].show()
+
+    def hide_mesh(self, id_: int):
+        self.mesh_collection[id_].hide()

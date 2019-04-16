@@ -5,8 +5,8 @@ from OpenGL.GL import *
 
 
 class MeshGL(GLDrawable):
-    def __init__(self, opengl_widget):
-        super().__init__(opengl_widget)
+    def __init__(self, opengl_widget, model_element):
+        super().__init__(opengl_widget, model_element)
 
         # Uniforms
         self.model_view_matrix_loc = None
@@ -34,13 +34,13 @@ class MeshGL(GLDrawable):
             self.shader_program.addShader(self.geometry_shader)
             self.wireframe_enabled = True
 
-    def draw(self):
+    def _draw(self):
         self.shader_program.bind()
         self.shader_program.setUniformValue(self.proj_matrix_loc, self.widget.proj)
         self.shader_program.setUniformValue(self.model_view_matrix_loc, self.widget.camera * self.widget.world)
 
         self.vao.bind()
 
-        glDrawElements(GL_TRIANGLES, self.indices.size, GL_UNSIGNED_INT, None)
+        glDrawElements(GL_TRIANGLES, self.model_element.get_indices().size, GL_UNSIGNED_INT, None)
 
         self.vao.release()

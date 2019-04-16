@@ -6,8 +6,8 @@ from PySide2.QtGui import QVector2D
 
 
 class BlockModelGL(GLDrawable):
-    def __init__(self, opengl_widget):
-        super().__init__(opengl_widget)
+    def __init__(self, opengl_widget, model_element):
+        super().__init__(opengl_widget, model_element)
 
         # Uniforms
         self.model_view_matrix_loc = None
@@ -29,7 +29,7 @@ class BlockModelGL(GLDrawable):
         self.proj_matrix_loc = self.shader_program.uniformLocation('proj_matrix')
         self.block_size_loc = self.shader_program.uniformLocation('block_size')
 
-    def draw(self):
+    def _draw(self):
         self.shader_program.bind()
         self.shader_program.setUniformValue(self.proj_matrix_loc, self.widget.proj)
         self.shader_program.setUniformValue(self.model_view_matrix_loc, self.widget.camera * self.widget.world)
@@ -37,6 +37,6 @@ class BlockModelGL(GLDrawable):
 
         self.vao.bind()
 
-        glDrawElements(GL_POINTS, self.indices.size, GL_UNSIGNED_INT, None)
+        glDrawElements(GL_POINTS, self.model_element.get_indices().size, GL_UNSIGNED_INT, None)
 
         self.vao.release()
