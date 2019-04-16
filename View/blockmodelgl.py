@@ -2,7 +2,7 @@
 
 from View.gldrawable import GLDrawable
 from OpenGL.GL import *
-from PySide2.QtGui import QVector2D
+from PyQt5.QtGui import QVector2D
 
 
 class BlockModelGL(GLDrawable):

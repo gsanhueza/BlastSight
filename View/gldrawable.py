@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
 from OpenGL.GL import *
-from PySide2.QtGui import QOpenGLShaderProgram
-from PySide2.QtGui import QOpenGLVertexArrayObject
-from PySide2.QtGui import QOpenGLBuffer
-from PySide2.QtGui import QOpenGLShader
+from PyQt5.QtGui import QOpenGLShaderProgram
+from PyQt5.QtGui import QOpenGLVertexArrayObject
+from PyQt5.QtGui import QOpenGLBuffer
+from PyQt5.QtGui import QOpenGLShader
 
 
 class GLDrawable:

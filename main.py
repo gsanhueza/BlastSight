@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from PySide2.QtWidgets import QApplication
+from PyQt5.QtWidgets import QApplication
 from View.mainwindow import MainWindow
 from Model.model import Model
 

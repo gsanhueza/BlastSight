@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import numpy as np
-from PySide2.QtCore import QFileInfo
+from PyQt5.QtCore import QFileInfo
 
 
 # Main class
