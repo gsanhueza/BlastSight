@@ -53,7 +53,6 @@
     <addaction name="action_Draw_mode"/>
     <addaction name="action_Free_mode"/>
     <addaction name="separator"/>
-    <addaction name="action_Toggle_wireframe"/>
    </widget>
    <addaction name="menu_File"/>
    <addaction name="menu_View"/>

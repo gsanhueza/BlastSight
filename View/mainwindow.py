@@ -56,10 +56,16 @@ class MainWindow(QMainWindow):
                                 'MineVis - Help',
                                 'TO-DO: Create help message box')
 
-    def toggle_wireframe(self):
-        status = self.viewer.toggle_wireframe(0)
-        msg = 'enabled' if status else 'disabled'
-        self.statusBar.showMessage(f'Wireframe {msg}')
+    def toggle_wireframe(self, id_: int = 0):
+        try:
+            status = self.viewer.toggle_wireframe(id_)
+            msg = 'enabled' if status else 'disabled'
+            self.statusBar.showMessage(f'Wireframe {id_} {msg}')
+        except KeyError:
+            msg = 'unavailable'
+            self.statusBar.showMessage(f'Wireframe {msg}')
+
+        # Tree widget
         self.tree_widget.clear()
 
         for mesh in self.viewer.model.get_mesh_collection():

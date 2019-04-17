@@ -56,16 +56,16 @@ class OpenGLWidget(QOpenGLWidget):
     """
     FACADE METHODS
     """
-    def add_mesh(self, file_path: str) -> bool:
+    def add_mesh(self, file_path: str) -> int:
         try:
             id_ = self.model.add_mesh(file_path)
             mesh = self.model.get_mesh(id_)
             mesh_gl = MeshGL(self, mesh)
             self.mesh_gl_collection.add(id_, mesh_gl)
 
-            return True
+            return id_
         except KeyError:
-            return False
+            return -1
 
     def update_mesh(self, id_: int) -> None:
         mesh = self.model.get_mesh(id_)
