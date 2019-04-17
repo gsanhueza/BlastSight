@@ -121,6 +121,9 @@ class OpenGLWidget(QOpenGLWidget):
     """
     Internal methods
     """
+    def set_model(self, model):
+        self.model = model
+
     def initializeGL(self):
         # Meshes currently in model
         for id_, mesh in self.model.get_mesh_collection():

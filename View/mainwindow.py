@@ -13,6 +13,9 @@ class MainWindow(QMainWindow):
 
         self.statusBar.showMessage('Ready')
 
+    def set_model(self, model):
+        self.viewer.set_model(model)
+
     # Unless explicitly otherwise, slots are connected via Qt Designer
     def load_mesh_slot(self):
         # TODO Use QSettings (or something) to remember last directory
