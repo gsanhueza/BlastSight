@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from PySide2.QtCore import Qt, QPoint
+from PyQt5.QtCore import Qt, QPoint
 from Controller.mode import Mode
 
 
@@ -41,7 +41,7 @@ class NormalMode(Mode):
         self.lastPos = QPoint(event.pos())
 
     def wheelEvent(self, event):
-        self.widget.zCamPos += (event.delta() / 120)
+        self.widget.zCamPos += (event.angleDelta().y() / 120)
         self.widget.camera.setToIdentity()
         self.widget.camera.translate(self.widget.xCamPos,
                                      self.widget.yCamPos,

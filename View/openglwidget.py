@@ -1,11 +1,10 @@
 #!/usr/bin/env python
 
 from OpenGL.GL import *
-from PySide2.QtWidgets import QOpenGLWidget
-from PySide2.QtGui import QPainter
-from PySide2.QtGui import QMatrix4x4
-from PySide2.QtCore import Qt
-from PySide2.QtCore import Slot
+from PyQt5.QtWidgets import QOpenGLWidget
+from PyQt5.QtGui import QPainter
+from PyQt5.QtGui import QMatrix4x4
+from PyQt5.QtCore import Qt
 
 from View.meshgl import MeshGL
 from View.gldrawablecollection import GLDrawableCollection
@@ -96,7 +95,6 @@ class OpenGLWidget(QOpenGLWidget):
         self.model.delete_block_model(id_)
         self.block_model_gl_collection[id_] = None
 
-    @Slot()
     def toggle_wireframe(self, id_: int) -> bool:
         status = self.mesh_gl_collection[id_].toggle_wireframe()
         self.update()
@@ -111,21 +109,21 @@ class OpenGLWidget(QOpenGLWidget):
     """
     Controller modes
     """
-    @Slot()
     def set_normal_mode(self):
         self.current_mode = NormalMode(self)
 
-    @Slot()
     def set_draw_mode(self):
         self.current_mode = DrawMode(self)
 
-    @Slot()
     def set_free_mode(self):
         self.current_mode = FreeMode(self)
 
     """
     Internal methods
     """
+    def set_model(self, model):
+        self.model = model
+
     def initializeGL(self):
         # Meshes currently in model
         for id_, mesh in self.model.get_mesh_collection():
@@ -200,10 +198,6 @@ class OpenGLWidget(QOpenGLWidget):
             self.add_mesh(file_path)
         except KeyError:
             self.add_block_model(file_path)
-
-        # Check if we're part of a MainWindow or a standalone widget
-        if self.parent():
-            self.parent().statusBar.showMessage('Drop')
 
         # Update
         self.update()

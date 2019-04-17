@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-from PySide2.QtCore import Qt
-from PySide2.QtGui import QVector4D
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QVector4D
 from Controller.mode import Mode
 
 
