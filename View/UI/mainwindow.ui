@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>MainWindow</class>
- <widget class="QMainWindow" name="MainWindow">
+ <widget class="MainWindow" name="MainWindow">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -16,7 +16,7 @@
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout">
     <item row="0" column="0">
-     <widget class="OpenGLWidget" name="openGLWidget"/>
+     <widget class="OpenGLWidget" name="viewer"/>
     </item>
    </layout>
   </widget>
@@ -45,7 +45,7 @@
     <addaction name="action_Help"/>
     <addaction name="separator"/>
    </widget>
-   <widget class="QMenu" name="menuView">
+   <widget class="QMenu" name="menu_View">
     <property name="title">
      <string>&amp;View</string>
     </property>
@@ -56,7 +56,7 @@
     <addaction name="action_Toggle_wireframe"/>
    </widget>
    <addaction name="menu_File"/>
-   <addaction name="menuView"/>
+   <addaction name="menu_View"/>
    <addaction name="menu_Help"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
@@ -154,7 +154,8 @@
   </action>
   <action name="action_Load_block_model">
    <property name="icon">
-    <iconset theme="code-block"/>
+    <iconset theme="code-block">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>Load &amp;block model</string>
@@ -170,6 +171,12 @@
    <class>OpenGLWidget</class>
    <extends>QOpenGLWidget</extends>
    <header>View/openglwidget.h</header>
+  </customwidget>
+  <customwidget>
+   <class>MainWindow</class>
+   <extends>QMainWindow</extends>
+   <header>View/mainwindow.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>

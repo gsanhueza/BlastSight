@@ -14,7 +14,7 @@ Each development milestone will be recorded here.
 
 #### Viewer
 
-- [ ] Show a triangulation
+- [x] Show a triangulation
 
 #### GUI
 
@@ -24,16 +24,16 @@ Each development milestone will be recorded here.
 
 #### Model
 
-- [ ] Load a block model
+- [x] Load a block model
 
 #### Viewer
 
-- [ ] Show a block model
-- [ ] Enable visualization modes
+- [x] Show a block model
+- [x] Enable visualization modes
 
 #### GUI
 
-- [ ] Allow change between meshes and block models
+- [x] Allow change between meshes and block models
 
 ### Milestone 3
 

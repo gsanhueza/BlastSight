@@ -9,8 +9,6 @@ class MainWindow(QMainWindow):
         QMainWindow.__init__(self, parent)
         uic.loadUi('View/UI/mainwindow.ui', self)
 
-        self.viewer = self.openGLWidget
-
         self.statusBar.showMessage('Ready')
 
     def set_model(self, model):

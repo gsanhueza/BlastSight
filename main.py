@@ -12,7 +12,7 @@ def main_pyqt5():
     qt_app = QApplication(sys.argv)
 
     model = Model()
-    model.add_mesh('Model/Mesh/caseron.off')
+    # model.add_mesh('Model/Mesh/caseron.off')
     window = MainWindow()
     window.set_model(model)
 
