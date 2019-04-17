@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 from PyQt5.QtWidgets import QMainWindow, QFileDialog, QMessageBox
+from PyQt5.QtWidgets import QTreeWidget, QTreeWidgetItem
 from PyQt5 import uic
 
 
@@ -10,6 +11,8 @@ class MainWindow(QMainWindow):
         uic.loadUi('View/UI/mainwindow.ui', self)
 
         self.statusBar.showMessage('Ready')
+
+        self.tree_widget = QTreeWidget()
 
     def set_model(self, model):
         self.viewer.set_model(model)
@@ -57,3 +60,11 @@ class MainWindow(QMainWindow):
         status = self.viewer.toggle_wireframe(0)
         msg = 'enabled' if status else 'disabled'
         self.statusBar.showMessage(f'Wireframe {msg}')
+        self.tree_widget.clear()
+
+        for mesh in self.viewer.model.get_mesh_collection():
+            item = QTreeWidgetItem(self.tree_widget)
+            item.setText(0, str(mesh))
+            self.tree_widget.addTopLevelItem(item)
+
+        self.tree_widget.show()
