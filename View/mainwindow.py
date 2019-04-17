@@ -52,9 +52,24 @@ class MainWindow(QMainWindow):
         self.viewer.set_free_mode()
 
     def help_slot(self):
-        QMessageBox.information(self,
-                                'MineVis - Help',
-                                'TO-DO: Create help message box')
+        # QMessageBox.information(self,
+        #                         'MineVis - Help',
+        #                         'TO-DO: Create help message box')
+
+        # Tree widget
+        self.tree_widget.clear()
+
+        for id_, mesh in self.viewer.model.get_mesh_collection():
+            item = QTreeWidgetItem(self.tree_widget)
+            item.setText(0, str(id_))
+            self.tree_widget.addTopLevelItem(item)
+
+        def click(item, col):
+            id_ = int(item.text(0))
+            self.viewer.toggle_wireframe(id_)
+
+        self.tree_widget.itemClicked.connect(click)
+        self.tree_widget.show()
 
     def toggle_wireframe(self, id_: int = 0):
         try:
@@ -64,13 +79,3 @@ class MainWindow(QMainWindow):
         except KeyError:
             msg = 'unavailable'
             self.statusBar.showMessage(f'Wireframe {msg}')
-
-        # Tree widget
-        self.tree_widget.clear()
-
-        for mesh in self.viewer.model.get_mesh_collection():
-            item = QTreeWidgetItem(self.tree_widget)
-            item.setText(0, str(mesh))
-            self.tree_widget.addTopLevelItem(item)
-
-        self.tree_widget.show()
