@@ -13,6 +13,9 @@ class ModelElement:
 
         self.parser_dict = {}
 
+        self.ext = None
+        self.name = None
+
     # FIXME Just for testing
         self.default_data()
 
@@ -46,9 +49,10 @@ class ModelElement:
         self.values = np.array(values, np.float32)
 
     def load(self, file_path: str) -> bool:
-        ext = ModelElement.get_file_extension(file_path)
+        self.name = ModelElement.detect_file_name(file_path)
+        self.ext = ModelElement.detect_file_extension(file_path)
 
-        parser = self.get_parser(ext)
+        parser = self.get_parser(self.ext)
         parser.load_file(file_path)
 
         self.set_vertices(parser.get_vertices())
@@ -70,6 +74,11 @@ class ModelElement:
         return self.parser_dict[ext]
 
     @staticmethod
-    def get_file_extension(file_path: str) -> str:
+    def detect_file_extension(file_path: str) -> str:
         file_info = QFileInfo(file_path)
         return file_info.suffix()
+
+    @staticmethod
+    def detect_file_name(file_path: str) -> str:
+        file_info = QFileInfo(file_path)
+        return file_info.baseName()

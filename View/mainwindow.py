@@ -1,7 +1,10 @@
 #!/usr/bin/env python
 
-from PyQt5.QtWidgets import QMainWindow, QFileDialog, QMessageBox
-from PyQt5.QtWidgets import QTreeWidget, QTreeWidgetItem
+from PyQt5.QtWidgets import QFileDialog
+from PyQt5.QtWidgets import QMainWindow
+from PyQt5.QtWidgets import QMessageBox
+from View.treewidgetitem import TreeWidgetItem
+
 from PyQt5 import uic
 
 
@@ -11,6 +14,13 @@ class MainWindow(QMainWindow):
         uic.loadUi('View/UI/mainwindow.ui', self)
         self.statusBar.showMessage('Ready')
 
+        def click(item, col):
+            id_ = item.get_id()
+            self.viewer.toggle_wireframe(id_)
+            print(f'Clicked on id: {id_}')
+
+        self.treeWidget.itemClicked.connect(click)
+
     def set_model(self, model):
         self.viewer.set_model(model)
 
@@ -19,15 +29,9 @@ class MainWindow(QMainWindow):
         self.treeWidget.clear()
 
         for id_, mesh in self.viewer.model.get_mesh_collection():
-            item = QTreeWidgetItem(self.treeWidget)
-            item.setText(0, str(id_))
+            item = TreeWidgetItem(self.treeWidget)
+            item.set_element(id_, mesh)
             self.treeWidget.addTopLevelItem(item)
-
-        def click(item, col):
-            id_ = int(item.text(0))
-            self.viewer.toggle_wireframe(id_)
-
-        self.treeWidget.itemClicked.connect(click)
 
     # Unless explicitly otherwise, slots are connected via Qt Designer
     def load_mesh_slot(self):
