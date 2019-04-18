@@ -4,7 +4,6 @@ from OpenGL.GL import *
 from PyQt5.QtWidgets import QOpenGLWidget
 from PyQt5.QtGui import QPainter
 from PyQt5.QtGui import QMatrix4x4
-from PyQt5.QtCore import Qt
 
 from View.meshgl import MeshGL
 from View.gldrawablecollection import GLDrawableCollection
@@ -20,8 +19,6 @@ from Model.model import Model
 class OpenGLWidget(QOpenGLWidget):
     def __init__(self, parent=None, model=Model()):
         QOpenGLWidget.__init__(self, parent)
-        self.setFocusPolicy(Qt.StrongFocus)
-        self.setAcceptDrops(True)
 
         # Controller mode
         self.current_mode = None
@@ -187,20 +184,4 @@ class OpenGLWidget(QOpenGLWidget):
 
     def wheelEvent(self, event, *args, **kwargs):
         self.current_mode.wheelEvent(event)
-        self.update()
-
-    def dragEnterEvent(self, event, *args, **kwargs):
-        if event.mimeData().hasFormat('text/plain'):
-            event.acceptProposedAction()
-
-    def dropEvent(self, event, *args, **kwargs):
-        file_path = event.mimeData().urls()[0].toLocalFile()
-
-        # FIXME We should know beforehand if this is a mesh or a block model
-        try:
-            self.add_mesh(file_path)
-        except KeyError:
-            self.add_block_model(file_path)
-
-        # Update
         self.update()
