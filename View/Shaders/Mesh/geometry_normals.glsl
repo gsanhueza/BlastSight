@@ -16,6 +16,12 @@ void main()
     vec3 b = (gl_in[2].gl_Position - gl_in[0].gl_Position).xyz;
     vec3 N = normalize(cross(b, a));
 
+    // We're cheating here, but it's a simple way to ensure every normal aims outside (or every normal aims inside)
+    if (length(N + gl_in[0].gl_Position.xyz) > length(gl_in[0].gl_Position.xyz))
+    {
+        N = -N;
+    }
+
     for (int i = 0; i < gl_in.length(); i++)
     {
         gl_Position = gl_in[i].gl_Position;
