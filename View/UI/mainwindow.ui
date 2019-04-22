@@ -59,6 +59,9 @@
    <addaction name="menu_Help"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
+   <property name="windowTitle">
+    <string>Show toolbar</string>
+   </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
    </attribute>
@@ -68,6 +71,9 @@
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <widget class="QDockWidget" name="dockWidget">
+   <property name="windowTitle">
+    <string>Element list</string>
+   </property>
    <attribute name="dockWidgetArea">
     <number>1</number>
    </attribute>
@@ -188,12 +194,6 @@
    <class>OpenGLWidget</class>
    <extends>QOpenGLWidget</extends>
    <header>View/openglwidget.h</header>
-  </customwidget>
-  <customwidget>
-   <class>MainWindow</class>
-   <extends>QMainWindow</extends>
-   <header>View/mainwindow.h</header>
-   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>

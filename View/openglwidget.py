@@ -76,7 +76,6 @@ class OpenGLWidget(QOpenGLWidget):
         self.mesh_gl_collection[id_].hide()
 
     def delete_mesh(self, id_: int) -> None:
-        # FIXME Maybe we can only delete the GLDrawable (and in the "destructor" call self.model.delete_mesh())
         self.model.delete_mesh(id_)
         self.mesh_gl_collection[id_] = None
 

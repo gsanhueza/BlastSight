@@ -29,7 +29,10 @@ class BlockModelGL(GLDrawable):
         self.proj_matrix_loc = self.shader_program.uniformLocation('proj_matrix')
         self.block_size_loc = self.shader_program.uniformLocation('block_size')
 
-    def _draw(self):
+    def draw(self):
+        if not self.is_visible:
+            return
+
         self.shader_program.bind()
         self.shader_program.setUniformValue(self.proj_matrix_loc, self.widget.proj)
         self.shader_program.setUniformValue(self.model_view_matrix_loc, self.widget.camera * self.widget.world)

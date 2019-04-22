@@ -35,7 +35,10 @@ class MeshGL(GLDrawable):
             self.wireframe_enabled = True
         return self.wireframe_enabled
 
-    def _draw(self) -> None:
+    def draw(self) -> None:
+        if not self.is_visible:
+            return
+
         self.shader_program.bind()
         self.shader_program.setUniformValue(self.proj_matrix_loc, self.widget.proj)
         self.shader_program.setUniformValue(self.model_view_matrix_loc, self.widget.camera * self.widget.world)

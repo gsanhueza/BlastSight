@@ -134,8 +134,4 @@ class GLDrawable:
         pass
 
     def draw(self):
-        if self.is_visible:
-            self._draw()
-
-    def _draw(self):
         pass
