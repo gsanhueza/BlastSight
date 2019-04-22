@@ -33,7 +33,6 @@ class MeshGL(GLDrawable):
         else:
             self.shader_program.addShader(self.geometry_shader)
             self.wireframe_enabled = True
-
         return self.wireframe_enabled
 
     def _draw(self) -> None:

@@ -4,7 +4,6 @@ from OpenGL.GL import *
 from PyQt5.QtWidgets import QOpenGLWidget
 from PyQt5.QtGui import QPainter
 from PyQt5.QtGui import QMatrix4x4
-from PyQt5.QtCore import Qt
 
 from View.meshgl import MeshGL
 from View.gldrawablecollection import GLDrawableCollection
@@ -16,15 +15,10 @@ from Controller.freemode import FreeMode
 
 from Model.model import Model
 
-_POSITION = 0
-_COLOR = 1
-
 
 class OpenGLWidget(QOpenGLWidget):
     def __init__(self, parent=None, model=Model()):
         QOpenGLWidget.__init__(self, parent)
-        self.setFocusPolicy(Qt.StrongFocus)
-        self.setAcceptDrops(True)
 
         # Controller mode
         self.current_mode = None
@@ -59,13 +53,16 @@ class OpenGLWidget(QOpenGLWidget):
     """
     FACADE METHODS
     """
-    def add_mesh(self, file_path: str) -> bool:
-        id_ = self.model.add_mesh(file_path)
-        mesh = self.model.get_mesh(id_)
-        mesh_gl = MeshGL(self, mesh)
-        self.mesh_gl_collection.add(id_, mesh_gl)
+    def add_mesh(self, file_path: str) -> int:
+        try:
+            id_ = self.model.add_mesh(file_path)
+            mesh = self.model.get_mesh(id_)
+            mesh_gl = MeshGL(self, mesh)
+            self.mesh_gl_collection.add(id_, mesh_gl)
 
-        return True
+            return id_
+        except KeyError:
+            return -1
 
     def update_mesh(self, id_: int) -> None:
         mesh = self.model.get_mesh(id_)
@@ -84,12 +81,15 @@ class OpenGLWidget(QOpenGLWidget):
         self.mesh_gl_collection[id_] = None
 
     def add_block_model(self, file_path: str) -> bool:
-        id_ = self.model.add_block_model(file_path)
-        block_model = self.model.get_block_model(id_)
-        block_model_gl = BlockModelGL(self, block_model)
-        self.block_model_gl_collection.add(id_, block_model_gl)
+        try:
+            id_ = self.model.add_block_model(file_path)
+            block_model = self.model.get_block_model(id_)
+            block_model_gl = BlockModelGL(self, block_model)
+            self.block_model_gl_collection.add(id_, block_model_gl)
 
-        return True
+            return True
+        except KeyError:
+            return False
 
     def delete_block_model(self, id_: int) -> None:
         self.model.delete_block_model(id_)
@@ -184,20 +184,4 @@ class OpenGLWidget(QOpenGLWidget):
 
     def wheelEvent(self, event, *args, **kwargs):
         self.current_mode.wheelEvent(event)
-        self.update()
-
-    def dragEnterEvent(self, event, *args, **kwargs):
-        if event.mimeData().hasFormat('text/plain'):
-            event.acceptProposedAction()
-
-    def dropEvent(self, event, *args, **kwargs):
-        file_path = event.mimeData().urls()[0].toLocalFile()
-
-        # FIXME We should know beforehand if this is a mesh or a block model
-        try:
-            self.add_mesh(file_path)
-        except KeyError:
-            self.add_block_model(file_path)
-
-        # Update
         self.update()
