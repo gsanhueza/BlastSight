@@ -16,9 +16,10 @@ class MeshGL(GLDrawable):
         self.wireframe_enabled = True
 
     def initialize(self) -> None:
-        self.set_vertex_shader_source('View/Shaders/mesh_vertex.glsl')
-        self.set_fragment_shader_source('View/Shaders/mesh_fragment.glsl')
-        self.set_geometry_shader_source('View/Shaders/mesh_geometry.glsl')
+        self.set_vertex_shader_source('View/Shaders/Mesh/vertex.glsl')
+        self.set_fragment_shader_source('View/Shaders/Mesh/fragment.glsl')
+        # self.set_geometry_shader_source('View/Shaders/Mesh/geometry_wireframe.glsl')
+        self.set_geometry_shader_source('View/Shaders/Mesh/geometry_normals.glsl')
 
         super().initialize()
 
