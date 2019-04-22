@@ -40,7 +40,11 @@ class OpenGLWidget(QOpenGLWidget):
         self.yCamPos = 0.0
         self.zCamPos = -3.0
 
-        # World rotation
+        # World
+        self.xWorldPos = 0.0
+        self.yWorldPos = 0.0
+        self.zWorldPos = 0.0
+
         self.xRot = 0.0
         self.yRot = 0.0
         self.zRot = 0.0
@@ -59,6 +63,10 @@ class OpenGLWidget(QOpenGLWidget):
             mesh = self.model.get_mesh(id_)
             mesh_gl = MeshGL(self, mesh)
             self.mesh_gl_collection.add(id_, mesh_gl)
+
+            self.set_world_position(mesh.center[0],
+                                    mesh.center[1],
+                                    mesh.center[2])
 
             return id_
         except KeyError:
@@ -99,6 +107,11 @@ class OpenGLWidget(QOpenGLWidget):
         self.update()
 
         return status
+
+    def set_world_position(self, x: float, y: float, z: float) -> None:
+        self.xWorldPos = -x
+        self.yWorldPos = -y
+        self.zWorldPos = -z
 
     def set_camera_position(self, x: float, y: float, z: float) -> None:
         self.xCamPos = x
@@ -150,6 +163,10 @@ class OpenGLWidget(QOpenGLWidget):
         self.world.rotate(self.xRot / 16.0, 1, 0, 0)
         self.world.rotate(self.yRot / 16.0, 0, 1, 0)
         self.world.rotate(self.zRot / 16.0, 0, 0, 1)
+
+        self.world.translate(self.xWorldPos,
+                             self.yWorldPos,
+                             self.zWorldPos)
 
         # Draw mesh and block model
         self.mesh_gl_collection.draw()
