@@ -10,9 +10,9 @@ class ModelElement:
         self.vertices = None
         self.indices = None
         self.values = None
+        self.center = None
 
         self.parser_dict = {}
-
         self.ext = None
         self.name = None
 
@@ -29,6 +29,7 @@ class ModelElement:
                                 0.0, 0.0, 1.0], np.float32)
 
         self.indices = np.array([0, 1, 2], np.uint32)  # GL_UNSIGNED_INT = np.uint32
+        self.center = self.average_by_coord(self.vertices)
 
     def get_vertices(self):
         return self.vertices
@@ -41,12 +42,16 @@ class ModelElement:
 
     def set_vertices(self, vertices):
         self.vertices = np.array(vertices, np.float32)
+        self.center = self.average_by_coord(self.vertices)
 
     def set_indices(self, indices):
         self.indices = np.array(indices, np.uint32)
 
     def set_values(self, values):
         self.values = np.array(values, np.float32)
+
+    def average_by_coord(self, array):
+        return np.array([array[0::3].mean(), array[1::3].mean(), array[2::3].mean()], np.float32)
 
     def load(self, file_path: str) -> bool:
         self.name = ModelElement.detect_file_name(file_path)

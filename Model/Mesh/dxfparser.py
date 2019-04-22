@@ -58,34 +58,9 @@ class DXFParser(Parser):
 
         return ans
 
-    def get_averaged_vertices(self):
-        avg_tuple = self._avg_tuple(list(self.vertices))
-        return self.flatten_tuple((x[0] - avg_tuple[0],
-                                   x[1] - avg_tuple[1],
-                                   x[2] - avg_tuple[2]) for x in list(self.vertices))
-
-    # Averages each component of a list of n-tuples in a new n-tuple
-    def _avg_tuple(self, tuple_list: list):
-        if len(tuple_list) == 0:
-            return None
-
-        len_tuple = len(tuple_list[0])
-        accum = [0] * len_tuple
-
-        for _tuple in tuple_list:
-            for i in range(len_tuple):
-                accum[i] += _tuple[i]
-
-        return tuple(map(lambda x: x / len(tuple_list), accum))
-
-    def get_vertices(self) -> list:
-        # FIXME Not average vertices!
-        return self.get_averaged_vertices()
-
 
 if __name__ == '__main__':
     parser = DXFParser()
     parser.load_file('caseron.dxf')
     print(parser.get_vertices())
     print(parser.vertices)
-    print(parser.get_averaged_vertices())
