@@ -15,7 +15,7 @@ class BlockModelGL(GLDrawable):
         self.block_size_loc = None
 
         # Block size
-        self.block_size = 0.5
+        self.block_size = 3.0
 
     def initialize(self) -> None:
         self.set_vertex_shader_source('View/Shaders/BlockModel/vertex.glsl')

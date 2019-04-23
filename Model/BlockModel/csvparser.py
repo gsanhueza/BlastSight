@@ -11,6 +11,17 @@ class CSVParser(Parser):
         self.indices = []
         self.values = []
 
+        # Data positions by column
+        self.x_pos = 0
+        self.y_pos = 1
+        self.z_pos = 2
+
+    # FIXME Not every CSV file comes with x in the first column...
+    def load_csv_scheme(self, file_path: str) -> None:
+        self.x_pos = 0
+        self.y_pos = 1
+        self.z_pos = 2
+
     def load_file(self, file_path: str) -> None:
         with open(file_path, 'r') as csv_file:
             reader = csv.reader(csv_file, delimiter=',')
@@ -20,7 +31,9 @@ class CSVParser(Parser):
             idx = 0
             for elem in list_reader:
                 try:
-                    self.vertices.append((float(elem[0]), float(elem[1]), float(elem[2])))
+                    self.vertices.append((float(elem[self.x_pos]),
+                                          float(elem[self.y_pos]),
+                                          float(elem[self.z_pos])))
                     CuT.append(float(elem[3]))
                 except ValueError:
                     continue
