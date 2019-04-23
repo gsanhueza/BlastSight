@@ -21,6 +21,6 @@ class MineVisViewer(OpenGLWidget):
 if __name__ == '__main__':
     viewer = MineVisViewer()
     id_off = viewer.add_mesh('Model/Mesh/caseron.off')
-    id_dxf = viewer.add_mesh('Model/Mesh/caseron.dxf')
+    id_csv = viewer.add_block_model('Model/BlockModel/mini.csv')
 
     viewer.show()
