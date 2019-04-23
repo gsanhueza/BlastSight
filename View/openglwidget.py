@@ -64,9 +64,9 @@ class OpenGLWidget(QOpenGLWidget):
             mesh_gl = MeshGL(self, mesh)
             self.mesh_gl_collection.add(id_, mesh_gl)
 
-            self.set_world_position(mesh.center[0],
-                                    mesh.center[1],
-                                    mesh.center[2])
+            self.set_world_position(mesh.get_centroid()[0],
+                                    mesh.get_centroid()[1],
+                                    mesh.get_centroid()[2])
 
             return id_
         except KeyError:

@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import numpy as np
+from statistics import mean
 from PyQt5.QtCore import QFileInfo
 
 
@@ -10,7 +11,7 @@ class ModelElement:
         self.vertices = None
         self.indices = None
         self.values = None
-        self.center = None
+        self.centroid = None
 
         self.parser_dict = {}
         self.ext = None
@@ -20,16 +21,15 @@ class ModelElement:
         self.default_data()
 
     def default_data(self):
-        self.vertices = np.array([-0.5, 0.5, 0.0,
-                                  -0.5, -0.5, 0.0,
-                                  0.5, 0.5, 0.0], np.float32)
+        self.set_vertices([-0.5, 0.5, 0.0,
+                           -0.5, -0.5, 0.0,
+                           0.5, 0.5, 0.0])
 
-        self.values = np.array([1.0, 0.0, 0.0,
-                                0.0, 1.0, 0.0,
-                                0.0, 0.0, 1.0], np.float32)
+        self.set_values([1.0, 0.0, 0.0,
+                         0.0, 1.0, 0.0,
+                         0.0, 0.0, 1.0])
 
-        self.indices = np.array([0, 1, 2], np.uint32)  # GL_UNSIGNED_INT = np.uint32
-        self.center = self.average_by_coord(self.vertices)
+        self.set_indices([0, 1, 2])
 
     def get_vertices(self):
         return self.vertices
@@ -40,18 +40,25 @@ class ModelElement:
     def get_values(self):
         return self.values
 
-    def set_vertices(self, vertices):
+    def get_centroid(self):
+        return self.centroid
+
+    def set_vertices(self, vertices: list) -> None:
         self.vertices = np.array(vertices, np.float32)
-        self.center = self.average_by_coord(self.vertices)
+        self.set_centroid(ModelElement.average_by_coord(vertices))
 
-    def set_indices(self, indices):
-        self.indices = np.array(indices, np.uint32)
+    def set_indices(self, indices: list) -> None:
+        self.indices = np.array(indices, np.uint32)  # GL_UNSIGNED_INT = np.uint32
 
-    def set_values(self, values):
+    def set_values(self, values: list) -> None:
         self.values = np.array(values, np.float32)
 
-    def average_by_coord(self, array):
-        return np.array([array[0::3].mean(), array[1::3].mean(), array[2::3].mean()], np.float32)
+    def set_centroid(self, centroid: list) -> None:
+        self.centroid = np.array(centroid, np.float32)
+
+    @staticmethod
+    def average_by_coord(array: list) -> list:
+        return [mean(array[0::3]), mean(array[1::3]), mean(array[2::3])]
 
     def load(self, file_path: str) -> bool:
         self.name = ModelElement.detect_file_name(file_path)
