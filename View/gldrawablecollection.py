@@ -15,6 +15,16 @@ class GLDrawableCollection:
     def __setitem__(self, key: int, value: GLDrawable) -> None:
         self.drawable_dict[key] = value
 
+    def __len__(self) -> int:
+        return self.drawable_dict.__len__()
+
+    def items(self):
+        return self.drawable_dict.items()
+
+    """
+    Custom methods
+    """
+
     def add(self, id_: int, drawable: GLDrawable) -> None:
         self.drawable_dict[id_] = drawable
 

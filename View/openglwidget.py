@@ -27,8 +27,7 @@ class OpenGLWidget(QOpenGLWidget):
         self.model = model
 
         # Drawable elements
-        self.mesh_gl_collection = GLDrawableCollection()
-        self.block_model_gl_collection = GLDrawableCollection()
+        self.gl_collection = GLDrawableCollection()
 
         # Camera/World/Projection
         self.camera = QMatrix4x4()
@@ -61,7 +60,7 @@ class OpenGLWidget(QOpenGLWidget):
         id_ = self.model.add_mesh(file_path)
         mesh = self.model.get_mesh(id_)
         mesh_gl = MeshGL(self, mesh)
-        self.mesh_gl_collection.add(id_, mesh_gl)
+        self.gl_collection.add(id_, mesh_gl)
 
         self.set_world_position(mesh.get_centroid()[0],
                                 mesh.get_centroid()[1],
@@ -72,13 +71,13 @@ class OpenGLWidget(QOpenGLWidget):
     def update_mesh(self, id_: int) -> None:
         mesh = self.model.get_mesh(id_)
         mesh_gl = MeshGL(self, mesh)
-        self.mesh_gl_collection[id_] = mesh_gl
+        self.gl_collection[id_] = mesh_gl
 
     def show_mesh(self, id_: int) -> None:
-        self.mesh_gl_collection[id_].show()
+        self.gl_collection[id_].show()
 
     def hide_mesh(self, id_: int) -> None:
-        self.mesh_gl_collection[id_].hide()
+        self.gl_collection[id_].hide()
 
     def delete_mesh(self, id_: int) -> None:
         self.model.delete_mesh(id_)
@@ -87,7 +86,7 @@ class OpenGLWidget(QOpenGLWidget):
             id_ = self.model.add_block_model(file_path)
             block_model = self.model.get_block_model(id_)
             block_model_gl = BlockModelGL(self, block_model)
-            self.block_model_gl_collection.add(id_, block_model_gl)
+            self.gl_collection.add(id_, block_model_gl)
 
             self.set_world_position(block_model.get_centroid()[0],
                                     block_model.get_centroid()[1],
@@ -99,10 +98,13 @@ class OpenGLWidget(QOpenGLWidget):
         self.model.delete_block_model(id_)
 
     def toggle_wireframe(self, id_: int) -> bool:
-        status = self.mesh_gl_collection[id_].toggle_wireframe()
+        status = self.gl_collection[id_].toggle_wireframe()
         self.update()
 
         return status
+
+    def get_gl_collection(self) -> GLDrawableCollection:
+        return self.gl_collection.items()
 
     def set_world_position(self, x: float, y: float, z: float) -> None:
         self.xWorldPos = -x
@@ -136,12 +138,12 @@ class OpenGLWidget(QOpenGLWidget):
         # Meshes currently in model
         for id_, mesh in self.model.get_mesh_collection():
             mesh_gl = MeshGL(self, mesh)
-            self.mesh_gl_collection.add(id_, mesh_gl)
+            self.gl_collection.add(id_, mesh_gl)
 
         # Block models currently in model
         for id_, block_model in self.model.get_block_model_collection():
             block_model_gl = BlockModelGL(self, block_model)
-            self.block_model_gl_collection.add(id_, block_model_gl)
+            self.gl_collection.add(id_, block_model_gl)
 
         # Camera setup
         self.camera.translate(self.xCamPos, self.yCamPos, self.zCamPos)
@@ -164,9 +166,8 @@ class OpenGLWidget(QOpenGLWidget):
                              self.yWorldPos,
                              self.zWorldPos)
 
-        # Draw mesh and block model
-        self.mesh_gl_collection.draw()
-        self.block_model_gl_collection.draw()
+        # Draw every GLDrawable (meshes, block models, etc)
+        self.gl_collection.draw()
 
         # QPainter can draw *after* OpenGL finishes
         self.painter.end()

@@ -43,6 +43,9 @@ class GLDrawable:
     def hide(self) -> None:
         self.is_visible = False
 
+    def get_model_element(self):
+        return self.model_element
+
     def initialize(self) -> None:
         # Remember to set shader sources in children of this class
         # For example:
@@ -132,6 +135,9 @@ class GLDrawable:
 
     def setup_uniforms(self) -> None:
         pass
+
+    def toggle_wireframe(self) -> bool:
+        return False
 
     def draw(self) -> None:
         pass

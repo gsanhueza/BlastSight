@@ -29,9 +29,9 @@ class MainWindow(QMainWindow):
         # Tree widget
         self.treeWidget.clear()
 
-        for id_, mesh in self.viewer.model.get_mesh_collection():
+        for id_, gl_drawable in self.viewer.get_gl_collection():
             item = TreeWidgetItem(self.treeWidget)
-            item.set_element(id_, mesh)
+            item.set_element(id_, gl_drawable.get_model_element())
             self.treeWidget.addTopLevelItem(item)
 
     # Unless explicitly otherwise, slots are connected via Qt Designer

@@ -9,26 +9,25 @@ from Model.BlockModel.blockmodelelement import BlockModelElement
 class Model:
     def __init__(self):
         self.mesh_collection = OrderedDict()
-        self.mesh_last_identifier = 0
         self.block_model_collection = OrderedDict()
-        self.block_model_last_identifier = 0
+        self.last_id = 0
 
     def add_mesh(self, file_path: str) -> int:
         mesh = MeshElement()
         mesh.load(file_path)
-        self.mesh_collection[self.mesh_last_identifier] = mesh
+        self.mesh_collection[self.last_id] = mesh
 
-        self.mesh_last_identifier += 1
-        return self.mesh_last_identifier - 1
+        self.last_id += 1
+        return self.last_id - 1
 
     def add_block_model(self, file_path: str) -> int:
         block_model = BlockModelElement()
         block_model.load(file_path)
 
-        self.block_model_collection[self.block_model_last_identifier] = block_model
+        self.block_model_collection[self.last_id] = block_model
 
-        self.block_model_last_identifier += 1
-        return self.block_model_last_identifier - 1
+        self.last_id += 1
+        return self.last_id - 1
 
     def update_mesh(self, id_: int, file_path: str) -> None:
         mesh = MeshElement()
