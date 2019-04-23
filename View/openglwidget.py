@@ -58,19 +58,16 @@ class OpenGLWidget(QOpenGLWidget):
     FACADE METHODS
     """
     def add_mesh(self, file_path: str) -> int:
-        try:
-            id_ = self.model.add_mesh(file_path)
-            mesh = self.model.get_mesh(id_)
-            mesh_gl = MeshGL(self, mesh)
-            self.mesh_gl_collection.add(id_, mesh_gl)
+        id_ = self.model.add_mesh(file_path)
+        mesh = self.model.get_mesh(id_)
+        mesh_gl = MeshGL(self, mesh)
+        self.mesh_gl_collection.add(id_, mesh_gl)
 
-            self.set_world_position(mesh.get_centroid()[0],
-                                    mesh.get_centroid()[1],
-                                    mesh.get_centroid()[2])
+        self.set_world_position(mesh.get_centroid()[0],
+                                mesh.get_centroid()[1],
+                                mesh.get_centroid()[2])
 
-            return id_
-        except KeyError:
-            return -1
+        return id_
 
     def update_mesh(self, id_: int) -> None:
         mesh = self.model.get_mesh(id_)
@@ -85,22 +82,21 @@ class OpenGLWidget(QOpenGLWidget):
 
     def delete_mesh(self, id_: int) -> None:
         self.model.delete_mesh(id_)
-        self.mesh_gl_collection[id_] = None
 
-    def add_block_model(self, file_path: str) -> bool:
-        try:
+    def add_block_model(self, file_path: str) -> int:
             id_ = self.model.add_block_model(file_path)
             block_model = self.model.get_block_model(id_)
             block_model_gl = BlockModelGL(self, block_model)
             self.block_model_gl_collection.add(id_, block_model_gl)
 
-            return True
-        except KeyError:
-            return False
+            self.set_world_position(block_model.get_centroid()[0],
+                                    block_model.get_centroid()[1],
+                                    block_model.get_centroid()[2])
+
+            return id_
 
     def delete_block_model(self, id_: int) -> None:
         self.model.delete_block_model(id_)
-        self.block_model_gl_collection[id_] = None
 
     def toggle_wireframe(self, id_: int) -> bool:
         status = self.mesh_gl_collection[id_].toggle_wireframe()
@@ -121,22 +117,22 @@ class OpenGLWidget(QOpenGLWidget):
     """
     Controller modes
     """
-    def set_normal_mode(self):
+    def set_normal_mode(self) -> None:
         self.current_mode = NormalMode(self)
 
-    def set_draw_mode(self):
+    def set_draw_mode(self) -> None:
         self.current_mode = DrawMode(self)
 
-    def set_free_mode(self):
+    def set_free_mode(self) -> None:
         self.current_mode = FreeMode(self)
 
     """
     Internal methods
     """
-    def set_model(self, model):
+    def set_model(self, model: Model) -> None:
         self.model = model
 
-    def initializeGL(self):
+    def initializeGL(self) -> None:
         # Meshes currently in model
         for id_, mesh in self.model.get_mesh_collection():
             mesh_gl = MeshGL(self, mesh)
@@ -150,7 +146,7 @@ class OpenGLWidget(QOpenGLWidget):
         # Camera setup
         self.camera.translate(self.xCamPos, self.yCamPos, self.zCamPos)
 
-    def paintGL(self):
+    def paintGL(self) -> None:
         self.painter.begin(self)
         # Clear screen
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
@@ -176,7 +172,7 @@ class OpenGLWidget(QOpenGLWidget):
         self.painter.end()
         self.current_mode.overpaint()
 
-    def resizeGL(self, w, h):
+    def resizeGL(self, w: float, h: float) -> None:
         # TODO Allow perspective/orthogonal in the controller (mode)
         self.proj.setToIdentity()
         self.proj.perspective(45.0, (w / h), 0.01, 10000.0)
@@ -186,18 +182,18 @@ class OpenGLWidget(QOpenGLWidget):
         # self.proj.ortho(-w/scale_factor, w/scale_factor, -h/scale_factor, h/scale_factor, 0.01, 10000)
 
     # Controller dependent on current mode
-    def mouseMoveEvent(self, event, *args, **kwargs):
+    def mouseMoveEvent(self, event, *args, **kwargs) -> None:
         self.current_mode.mouseMoveEvent(event)
         self.update()
 
-    def mousePressEvent(self, event, *args, **kwargs):
+    def mousePressEvent(self, event, *args, **kwargs) -> None:
         self.current_mode.mousePressEvent(event)
         self.update()
 
-    def mouseReleaseEvent(self, event, *args, **kwargs):
+    def mouseReleaseEvent(self, event, *args, **kwargs) -> None:
         self.current_mode.mouseReleaseEvent(event)
         self.update()
 
-    def wheelEvent(self, event, *args, **kwargs):
+    def wheelEvent(self, event, *args, **kwargs) -> None:
         self.current_mode.wheelEvent(event)
         self.update()

@@ -4,6 +4,8 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QFileDialog
 from PyQt5.QtWidgets import QMainWindow
 from PyQt5.QtWidgets import QMessageBox
+
+from Model.model import Model
 from View.treewidgetitem import TreeWidgetItem
 
 from PyQt5 import uic
@@ -20,10 +22,10 @@ class MainWindow(QMainWindow):
         self.treeWidget.itemClicked.connect(self.toggle_wireframe)
         self.statusBar.showMessage('Ready')
 
-    def set_model(self, model):
+    def set_model(self, model: Model) -> None:
         self.viewer.set_model(model)
 
-    def fill_tree_widget(self):
+    def fill_tree_widget(self) -> None:
         # Tree widget
         self.treeWidget.clear()
 
@@ -33,7 +35,7 @@ class MainWindow(QMainWindow):
             self.treeWidget.addTopLevelItem(item)
 
     # Unless explicitly otherwise, slots are connected via Qt Designer
-    def load_mesh_slot(self):
+    def load_mesh_slot(self) -> None:
         # TODO Use QSettings (or something) to remember last directory
         (file_path, selected_filter) = QFileDialog.getOpenFileName(
             parent=self,
@@ -43,13 +45,13 @@ class MainWindow(QMainWindow):
         self.load_mesh(file_path)
         self.fill_tree_widget()
 
-    def load_mesh(self, file_path):
+    def load_mesh(self, file_path: str) -> None:
         if self.viewer.add_mesh(file_path) != -1:
             self.statusBar.showMessage('Mesh loaded')
         else:
             self.statusBar.showMessage('Cannot load mesh')
 
-    def load_block_model_slot(self):
+    def load_block_model_slot(self) -> None:
         # TODO Use QSettings (or something) to remember last directory
         (file_path, selected_filter) = QFileDialog.getOpenFileName(
             parent=self,
@@ -58,27 +60,27 @@ class MainWindow(QMainWindow):
 
         self.load_block_model(file_path)
 
-    def load_block_model(self, file_path):
+    def load_block_model(self, file_path: str) -> None:
         if self.viewer.add_block_model(file_path):
             self.statusBar.showMessage('Block model loaded')
         else:
             self.statusBar.showMessage('Cannot load block model')
 
-    def normal_mode_slot(self):
+    def normal_mode_slot(self) -> None:
         self.viewer.set_normal_mode()
 
-    def draw_mode_slot(self):
+    def draw_mode_slot(self) -> None:
         self.viewer.set_draw_mode()
 
-    def free_mode_slot(self):
+    def free_mode_slot(self) -> None:
         self.viewer.set_free_mode()
 
-    def help_slot(self):
+    def help_slot(self) -> None:
         QMessageBox.information(self,
                                 'MineVis - Help',
                                 'TO-DO: Create help message box')
 
-    def toggle_wireframe(self, item: TreeWidgetItem = None, col: int = 0):
+    def toggle_wireframe(self, item: TreeWidgetItem = None, col: int = 0) -> None:
         try:
             id_ = item.get_id()
             status = self.viewer.toggle_wireframe(id_)
@@ -88,11 +90,11 @@ class MainWindow(QMainWindow):
             msg = 'unavailable'
             self.statusBar.showMessage(f'Wireframe {msg}')
 
-    def dragEnterEvent(self, event, *args, **kwargs):
+    def dragEnterEvent(self, event, *args, **kwargs) -> None:
         if event.mimeData().hasFormat('text/plain'):
             event.acceptProposedAction()
 
-    def dropEvent(self, event, *args, **kwargs):
+    def dropEvent(self, event, *args, **kwargs) -> None:
         file_path = event.mimeData().urls()[0].toLocalFile()
 
         # FIXME We should know beforehand if this is a mesh or a block model

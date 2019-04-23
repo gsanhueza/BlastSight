@@ -20,7 +20,7 @@ class MeshGL(GLDrawable):
         self.fragment_wireframe_shader = None
         self.geometry_wireframe_shader = None
 
-    def initialize_shader_program(self):
+    def initialize_shader_program(self) -> None:
         self.vertex_shader = QOpenGLShader(QOpenGLShader.Vertex)
         self.fragment_shader = QOpenGLShader(QOpenGLShader.Fragment)
         self.geometry_shader = QOpenGLShader(QOpenGLShader.Geometry)
@@ -47,7 +47,7 @@ class MeshGL(GLDrawable):
 
         super().initialize()
 
-    def setup_uniforms(self):
+    def setup_uniforms(self) -> None:
         self.model_view_matrix_loc = self.shader_program.uniformLocation('model_view_matrix')
         self.proj_matrix_loc = self.shader_program.uniformLocation('proj_matrix')
 
@@ -75,7 +75,5 @@ class MeshGL(GLDrawable):
         self.shader_program.setUniformValue(self.model_view_matrix_loc, self.widget.camera * self.widget.world)
 
         self.vao.bind()
-
         glDrawElements(GL_TRIANGLES, self.indices_size, GL_UNSIGNED_INT, None)
-
         self.vao.release()

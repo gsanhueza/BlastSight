@@ -37,13 +37,13 @@ class GLDrawable:
         self.indices_size = 0
         self.values_size = 0
 
-    def show(self):
+    def show(self) -> None:
         self.is_visible = True
 
-    def hide(self):
+    def hide(self) -> None:
         self.is_visible = False
 
-    def initialize(self):
+    def initialize(self) -> None:
         # Remember to set shader sources in children of this class
         # For example:
 
@@ -63,16 +63,16 @@ class GLDrawable:
 
         self.is_initialized = True
 
-    def set_vertex_shader_source(self, source: str):
+    def set_vertex_shader_source(self, source: str) -> None:
         self.vertex_shader_source = source
 
-    def set_fragment_shader_source(self, source: str):
+    def set_fragment_shader_source(self, source: str) -> None:
         self.fragment_shader_source = source
 
-    def set_geometry_shader_source(self, source: str):
+    def set_geometry_shader_source(self, source: str) -> None:
         self.geometry_shader_source = source
 
-    def initialize_shader_program(self):
+    def initialize_shader_program(self) -> None:
         self.vertex_shader = QOpenGLShader(QOpenGLShader.Vertex)
         self.fragment_shader = QOpenGLShader(QOpenGLShader.Fragment)
         self.geometry_shader = QOpenGLShader(QOpenGLShader.Geometry)
@@ -86,7 +86,7 @@ class GLDrawable:
         self.shader_program.addShader(self.geometry_shader)
         self.shader_program.link()
 
-    def initialize_buffers(self):
+    def initialize_buffers(self) -> None:
         self.vao = QOpenGLVertexArrayObject()
         self.positions_vbo = QOpenGLBuffer(QOpenGLBuffer.VertexBuffer)
         self.values_vbo = QOpenGLBuffer(QOpenGLBuffer.VertexBuffer)
@@ -97,7 +97,7 @@ class GLDrawable:
         self.indices_ibo.create()
         self.values_vbo.create()
 
-    def setup_vertex_attribs(self):
+    def setup_vertex_attribs(self) -> None:
         _POSITION = 0
         _COLOR = 1
         _SIZE_OF_GL_FLOAT = 4
@@ -130,8 +130,8 @@ class GLDrawable:
 
         self.vao.release()
 
-    def setup_uniforms(self):
+    def setup_uniforms(self) -> None:
         pass
 
-    def draw(self):
+    def draw(self) -> None:
         pass

@@ -17,19 +17,19 @@ class BlockModelGL(GLDrawable):
         # Block size
         self.block_size = 0.5
 
-    def initialize(self):
+    def initialize(self) -> None:
         self.set_vertex_shader_source('View/Shaders/BlockModel/vertex.glsl')
         self.set_fragment_shader_source('View/Shaders/BlockModel/fragment.glsl')
         self.set_geometry_shader_source('View/Shaders/BlockModel/geometry.glsl')
 
         super().initialize()
 
-    def setup_uniforms(self):
+    def setup_uniforms(self) -> None:
         self.model_view_matrix_loc = self.shader_program.uniformLocation('model_view_matrix')
         self.proj_matrix_loc = self.shader_program.uniformLocation('proj_matrix')
         self.block_size_loc = self.shader_program.uniformLocation('block_size')
 
-    def draw(self):
+    def draw(self) -> None:
         if not self.is_visible:
             return
 
@@ -39,7 +39,5 @@ class BlockModelGL(GLDrawable):
         self.shader_program.setUniformValue(self.block_size_loc, QVector2D(self.block_size, 0.0))
 
         self.vao.bind()
-
         glDrawElements(GL_POINTS, self.indices_size, GL_UNSIGNED_INT, None)
-
         self.vao.release()

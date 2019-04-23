@@ -20,7 +20,7 @@ class ModelElement:
     # FIXME Just for testing
         self.default_data()
 
-    def default_data(self):
+    def default_data(self) -> None:
         self.set_vertices([-0.5, 0.5, 0.0,
                            -0.5, -0.5, 0.0,
                            0.5, 0.5, 0.0])
@@ -31,16 +31,16 @@ class ModelElement:
 
         self.set_indices([0, 1, 2])
 
-    def get_vertices(self):
+    def get_vertices(self) -> np.ndarray:
         return self.vertices
 
-    def get_indices(self):
+    def get_indices(self) -> np.ndarray:
         return self.indices
 
-    def get_values(self):
+    def get_values(self) -> np.ndarray:
         return self.values
 
-    def get_centroid(self):
+    def get_centroid(self) -> np.ndarray:
         return self.centroid
 
     def set_vertices(self, vertices: list) -> None:

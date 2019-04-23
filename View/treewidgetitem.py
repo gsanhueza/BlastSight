@@ -9,13 +9,13 @@ class TreeWidgetItem(QTreeWidgetItem):
         self.id_ = None
         self.name = None
 
-    def set_element(self, id_, elem):
+    def set_element(self, id_: int, elem) -> None:
         self.id_ = id_
         self.name = f'{elem.name}.{elem.ext}'
         self.setText(0, self.name)
 
-    def get_id(self):
+    def get_id(self) -> int:
         return self.id_
 
-    def get_name(self):
+    def get_name(self) -> str:
         return self.name
