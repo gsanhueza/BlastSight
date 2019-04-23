@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 from collections import OrderedDict
+from Model.modelelement import ModelElement
 from Model.Mesh.meshelement import MeshElement
 from Model.BlockModel.blockmodelelement import BlockModelElement
 
@@ -8,53 +9,64 @@ from Model.BlockModel.blockmodelelement import BlockModelElement
 # Main class
 class Model:
     def __init__(self):
-        self.mesh_collection = OrderedDict()
-        self.block_model_collection = OrderedDict()
+        self.element_collection = OrderedDict()
         self.last_id = 0
+
+    # Generalization of add
+    def add_element(self, file_path: str, element: ModelElement) -> int:
+        element.load(file_path)
+        self.element_collection[self.last_id] = element
+        self.last_id += 1
+
+        return self.last_id - 1
 
     def add_mesh(self, file_path: str) -> int:
         mesh = MeshElement()
-        mesh.load(file_path)
-        self.mesh_collection[self.last_id] = mesh
-
-        self.last_id += 1
-        return self.last_id - 1
+        return self.add_element(file_path, mesh)
 
     def add_block_model(self, file_path: str) -> int:
         block_model = BlockModelElement()
-        block_model.load(file_path)
+        return self.add_element(file_path, block_model)
 
-        self.block_model_collection[self.last_id] = block_model
-
-        self.last_id += 1
-        return self.last_id - 1
+    # Generalization of update
+    def update_element(self, id_: int, file_path: str, element: ModelElement) -> None:
+        element.load(file_path)
+        self.element_collection[id_] = element
 
     def update_mesh(self, id_: int, file_path: str) -> None:
         mesh = MeshElement()
-        mesh.load(file_path)
-        self.mesh_collection[id_] = mesh
-
-    def delete_block_model(self, id_: int) -> bool:
-        self.block_model_collection[id_] = None
-        return True
+        self.update_element(id_, file_path, mesh)
 
     def update_block_model(self, id_: int, file_path: str) -> None:
         block_model = BlockModelElement()
-        block_model.load(file_path)
-        self.block_model_collection[id_] = block_model
+        self.update_element(id_, file_path, block_model)
 
-    def delete_mesh(self, id_: int) -> bool:
-        self.mesh_collection[id_] = None
+    # Generalization of delete
+    def delete_element(self, id_: int) -> bool:
+        self.element_collection[id_] = None
         return True
 
-    def get_mesh(self, id_: int) -> MeshElement:
-        return self.mesh_collection[id_]
+    def delete_mesh(self, id_: int) -> bool:
+        return self.delete_element(id_)
+
+    def delete_block_model(self, id_: int) -> bool:
+        return self.delete_element(id_)
+
+    # Generalization of get
+    def get_element(self, id_: int) -> ModelElement:
+        return self.element_collection[id_]
+
+    def get_element_collection(self):
+        return self.element_collection.items()
+
+    def get_mesh(self, id_: int) -> ModelElement:
+        return self.get_element(id_)
 
     def get_mesh_collection(self):
-        return self.mesh_collection.items()
+        return self.get_element_collection()
 
-    def get_block_model(self, id_: int) -> BlockModelElement:
-        return self.block_model_collection[id_]
+    def get_block_model(self, id_: int) -> ModelElement:
+        return self.get_element(id_)
 
     def get_block_model_collection(self):
-        return self.block_model_collection.items()
+        return self.get_element_collection()
