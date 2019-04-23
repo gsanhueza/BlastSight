@@ -80,7 +80,7 @@
    <widget class="QWidget" name="dockWidgetContents">
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
-      <widget class="QTreeWidget" name="treeWidget">
+      <widget class="TreeWidget" name="treeWidget">
        <column>
         <property name="text">
          <string>Elements</string>
@@ -191,9 +191,19 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
+   <class>MainWindow</class>
+   <extends>QMainWindow</extends>
+   <header>View/mainwindow.h</header>
+  </customwidget>
+  <customwidget>
    <class>OpenGLWidget</class>
    <extends>QOpenGLWidget</extends>
    <header>View/openglwidget.h</header>
+  </customwidget>
+  <customwidget>
+   <class>TreeWidget</class>
+   <extends>QTreeWidget</extends>
+   <header>View/treewidget.h</header>
   </customwidget>
  </customwidgets>
  <resources/>
@@ -251,22 +261,6 @@
    <signal>triggered()</signal>
    <receiver>MainWindow</receiver>
    <slot>load_mesh_slot()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>399</x>
-     <y>299</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>action_Toggle_wireframe</sender>
-   <signal>triggered()</signal>
-   <receiver>MainWindow</receiver>
-   <slot>toggle_wireframe()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>-1</x>

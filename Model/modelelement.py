@@ -60,12 +60,17 @@ class ModelElement:
     def average_by_coord(array: list) -> list:
         return [mean(array[0::3]), mean(array[1::3]), mean(array[2::3])]
 
+    # FIXME What happens if I load an empty file?
+    # FIXME What happens if I force another extension here?
     def load(self, file_path: str) -> bool:
-        self.name = ModelElement.detect_file_name(file_path)
-        self.ext = ModelElement.detect_file_extension(file_path)
+        name = ModelElement.detect_file_name(file_path)
+        ext = ModelElement.detect_file_extension(file_path)
 
-        parser = self.get_parser(self.ext)
+        parser = self.get_parser(ext)
         parser.load_file(file_path)
+
+        self.name = name
+        self.ext = ext
 
         self.set_vertices(parser.get_vertices())
         self.set_indices(parser.get_indices())

@@ -141,3 +141,6 @@ class GLDrawable:
 
     def draw(self) -> None:
         pass
+
+    def update(self) -> None:
+        self.widget.update()
