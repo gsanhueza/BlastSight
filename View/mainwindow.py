@@ -43,13 +43,14 @@ class MainWindow(QMainWindow):
             filter='Mesh files (*.dxf *.off);;DXF Files (*.dxf);;OFF Files (*.off)')
 
         self.load_mesh(file_path)
-        self.fill_tree_widget()
 
     def load_mesh(self, file_path: str) -> None:
         if self.viewer.add_mesh(file_path) != -1:
             self.statusBar.showMessage('Mesh loaded')
         else:
             self.statusBar.showMessage('Cannot load mesh')
+
+        self.fill_tree_widget()
 
     def load_block_model_slot(self) -> None:
         # TODO Use QSettings (or something) to remember last directory
@@ -66,6 +67,21 @@ class MainWindow(QMainWindow):
         else:
             self.statusBar.showMessage('Cannot load block model')
 
+        self.fill_tree_widget()
+
+    def toggle_wireframe(self, item: TreeWidgetItem = None, col: int = 0) -> None:
+        try:
+            id_ = item.get_id()
+            status = self.viewer.toggle_wireframe(id_)
+            msg = 'enabled' if status else 'disabled'
+            self.statusBar.showMessage(f'Wireframe {id_} {msg}')
+        except KeyError:
+            msg = 'unavailable'
+            self.statusBar.showMessage(f'Wireframe {msg}')
+
+    """
+    Controller slots
+    """
     def normal_mode_slot(self) -> None:
         self.viewer.set_normal_mode()
 
@@ -80,15 +96,9 @@ class MainWindow(QMainWindow):
                                 'MineVis - Help',
                                 'TO-DO: Create help message box')
 
-    def toggle_wireframe(self, item: TreeWidgetItem = None, col: int = 0) -> None:
-        try:
-            id_ = item.get_id()
-            status = self.viewer.toggle_wireframe(id_)
-            msg = 'enabled' if status else 'disabled'
-            self.statusBar.showMessage(f'Wireframe {id_} {msg}')
-        except KeyError:
-            msg = 'unavailable'
-            self.statusBar.showMessage(f'Wireframe {msg}')
+    """
+    Overridden events
+    """
 
     def dragEnterEvent(self, event, *args, **kwargs) -> None:
         if event.mimeData().hasFormat('text/plain'):
