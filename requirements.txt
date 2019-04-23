@@ -1,0 +1,5 @@
+numpy>=1.16
+PyQt5>=5.12
+dxfgrabber>=1.0
+PyOpenGL>=3.1
+
