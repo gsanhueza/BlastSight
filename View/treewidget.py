@@ -11,7 +11,7 @@ from PyQt5.QtWidgets import QTreeWidget
 
 class TreeWidget(QTreeWidget):
     def __init__(self, parent=None):
-        QTreeWidget.__init__(self, parent)
+        super().__init__(parent)
         self.setContextMenuPolicy(Qt.CustomContextMenu)
         self.setDragEnabled(True)
         self.setDragDropMode(QAbstractItemView.InternalMove)
