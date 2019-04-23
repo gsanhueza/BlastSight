@@ -57,16 +57,16 @@ class Model:
         return self.element_collection[id_]
 
     def get_element_collection(self):
-        return self.element_collection.items()
+        return list(self.element_collection.items())
 
     def get_mesh(self, id_: int) -> ModelElement:
         return self.get_element(id_)
 
     def get_mesh_collection(self):
-        return self.get_element_collection()
+        return list(filter(lambda x: isinstance(x[1], MeshElement), self.get_element_collection()))
 
     def get_block_model(self, id_: int) -> ModelElement:
         return self.get_element(id_)
 
     def get_block_model_collection(self):
-        return self.get_element_collection()
+        return list(filter(lambda x: isinstance(x[1], BlockModelElement), self.get_element_collection()))
