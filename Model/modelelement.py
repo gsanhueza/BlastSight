@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 
 import numpy as np
+import traceback
+
 from statistics import mean
 from PyQt5.QtCore import QFileInfo
 
@@ -60,23 +62,25 @@ class ModelElement:
     def average_by_coord(array: list) -> list:
         return [mean(array[0::3]), mean(array[1::3]), mean(array[2::3])]
 
-    # FIXME What happens if I load an empty file?
-    # FIXME What happens if I force another extension here?
     def load(self, file_path: str) -> bool:
-        name = ModelElement.detect_file_name(file_path)
-        ext = ModelElement.detect_file_extension(file_path)
+        try:
+            name = ModelElement.detect_file_name(file_path)
+            ext = ModelElement.detect_file_extension(file_path)
 
-        parser = self.get_parser(ext)
-        parser.load_file(file_path)
+            parser = self.get_parser(ext)
+            parser.load_file(file_path)
 
-        self.name = name
-        self.ext = ext
+            self.name = name
+            self.ext = ext
 
-        self.set_vertices(parser.get_vertices())
-        self.set_indices(parser.get_indices())
-        self.set_values(parser.get_values())
+            self.set_vertices(parser.get_vertices())
+            self.set_indices(parser.get_indices())
+            self.set_values(parser.get_values())
 
-        return True
+            return True
+        except Exception:
+            traceback.print_exc()
+            return False
 
     def save(self, file_path: str) -> bool:
         return False

@@ -58,6 +58,10 @@ class OpenGLWidget(QOpenGLWidget):
     """
     def add_mesh(self, file_path: str) -> int:
         id_ = self.model.add_mesh(file_path)
+
+        if id_ < 0:
+            return -1
+
         mesh = self.model.get_mesh(id_)
         mesh_gl = MeshGL(self, mesh)
         self.gl_collection.add(id_, mesh_gl)
