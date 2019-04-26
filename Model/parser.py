@@ -11,10 +11,30 @@ class Parser:
         pass
 
     def get_vertices(self) -> list:
-        return Parser.flatten_tuple(self.vertices)
+        vertices = []
+        indices = []
+
+        counter = 0
+        for t in self.indices:
+            for i in range(t.__len__()):
+                vertices += self.vertices[t[i]]
+                indices.append(3 * counter + i)
+            counter += 1
+
+        return Parser.flatten_tuple(vertices)
 
     def get_indices(self) -> list:
-        return Parser.flatten_tuple(self.indices)
+        vertices = []
+        indices = []
+
+        counter = 0
+        for t in self.indices:
+            for i in range(t.__len__()):
+                vertices += self.vertices[t[i]]
+                indices.append(3 * counter + i)
+            counter += 1
+
+        return Parser.flatten_tuple(indices)
 
     def get_values(self) -> list:
         return Parser.flatten_tuple(self.values)
@@ -22,4 +42,7 @@ class Parser:
     # Flatten list of tuples
     @staticmethod
     def flatten_tuple(l: list) -> list:
-        return [item for sublist in l for item in sublist]
+        try:
+            return [item for sublist in l for item in sublist]
+        except TypeError:
+            return l
