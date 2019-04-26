@@ -14,11 +14,12 @@ class Model:
 
     # Generalization of add
     def add_element(self, file_path: str, element: ModelElement) -> int:
-        element.load(file_path)
-        self.element_collection[self.last_id] = element
-        self.last_id += 1
+        if element.load(file_path):
+            self.element_collection[self.last_id] = element
+            self.last_id += 1
 
-        return self.last_id - 1
+            return self.last_id - 1
+        return -1
 
     def add_mesh(self, file_path: str) -> int:
         mesh = MeshElement()

@@ -19,7 +19,6 @@ class MainWindow(QMainWindow):
         self.setFocusPolicy(Qt.StrongFocus)
         self.setAcceptDrops(True)
 
-        self.treeWidget.itemClicked.connect(self.toggle_wireframe)
         self.statusBar.showMessage('Ready')
 
     def set_model(self, model: Model) -> None:
@@ -29,9 +28,10 @@ class MainWindow(QMainWindow):
         # Tree widget
         self.treeWidget.clear()
 
+        # FIXME Not every gl_drawable can toggle its wireframe (Different context menus for different items)
         for id_, gl_drawable in self.viewer.get_gl_collection():
             item = TreeWidgetItem(self.treeWidget)
-            item.set_element(id_, gl_drawable.get_model_element())
+            item.set_element(id_, gl_drawable)
             self.treeWidget.addTopLevelItem(item)
 
     # Unless explicitly otherwise, slots are connected via Qt Designer
@@ -42,7 +42,8 @@ class MainWindow(QMainWindow):
             directory='.',
             filter='Mesh files (*.dxf *.off);;DXF Files (*.dxf);;OFF Files (*.off)')
 
-        self.load_mesh(file_path)
+        if file_path != '':
+            self.load_mesh(file_path)
 
     def load_mesh(self, file_path: str) -> None:
         if self.viewer.add_mesh(file_path) != -1:
@@ -59,7 +60,8 @@ class MainWindow(QMainWindow):
             directory='.',
             filter='CSV Files (*.csv);;All files (*.*)')
 
-        self.load_block_model(file_path)
+        if file_path != '':
+            self.load_block_model(file_path)
 
     def load_block_model(self, file_path: str) -> None:
         if self.viewer.add_block_model(file_path):
@@ -68,16 +70,6 @@ class MainWindow(QMainWindow):
             self.statusBar.showMessage('Cannot load block model')
 
         self.fill_tree_widget()
-
-    def toggle_wireframe(self, item: TreeWidgetItem = None, col: int = 0) -> None:
-        try:
-            id_ = item.get_id()
-            status = self.viewer.toggle_wireframe(id_)
-            msg = 'enabled' if status else 'disabled'
-            self.statusBar.showMessage(f'Wireframe {id_} {msg}')
-        except KeyError:
-            msg = 'unavailable'
-            self.statusBar.showMessage(f'Wireframe {msg}')
 
     """
     Controller slots
@@ -95,6 +87,15 @@ class MainWindow(QMainWindow):
         QMessageBox.information(self,
                                 'MineVis - Help',
                                 'TO-DO: Create help message box')
+
+    def toggle_wireframe(self, id_: int = 0) -> None:
+        try:
+            status = self.viewer.toggle_wireframe(id_)
+            msg = 'enabled' if status else 'disabled'
+            self.statusBar.showMessage(f'Wireframe {id_} {msg}')
+        except KeyError:
+            msg = 'unavailable'
+            self.statusBar.showMessage(f'Wireframe {msg}')
 
     """
     Overridden events

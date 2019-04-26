@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 
 import numpy as np
+import traceback
+
 from statistics import mean
 from PyQt5.QtCore import QFileInfo
 
@@ -61,17 +63,24 @@ class ModelElement:
         return [mean(array[0::3]), mean(array[1::3]), mean(array[2::3])]
 
     def load(self, file_path: str) -> bool:
-        self.name = ModelElement.detect_file_name(file_path)
-        self.ext = ModelElement.detect_file_extension(file_path)
+        try:
+            name = ModelElement.detect_file_name(file_path)
+            ext = ModelElement.detect_file_extension(file_path)
 
-        parser = self.get_parser(self.ext)
-        parser.load_file(file_path)
+            parser = self.get_parser(ext)
+            parser.load_file(file_path)
 
-        self.set_vertices(parser.get_vertices())
-        self.set_indices(parser.get_indices())
-        self.set_values(parser.get_values())
+            self.name = name
+            self.ext = ext
 
-        return True
+            self.set_vertices(parser.get_vertices())
+            self.set_indices(parser.get_indices())
+            self.set_values(parser.get_values())
+
+            return True
+        except Exception:
+            traceback.print_exc()
+            return False
 
     def save(self, file_path: str) -> bool:
         return False
