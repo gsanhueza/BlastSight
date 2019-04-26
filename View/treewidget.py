@@ -3,7 +3,6 @@
 from PyQt5.QtCore import *
 from PyQt5.QtGui import QCursor
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QAbstractItemView
 from PyQt5.QtWidgets import QAction
 from PyQt5.QtWidgets import QMenu
 from PyQt5.QtWidgets import QTreeWidget
@@ -13,8 +12,6 @@ class TreeWidget(QTreeWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setContextMenuPolicy(Qt.CustomContextMenu)
-        self.setDragEnabled(True)
-        self.setDragDropMode(QAbstractItemView.InternalMove)
 
         self.itemClicked.connect(self.single_click)
         self.itemDoubleClicked.connect(self.double_click)
@@ -27,7 +24,10 @@ class TreeWidget(QTreeWidget):
         :param event: Qt Event.
         :return: None
         """
-        menu = QMenu(self)
+        # FIXME The garbage collector seems to be messing with Qt (Low priority)
+        # "QObject::startTimer: Timers can only be used with threads started with QThread"
+        # WARNING It's a Heisenbug, I cannot consistently reproduce the bug.
+        menu = QMenu()
 
         # Actions
         action_show = QAction('&Show', self)
@@ -53,7 +53,7 @@ class TreeWidget(QTreeWidget):
 
         # Pop-up the context menu on current position, but only if an item is there
         if self.itemAt(event):
-            menu.popup(QCursor.pos())
+            menu.exec_(self.viewport().mapToGlobal(event))
 
     def single_click(self, item, col):
         print('single_click')
