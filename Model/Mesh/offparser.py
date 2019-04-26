@@ -39,7 +39,7 @@ class OFFParser(Parser):
 
                 assert face[0] == len(face) - 1
                 for index in face:
-                    assert 0 <= index < num_vertices
+                    assert 0 <= index <= num_vertices
 
                 assert len(face) > 1
 

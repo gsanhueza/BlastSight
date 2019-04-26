@@ -16,6 +16,9 @@ from Controller.freemode import FreeMode
 from Model.model import Model
 
 
+import time
+
+
 class OpenGLWidget(QOpenGLWidget):
     def __init__(self, parent=None, model=Model()):
         QOpenGLWidget.__init__(self, parent)
@@ -52,6 +55,10 @@ class OpenGLWidget(QOpenGLWidget):
         self.painter = QPainter()
 
         self.set_normal_mode()
+
+        self.start_time = time.time()
+        self.x = 1
+        self.counter = 0
 
     """
     FACADE METHODS
@@ -176,6 +183,12 @@ class OpenGLWidget(QOpenGLWidget):
         # QPainter can draw *after* OpenGL finishes
         self.painter.end()
         self.current_mode.overpaint()
+
+        self.counter += 1
+        if (time.time() - self.start_time) > self.x:
+            print(f'FPS: {self.counter / (time.time() - self.start_time)}')  # FPS = 1 / time to process loop
+            self.counter = 0
+            self.start_time = time.time()
 
     def resizeGL(self, w: float, h: float) -> None:
         # TODO Allow perspective/orthogonal in the controller (mode)
