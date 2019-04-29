@@ -95,6 +95,10 @@ class OpenGLWidget(QOpenGLWidget):
 
     def add_block_model(self, file_path: str) -> int:
         id_ = self.model.add_block_model(file_path)
+
+        if id_ < 0:
+            return -1
+
         block_model = self.model.get_block_model(id_)
         block_model_gl = BlockModelGL(self, block_model)
         self.gl_collection.add(id_, block_model_gl)
