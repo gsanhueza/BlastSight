@@ -55,13 +55,13 @@ class MeshGL(GLDrawable):
         if self.wireframe_enabled:
             self.shader_program.removeShader(self.geometry_wireframe_shader)
             self.shader_program.removeShader(self.fragment_wireframe_shader)
-            # self.shader_program.addShader(self.geometry_shader)
-            # self.shader_program.addShader(self.fragment_shader)
+            self.shader_program.addShader(self.geometry_shader)
+            self.shader_program.addShader(self.fragment_shader)
             self.wireframe_enabled = False
         else:
-            # self.shader_program.removeShader(self.geometry_shader)
-            # self.shader_program.removeShader(self.fragment_shader)
-            # self.shader_program.addShader(self.geometry_wireframe_shader)
+            self.shader_program.removeShader(self.geometry_shader)
+            self.shader_program.removeShader(self.fragment_shader)
+            self.shader_program.addShader(self.geometry_wireframe_shader)
             self.shader_program.addShader(self.fragment_wireframe_shader)
             self.wireframe_enabled = True
         return self.wireframe_enabled
@@ -76,5 +76,4 @@ class MeshGL(GLDrawable):
 
         self.vao.bind()
         glDrawElements(GL_TRIANGLES, self.indices_size, GL_UNSIGNED_INT, None)
-        print(self.model_element.get_vertices())
         self.vao.release()
