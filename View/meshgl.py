@@ -18,7 +18,6 @@ class MeshGL(GLDrawable):
 
         # Extra shaders
         self.fragment_wireframe_shader = None
-        self.geometry_wireframe_shader = None
 
     def initialize_shader_program(self) -> None:
         self.vertex_shader = QOpenGLShader(QOpenGLShader.Vertex)
@@ -32,8 +31,6 @@ class MeshGL(GLDrawable):
         # Extra shaders
         self.fragment_wireframe_shader = QOpenGLShader(QOpenGLShader.Fragment)
         self.fragment_wireframe_shader.compileSourceFile('View/Shaders/Mesh/fragment_wireframe.glsl')
-        self.geometry_wireframe_shader = QOpenGLShader(QOpenGLShader.Geometry)
-        self.geometry_wireframe_shader.compileSourceFile('View/Shaders/Mesh/geometry_wireframe.glsl')
 
         self.shader_program.addShader(self.vertex_shader)
         self.shader_program.addShader(self.fragment_shader)
@@ -42,8 +39,8 @@ class MeshGL(GLDrawable):
 
     def initialize(self) -> None:
         self.set_vertex_shader_source('View/Shaders/Mesh/vertex.glsl')
-        self.set_fragment_shader_source('View/Shaders/Mesh/fragment_normals.glsl')
-        self.set_geometry_shader_source('View/Shaders/Mesh/geometry_normals.glsl')
+        self.set_fragment_shader_source('View/Shaders/Mesh/fragment.glsl')
+        self.set_geometry_shader_source('View/Shaders/Mesh/geometry.glsl')
 
         super().initialize()
 
@@ -53,16 +50,14 @@ class MeshGL(GLDrawable):
 
     def toggle_wireframe(self) -> bool:
         if self.wireframe_enabled:
-            self.shader_program.removeShader(self.geometry_wireframe_shader)
+            self.shader_program.removeShader(self.geometry_shader)
             self.shader_program.removeShader(self.fragment_wireframe_shader)
-            self.shader_program.addShader(self.geometry_shader)
             self.shader_program.addShader(self.fragment_shader)
             self.wireframe_enabled = False
         else:
-            self.shader_program.removeShader(self.geometry_shader)
             self.shader_program.removeShader(self.fragment_shader)
-            self.shader_program.addShader(self.geometry_wireframe_shader)
             self.shader_program.addShader(self.fragment_wireframe_shader)
+            self.shader_program.addShader(self.geometry_shader)
             self.wireframe_enabled = True
         return self.wireframe_enabled
 

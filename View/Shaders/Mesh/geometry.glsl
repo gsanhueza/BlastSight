@@ -8,18 +8,22 @@ layout (line_strip, max_vertices = 4) out;
 layout (location = 1) in vec3 v_color[3];
 layout (location = 1) out vec3 f_color;
 
+layout (location = 2) in vec3 pos_vm[3];
+layout (location = 2) out vec3 v_pos_vm;
+
 void main()
 {
     for(int i = 0; i < gl_in.length(); i++) {
 		gl_Position = gl_in[i].gl_Position;
         f_color = v_color[i];
-
+        v_pos_vm = pos_vm[i];
 		EmitVertex();
 	}
 
     // Emit initial for the complete strip
     gl_Position = gl_in[0].gl_Position;
     f_color = v_color[0];
+    v_pos_vm = pos_vm[0];
 
     EmitVertex();
 

@@ -1,10 +1,8 @@
 #version 150
 #extension GL_ARB_separate_shader_objects : enable
 
-layout (location = 0) in vec3 v_position;
 layout (location = 1) in vec3 v_color;
-//layout (location = 2) in vec3 v_normal;
-layout (location = 3) in vec3 v_pos_mv;
+layout (location = 2) in vec3 v_pos_mv;
 
 out vec4 out_color;
 
@@ -27,7 +25,8 @@ void main()
     vec3 v_normal = normalize(cross(X, Y));
 
     vec3 light_position = vec3(0.0, 0.0, 1000.0);
-    vec3 light_color = vec3(0.1, 0.9, 0.0);
+//    vec3 light_color = v_color;
+    vec3 light_color = vec3(0.0, 1.0, 0.0);
 
     vec3 col = lambert(v_normal, light_position, light_color);
 
