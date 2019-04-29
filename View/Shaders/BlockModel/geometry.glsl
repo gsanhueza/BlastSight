@@ -20,15 +20,8 @@ vec3 calculateNormal(vec4 v1, vec4 v2, vec4 v3)
 {
     vec3 a = (v2 - v1).xyz;
     vec3 b = (v3 - v1).xyz;
-    vec3 N = normalize(cross(b, a));
 
-    // We're cheating here, but it's a simple way to ensure every normal aims outside (or every normal aims inside)
-    if (length(N + v1.xyz) > length(v1.xyz))
-    {
-        N = -N;
-    }
-
-    return N;
+    return normalize(cross(b, a));
 }
 
 void AddQuad(vec4 center, vec4 dy, vec4 dx)
