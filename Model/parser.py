@@ -22,15 +22,7 @@ class Parser:
     # Flatten list of tuples
     @staticmethod
     def flatten_tuple(l: list) -> list:
-        import time
-        start_time = time.time()
-
-        ans = None
         try:
-            ans = [item for sublist in l for item in sublist]
+            return [item for sublist in l for item in sublist]
         except TypeError:
-            ans = l
-
-        print(f'flatten_tuple: {time.time() - start_time}')
-
-        return ans
+            return l

@@ -9,9 +9,6 @@ class OFFParser(Parser):
         super().__init__()
 
     def load_file(self, file_path: str) -> None:
-        import time
-        start_time = time.time()
-
         with open(file_path, 'r') as fp:
             assert 'OFF' == fp.readline().strip()
 
@@ -24,8 +21,6 @@ class OFFParser(Parser):
             self.values = [(random.random(),
                             random.random(),
                             random.random()) for _ in range(self.vertices.__len__())]
-
-        print(f'OFFParser    : {time.time() - start_time}')
 
 
 if __name__ == '__main__':

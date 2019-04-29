@@ -19,20 +19,6 @@ class ModelElement:
         self.ext = None
         self.name = None
 
-    # FIXME Just for testing
-        self.default_data()
-
-    def default_data(self) -> None:
-        self.set_vertices([-0.5, 0.5, 0.0,
-                           -0.5, -0.5, 0.0,
-                           0.5, 0.5, 0.0])
-
-        self.set_values([1.0, 0.0, 0.0,
-                         0.0, 1.0, 0.0,
-                         0.0, 0.0, 1.0])
-
-        self.set_indices([0, 1, 2])
-
     def get_vertices(self) -> np.ndarray:
         return self.vertices
 

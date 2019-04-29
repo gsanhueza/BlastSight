@@ -5,18 +5,16 @@ from PyQt5.QtWidgets import QOpenGLWidget
 from PyQt5.QtGui import QPainter
 from PyQt5.QtGui import QMatrix4x4
 
-from View.meshgl import MeshGL
-from View.gldrawablecollection import GLDrawableCollection
 from View.blockmodelgl import BlockModelGL
+from View.fpscounter import FPSCounter
+from View.gldrawablecollection import GLDrawableCollection
+from View.meshgl import MeshGL
 
 from Controller.normalmode import NormalMode
 from Controller.drawmode import DrawMode
 from Controller.freemode import FreeMode
 
 from Model.model import Model
-
-
-import time
 
 
 class OpenGLWidget(QOpenGLWidget):
@@ -54,11 +52,11 @@ class OpenGLWidget(QOpenGLWidget):
         # QPainter (after OpenGL)
         self.painter = QPainter()
 
+        # Controller
         self.set_normal_mode()
 
-        self.start_time = time.time()
-        self.x = 1
-        self.counter = 0
+        # FPS Counter
+        self.fps_counter = FPSCounter()
 
     """
     FACADE METHODS
@@ -188,11 +186,7 @@ class OpenGLWidget(QOpenGLWidget):
         self.painter.end()
         self.current_mode.overpaint()
 
-        self.counter += 1
-        if (time.time() - self.start_time) > self.x:
-            print(f'FPS: {self.counter / (time.time() - self.start_time)}')  # FPS = 1 / time to process loop
-            self.counter = 0
-            self.start_time = time.time()
+        self.fps_counter.tick()
 
     def resizeGL(self, w: float, h: float) -> None:
         # TODO Allow perspective/orthogonal in the controller (mode)
