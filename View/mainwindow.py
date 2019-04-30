@@ -15,7 +15,6 @@ class MainWindow(QMainWindow):
     def __init__(self, parent=None):
         QMainWindow.__init__(self, parent)
         uic.loadUi('View/UI/mainwindow.ui', self)
-
         self.setFocusPolicy(Qt.StrongFocus)
         self.setAcceptDrops(True)
 
@@ -29,7 +28,7 @@ class MainWindow(QMainWindow):
         self.treeWidget.clear()
 
         for id_, gl_drawable in self.viewer.get_gl_collection():
-            item = TreeWidgetItem(self.treeWidget)
+            item = TreeWidgetItem(self.treeWidget, self.viewer)
             item.set_element(id_, gl_drawable)
             self.treeWidget.addTopLevelItem(item)
 

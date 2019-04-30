@@ -89,7 +89,10 @@ class OpenGLWidget(QOpenGLWidget):
         self.gl_collection[id_].hide()
 
     def delete_mesh(self, id_: int) -> None:
-        self.model.delete_mesh(id_)
+        del self.gl_collection[id_]
+
+    def delete_element(self, id_: int) -> None:
+        del self.gl_collection[id_]
 
     def add_block_model(self, file_path: str) -> int:
         id_ = self.model.add_block_model(file_path)
@@ -108,7 +111,7 @@ class OpenGLWidget(QOpenGLWidget):
         return id_
 
     def delete_block_model(self, id_: int) -> None:
-        self.model.delete_block_model(id_)
+        del self.gl_collection[id_]
 
     def toggle_wireframe(self, id_: int) -> bool:
         status = self.gl_collection[id_].toggle_wireframe()

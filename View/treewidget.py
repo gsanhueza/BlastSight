@@ -40,6 +40,7 @@ class TreeWidget(QTreeWidget):
         # Actions
         action_show = QAction('&Show', self)
         action_hide = QAction('&Hide', self)
+        action_remove = QAction('&Remove', self)
         action_wireframe = QAction('&Toggle wireframe', self)
 
         # Icons
@@ -47,17 +48,21 @@ class TreeWidget(QTreeWidget):
         action_show.setIcon(icon)
         icon = QIcon.fromTheme('object-hidden')
         action_hide.setIcon(icon)
+        icon = QIcon.fromTheme('list-remove')
+        action_remove.setIcon(icon)
         icon = QIcon.fromTheme('draw-triangle')
         action_wireframe.setIcon(icon)
 
         # Action commands
         action_show.triggered.connect(item.show)
         action_hide.triggered.connect(item.hide)
+        action_remove.triggered.connect(item.remove)
         action_wireframe.triggered.connect(item.toggle_wireframe)
 
         # Add actions depending on item type
         menu.addAction(action_show)
         menu.addAction(action_hide)
+        menu.addAction(action_remove)
 
         # FIXME Design a better way to get type of element
         if not item.get_name().endswith('csv'):

@@ -5,8 +5,11 @@ from View.gldrawable import GLDrawable
 
 
 class TreeWidgetItem(QTreeWidgetItem):
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, viewer=None):
         super().__init__(parent)
+        self.parent = parent
+        self.viewer = viewer
+
         self.id_: int = None
         self.name: str = None
         self.gl_elem: GLDrawable = None
@@ -37,3 +40,6 @@ class TreeWidgetItem(QTreeWidgetItem):
     def toggle_wireframe(self) -> None:
         self.gl_elem.toggle_wireframe()
         self.gl_elem.update()
+
+    def remove(self) -> None:
+        self.viewer.delete_element(self.id_)
