@@ -18,6 +18,12 @@ class GLDrawableCollection:
     def __len__(self) -> int:
         return self.drawable_dict.__len__()
 
+    def __delattr__(self, item):
+        self.drawable_dict.__delattr__(item)
+
+    def __delitem__(self, key):
+        self.drawable_dict.__delitem__(key)
+
     def items(self):
         return self.drawable_dict.items()
 

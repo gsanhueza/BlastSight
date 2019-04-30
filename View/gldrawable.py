@@ -136,18 +136,14 @@ class GLDrawable:
     def setup_uniforms(self) -> None:
         pass
 
-    """
-    API
-    """
-    def toggle_wireframe(self) -> bool:
-        return False
-
     def draw(self) -> None:
         pass
 
-    def remove(self) -> None:
-        # TODO Delete self ?
-        print('NOT IMPLEMENTED YET')
+    """
+    API for QTreeWidgetItem
+    """
+    def toggle_wireframe(self) -> bool:
+        return False
 
     def update(self) -> None:
         self.widget.update()
