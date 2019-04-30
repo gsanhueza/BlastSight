@@ -37,3 +37,6 @@ class TreeWidgetItem(QTreeWidgetItem):
     def toggle_wireframe(self) -> None:
         self.gl_elem.toggle_wireframe()
         self.gl_elem.update()
+
+    def remove(self) -> None:
+        self.gl_elem.remove()

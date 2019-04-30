@@ -28,7 +28,6 @@ class MainWindow(QMainWindow):
         # Tree widget
         self.treeWidget.clear()
 
-        # FIXME Not every gl_drawable can toggle its wireframe (Different context menus for different items)
         for id_, gl_drawable in self.viewer.get_gl_collection():
             item = TreeWidgetItem(self.treeWidget)
             item.set_element(id_, gl_drawable)
