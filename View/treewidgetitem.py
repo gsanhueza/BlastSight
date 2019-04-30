@@ -5,10 +5,10 @@ from View.gldrawable import GLDrawable
 
 
 class TreeWidgetItem(QTreeWidgetItem):
-    def __init__(self, parent=None, viewer=None):
+    def __init__(self, parent=None, mainwindow=None):
         super().__init__(parent)
         self.parent = parent
-        self.viewer = viewer
+        self.mainwindow = mainwindow
 
         self.id_: int = None
         self.name: str = None
@@ -42,4 +42,6 @@ class TreeWidgetItem(QTreeWidgetItem):
         self.gl_elem.update()
 
     def remove(self) -> None:
-        self.viewer.delete_element(self.id_)
+        self.mainwindow.viewer.delete_element(self.id_)
+        self.mainwindow.viewer.update()
+        self.mainwindow.fill_tree_widget()

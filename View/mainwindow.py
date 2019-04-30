@@ -28,7 +28,7 @@ class MainWindow(QMainWindow):
         self.treeWidget.clear()
 
         for id_, gl_drawable in self.viewer.get_gl_collection():
-            item = TreeWidgetItem(self.treeWidget, self.viewer)
+            item = TreeWidgetItem(self.treeWidget, self)
             item.set_element(id_, gl_drawable)
             self.treeWidget.addTopLevelItem(item)
 
