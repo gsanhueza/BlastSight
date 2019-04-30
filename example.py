@@ -4,6 +4,7 @@ import sys
 
 from PyQt5.QtWidgets import QApplication
 from View.openglwidget import OpenGLWidget
+from Model.model import Model
 
 
 class MineVisViewer(OpenGLWidget):
@@ -19,8 +20,14 @@ class MineVisViewer(OpenGLWidget):
 
 
 if __name__ == '__main__':
-    viewer = MineVisViewer()
-    id_off = viewer.add_mesh('Model/Mesh/caseron.off')
-    id_csv = viewer.add_block_model('Model/BlockModel/mini.csv')
-
-    viewer.show()
+    model = Model()
+    print('Enter to load')
+    input()
+    id_off = model.add_mesh('Model/Mesh/caseron.off')
+    print('Mesh loaded')
+    input()
+    model.delete_mesh(id_off)
+    print('Mesh deleted')
+    input()
+    print('Mem diff?')
+    input()

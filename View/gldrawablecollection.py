@@ -19,8 +19,6 @@ class GLDrawableCollection:
         return self.drawable_dict.__len__()
 
     def __delitem__(self, key):
-        gl_elem = self.drawable_dict[key]
-        del gl_elem.model_element
         self.drawable_dict.__delitem__(key)
 
     def items(self):

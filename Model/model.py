@@ -44,7 +44,7 @@ class Model:
 
     # Generalization of delete
     def delete_element(self, id_: int) -> bool:
-        self.element_collection[id_] = None
+        self.element_collection.__delitem__(id_)
         return True
 
     def delete_mesh(self, id_: int) -> bool:
