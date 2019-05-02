@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import csv
+import numpy as np
 from Model.modelelement import ModelElement
 from Model.parser import Parser
 
@@ -22,16 +22,13 @@ class CSVParser(Parser):
 
     def load_file(self, file_path: str, model: ModelElement) -> None:
         with open(file_path, 'r') as csv_file:
-            reader = csv.reader(csv_file, delimiter=',')
-            list_reader = list(reader)  # FIXME We want read line by line instead of everything at once
-
             vertices = []
             indices = []
             values = []
 
             CuT = []
             idx = 0
-            for elem in list_reader:
+            for elem in np.loadtxt(file_path, delimiter=','):
                 try:
                     vertices.append((float(elem[self.x_pos]),
                                      float(elem[self.y_pos]),
@@ -70,9 +67,6 @@ class CSVParser(Parser):
                     values
                 )
             )
-
-    def get_indices(self) -> list:
-        return self.indices  # Don't flatten
 
     def normalize(self, x: float, min_val: float, max_val: float) -> float:
         try:
