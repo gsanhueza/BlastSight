@@ -22,25 +22,23 @@ class Model:
         return -1
 
     def add_mesh(self, file_path: str) -> int:
-        mesh = MeshElement()
-        return self.add_element(file_path, mesh)
+        return self.add_element(file_path, MeshElement())
 
     def add_block_model(self, file_path: str) -> int:
-        block_model = BlockModelElement()
-        return self.add_element(file_path, block_model)
+        return self.add_element(file_path, BlockModelElement())
 
     # Generalization of update
     def update_element(self, id_: int, file_path: str, element: ModelElement) -> None:
+        ref = self.element_collection[id_]
+        del ref
         element.load(file_path)
         self.element_collection[id_] = element
 
     def update_mesh(self, id_: int, file_path: str) -> None:
-        mesh = MeshElement()
-        self.update_element(id_, file_path, mesh)
+        self.update_element(id_, file_path, MeshElement())
 
     def update_block_model(self, id_: int, file_path: str) -> None:
-        block_model = BlockModelElement()
-        self.update_element(id_, file_path, block_model)
+        self.update_element(id_, file_path, BlockModelElement())
 
     # Generalization of delete
     def delete_element(self, id_: int) -> bool:
