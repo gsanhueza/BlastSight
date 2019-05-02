@@ -33,7 +33,7 @@ class ModelElement:
 
     def set_vertices(self, vertices: list) -> None:
         self.vertices = np.array(vertices, np.float32)
-        self.set_centroid(ModelElement.average_by_coord(vertices))
+        self.set_centroid(ModelElement.average_by_coord(self.vertices))
 
     def set_indices(self, indices: list) -> None:
         self.indices = np.array(indices, np.uint32)  # GL_UNSIGNED_INT = np.uint32
@@ -46,7 +46,8 @@ class ModelElement:
 
     @staticmethod
     def average_by_coord(array: list) -> list:
-        return [mean(array[0::3]), mean(array[1::3]), mean(array[2::3])]
+        # FIXME Warning, this method duplicates memory usage of vertices/indices/etc
+        return [array[0::3].mean(), array[1::3].mean(), array[2::3].mean()]
 
     def load(self, file_path: str) -> bool:
         try:
@@ -54,14 +55,10 @@ class ModelElement:
             ext = ModelElement.detect_file_extension(file_path)
 
             parser = self.get_parser(ext)
-            parser.load_file(file_path)
+            parser.load_file(file_path, self)
 
             self.name = name
             self.ext = ext
-
-            self.set_vertices(parser.get_vertices())
-            self.set_indices(parser.get_indices())
-            self.set_values(parser.get_values())
 
             return True
         except Exception:

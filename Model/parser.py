@@ -1,23 +1,14 @@
 #!/usr/bin/env python
 
+from Model.modelelement import ModelElement
+
 
 class Parser:
     def __init__(self):
-        self.vertices = None
-        self.indices = None
-        self.values = None
-
-    def load_file(self, file_path: str) -> None:
         pass
 
-    def get_vertices(self) -> list:
-        return Parser.flatten_tuple(self.vertices)
-
-    def get_indices(self) -> list:
-        return Parser.flatten_tuple(self.indices)
-
-    def get_values(self) -> list:
-        return Parser.flatten_tuple(self.values)
+    def load_file(self, file_path: str, model: ModelElement) -> None:
+        pass
 
     # Flatten list of tuples
     @staticmethod
