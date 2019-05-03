@@ -34,7 +34,7 @@ class DXFParser(Parser):
         # Model data
         model.set_vertices(
             Parser.flatten_tuple(
-                tuple(vertices_dict.keys())
+                list(vertices_dict.keys())
             )
         )
 
@@ -46,7 +46,7 @@ class DXFParser(Parser):
 
         model.set_values(
             Parser.flatten_tuple(
-                [random.random() for _ in range(3 * vertices_dict.keys().__len__())]
+                [random.random() for _ in range(3)]
             )
         )
 

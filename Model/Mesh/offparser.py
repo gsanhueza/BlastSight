@@ -29,6 +29,6 @@ class OFFParser(Parser):
 
             model.set_values(
                 Parser.flatten_tuple(
-                    [random.random() for _ in range(3 * n_vertices)]
+                    [random.random() for _ in range(3)]
                 )
             )
