@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 from collections import OrderedDict
-from View.gldrawable import GLDrawable
+from View.Drawables.gldrawable import GLDrawable
 
 
 class GLDrawableCollection:

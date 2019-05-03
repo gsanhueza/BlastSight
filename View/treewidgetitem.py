@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 from PyQt5.QtWidgets import QTreeWidgetItem
-from View.gldrawable import GLDrawable
+from View.Drawables.gldrawable import GLDrawable
 
 
 class TreeWidgetItem(QTreeWidgetItem):

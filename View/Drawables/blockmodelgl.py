@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from View.gldrawable import GLDrawable
+from View.Drawables.gldrawable import GLDrawable
 from OpenGL.GL import *
 from PyQt5.QtGui import QVector2D
 

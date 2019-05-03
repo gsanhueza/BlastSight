@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 from PyQt5.QtGui import QOpenGLShader
-from View.gldrawable import GLDrawable
+from View.Drawables.gldrawable import GLDrawable
 from OpenGL.GL import *
 
 

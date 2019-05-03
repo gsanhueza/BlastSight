@@ -5,10 +5,10 @@ from PyQt5.QtWidgets import QOpenGLWidget
 from PyQt5.QtGui import QPainter
 from PyQt5.QtGui import QMatrix4x4
 
-from View.blockmodelgl import BlockModelGL
+from View.Drawables.blockmodelgl import BlockModelGL
 from View.fpscounter import FPSCounter
-from View.gldrawablecollection import GLDrawableCollection
-from View.meshgl import MeshGL
+from View.Drawables.gldrawablecollection import GLDrawableCollection
+from View.Drawables.meshgl import MeshGL
 
 from Controller.normalmode import NormalMode
 from Controller.drawmode import DrawMode
