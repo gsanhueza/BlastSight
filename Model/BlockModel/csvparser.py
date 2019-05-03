@@ -28,7 +28,7 @@ class CSVParser(Parser):
 
             CuT = []
             idx = 0
-            for elem in np.loadtxt(file_path, delimiter=','):
+            for elem in np.loadtxt(file_path, delimiter=',', skiprows=1):
                 try:
                     vertices.append((float(elem[self.x_pos]),
                                      float(elem[self.y_pos]),

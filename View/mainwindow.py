@@ -105,22 +105,15 @@ class MainWindow(QMainWindow):
 
     def dropEvent(self, event, *args, **kwargs) -> None:
         file_path = event.mimeData().urls()[0].toLocalFile()
-
-        # FIXME We should know beforehand if this is a mesh or a block model
         self.statusBar.showMessage('Loading...')
 
+        # FIXME We should know beforehand if this is a mesh or a block model
         if self.viewer.add_mesh(file_path) != -1:
             self.statusBar.showMessage('Mesh loaded')
-            self.fill_tree_widget()
-            self.viewer.update()
-            return
-        else:
-            self.statusBar.showMessage('Cannot load mesh')
-
-        if self.viewer.add_block_model(file_path) != -1:
+        elif self.viewer.add_block_model(file_path) != -1:
             self.statusBar.showMessage('Block model loaded')
-            self.fill_tree_widget()
-            self.viewer.update()
-            return
         else:
-            self.statusBar.showMessage('Cannot load block model')
+            self.statusBar.showMessage('Cannot load file')
+
+        self.fill_tree_widget()
+        self.viewer.update()
