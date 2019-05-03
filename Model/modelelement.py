@@ -3,7 +3,6 @@
 import numpy as np
 import traceback
 
-from statistics import mean
 from PyQt5.QtCore import QFileInfo
 
 
@@ -45,8 +44,7 @@ class ModelElement:
         self.centroid = np.array(centroid, np.float32)
 
     @staticmethod
-    def average_by_coord(array: list) -> list:
-        # FIXME Warning, this method duplicates memory usage of vertices/indices/etc
+    def average_by_coord(array: np.ndarray) -> list:
         return [array[0::3].mean(), array[1::3].mean(), array[2::3].mean()]
 
     def load(self, file_path: str) -> bool:

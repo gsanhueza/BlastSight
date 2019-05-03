@@ -124,4 +124,3 @@ class MainWindow(QMainWindow):
             return
         else:
             self.statusBar.showMessage('Cannot load block model')
-

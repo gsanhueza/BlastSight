@@ -29,8 +29,6 @@ class Model:
 
     # Generalization of update
     def update_element(self, id_: int, file_path: str, element: ModelElement) -> None:
-        ref = self.element_collection[id_]
-        del ref
         element.load(file_path)
         self.element_collection[id_] = element
 
