@@ -1,12 +1,14 @@
 #version 150
 #extension GL_ARB_separate_shader_objects : enable
 
-layout (location = 1) in vec3 v_color;
+uniform vec3 u_color;
 
 out vec4 out_color;
 
 void main()
 {
-    vec3 wireframe_color = vec3(0.1, 0.9, 0.0);
-    out_color = vec4(wireframe_color, 1.0);
+//    // WARNING For some reason we *need* to use u_color, or it segfaults
+//    vec3 wireframe_color = u_color * 0.0000001 + vec3(0.1, 0.9, 0.0);
+//    out_color = vec4(wireframe_color, 1.0);
+    out_color = vec4(u_color, 0.0);
 }
