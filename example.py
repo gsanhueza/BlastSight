@@ -15,11 +15,10 @@ class MineVisViewer(OpenGLWidget):
 
     def show(self):
         super().show()
-        self.toggle_wireframe(0)
         sys.exit(self.app.exec_())
 
 
-if __name__ == '__main__':
+def test_model():
     model = Model()
     input('Before load')
     id_off = model.add_mesh('Model/Mesh/caseron.off')
@@ -28,7 +27,32 @@ if __name__ == '__main__':
     input('After update')
     model.update_mesh(id_off, '/home/gabriel/xyzrgb_statuette.off')
     input('After update')
-    model.update_mesh(id_off, '/home/gabriel/xyzrgb_statuette.off')
-    input('After update')
     model.delete_mesh(id_off)
     input('After delete')
+    id_off = model.add_mesh('/home/gabriel/xyzrgb_statuette.off')
+    input('After big load again')
+    model.delete_mesh(id_off)
+    input('After delete')
+
+
+def test_viewer():
+    viewer = MineVisViewer()
+    input('Before load')
+    id_off = viewer.add_mesh('/home/gabriel/xyzrgb_statuette.off')
+    input('After load')
+    viewer.delete_mesh(id_off)
+    input('After delete')
+    id_off = viewer.add_mesh('/home/gabriel/xyzrgb_statuette.off')
+    input('After load')
+    viewer.delete_mesh(id_off)
+    input('After delete')
+    id_off = viewer.add_mesh('/home/gabriel/xyzrgb_statuette.off')
+    input('After load')
+    viewer.delete_mesh(id_off)
+    input('After delete')
+    viewer.show()
+    pass
+
+
+if __name__ == '__main__':
+    test_viewer()

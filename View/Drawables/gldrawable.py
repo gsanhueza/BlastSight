@@ -106,11 +106,11 @@ class GLDrawable:
         _SIZE_OF_GL_FLOAT = 4
 
         # Data
-        positions = self.model_element.get_vertices()
+        vertices = self.model_element.get_vertices()
         indices = self.model_element.get_indices()
         values = self.model_element.get_values()
 
-        self.vertices_size = positions.size
+        self.vertices_size = vertices.size
         self.indices_size = indices.size
         self.values_size = values.size
 
@@ -118,7 +118,7 @@ class GLDrawable:
         self.vao.bind()
 
         self.positions_vbo.bind()
-        glBufferData(GL_ARRAY_BUFFER, _SIZE_OF_GL_FLOAT * self.vertices_size, positions, GL_STATIC_DRAW)
+        glBufferData(GL_ARRAY_BUFFER, _SIZE_OF_GL_FLOAT * self.vertices_size, vertices, GL_STATIC_DRAW)
         glVertexAttribPointer(_POSITION, 3, GL_FLOAT, False, 0, None)
 
         self.values_vbo.bind()
