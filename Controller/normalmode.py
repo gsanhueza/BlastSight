@@ -31,33 +31,30 @@ class NormalMode(Mode):
         dx = event.x() - self.lastPos.x()
         dy = event.y() - self.lastPos.y()
 
+        self.widget.world.setToIdentity()
         if event.buttons() == Qt.LeftButton:
-            self.set_x_rotation(self.widget.xRot + 8 * dy)
-            self.set_y_rotation(self.widget.yRot + 8 * dx)
+            self.set_x_rotation(self.widget.xWorldRot + 8 * dy)
+            self.set_y_rotation(self.widget.yWorldRot + 8 * dx)
         elif event.buttons() == Qt.RightButton:
-            self.set_x_rotation(self.widget.xRot + 8 * dy)
-            self.set_z_rotation(self.widget.zRot - 8 * dx)
+            self.set_x_rotation(self.widget.xWorldRot + 8 * dy)
+            self.set_z_rotation(self.widget.zWorldRot - 8 * dx)
 
         self.lastPos = QPoint(event.pos())
 
     def wheelEvent(self, event):
-        self.widget.zCamPos += (event.angleDelta().y() / 120)
-        self.widget.camera.setToIdentity()
-        self.widget.camera.translate(self.widget.xCamPos,
-                                     self.widget.yCamPos,
-                                     self.widget.zCamPos)
+        self.widget.zWorldPos += (event.angleDelta().y() / 120)
 
     def set_x_rotation(self, angle):
         angle = normalize_angle(angle)
-        if angle != self.widget.xRot:
-            self.widget.xRot = angle
+        if angle != self.widget.xWorldRot:
+            self.widget.xWorldRot = angle
 
     def set_y_rotation(self, angle):
         angle = normalize_angle(angle)
-        if angle != self.widget.yRot:
-            self.widget.yRot = angle
+        if angle != self.widget.yWorldRot:
+            self.widget.yWorldRot = angle
 
     def set_z_rotation(self, angle):
         angle = normalize_angle(angle)
-        if angle != self.widget.zRot:
-            self.widget.zRot = angle
+        if angle != self.widget.zWorldRot:
+            self.widget.zWorldRot = angle

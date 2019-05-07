@@ -35,19 +35,14 @@ class OpenGLWidget(QOpenGLWidget):
         self.world = QMatrix4x4()
         self.proj = QMatrix4x4()
 
-        # Camera position
-        self.xCamPos = 0.0
-        self.yCamPos = 0.0
-        self.zCamPos = -3.0
-
-        # World
+        # World (we don't move the camera)
         self.xWorldPos = 0.0
         self.yWorldPos = 0.0
-        self.zWorldPos = 0.0
+        self.zWorldPos = -3.0
 
-        self.xRot = 0.0
-        self.yRot = 0.0
-        self.zRot = 0.0
+        self.xWorldRot = 0.0
+        self.yWorldRot = 0.0
+        self.zWorldRot = 0.0
 
         # QPainter (after OpenGL)
         self.painter = QPainter()
@@ -71,9 +66,9 @@ class OpenGLWidget(QOpenGLWidget):
         mesh_gl = MeshGL(self, mesh)
         self.gl_collection.add(id_, mesh_gl)
 
-        self.set_world_position(mesh.get_centroid()[0],
-                                mesh.get_centroid()[1],
-                                mesh.get_centroid()[2])
+        # self.set_world_position(mesh.get_centroid()[0],
+        #                         mesh.get_centroid()[1],
+        #                         mesh.get_centroid()[2])
 
         return id_
 
@@ -128,11 +123,6 @@ class OpenGLWidget(QOpenGLWidget):
         self.yWorldPos = -y
         self.zWorldPos = -z
 
-    def set_camera_position(self, x: float, y: float, z: float) -> None:
-        self.xCamPos = x
-        self.yCamPos = y
-        self.zCamPos = z
-
     """
     Controller modes
     """
@@ -162,9 +152,6 @@ class OpenGLWidget(QOpenGLWidget):
             block_model_gl = BlockModelGL(self, block_model)
             self.gl_collection.add(id_, block_model_gl)
 
-        # Camera setup
-        self.camera.translate(self.xCamPos, self.yCamPos, self.zCamPos)
-
     def paintGL(self) -> None:
         self.painter.begin(self)
         # Clear screen
@@ -174,14 +161,15 @@ class OpenGLWidget(QOpenGLWidget):
 
         self.world.setToIdentity()
 
-        # Allow rotation of the world
-        self.world.rotate(self.xRot / 16.0, 1, 0, 0)
-        self.world.rotate(self.yRot / 16.0, 0, 1, 0)
-        self.world.rotate(self.zRot / 16.0, 0, 0, 1)
-
+        # Allow translation of the world
         self.world.translate(self.xWorldPos,
                              self.yWorldPos,
                              self.zWorldPos)
+
+        # Allow rotation of the world
+        self.world.rotate(self.xWorldRot / 16.0, 1, 0, 0)
+        self.world.rotate(self.yWorldRot / 16.0, 0, 1, 0)
+        self.world.rotate(self.zWorldRot / 16.0, 0, 0, 1)
 
         # Draw every GLDrawable (meshes, block models, etc)
         self.gl_collection.draw()
@@ -198,7 +186,7 @@ class OpenGLWidget(QOpenGLWidget):
         self.proj.perspective(45.0, (w / h), 0.01, 10000.0)
 
         # ortho(float left, float right, float bottom, float top, float nearPlane, float farPlane)
-        # scale_factor = -self.zCamPos * 200
+        # scale_factor = self.zWorldPos * 200
         # self.proj.ortho(-w/scale_factor, w/scale_factor, -h/scale_factor, h/scale_factor, 0.01, 10000)
 
     # Controller dependent on current mode

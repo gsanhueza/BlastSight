@@ -18,30 +18,18 @@ class FreeMode(Mode):
         dx = event.x() - self.lastPos.x()
         dy = event.y() - self.lastPos.y()
 
-        self.set_x_movement(self.widget.xCamPos + (dx / 200.0))
-        self.set_y_movement(self.widget.yCamPos - (dy / 200.0))
+        self.set_x_movement(self.widget.xWorldPos + (dx / 200.0))
+        self.set_y_movement(self.widget.yWorldPos - (dy / 200.0))
 
         self.lastPos = QPoint(event.pos())
 
     def wheelEvent(self, event):
-        self.widget.zCamPos += (event.angleDelta().y() / 120)
-        self.widget.camera.setToIdentity()
-        self.widget.camera.translate(self.widget.xCamPos,
-                                     self.widget.yCamPos,
-                                     self.widget.zCamPos)
+        self.widget.zWorldPos += (event.angleDelta().y() / 120)
 
     def set_x_movement(self, position):
-        if abs(position - self.widget.xCamPos) > 0.01:
-            self.widget.xCamPos = position
-        self.widget.camera.setToIdentity()
-        self.widget.camera.translate(self.widget.xCamPos,
-                                     self.widget.yCamPos,
-                                     self.widget.zCamPos)
+        if abs(position - self.widget.xWorldPos) > 0.01:
+            self.widget.xWorldPos = position
 
     def set_y_movement(self, position):
-        if abs(position - self.widget.yCamPos) > 0.01:
-            self.widget.yCamPos = position
-        self.widget.camera.setToIdentity()
-        self.widget.camera.translate(self.widget.xCamPos,
-                                     self.widget.yCamPos,
-                                     self.widget.zCamPos)
+        if abs(position - self.widget.yWorldPos) > 0.01:
+            self.widget.yWorldPos = position
