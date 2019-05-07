@@ -44,6 +44,11 @@ class OpenGLWidget(QOpenGLWidget):
         self.yWorldRot = 0.0
         self.zWorldRot = 0.0
 
+        # Centroid (objects will rotate around this)
+        self.xCentroid = 0.0
+        self.yCentroid = 0.0
+        self.zCentroid = 0.0
+
         # QPainter (after OpenGL)
         self.painter = QPainter()
 
@@ -66,9 +71,7 @@ class OpenGLWidget(QOpenGLWidget):
         mesh_gl = MeshGL(self, mesh)
         self.gl_collection.add(id_, mesh_gl)
 
-        # self.set_world_position(mesh.get_centroid()[0],
-        #                         mesh.get_centroid()[1],
-        #                         mesh.get_centroid()[2])
+        self.set_centroid(list(mesh.get_centroid()))
 
         return id_
 
@@ -100,9 +103,7 @@ class OpenGLWidget(QOpenGLWidget):
         block_model_gl = BlockModelGL(self, block_model)
         self.gl_collection.add(id_, block_model_gl)
 
-        self.set_world_position(block_model.get_centroid()[0],
-                                block_model.get_centroid()[1],
-                                block_model.get_centroid()[2])
+        self.set_centroid(list(block_model.get_centroid()))
 
         return id_
 
@@ -122,6 +123,11 @@ class OpenGLWidget(QOpenGLWidget):
         self.xWorldPos = -x
         self.yWorldPos = -y
         self.zWorldPos = -z
+
+    def set_centroid(self, centroid: list) -> None:
+        self.xCentroid = -centroid[0]
+        self.yCentroid = -centroid[1]
+        self.zCentroid = -centroid[2]
 
     """
     Controller modes
@@ -161,7 +167,6 @@ class OpenGLWidget(QOpenGLWidget):
 
         self.world.setToIdentity()
 
-        # Allow translation of the world
         self.world.translate(self.xWorldPos,
                              self.yWorldPos,
                              self.zWorldPos)
@@ -170,6 +175,11 @@ class OpenGLWidget(QOpenGLWidget):
         self.world.rotate(self.xWorldRot / 16.0, 1, 0, 0)
         self.world.rotate(self.yWorldRot / 16.0, 0, 1, 0)
         self.world.rotate(self.zWorldRot / 16.0, 0, 0, 1)
+
+        # Allow translation of the world
+        self.world.translate(self.xCentroid,
+                             self.yCentroid,
+                             self.zCentroid)
 
         # Draw every GLDrawable (meshes, block models, etc)
         self.gl_collection.draw()
