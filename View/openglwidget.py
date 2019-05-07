@@ -167,6 +167,7 @@ class OpenGLWidget(QOpenGLWidget):
 
         self.world.setToIdentity()
 
+        # Allow translation of the world
         self.world.translate(self.xWorldPos,
                              self.yWorldPos,
                              self.zWorldPos)
@@ -176,7 +177,7 @@ class OpenGLWidget(QOpenGLWidget):
         self.world.rotate(self.yWorldRot / 16.0, 0, 1, 0)
         self.world.rotate(self.zWorldRot / 16.0, 0, 0, 1)
 
-        # Allow translation of the world
+        # Translate by centroid
         self.world.translate(self.xCentroid,
                              self.yCentroid,
                              self.zCentroid)
