@@ -48,11 +48,8 @@ class ModelElement:
         # Given: [[x1, y1, z1], [x2, y2, z2], [x3, y3, z3]]
         # Expected: [mean([x1, x2, x3]), mean([y1, y2, y3]), mean([z1, z2, z3])]
 
-        def avg(l: list) -> float:
-            return mean(l)
-
-        list_by_coord = list(map(lambda i: [float(item[i]) for item in array], range(3)))
-        return list(map(avg, list_by_coord))
+        list_by_coord = map(lambda i: [float(item[i]) for item in array], range(3))
+        return list(map(mean, list_by_coord))
 
     def load(self, file_path: str) -> bool:
         try:

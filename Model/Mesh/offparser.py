@@ -16,13 +16,6 @@ class OFFParser(Parser):
             n_vertices, n_faces, n_edges = tuple([int(s) for s in fp.readline().strip().split(' ')])
 
             # Model data
-            model.set_vertices(
-                [[float(s) for s in fp.readline().strip().split(' ')] for _ in range(n_vertices)]
-            )
-            model.set_indices(
-                [[int(s) for s in fp.readline().strip().split(' ')][1:] for _ in range(n_faces)]
-            )
-
-            model.set_values(
-                [random.random() for _ in range(3)]
-            )
+            model.set_vertices([[float(s) for s in fp.readline().strip().split(' ')] for _ in range(n_vertices)])
+            model.set_indices([[int(s) for s in fp.readline().strip().split(' ')][1:] for _ in range(n_faces)])
+            model.set_values([random.random() for _ in range(3)])

@@ -32,28 +32,15 @@ class DXFParser(Parser):
             faces.append(tuple(face_pointers))
 
         # Model data
-        model.set_vertices(
-            list(vertices_dict.keys())
-        )
+        model.set_vertices(list(vertices_dict.keys()))
+        model.set_indices(DXFParser.parse_faces(faces))
+        model.set_values([random.random() for _ in range(3)])
 
-        model.set_indices(
-            self._parse_faces(faces)
-        )
+    @staticmethod
+    def parse_faces(faces: list) -> list:
+        # Converts a list of 4-tuples into a list of 3-tuples
+        # WARNING Why does this happen?
+        # tuple((f[0], f[1], f[2])) is useful
+        # tuple((f[2], f[3], f[0])) isn't useful
 
-        model.set_values(
-            [random.random() for _ in range(3)]
-        )
-
-    # Converts a list of 4-tuples into a list of 3-tuples
-    def _parse_faces(self, faces: list) -> list:
-        ans = []
-        for f in faces:
-            # We need to convert 4-tuples in 3-tuples
-            if len(f) == 3:
-                ans.append(f)
-            elif len(f) == 4:
-                ans.append((f[0], f[1], f[2]))
-                # WARNING Why does this work when commented?
-                # ans.append((f[2], f[3], f[0]))
-
-        return ans
+        return list(map(lambda x: x[:3], faces))
