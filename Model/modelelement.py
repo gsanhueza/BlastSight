@@ -4,7 +4,7 @@ import numpy as np
 import traceback
 
 from PyQt5.QtCore import QFileInfo
-
+from statistics import mean
 
 # Main class
 class ModelElement:
@@ -45,14 +45,14 @@ class ModelElement:
 
     @staticmethod
     def average_by_coord(array: np.ndarray) -> list:
-        x = y = z = accum = 0
-        for arr in array:
-            x += arr[0]
-            y += arr[1]
-            z += arr[2]
-            accum += 1
+        # Given: [[x1, y1, z1], [x2, y2, z2], [x3, y3, z3]]
+        # Expected: [mean([x1, x2, x3], mean([y1, y2, y3], mean([z1, z2, z3])]
 
-        return list(map(lambda coord: coord / accum, [x, y, z]))
+        def avg(l: list) -> float:
+            return mean(l)
+
+        list_by_coord = list(map(lambda i: [float(item[i]) for item in array], range(3)))
+        return list(map(avg, list_by_coord))
 
     def load(self, file_path: str) -> bool:
         try:
