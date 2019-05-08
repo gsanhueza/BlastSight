@@ -50,23 +50,9 @@ class CSVParser(Parser):
                 idx += 1
 
             # Model data
-            model.set_vertices(
-                Parser.flatten_tuple(
-                    vertices
-                )
-            )
-
-            model.set_indices(
-                Parser.flatten_tuple(
-                    indices
-                )
-            )
-
-            model.set_values(
-                Parser.flatten_tuple(
-                    values
-                )
-            )
+            model.set_vertices(vertices)
+            model.set_indices(indices)
+            model.set_values(values)
 
     def normalize(self, x: float, min_val: float, max_val: float) -> float:
         try:

@@ -33,21 +33,15 @@ class DXFParser(Parser):
 
         # Model data
         model.set_vertices(
-            Parser.flatten_tuple(
-                list(vertices_dict.keys())
-            )
+            list(vertices_dict.keys())
         )
 
         model.set_indices(
-            Parser.flatten_tuple(
-                self._parse_faces(faces)
-            )
+            self._parse_faces(faces)
         )
 
         model.set_values(
-            Parser.flatten_tuple(
-                [random.random() for _ in range(3)]
-            )
+            [random.random() for _ in range(3)]
         )
 
     # Converts a list of 4-tuples into a list of 3-tuples

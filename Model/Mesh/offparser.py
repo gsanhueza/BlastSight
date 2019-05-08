@@ -17,18 +17,12 @@ class OFFParser(Parser):
 
             # Model data
             model.set_vertices(
-                Parser.flatten_tuple(
-                    [[float(s) for s in fp.readline().strip().split(' ')] for _ in range(n_vertices)]
-                )
+                [[float(s) for s in fp.readline().strip().split(' ')] for _ in range(n_vertices)]
             )
             model.set_indices(
-                Parser.flatten_tuple(
-                    [[int(s) for s in fp.readline().strip().split(' ')][1:] for _ in range(n_faces)]
-                )
+                [[int(s) for s in fp.readline().strip().split(' ')][1:] for _ in range(n_faces)]
             )
 
             model.set_values(
-                Parser.flatten_tuple(
-                    [random.random() for _ in range(3)]
-                )
+                [random.random() for _ in range(3)]
             )

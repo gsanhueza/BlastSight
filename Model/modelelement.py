@@ -45,7 +45,14 @@ class ModelElement:
 
     @staticmethod
     def average_by_coord(array: np.ndarray) -> list:
-        return [array[0::3].mean(), array[1::3].mean(), array[2::3].mean()]
+        x = y = z = accum = 0
+        for arr in array:
+            x += arr[0]
+            y += arr[1]
+            z += arr[2]
+            accum += 1
+
+        return list(map(lambda coord: coord / accum, [x, y, z]))
 
     def load(self, file_path: str) -> bool:
         try:
