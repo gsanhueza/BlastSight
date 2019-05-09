@@ -6,6 +6,7 @@ import traceback
 from PyQt5.QtCore import QFileInfo
 from statistics import mean
 
+
 # Main class
 class ModelElement:
     def __init__(self):
@@ -47,14 +48,12 @@ class ModelElement:
     def average_by_coord(array: np.ndarray) -> list:
         # Given: [[x1, y1, z1], [x2, y2, z2], [x3, y3, z3]]
         # Expected: [mean([x1, x2, x3]), mean([y1, y2, y3]), mean([z1, z2, z3])]
-
-        list_by_coord = map(lambda i: [float(item[i]) for item in array], range(3))
-        return list(map(mean, list_by_coord))
+        return list(map(mean, zip(*array.tolist())))
 
     def load(self, file_path: str) -> bool:
         try:
-            name = ModelElement.detect_file_name(file_path)
-            ext = ModelElement.detect_file_extension(file_path)
+            name = QFileInfo(file_path).baseName()
+            ext = QFileInfo(file_path).suffix()
 
             parser = self.get_parser(ext)
             parser.load_file(file_path, self)
@@ -78,13 +77,3 @@ class ModelElement:
     def get_parser(self, ext: str):
         # Example: {"dxf": DXFHandler, "off": OFFHandler}
         return self.parser_dict[ext]
-
-    @staticmethod
-    def detect_file_extension(file_path: str) -> str:
-        file_info = QFileInfo(file_path)
-        return file_info.suffix()
-
-    @staticmethod
-    def detect_file_name(file_path: str) -> str:
-        file_info = QFileInfo(file_path)
-        return file_info.baseName()
