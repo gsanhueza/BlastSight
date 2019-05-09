@@ -51,7 +51,6 @@ def test_viewer():
     viewer.delete_mesh(id_off)
     input('After delete')
     viewer.show()
-    pass
 
 
 if __name__ == '__main__':
