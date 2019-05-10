@@ -21,8 +21,8 @@ class TestOFFParser(TestParser):
         element = MeshElement()
         parser.load_file('tests/caseron.off', element)
 
-        assert element.get_vertices().size == 3 * 12
-        assert element.get_indices().size == 3 * 20
+        assert len(list(element.get_vertices().tolist())) == 12
+        assert len(list(element.get_indices().tolist())) == 20
 
 
 class TestDXFParser(TestParser):
@@ -34,5 +34,5 @@ class TestDXFParser(TestParser):
         element = MeshElement()
         parser.load_file('tests/caseron.dxf', element)
 
-        assert element.get_vertices().size == 3 * 12
-        assert element.get_indices().size == 3 * 20
+        assert len(list(element.get_vertices().tolist())) == 12
+        assert len(list(element.get_indices().tolist())) == 20
