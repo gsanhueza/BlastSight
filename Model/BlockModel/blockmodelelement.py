@@ -14,12 +14,15 @@ class BlockModelElement(ModelElement):
         self.x_str: str = 'x'
         self.y_str: str = 'y'
         self.z_str: str = 'z'
-        self.current_str: str = 'CuT'
+        self.current_str: str = None
 
     def set_data(self, data: dict) -> None:
         self.data = data
-        print(f'Available list of values: {self.get_available_values()}')
-        self.update()  # FIXME This should be called only when the user has already set the position strings
+        self.update_coords()
+
+        # FIXME This should be called only when the user has already set the position strings
+        self.set_current_value_string(self.get_available_values()[0])
+        self.update_values()
 
     # TODO Force the user to set these strings
     def set_x_string(self, string: str) -> None:
@@ -42,13 +45,15 @@ class BlockModelElement(ModelElement):
 
         return available
 
-    def update(self):
+    def update_coords(self):
         x = list(map(float, self.data[self.x_str]))
         y = list(map(float, self.data[self.y_str]))
         z = list(map(float, self.data[self.z_str]))
 
         self.set_vertices(list(zip(x, y, z)))
         self.set_indices(list(range(3 * len(self.vertices))))
+
+    def update_values(self):
         values = list(map(float, self.data[self.current_str]))
         min_values = min(values)
         max_values = max(values)
