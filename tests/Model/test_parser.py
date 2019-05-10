@@ -2,9 +2,20 @@
 
 import pytest
 from Model.parser import Parser
+from Model.Mesh.offparser import OFFParser
+from Model.Mesh.dxfparser import DXFParser
 
 
 class TestParser:
-    def test_init(self):
-        parser = Parser()
-        assert parser is not None
+    def generate(self):
+        return Parser()
+
+
+class TestDXFParser(TestParser):
+    def generate(self):
+        return DXFParser()
+
+
+class TestOFFParser(TestParser):
+    def generate(self):
+        return OFFParser()
