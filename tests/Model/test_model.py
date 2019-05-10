@@ -5,12 +5,11 @@ from Model.model import Model
 
 
 class TestModel:
-    def test_init(self):
-        model = Model()
-        assert model is not None
+    def generate(self):
+        return Model()
 
     def test_add_mesh(self):
-        model = Model()
+        model = self.generate()
         mesh_id = model.add_mesh('tests/caseron.off')
         assert mesh_id > -1
 
