@@ -10,10 +10,10 @@ from statistics import mean
 # Main class
 class ModelElement:
     def __init__(self):
-        self.vertices = None
-        self.indices = None
-        self.values = None
-        self.centroid = None
+        self.vertices = np.ndarray([], np.float32)
+        self.indices = np.ndarray([], np.uint32)
+        self.values = np.ndarray([], np.float32)
+        self.centroid = np.ndarray([], np.float32)
 
         self.parser_dict = {}
         self.ext = None
