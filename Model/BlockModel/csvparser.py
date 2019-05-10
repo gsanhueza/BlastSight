@@ -14,26 +14,22 @@ class CSVParser(Parser):
             reader = csv.DictReader(f)
             lr = list(reader)
             vals = list(zip(*map(lambda d: d.values(), lr)))
-            data = dict(zip(lr[0], map(list, vals)))
+            data = dict(zip(lr[0], vals))
 
         # FIXME Those hardcoded strings are in the header of the CSV file
         x = [float(s) for s in data['x']]
         y = [float(s) for s in data['y']]
         z = [float(s) for s in data['z']]
+
         CuT = [float(s) for s in data['CuT']]
         min_CuT = min(CuT)
         max_CuT = max(CuT)
 
-        values = []
-        for cut in CuT:
-            values.append(
-                (min(1.0, 2 * (1.0 - CSVParser.normalize(cut, min_CuT, max_CuT))),
-                 min(1.0, 2 * CSVParser.normalize(cut, min_CuT, max_CuT)),
-                 0.0)
-            )
+        normalized_values = list(map(lambda val: CSVParser.normalize(val, min_CuT, max_CuT), CuT))
 
         vertices = list(zip(x, y, z))
         indices = list(range(3 * len(vertices)))
+        values = list(map(lambda nv: [min(1.0, 2 * (1 - nv)), min(1.0, 2 * nv), 0.0], normalized_values))
 
         model.set_vertices(vertices)
         model.set_indices(indices)
