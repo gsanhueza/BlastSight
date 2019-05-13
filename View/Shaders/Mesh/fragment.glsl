@@ -27,6 +27,7 @@ void main()
 
     vec3 light_position = vec3(0.0, 0.0, 1000.0);
     vec3 col = lambert(v_normal, light_position, u_color);
+    vec3 ambient_light = vec3(0.1);
 
-    out_color = vec4(col, u_alpha.x);
+    out_color = vec4(ambient_light + col, u_alpha.x);
 }

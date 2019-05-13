@@ -73,9 +73,8 @@ class BlockModelElement(ModelElement):
         values = list(map(float, self.data[self.current_str]))
         min_values = min(values)
         max_values = max(values)
-        normalized_values = list(map(lambda val: BlockModelElement.normalize(val, min_values, max_values),
-                                     values))
 
+        normalized_values = map(lambda val: BlockModelElement.normalize(val, min_values, max_values), values)
         self.set_values(list(map(lambda hue: colorsys.hsv_to_rgb(hue, 1.0, 1.0), normalized_values)))
 
     @staticmethod
