@@ -2,7 +2,7 @@
 
 from PyQt5.QtWidgets import QTreeWidgetItem
 from View.Drawables.gldrawable import GLDrawable
-from View.dialog_available_values import DialogAvailableValues
+from View.GUI.dialog_available_values import DialogAvailableValues
 
 
 class TreeWidgetItem(QTreeWidgetItem):

@@ -3,7 +3,7 @@
 import sys
 
 from PyQt5.QtWidgets import QApplication
-from View.openglwidget import OpenGLWidget
+from View.GUI.openglwidget import OpenGLWidget
 
 
 class MineVisViewer(OpenGLWidget):

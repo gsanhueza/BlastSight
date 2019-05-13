@@ -6,7 +6,7 @@ from PyQt5.QtWidgets import QMainWindow
 from PyQt5.QtWidgets import QMessageBox
 
 from Model.model import Model
-from View.treewidgetitem import TreeWidgetItem
+from View.GUI.treewidgetitem import TreeWidgetItem
 
 from PyQt5 import uic
 

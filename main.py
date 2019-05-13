@@ -5,7 +5,7 @@ def main_pyqt5():
     import sys
 
     from PyQt5.QtWidgets import QApplication
-    from View.mainwindow import MainWindow
+    from View.GUI.mainwindow import MainWindow
     from Model.model import Model
 
     # Qt Application
@@ -26,8 +26,8 @@ def main_pyside2():
     from PySide2.QtWidgets import QApplication
     from PySide2.QtUiTools import QUiLoader
     from Model.model import Model
-    from View.openglwidget import OpenGLWidget
-    from View.mainwindow import MainWindow
+    from View.GUI.openglwidget import OpenGLWidget
+    from View.GUI.mainwindow import MainWindow
 
     # Qt Application
     qt_app = QApplication(sys.argv)
