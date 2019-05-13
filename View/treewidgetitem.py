@@ -19,7 +19,6 @@ class TreeWidgetItem(QTreeWidgetItem):
         self.id_ = id_
         self.gl_elem = gl_elem
         self.model_elem = self.gl_elem.get_model_element()
-
         self.name = f'{self.model_elem.name}.{self.model_elem.ext}'
         self.setText(0, self.name)
 
@@ -29,6 +28,10 @@ class TreeWidgetItem(QTreeWidgetItem):
     def get_name(self) -> str:
         return self.name
 
+    def get_type(self) -> type:
+        return type(self.gl_elem)
+
+    # Shown in contextual menu
     def show(self) -> None:
         self.gl_elem.show()
         self.gl_elem.update()
@@ -37,11 +40,17 @@ class TreeWidgetItem(QTreeWidgetItem):
         self.gl_elem.hide()
         self.gl_elem.update()
 
-    def toggle_wireframe(self) -> None:
-        self.gl_elem.toggle_wireframe()
-        self.gl_elem.update()
-
     def remove(self) -> None:
         self.mainwindow.viewer.delete_element(self.id_)
         self.mainwindow.viewer.update()
         self.mainwindow.fill_tree_widget()
+
+    def toggle_wireframe(self) -> None:
+        self.gl_elem.toggle_wireframe()
+        self.gl_elem.update()
+
+    def available_values(self) -> None:
+        from PyQt5.QtWidgets import QMessageBox
+        QMessageBox.information(None,
+                                'Available values',
+                                f'{self.model_elem.get_available_values()}')

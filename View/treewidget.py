@@ -6,6 +6,8 @@ from PyQt5.QtWidgets import QAction
 from PyQt5.QtWidgets import QMenu
 from PyQt5.QtWidgets import QTreeWidget
 # from PyQt5.QtWidgets import QTreeWidgetItem
+from View.Drawables.meshgl import MeshGL
+from View.Drawables.blockmodelgl import BlockModelGL
 
 
 class TreeWidget(QTreeWidget):
@@ -42,6 +44,7 @@ class TreeWidget(QTreeWidget):
         action_hide = QAction('&Hide', self)
         action_remove = QAction('&Remove', self)
         action_wireframe = QAction('&Toggle wireframe', self)
+        action_available_values = QAction('&Available values', self)
 
         # Icons
         icon = QIcon.fromTheme('show-hidden')
@@ -52,12 +55,15 @@ class TreeWidget(QTreeWidget):
         action_remove.setIcon(icon)
         icon = QIcon.fromTheme('draw-triangle')
         action_wireframe.setIcon(icon)
+        icon = QIcon.fromTheme('auto-type')
+        action_available_values.setIcon(icon)
 
         # Action commands
         action_show.triggered.connect(item.show)
         action_hide.triggered.connect(item.hide)
         action_remove.triggered.connect(item.remove)
         action_wireframe.triggered.connect(item.toggle_wireframe)
+        action_available_values.triggered.connect(item.available_values)
 
         # Add actions depending on item type
         menu.addAction(action_show)
@@ -65,8 +71,10 @@ class TreeWidget(QTreeWidget):
         menu.addAction(action_remove)
 
         # FIXME Design a better way to get type of element
-        if not item.get_name().endswith('csv'):
+        if item.get_type() == MeshGL:
             menu.addAction(action_wireframe)
+        elif item.get_type() == BlockModelGL:
+            menu.addAction(action_available_values)
 
         menu.exec_(global_pos)
 
