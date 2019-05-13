@@ -34,7 +34,7 @@ class GLDrawable:
 
         # Sizes
         self.vertices_size = 0
-        self.indices_size = 0
+        # self.indices_size = 0
         self.values_size = 0
 
     def show(self) -> None:
@@ -93,11 +93,11 @@ class GLDrawable:
         self.vao = QOpenGLVertexArrayObject()
         self.positions_vbo = QOpenGLBuffer(QOpenGLBuffer.VertexBuffer)
         self.values_vbo = QOpenGLBuffer(QOpenGLBuffer.VertexBuffer)
-        self.indices_ibo = QOpenGLBuffer(QOpenGLBuffer.IndexBuffer)
+        # self.indices_ibo = QOpenGLBuffer(QOpenGLBuffer.IndexBuffer)
 
         self.vao.create()
         self.positions_vbo.create()
-        self.indices_ibo.create()
+        # self.indices_ibo.create()
         self.values_vbo.create()
 
     def setup_vertex_attribs(self) -> None:
@@ -107,11 +107,11 @@ class GLDrawable:
 
         # Data
         vertices = self.model_element.get_vertices()
-        indices = self.model_element.get_indices()
+        # indices = self.model_element.get_indices()
         values = self.model_element.get_values()
 
         self.vertices_size = vertices.size
-        self.indices_size = indices.size
+        # self.indices_size = indices.size
         self.values_size = values.size
 
         self.widget.makeCurrent()
@@ -125,8 +125,8 @@ class GLDrawable:
         glBufferData(GL_ARRAY_BUFFER, _SIZE_OF_GL_FLOAT * self.values_size, values, GL_STATIC_DRAW)
         glVertexAttribPointer(_COLOR, 3, GL_FLOAT, False, 0, None)
 
-        self.indices_ibo.bind()
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices, GL_STATIC_DRAW)
+        # self.indices_ibo.bind()
+        # glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices, GL_STATIC_DRAW)
 
         glEnableVertexAttribArray(_POSITION)
         glEnableVertexAttribArray(_COLOR)

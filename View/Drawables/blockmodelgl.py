@@ -39,5 +39,7 @@ class BlockModelGL(GLDrawable):
         self.shader_program.setUniformValue(self.block_size_loc, QVector2D(self.block_size, 0.0))
 
         self.vao.bind()
-        glDrawElements(GL_POINTS, self.indices_size, GL_UNSIGNED_INT, None)
+        # glDrawElements(GL_POINTS, self.indices_size, GL_UNSIGNED_INT, None)
+        glDrawArrays(GL_POINTS, 0, self.vertices_size // 3)  # This works on its own
+
         self.vao.release()
