@@ -49,6 +49,9 @@ class BlockModelElement(ModelElement):
     def get_value_string(self) -> str:
         return self.current_str
 
+    def get_available_coords(self) -> list:
+        return [self.x_str, self.y_str, self.z_str]
+
     def get_available_values(self) -> list:
         available = list(self.data.keys())
         available.remove(self.x_str)

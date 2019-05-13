@@ -2,6 +2,7 @@
 
 from PyQt5.QtWidgets import QTreeWidgetItem
 from View.Drawables.gldrawable import GLDrawable
+from View.dialog_available_values import DialogAvailableValues
 
 
 class TreeWidgetItem(QTreeWidgetItem):
@@ -50,7 +51,12 @@ class TreeWidgetItem(QTreeWidgetItem):
         self.gl_elem.update()
 
     def available_values(self) -> None:
-        from PyQt5.QtWidgets import QMessageBox
-        QMessageBox.information(None,
-                                'Available values',
-                                f'{self.model_elem.get_available_values()}')
+        dialog = DialogAvailableValues(self.parent, self.model_elem)
+
+        for i in self.model_elem.get_available_values():
+            dialog.comboBox_x.addItem(i)
+            dialog.comboBox_y.addItem(i)
+            dialog.comboBox_z.addItem(i)
+            dialog.comboBox_values.addItem(i)
+
+        dialog.show()
