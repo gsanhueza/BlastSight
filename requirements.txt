@@ -3,4 +3,5 @@ PyQt5>=5.12
 dxfgrabber>=1.0
 PyOpenGL>=3.1
 pytest>=4.4.2
+pytest-cov>=2.7.1
 
