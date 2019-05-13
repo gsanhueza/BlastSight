@@ -37,14 +37,14 @@ class TestModelElement:
         assert (element_data == data).all()
 
     def test_set_indices(self, element):
-        data = [0, 1, 2]
+        data = [[0, 1, 2]]
         element.set_indices(data)
 
         element_data = element.get_indices()
         assert (element_data == data).all()
 
     def test_set_values(self, element):
-        data = [0.0, 1.0, 2.0]
+        data = [[0.0, 1.0, 2.0]]
         element.set_values(data)
 
         element_data = element.get_values()
