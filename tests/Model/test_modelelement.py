@@ -34,27 +34,21 @@ class TestModelElement:
         element.set_vertices(data)
 
         element_data = element.get_vertices()
-
-        for i in range(len(data)):
-            assert all(element_data[i]) == all(data[i])
+        assert (element_data == data).all()
 
     def test_set_indices(self, element):
         data = [0, 1, 2]
         element.set_indices(data)
 
         element_data = element.get_indices()
-
-        for i in range(len(data)):
-            assert element_data[i] == data[i]
+        assert (element_data == data).all()
 
     def test_set_values(self, element):
         data = [0.0, 1.0, 2.0]
         element.set_values(data)
 
         element_data = element.get_values()
-
-        for i in range(len(data)):
-            assert element_data[i] == data[i]
+        assert (element_data == data).all()
 
 
 class TestMeshElement(TestModelElement):
@@ -93,11 +87,18 @@ class TestBlockModelElement(TestModelElement):
         assert bmelement.get_z_string() == z_str
         assert bmelement.get_value_string() == value_str
 
-    def test_get_default_values(self, bmelement):
+    def test_get_values(self, bmelement):
         bmelement.load('tests/mini.csv')
         values_1 = bmelement.get_values()
 
         bmelement.load('tests/complex.csv')
         values_2 = bmelement.get_values()
 
+        bmelement.set_value_string('Au')
+        bmelement.update_values()
+        values_3 = bmelement.get_values()
+
         assert len(values_1) != len(values_2)
+        assert len(values_2) == len(values_3)
+        assert (values_2 == values_2).all()  # Of course
+        assert not (values_2 == values_3).all()
