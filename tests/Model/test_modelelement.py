@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-import pytest
 import numpy as np
 from Model.modelelement import ModelElement
 from Model.Mesh.meshelement import MeshElement

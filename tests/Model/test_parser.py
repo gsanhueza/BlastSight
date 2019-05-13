@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-import pytest
 from Model.Mesh.meshelement import MeshElement
 from Model.BlockModel.blockmodelelement import BlockModelElement
 from Model.parser import Parser
@@ -12,6 +11,10 @@ from Model.BlockModel.csvparser import CSVParser
 class TestParser:
     def generate(self):
         return Parser()
+
+    def test_init(self):
+        parser = self.generate()
+        assert parser is not None
 
 
 class TestOFFParser(TestParser):
