@@ -21,7 +21,7 @@ class BlockModelElement(ModelElement):
         self.update_coords()
 
         # FIXME This should be called only when the user has already set the position strings
-        self.set_current_value_string(self.get_available_values()[0])
+        self.set_value_string(self.get_available_values()[0])
         self.update_values()
 
     # TODO Force the user to set these strings
@@ -34,8 +34,20 @@ class BlockModelElement(ModelElement):
     def set_z_string(self, string: str) -> None:
         self.z_str = string
 
-    def set_current_value_string(self, string: str) -> None:
+    def set_value_string(self, string: str) -> None:
         self.current_str = string
+
+    def get_x_string(self) -> str:
+        return self.x_str
+
+    def get_y_string(self) -> str:
+        return self.y_str
+
+    def get_z_string(self) -> str:
+        return self.z_str
+
+    def get_value_string(self) -> str:
+        return self.current_str
 
     def get_available_values(self) -> list:
         available = list(self.data.keys())

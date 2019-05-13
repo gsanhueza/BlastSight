@@ -28,7 +28,7 @@ def test_block_model():
     viewer = MineVisViewer()
     id_csv = viewer.add_block_model('Model/BlockModel/complex.csv')
     bm = viewer.model.get_block_model(id_csv)
-    bm.set_current_value_string('Au')
+    bm.set_value_string('Au')
     bm.update_values()
     viewer.show()
 
