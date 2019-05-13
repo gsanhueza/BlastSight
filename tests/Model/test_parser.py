@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import pytest
 from Model.Mesh.meshelement import MeshElement
 from Model.BlockModel.blockmodelelement import BlockModelElement
 from Model.parser import Parser
@@ -8,49 +9,60 @@ from Model.Mesh.dxfparser import DXFParser
 from Model.BlockModel.csvparser import CSVParser
 
 
-class TestParser:
-    def generate(self):
-        return Parser()
+@pytest.fixture(scope='class', autouse=True)
+def parser():
+    return Parser()
 
-    def test_init(self):
-        parser = self.generate()
+
+@pytest.fixture(scope='class', autouse=True)
+def offparser():
+    return OFFParser()
+
+
+@pytest.fixture(scope='class', autouse=True)
+def dxfparser():
+    return DXFParser()
+
+
+@pytest.fixture(scope='class', autouse=True)
+def csvparser():
+    return CSVParser()
+
+
+@pytest.fixture(scope='class', autouse=True)
+def meshelement():
+    return MeshElement()
+
+
+@pytest.fixture(scope='class', autouse=True)
+def bmelement():
+    return BlockModelElement()
+
+
+class TestParser:
+    def test_init(self, parser):
         assert parser is not None
 
 
 class TestOFFParser(TestParser):
-    def generate(self):
-        return OFFParser()
+    def test_load_file(self, offparser, meshelement):
+        offparser.load_file('tests/caseron.off', meshelement)
 
-    def test_load_file(self):
-        parser = self.generate()
-        element = MeshElement()
-        parser.load_file('tests/caseron.off', element)
-
-        assert len(list(element.get_vertices().tolist())) == 12
-        assert len(list(element.get_indices().tolist())) == 20
+        assert len(list(meshelement.get_vertices().tolist())) == 12
+        assert len(list(meshelement.get_indices().tolist())) == 20
 
 
 class TestDXFParser(TestParser):
-    def generate(self):
-        return DXFParser()
+    def test_load_file(self, dxfparser, meshelement):
+        dxfparser.load_file('tests/caseron.dxf', meshelement)
 
-    def test_load_file(self):
-        parser = self.generate()
-        element = MeshElement()
-        parser.load_file('tests/caseron.dxf', element)
-
-        assert len(list(element.get_vertices().tolist())) == 12
-        assert len(list(element.get_indices().tolist())) == 20
+        assert len(list(meshelement.get_vertices().tolist())) == 12
+        assert len(list(meshelement.get_indices().tolist())) == 20
 
 
 class TestCSVParser(TestParser):
-    def generate(self):
-        return CSVParser()
+    def test_load_file(self, csvparser, bmelement):
+        csvparser.load_file('tests/mini.csv', bmelement)
 
-    def test_load_file(self):
-        parser = self.generate()
-        element = BlockModelElement()
-        parser.load_file('tests/mini.csv', element)
-
-        assert len(list(element.get_vertices().tolist())) == 6
-        assert len(list(element.get_indices().tolist())) == 18
+        assert len(list(bmelement.get_vertices().tolist())) == 6
+        assert len(list(bmelement.get_indices().tolist())) == 18
