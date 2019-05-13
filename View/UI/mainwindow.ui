@@ -193,17 +193,17 @@
   <customwidget>
    <class>MainWindow</class>
    <extends>QMainWindow</extends>
-   <header>View/mainwindow.h</header>
+   <header>View/GUI/mainwindow.h</header>
   </customwidget>
   <customwidget>
    <class>OpenGLWidget</class>
    <extends>QOpenGLWidget</extends>
-   <header>View/openglwidget.h</header>
+   <header>View/GUI/openglwidget.h</header>
   </customwidget>
   <customwidget>
    <class>TreeWidget</class>
    <extends>QTreeWidget</extends>
-   <header>View/treewidget.h</header>
+   <header>View/GUI/treewidget.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import colorsys
 from Model.modelelement import ModelElement
 from Model.BlockModel.csvparser import CSVParser
 
@@ -75,8 +76,8 @@ class BlockModelElement(ModelElement):
         normalized_values = list(map(lambda val: BlockModelElement.normalize(val, min_values, max_values),
                                      values))
 
-        self.set_values(list(map(lambda nv: [min(1.0, 2 * (1 - nv)), min(1.0, 2 * nv), 0.0], normalized_values)))
+        self.set_values(list(map(lambda hue: colorsys.hsv_to_rgb(hue, 1.0, 1.0), normalized_values)))
 
     @staticmethod
     def normalize(x: float, min_val: float, max_val: float) -> float:
-        return (x - min_val)/(max_val - min_val) if max_val != min_val else 0
+        return (x - min_val) / (max_val - min_val) if max_val != min_val else 0
