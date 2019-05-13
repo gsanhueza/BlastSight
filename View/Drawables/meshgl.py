@@ -64,7 +64,7 @@ class MeshGL(GLDrawable):
         self.widget.makeCurrent()
         self.vao.bind()
 
-        self.positions_vbo.bind()
+        self.vertices_vbo.bind()
         glBufferData(GL_ARRAY_BUFFER, _SIZE_OF_GL_FLOAT * self.vertices_size, vertices, GL_STATIC_DRAW)
         glVertexAttribPointer(_POSITION, 3, GL_FLOAT, False, 0, None)
 

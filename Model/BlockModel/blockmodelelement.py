@@ -67,7 +67,6 @@ class BlockModelElement(ModelElement):
         z = list(map(float, self.data[self.z_str]))
 
         self.set_vertices(list(zip(x, y, z)))
-        self.set_indices(list(range(len(self.vertices))))
 
     def update_values(self):
         values = list(map(float, self.data[self.current_str]))
