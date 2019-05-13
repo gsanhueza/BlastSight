@@ -10,25 +10,25 @@ from statistics import mean
 # Main class
 class ModelElement:
     def __init__(self):
-        self.vertices = np.ndarray([], np.float32)
-        self.indices = np.ndarray([], np.uint32)
-        self.values = np.ndarray([], np.float32)
-        self.centroid = np.ndarray([], np.float32)
+        self.vertices = np.array([], np.float32)
+        self.indices = np.array([], np.uint32)
+        self.values = np.array([], np.float32)
+        self.centroid = np.array([], np.float32)
 
         self.parser_dict = {}
         self.ext = None
         self.name = None
 
-    def get_vertices(self) -> np.ndarray:
+    def get_vertices(self) -> np.array:
         return self.vertices
 
-    def get_indices(self) -> np.ndarray:
+    def get_indices(self) -> np.array:
         return self.indices
 
-    def get_values(self) -> np.ndarray:
+    def get_values(self) -> np.array:
         return self.values
 
-    def get_centroid(self) -> np.ndarray:
+    def get_centroid(self) -> np.array:
         return self.centroid
 
     def set_vertices(self, vertices: list) -> None:
@@ -45,7 +45,7 @@ class ModelElement:
         self.centroid = np.array(centroid, np.float32)
 
     @staticmethod
-    def average_by_coord(array: np.ndarray) -> list:
+    def average_by_coord(array: np.array) -> list:
         # Given: [[x1, y1, z1], [x2, y2, z2], [x3, y3, z3]]
         # Expected: [mean([x1, x2, x3]), mean([y1, y2, y3]), mean([z1, z2, z3])]
         return list(map(mean, zip(*array.tolist())))

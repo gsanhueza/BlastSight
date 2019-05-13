@@ -1,15 +1,15 @@
 #!/usr/bin/env python
 
 from PyQt5.QtWidgets import QDialog
-from PyQt5.QtWidgets import QComboBox
 
 from PyQt5 import uic
 
 
 class DialogAvailableValues(QDialog):
-    def __init__(self, parent=None, element=None):
+    def __init__(self, parent=None, gl_element=None):
         QDialog.__init__(self, parent)
-        self.element = element
+        self.gl_element = gl_element
+        self.element = gl_element.get_model_element()
         uic.loadUi('View/UI/dialogavailablevalues.ui', self)
 
     def accept(self):
@@ -26,7 +26,8 @@ class DialogAvailableValues(QDialog):
         self.element.update_coords()
         self.element.update_values()
 
-        # TODO Recreate the BlockModelGL instance with the "new" data
+        # Recreate the BlockModelGL instance with the "new" data
+        self.gl_element.setup_vertex_attribs()
         super().accept()
 
     def show(self):

@@ -103,7 +103,8 @@ class OpenGLWidget(QOpenGLWidget):
         block_model_gl = BlockModelGL(self, block_model)
         self.gl_collection.add(id_, block_model_gl)
 
-        self.set_centroid(list(block_model.get_centroid()))
+        if block_model.get_centroid().size > 0:
+            self.set_centroid(list(block_model.get_centroid()))
 
         return id_
 
