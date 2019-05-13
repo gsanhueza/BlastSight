@@ -9,32 +9,32 @@ from Model.Mesh.dxfparser import DXFParser
 from Model.BlockModel.csvparser import CSVParser
 
 
-@pytest.fixture(scope='class', autouse=True)
+@pytest.fixture(autouse=True)
 def parser():
     return Parser()
 
 
-@pytest.fixture(scope='class', autouse=True)
+@pytest.fixture(autouse=True)
 def offparser():
     return OFFParser()
 
 
-@pytest.fixture(scope='class', autouse=True)
+@pytest.fixture(autouse=True)
 def dxfparser():
     return DXFParser()
 
 
-@pytest.fixture(scope='class', autouse=True)
+@pytest.fixture(autouse=True)
 def csvparser():
     return CSVParser()
 
 
-@pytest.fixture(scope='class', autouse=True)
+@pytest.fixture(autouse=True)
 def meshelement():
     return MeshElement()
 
 
-@pytest.fixture(scope='class', autouse=True)
+@pytest.fixture(autouse=True)
 def bmelement():
     return BlockModelElement()
 

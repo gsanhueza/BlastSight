@@ -7,17 +7,17 @@ from Model.Mesh.meshelement import MeshElement
 from Model.BlockModel.blockmodelelement import BlockModelElement
 
 
-@pytest.fixture(scope='class', autouse=True)
+@pytest.fixture(autouse=True)
 def element():
     return ModelElement()
 
 
-@pytest.fixture(scope='class', autouse=True)
+@pytest.fixture(autouse=True)
 def meshelement():
     return MeshElement()
 
 
-@pytest.fixture(scope='class', autouse=True)
+@pytest.fixture(autouse=True)
 def bmelement():
     return BlockModelElement()
 
@@ -92,3 +92,12 @@ class TestBlockModelElement(TestModelElement):
         assert bmelement.get_y_string() == y_str
         assert bmelement.get_z_string() == z_str
         assert bmelement.get_value_string() == value_str
+
+    def test_get_default_values(self, bmelement):
+        bmelement.load('tests/mini.csv')
+        values_1 = bmelement.get_values()
+
+        bmelement.load('tests/complex.csv')
+        values_2 = bmelement.get_values()
+
+        assert len(values_1) != len(values_2)
