@@ -86,7 +86,7 @@ class GLDrawable:
 
         self.shader_program.addShader(self.vertex_shader)
         self.shader_program.addShader(self.fragment_shader)
-        # self.shader_program.addShader(self.geometry_shader)
+        self.shader_program.addShader(self.geometry_shader)
         self.shader_program.link()
 
     def initialize_buffers(self) -> None:

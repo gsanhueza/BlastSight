@@ -68,7 +68,7 @@ class BlockModelGL(GLDrawable):
 
         self.vao.bind()
 
-        # np.array([[0, 1, 2]], type) has size 3, despite the 1 list there
+        # np.array([[0, 1, 2]], type) has size 3, despite having only 1 list there
         glEnable(GL_PROGRAM_POINT_SIZE)
         glDrawArrays(GL_POINTS, 0, self.vertices_size // 3)
 
