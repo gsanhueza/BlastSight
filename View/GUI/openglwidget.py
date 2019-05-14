@@ -100,6 +100,9 @@ class OpenGLWidget(QOpenGLWidget):
         self.model.delete_element(id_)
         del self.gl_collection[id_]
 
+    def get_element(self, id_: int) -> None:
+        return self.gl_collection[id_]
+
     def toggle_wireframe(self, id_: int) -> bool:
         status = self.gl_collection[id_].toggle_wireframe()
         self.update()

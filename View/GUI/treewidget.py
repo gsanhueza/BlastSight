@@ -5,7 +5,6 @@ from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QAction
 from PyQt5.QtWidgets import QMenu
 from PyQt5.QtWidgets import QTreeWidget
-# from PyQt5.QtWidgets import QTreeWidgetItem
 from View.Drawables.meshgl import MeshGL
 from View.Drawables.blockmodelgl import BlockModelGL
 
@@ -14,6 +13,7 @@ class TreeWidget(QTreeWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.parent = None
 
         self.itemClicked.connect(self.single_click)
         self.itemDoubleClicked.connect(self.double_click)

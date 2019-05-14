@@ -29,7 +29,7 @@ class MainWindow(QMainWindow):
 
         for id_, gl_drawable in self.viewer.get_gl_collection():
             item = TreeWidgetItem(self.treeWidget, self)
-            item.set_element(id_, gl_drawable)
+            item.set_element(id_)
             self.treeWidget.addTopLevelItem(item)
 
     # Unless explicitly otherwise, slots are connected via Qt Designer

@@ -114,6 +114,3 @@ class GLDrawable:
     """
     def toggle_wireframe(self) -> bool:
         return False
-
-    def update(self) -> None:
-        self.widget.update()
