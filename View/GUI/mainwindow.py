@@ -62,7 +62,7 @@ class MainWindow(QMainWindow):
             self.load_block_model(file_path)
 
     def load_block_model(self, file_path: str) -> None:
-        if self.viewer.add_block_model(file_path):
+        if self.viewer.add_block_model(file_path) != -1:
             self.statusBar.showMessage('Block model loaded')
         else:
             self.statusBar.showMessage('Cannot load block model')

@@ -7,16 +7,17 @@ from View.GUI.dialog_available_values import DialogAvailableValues
 class TreeWidgetItem(QTreeWidgetItem):
     def __init__(self, parent=None, mainwindow=None):
         super().__init__(parent)
-        self.parent = parent
         self.mainwindow = mainwindow
+        self.gl_element = None
 
         self.id_: int = None
         self.name: str = None
 
     def set_element(self, id_: int) -> None:
         self.id_ = id_
+        self.gl_element = self.mainwindow.viewer.get_element(self.id_)
 
-        element = self.mainwindow.viewer.get_element(self.id_).get_model_element()
+        element = self.gl_element.get_model_element()
         self.name = f'{element.name}.{element.ext}'
         self.setText(0, self.name)
 
@@ -27,15 +28,15 @@ class TreeWidgetItem(QTreeWidgetItem):
         return self.name
 
     def get_type(self) -> type:
-        return type(self.mainwindow.viewer.get_element(self.id_))
+        return type(self.gl_element)
 
     # Shown in contextual menu
     def show(self) -> None:
-        self.mainwindow.viewer.get_element(self.id_).show()
+        self.gl_element.show()
         self.mainwindow.viewer.update()
 
     def hide(self) -> None:
-        self.mainwindow.viewer.get_element(self.id_).hide()
+        self.gl_element.hide()
         self.mainwindow.viewer.update()
 
     def remove(self) -> None:
@@ -44,7 +45,7 @@ class TreeWidgetItem(QTreeWidgetItem):
         self.mainwindow.fill_tree_widget()
 
     def toggle_wireframe(self) -> None:
-        self.mainwindow.viewer.get_element(self.id_).toggle_wireframe()
+        self.gl_element.toggle_wireframe()
         self.mainwindow.viewer.update()
 
     def update_parameters(self, dialog):
@@ -53,8 +54,7 @@ class TreeWidgetItem(QTreeWidgetItem):
         z = dialog.z
         value = dialog.value
 
-        gl_element = self.mainwindow.viewer.get_element(self.id_)
-        element = gl_element.get_model_element()
+        element = self.gl_element.get_model_element()
 
         element.set_x_string(x)
         element.set_y_string(y)
@@ -67,11 +67,10 @@ class TreeWidgetItem(QTreeWidgetItem):
         self.mainwindow.viewer.set_centroid(element.get_centroid())
 
         # Recreate the BlockModelGL instance with the "new" data
-        gl_element.setup_vertex_attribs()
+        self.gl_element.setup_vertex_attribs()
 
     def get_strings(self):
-        gl_element = self.mainwindow.viewer.get_element(self.id_)
-        element = gl_element.get_model_element()
+        element = self.gl_element.get_model_element()
 
         x = element.get_x_string()
         y = element.get_y_string()
@@ -82,7 +81,7 @@ class TreeWidgetItem(QTreeWidgetItem):
 
     def available_values(self) -> None:
         dialog = DialogAvailableValues(self)
-        element = self.mainwindow.viewer.get_element(self.id_).get_model_element()
+        element = self.gl_element.get_model_element()
 
         for i in element.get_available_coords():
             dialog.comboBox_x.addItem(i)
