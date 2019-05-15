@@ -29,6 +29,8 @@ class DialogAvailableValues(QDialog):
         element.update_coords()
         element.update_values()
 
+        self.mainwindow.viewer.set_centroid(element.get_centroid())
+
         # Recreate the BlockModelGL instance with the "new" data
         gl_element.setup_vertex_attribs()
         super().accept()
