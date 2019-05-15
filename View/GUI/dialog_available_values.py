@@ -1,13 +1,15 @@
 #!/usr/bin/env python
 
+from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QDialog
-
 from PyQt5 import uic
 
 
 class DialogAvailableValues(QDialog):
     def __init__(self, parent=None):
         QDialog.__init__(self, parent.mainwindow)
+        self.setAttribute(Qt.WA_DeleteOnClose)  # Avoids the QObject::startTimer warning
+
         uic.loadUi('View/UI/dialogavailablevalues.ui', self)
         self.parent = parent
         self.x = None

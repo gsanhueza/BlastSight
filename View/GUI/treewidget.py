@@ -13,7 +13,6 @@ class TreeWidget(QTreeWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setContextMenuPolicy(Qt.CustomContextMenu)
-        self.parent = None
 
         self.itemClicked.connect(self.single_click)
         self.itemDoubleClicked.connect(self.double_click)
