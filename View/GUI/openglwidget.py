@@ -75,24 +75,6 @@ class OpenGLWidget(QOpenGLWidget):
 
         return id_
 
-    def update_mesh(self, id_: int) -> None:
-        mesh = self.model.get_mesh(id_)
-        mesh_gl = MeshGL(self, mesh)
-        self.gl_collection[id_] = mesh_gl
-
-    def show_mesh(self, id_: int) -> None:
-        self.gl_collection[id_].show()
-
-    def hide_mesh(self, id_: int) -> None:
-        self.gl_collection[id_].hide()
-
-    def delete_mesh(self, id_: int) -> None:
-        self.delete_element(id_)
-
-    def delete_element(self, id_: int) -> None:
-        self.model.delete_element(id_)
-        del self.gl_collection[id_]
-
     def add_block_model(self, file_path: str) -> int:
         id_ = self.model.add_block_model(file_path)
 
@@ -108,8 +90,18 @@ class OpenGLWidget(QOpenGLWidget):
 
         return id_
 
-    def delete_block_model(self, id_: int) -> None:
-        self.delete_element(id_)
+    def show_element(self, id_: int) -> None:
+        self.gl_collection[id_].show()
+
+    def hide_element(self, id_: int) -> None:
+        self.gl_collection[id_].hide()
+
+    def delete_element(self, id_: int) -> None:
+        self.model.delete_element(id_)
+        del self.gl_collection[id_]
+
+    def get_element(self, id_: int) -> None:
+        return self.gl_collection[id_]
 
     def toggle_wireframe(self, id_: int) -> bool:
         status = self.gl_collection[id_].toggle_wireframe()

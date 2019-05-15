@@ -29,6 +29,34 @@ class BlockModelGL(GLDrawable):
         self.proj_matrix_loc = self.shader_program.uniformLocation('proj_matrix')
         self.block_size_loc = self.shader_program.uniformLocation('block_size')
 
+    def setup_vertex_attribs(self) -> None:
+        _POSITION = 0
+        _COLOR = 1
+        _SIZE_OF_GL_FLOAT = 4
+
+        # Data
+        vertices = self.model_element.get_vertices()
+        values = self.model_element.get_values()
+
+        self.vertices_size = vertices.size
+        self.values_size = values.size
+
+        self.widget.makeCurrent()
+        self.vao.bind()
+
+        self.vertices_vbo.bind()
+        glBufferData(GL_ARRAY_BUFFER, _SIZE_OF_GL_FLOAT * self.vertices_size, vertices, GL_STATIC_DRAW)
+        glVertexAttribPointer(_POSITION, 3, GL_FLOAT, False, 0, None)
+
+        self.values_vbo.bind()
+        glBufferData(GL_ARRAY_BUFFER, _SIZE_OF_GL_FLOAT * self.values_size, values, GL_STATIC_DRAW)
+        glVertexAttribPointer(_COLOR, 3, GL_FLOAT, False, 0, None)
+
+        glEnableVertexAttribArray(_POSITION)
+        glEnableVertexAttribArray(_COLOR)
+
+        self.vao.release()
+
     def draw(self) -> None:
         if not self.is_visible:
             return
@@ -39,5 +67,9 @@ class BlockModelGL(GLDrawable):
         self.shader_program.setUniformValue(self.block_size_loc, QVector2D(self.block_size, 0.0))
 
         self.vao.bind()
-        glDrawElements(GL_POINTS, self.indices_size, GL_UNSIGNED_INT, None)
+
+        # np.array([[0, 1, 2]], type) has size 3, despite having only 1 list there
+        glEnable(GL_PROGRAM_POINT_SIZE)
+        glDrawArrays(GL_POINTS, 0, self.vertices_size // 3)
+
         self.vao.release()

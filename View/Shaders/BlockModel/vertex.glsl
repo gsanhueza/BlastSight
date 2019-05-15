@@ -12,5 +12,6 @@ uniform mat4 model_view_matrix;
 void main()
 {
     gl_Position = proj_matrix * model_view_matrix * vec4(a_position, 1.0);
+    gl_PointSize = clamp(20.0 / gl_Position.z, 2.0, 10.0);
     v_color = a_color;
 }

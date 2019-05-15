@@ -29,7 +29,7 @@ class MainWindow(QMainWindow):
 
         for id_, gl_drawable in self.viewer.get_gl_collection():
             item = TreeWidgetItem(self.treeWidget, self)
-            item.set_element(id_, gl_drawable)
+            item.set_element(id_)
             self.treeWidget.addTopLevelItem(item)
 
     # Unless explicitly otherwise, slots are connected via Qt Designer
@@ -43,13 +43,14 @@ class MainWindow(QMainWindow):
         if file_path != '':
             self.load_mesh(file_path)
 
-    def load_mesh(self, file_path: str) -> None:
-        if self.viewer.add_mesh(file_path) != -1:
-            self.statusBar.showMessage('Mesh loaded')
-        else:
-            self.statusBar.showMessage('Cannot load mesh')
+    def load_mesh(self, file_path: str) -> bool:
+        loaded = self.viewer.add_mesh(file_path) != -1
 
-        self.fill_tree_widget()
+        if loaded:
+            self.statusBar.showMessage('Mesh loaded')
+            self.fill_tree_widget()
+
+        return loaded
 
     def load_block_model_slot(self) -> None:
         # TODO Use QSettings (or something) to remember last directory
@@ -61,13 +62,18 @@ class MainWindow(QMainWindow):
         if file_path != '':
             self.load_block_model(file_path)
 
-    def load_block_model(self, file_path: str) -> None:
-        if self.viewer.add_block_model(file_path):
-            self.statusBar.showMessage('Block model loaded')
-        else:
-            self.statusBar.showMessage('Cannot load block model')
+    def load_block_model(self, file_path: str) -> bool:
+        id_ = self.viewer.add_block_model(file_path)
+        loaded = id_ != -1
 
-        self.fill_tree_widget()
+        if loaded:
+            self.statusBar.showMessage('Block model loaded')
+            self.fill_tree_widget()
+
+            # Auto-trigger of method in TreeWidgetItem
+            self.treeWidget.topLevelItem(id_).available_values()
+
+        return loaded
 
     """
     Controller slots
@@ -108,10 +114,10 @@ class MainWindow(QMainWindow):
         self.statusBar.showMessage('Loading...')
 
         # FIXME We should know beforehand if this is a mesh or a block model
-        if self.viewer.add_mesh(file_path) != -1:
-            self.statusBar.showMessage('Mesh loaded')
-        elif self.viewer.add_block_model(file_path) != -1:
-            self.statusBar.showMessage('Block model loaded')
+        if self.load_mesh(file_path):
+            pass
+        elif self.load_block_model(file_path):
+            pass
         else:
             self.statusBar.showMessage('Cannot load file')
 

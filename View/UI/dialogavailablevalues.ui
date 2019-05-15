@@ -100,5 +100,72 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>comboBox_x</sender>
+   <signal>currentIndexChanged(QString)</signal>
+   <receiver>Dialog</receiver>
+   <slot>comboBoxChanged(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>298</x>
+     <y>21</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>199</x>
+     <y>98</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>comboBox_y</sender>
+   <signal>currentIndexChanged(QString)</signal>
+   <receiver>Dialog</receiver>
+   <slot>comboBoxChanged(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>298</x>
+     <y>59</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>199</x>
+     <y>98</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>comboBox_values</sender>
+   <signal>currentIndexChanged(QString)</signal>
+   <receiver>Dialog</receiver>
+   <slot>comboBoxChanged(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>298</x>
+     <y>135</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>199</x>
+     <y>98</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>comboBox_z</sender>
+   <signal>currentIndexChanged(QString)</signal>
+   <receiver>Dialog</receiver>
+   <slot>comboBoxChanged(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>298</x>
+     <y>97</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>199</x>
+     <y>98</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
+ <slots>
+  <slot>comboBoxChanged(QString)</slot>
+ </slots>
 </ui>

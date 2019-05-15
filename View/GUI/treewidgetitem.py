@@ -1,26 +1,24 @@
 #!/usr/bin/env python
 
 from PyQt5.QtWidgets import QTreeWidgetItem
-from View.Drawables.gldrawable import GLDrawable
 from View.GUI.dialog_available_values import DialogAvailableValues
 
 
 class TreeWidgetItem(QTreeWidgetItem):
     def __init__(self, parent=None, mainwindow=None):
         super().__init__(parent)
-        self.parent = parent
         self.mainwindow = mainwindow
+        self.gl_element = None
 
         self.id_: int = None
         self.name: str = None
-        self.gl_elem: GLDrawable = None
-        self.model_elem = None
 
-    def set_element(self, id_: int, gl_elem: GLDrawable) -> None:
+    def set_element(self, id_: int) -> None:
         self.id_ = id_
-        self.gl_elem = gl_elem
-        self.model_elem = self.gl_elem.get_model_element()
-        self.name = f'{self.model_elem.name}.{self.model_elem.ext}'
+        self.gl_element = self.mainwindow.viewer.get_element(self.id_)
+
+        element = self.gl_element.get_model_element()
+        self.name = f'{element.name}.{element.ext}'
         self.setText(0, self.name)
 
     def get_id(self) -> int:
@@ -30,16 +28,16 @@ class TreeWidgetItem(QTreeWidgetItem):
         return self.name
 
     def get_type(self) -> type:
-        return type(self.gl_elem)
+        return type(self.gl_element)
 
     # Shown in contextual menu
     def show(self) -> None:
-        self.gl_elem.show()
-        self.gl_elem.update()
+        self.gl_element.show()
+        self.mainwindow.viewer.update()
 
     def hide(self) -> None:
-        self.gl_elem.hide()
-        self.gl_elem.update()
+        self.gl_element.hide()
+        self.mainwindow.viewer.update()
 
     def remove(self) -> None:
         self.mainwindow.viewer.delete_element(self.id_)
@@ -47,18 +45,50 @@ class TreeWidgetItem(QTreeWidgetItem):
         self.mainwindow.fill_tree_widget()
 
     def toggle_wireframe(self) -> None:
-        self.gl_elem.toggle_wireframe()
-        self.gl_elem.update()
+        self.gl_element.toggle_wireframe()
+        self.mainwindow.viewer.update()
+
+    def update_parameters(self, dialog):
+        x = dialog.x
+        y = dialog.y
+        z = dialog.z
+        value = dialog.value
+
+        element = self.gl_element.get_model_element()
+
+        element.set_x_string(x)
+        element.set_y_string(y)
+        element.set_z_string(z)
+        element.set_value_string(value)
+
+        element.update_coords()
+        element.update_values()
+
+        self.mainwindow.viewer.set_centroid(element.get_centroid())
+
+        # Recreate the BlockModelGL instance with the "new" data
+        self.gl_element.setup_vertex_attribs()
+
+    def get_strings(self):
+        element = self.gl_element.get_model_element()
+
+        x = element.get_x_string()
+        y = element.get_y_string()
+        z = element.get_z_string()
+        val = element.get_value_string()
+
+        return x, y, z, val
 
     def available_values(self) -> None:
-        dialog = DialogAvailableValues(self.parent, self.gl_elem)
+        dialog = DialogAvailableValues(self)
+        element = self.gl_element.get_model_element()
 
-        for i in self.model_elem.get_available_coords():
+        for i in element.get_available_coords():
             dialog.comboBox_x.addItem(i)
             dialog.comboBox_y.addItem(i)
             dialog.comboBox_z.addItem(i)
 
-        for i in self.model_elem.get_available_values():
+        for i in element.get_available_values():
             dialog.comboBox_values.addItem(i)
 
         dialog.show()
