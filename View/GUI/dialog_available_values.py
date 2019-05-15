@@ -2,6 +2,7 @@
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QDialog
+from PyQt5.QtWidgets import QDialogButtonBox
 from PyQt5 import uic
 
 
@@ -43,3 +44,15 @@ class DialogAvailableValues(QDialog):
         self.comboBox_values.setCurrentIndex(index)
 
         super().show()
+
+    def comboBoxChanged(self, _):
+        # We'll disable the OK button unless all the values are set
+        
+        x_ready = bool(self.comboBox_x.currentText())
+        y_ready = bool(self.comboBox_y.currentText())
+        z_ready = bool(self.comboBox_z.currentText())
+        val_ready = bool(self.comboBox_values.currentText())
+
+        enable_ok = x_ready and y_ready and z_ready and val_ready
+
+        self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(enable_ok)
