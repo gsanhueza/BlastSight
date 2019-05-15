@@ -6,49 +6,38 @@ from PyQt5 import uic
 
 
 class DialogAvailableValues(QDialog):
-    def __init__(self, parent=None, id_=-1):
-        QDialog.__init__(self, parent)
-        self.mainwindow = parent
-        self.id = id_
+    def __init__(self, parent=None):
+        QDialog.__init__(self, parent.mainwindow)
         uic.loadUi('View/UI/dialogavailablevalues.ui', self)
+        self.parent = parent
+        self.x = None
+        self.y = None
+        self.z = None
+        self.value = None
 
     def accept(self):
-        x = self.comboBox_x.currentText()
-        y = self.comboBox_y.currentText()
-        z = self.comboBox_z.currentText()
-        value = self.comboBox_values.currentText()
+        self.x = self.comboBox_x.currentText()
+        self.y = self.comboBox_y.currentText()
+        self.z = self.comboBox_z.currentText()
+        self.value = self.comboBox_values.currentText()
 
-        gl_element = self.mainwindow.viewer.get_element(self.id)
-        element = gl_element.get_model_element()
+        self.parent.update_parameters(self)
 
-        element.set_x_string(x)
-        element.set_y_string(y)
-        element.set_z_string(z)
-        element.set_value_string(value)
-
-        element.update_coords()
-        element.update_values()
-
-        self.mainwindow.viewer.set_centroid(element.get_centroid())
-
-        # Recreate the BlockModelGL instance with the "new" data
-        gl_element.setup_vertex_attribs()
         super().accept()
 
     def show(self):
-        gl_element = self.mainwindow.viewer.get_element(self.id)
-        element = gl_element.get_model_element()
+        (x, y, z, val) = self.parent.get_strings()
 
-        index = self.comboBox_x.findText(element.get_x_string())
+        index = self.comboBox_x.findText(x)
         self.comboBox_x.setCurrentIndex(index)
 
-        index = self.comboBox_y.findText(element.get_y_string())
+        index = self.comboBox_y.findText(y)
         self.comboBox_y.setCurrentIndex(index)
 
-        index = self.comboBox_z.findText(element.get_z_string())
+        index = self.comboBox_z.findText(z)
         self.comboBox_z.setCurrentIndex(index)
 
-        index = self.comboBox_values.findText(element.get_value_string())
+        index = self.comboBox_values.findText(val)
         self.comboBox_values.setCurrentIndex(index)
 
         super().show()

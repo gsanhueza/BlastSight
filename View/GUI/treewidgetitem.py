@@ -7,6 +7,7 @@ from View.GUI.dialog_available_values import DialogAvailableValues
 class TreeWidgetItem(QTreeWidgetItem):
     def __init__(self, parent=None, mainwindow=None):
         super().__init__(parent)
+        self.parent = parent
         self.mainwindow = mainwindow
 
         self.id_: int = None
@@ -46,8 +47,41 @@ class TreeWidgetItem(QTreeWidgetItem):
         self.mainwindow.viewer.get_element(self.id_).toggle_wireframe()
         self.mainwindow.viewer.update()
 
+    def update_parameters(self, dialog):
+        x = dialog.x
+        y = dialog.y
+        z = dialog.z
+        value = dialog.value
+
+        gl_element = self.mainwindow.viewer.get_element(self.id_)
+        element = gl_element.get_model_element()
+
+        element.set_x_string(x)
+        element.set_y_string(y)
+        element.set_z_string(z)
+        element.set_value_string(value)
+
+        element.update_coords()
+        element.update_values()
+
+        self.mainwindow.viewer.set_centroid(element.get_centroid())
+
+        # Recreate the BlockModelGL instance with the "new" data
+        gl_element.setup_vertex_attribs()
+
+    def get_strings(self):
+        gl_element = self.mainwindow.viewer.get_element(self.id_)
+        element = gl_element.get_model_element()
+
+        x = element.get_x_string()
+        y = element.get_y_string()
+        z = element.get_z_string()
+        val = element.get_value_string()
+
+        return x, y, z, val
+
     def available_values(self) -> None:
-        dialog = DialogAvailableValues(self.mainwindow, self.id_)
+        dialog = DialogAvailableValues(self)
         element = self.mainwindow.viewer.get_element(self.id_).get_model_element()
 
         for i in element.get_available_coords():
