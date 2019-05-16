@@ -31,11 +31,15 @@ class Model:
 
     def add_mesh(self, file_path: str) -> int:
         try:
+            name = QFileInfo(file_path).baseName()
             ext = QFileInfo(file_path).suffix()
             vertices, indices = self.get_parser(ext).load_file(file_path)
             # [[x1, y1, z1], [x2, y2, z2]] -> [[x1, x2], [y1, y2], [z1, z2])
 
-            self.element_collection[self.last_id] = MeshElement(vertices=vertices, indices=indices)
+            self.element_collection[self.last_id] = MeshElement(vertices=vertices,
+                                                                indices=indices,
+                                                                name=name,
+                                                                ext=ext)
             self.last_id += 1
 
             return self.last_id - 1
@@ -45,10 +49,13 @@ class Model:
 
     def add_block_model(self, file_path: str) -> int:
         try:
+            name = QFileInfo(file_path).baseName()
             ext = QFileInfo(file_path).suffix()
             data = self.get_parser(ext).load_file(file_path)
 
-            self.element_collection[self.last_id] = BlockModelElement(data=data)
+            self.element_collection[self.last_id] = BlockModelElement(data=data,
+                                                                      name=name,
+                                                                      ext=ext)
             self.last_id += 1
 
             return self.last_id - 1

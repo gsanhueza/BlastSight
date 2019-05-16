@@ -19,8 +19,8 @@ class Element:
         else:
             raise KeyError(f'Must pass [x, y, z] as kwargs, got {list(kwargs.keys())}.')
 
-        self.name = kwargs.get('name', 'PLACEHOLDER_NAME')
-        self.ext = kwargs.get('ext', 'PLACEHOLDER_EXT')
+        self.name = kwargs.get('name', 'NO_NAME')
+        self.ext = kwargs.get('ext', 'NO_EXT')
 
     def get_vertices(self) -> np.ndarray:
         return np.array(list(zip(self.x, self.y, self.z)), np.float32)

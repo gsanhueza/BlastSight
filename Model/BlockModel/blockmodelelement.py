@@ -13,6 +13,9 @@ class BlockModelElement(Element):
         self.z_str = kwargs.get('elevation')
         self.current_str = kwargs.get('value')
 
+        self.name = kwargs.get('name', 'NO_NAME')
+        self.ext = kwargs.get('ext', 'NO_EXT')
+
         self.values = np.array([], np.float32)
         self.centroid = np.array([], np.float32)
 

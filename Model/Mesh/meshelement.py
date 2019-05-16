@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import numpy as np
+from random import random
 from statistics import mean
 
 from Model.element import Element
@@ -23,5 +24,4 @@ class MeshElement(Element):
 
     # FIXME Does this have to exist?
     def get_values(self):
-        from random import random
         return list(map(lambda x: random(), range(3)))
