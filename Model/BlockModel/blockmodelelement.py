@@ -1,24 +1,39 @@
 #!/usr/bin/env python
 
 import colorsys
-from Model.modelelement import ModelElement
-from Model.BlockModel.csvparser import CSVParser
+import numpy as np
+from Model.element import Element
 
 
-# Main class
-class BlockModelElement(ModelElement):
-    def __init__(self):
-        super().__init__()
-        self.add_parser('csv', CSVParser())
+class BlockModelElement(Element):
+    def __init__(self, *args, **kwargs):
+        self.data = kwargs.get('data')
+        self.x_str = kwargs.get('easting')
+        self.y_str = kwargs.get('northing')
+        self.z_str = kwargs.get('elevation')
+        self.current_str = kwargs.get('value')
 
-        self.data: dict = None
-        self.x_str: str = None
-        self.y_str: str = None
-        self.z_str: str = None
-        self.current_str: str = None
+        self.values = np.array([], np.float32)
+        self.centroid = np.array([], np.float32)
+
+    def set_vertices(self, vertices: list) -> None:
+        self.vertices = np.array(vertices, np.float32)
+        self.set_centroid(Element.average_by_coord(self.vertices))
+
+    def set_centroid(self, centroid: list) -> None:
+        self.centroid = np.array(centroid, np.float32)
+
+    def set_values(self, values: list) -> None:
+        self.values = np.array(values, np.float32)
 
     def set_data(self, data: dict) -> None:
         self.data = data
+
+    def get_values(self) -> np.array:
+        return self.values
+
+    def get_centroid(self) -> np.array:
+        return self.centroid
 
     # TODO Force the user to set these strings
     def set_x_string(self, string: str) -> None:

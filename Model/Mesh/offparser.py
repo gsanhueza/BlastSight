@@ -1,21 +1,15 @@
 #!/usr/bin/env python
 
-import random
-from Model.modelelement import ModelElement
-from Model.parser import Parser
 
+class OFFParser:
+    @staticmethod
+    def load_file(file_path: str) -> tuple:
+        assert file_path.lower().endswith('off')
 
-class OFFParser(Parser):
-    def __init__(self):
-        super().__init__()
-
-    def load_file(self, file_path: str, model: ModelElement) -> None:
         with open(file_path, 'r') as fp:
             assert 'OFF' == fp.readline().strip()
 
             n_vertices, n_faces, n_edges = tuple([int(s) for s in fp.readline().strip().split(' ')])
 
-            # Model data
-            model.set_vertices([[float(s) for s in fp.readline().strip().split(' ')] for _ in range(n_vertices)])
-            model.set_indices([[int(s) for s in fp.readline().strip().split(' ')][1:] for _ in range(n_faces)])
-            model.set_values([random.random() for _ in range(3)])
+            return [[float(s) for s in fp.readline().strip().split(' ')] for _ in range(n_vertices)],\
+                   [[int(s) for s in fp.readline().strip().split(' ')][1:] for _ in range(n_faces)]

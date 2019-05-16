@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import random
 import numpy as np
 import traceback
 
@@ -56,7 +57,10 @@ class ModelElement:
             ext = QFileInfo(file_path).suffix()
 
             parser = self.get_parser(ext)
-            parser.load_file(file_path, self)
+            v, i = parser.load_file(file_path)
+            self.set_vertices(v)
+            self.set_indices(i)
+            self.set_values(list(map(lambda x: random.random(), range(3))))
 
             self.name = name
             self.ext = ext
