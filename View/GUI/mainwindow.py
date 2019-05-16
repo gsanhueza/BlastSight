@@ -71,7 +71,7 @@ class MainWindow(QMainWindow):
             self.fill_tree_widget()
 
             # Auto-trigger of method in TreeWidgetItem
-            self.treeWidget.topLevelItem(id_).available_values()
+            self.treeWidget.get_item_by_element_id(id_).available_values()
 
         return loaded
 
