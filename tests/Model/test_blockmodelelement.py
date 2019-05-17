@@ -12,14 +12,16 @@ class TestBlockModelElement:
 
     def test_block_single(self):
         element = BlockModelElement(x=[-1], y=[0], z=[0])
+        assert len(element.vertices) == 1
 
-        list_vertices = element.vertices
-        assert len(list_vertices) == 1
-
-        for v in list_vertices:
+        for v in element.vertices:
             assert type(v) == np.ndarray
 
-        assert all(list_vertices[0]) == all([-1.0, 0.0, 0.0])
+        expected = [[-1.0, 0.0, 0.0]]
+
+        for i in range(len(expected)):
+            for j in range(3):
+                assert element.vertices[i][j] == expected[i][j]
 
     def test_block_multiple(self):
         element = BlockModelElement(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0])
@@ -30,9 +32,13 @@ class TestBlockModelElement:
         for v in list_vertices:
             assert type(v) == np.ndarray
 
-        assert all(list_vertices[0].tolist()) == all([-1.0, 0.0, 0.0])
-        assert all(list_vertices[1].tolist()) == all([1.0, 0.0, 0.0])
-        assert all(list_vertices[2].tolist()) == all([0.0, 1.0, 0.0])
+        expected = [[-1.0, 0.0, 0.0],
+                    [1.0, 0.0, 0.0],
+                    [0.0, 1.0, 0.0]]
+
+        for i in range(len(expected)):
+            for j in range(3):
+                assert list_vertices[i][j] == expected[i][j]
 
     def test_wrong_bm(self):
         with pytest.raises(Exception):
@@ -53,13 +59,13 @@ class TestBlockModelElement:
 
     def test_vertices_element(self):
         element = BlockModelElement(vertices=[[0, 1, 2], [3, 4, 5]])
-        assert element.vertices[0][0] == 0.0
-        assert element.vertices[0][1] == 1.0
-        assert element.vertices[0][2] == 2.0
 
-        assert element.vertices[1][0] == 3.0
-        assert element.vertices[1][1] == 4.0
-        assert element.vertices[1][2] == 5.0
+        expected = [[0.0, 1.0, 2.0],
+                    [3.0, 4.0, 5.0]]
+
+        for i in range(len(expected)):
+            for j in range(3):
+                assert element.vertices[i][j] == expected[i][j]
 
     def test_empty_vertices(self):
         with pytest.raises(Exception):
@@ -69,13 +75,12 @@ class TestBlockModelElement:
         element = BlockModelElement(vertices=[[0, 1, 2]])
         element.vertices = [[9, 8, 7], [6, 5, 4]]
 
-        assert element.vertices[0][0] == 9.0
-        assert element.vertices[0][1] == 8.0
-        assert element.vertices[0][2] == 7.0
+        expected = [[9.0, 8.0, 7.0],
+                    [6.0, 5.0, 4.0]]
 
-        assert element.vertices[1][0] == 6.0
-        assert element.vertices[1][1] == 5.0
-        assert element.vertices[1][2] == 4.0
+        for i in range(len(expected)):
+            for j in range(3):
+                assert element.vertices[i][j] == expected[i][j]
 
     def test_data(self):
         data = {'x': ('0', '2', '4', '6', '8', '10'),
@@ -103,13 +108,13 @@ class TestBlockModelElement:
         assert element.x.size == 6
         assert element.y.size == 6
         assert element.z.size == 6
-        assert list(element.values).__len__() == 0
+        assert len(list(element.values)) == 0
 
         element.update_values()
         assert element.x.size == 6
         assert element.y.size == 6
         assert element.z.size == 6
-        assert list(element.values).__len__() == 6
+        assert len(list(element.values)) == 6
 
         assert element.data == data
 

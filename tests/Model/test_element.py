@@ -12,51 +12,45 @@ class TestElement:
 
     def test_one_vertex(self):
         element = Element(x=[0], y=[1], z=[2])
-        list_vertices = element.vertices
-        assert len(list_vertices) == 1
+        assert len(element.vertices) == 1
 
-        v = list_vertices[0]
-        assert type(v) == np.ndarray
-        assert v[0] == 0
-        assert v[1] == 1
-        assert v[2] == 2
+        expected = [[0.0, 1.0, 2.0]]
+
+        for i in range(len(expected)):
+            assert type(element.vertices[i]) == np.ndarray
+            for j in range(3):
+                assert element.vertices[i][j] == expected[i][j]
 
     def test_one_triangle(self):
         element = Element(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0])
-        list_vertices = element.vertices
-        assert len(list_vertices) == 3
+        assert len(element.vertices) == 3
 
-        for v in list_vertices:
-            assert type(v) == np.ndarray
+        expected = [[-1.0, 0.0, 0.0],
+                    [1.0, 0.0, 0.0],
+                    [0.0, 1.0, 0.0]]
 
-        assert all(list_vertices[0].tolist()) == all([-1.0, 0.0, 0.0])
-        assert all(list_vertices[1].tolist()) == all([1.0, 0.0, 0.0])
-        assert all(list_vertices[2].tolist()) == all([0.0, 1.0, 0.0])
+        for i in range(len(expected)):
+            assert type(element.vertices[i]) == np.ndarray
+            for j in range(3):
+                assert element.vertices[i][j] == expected[i][j]
 
     def test_average_coords(self):
         element = Element(x=[-1, 1, 0], y=[0, 0, 3], z=[0, 0, 0])
         average = element.average_by_coord(element.x, element.y, element.z)
-        assert average[0] == 0
-        assert average[1] == 1
-        assert average[2] == 0
+
+        expected = [0.0, 1.0, 0.0]
+
+        for i in range(len(expected)):
+            assert average[i] == expected[i]
 
     def test_flatten(self):
         element = Element(x=[-1, 1, 0], y=[0, 0, 3], z=[0, 0, 0])
-        vertices = element.vertices
+        flattened = Element.flatten(list(element.vertices.tolist()))
 
-        flattened_vertices = Element.flatten(list(vertices.tolist()))
+        expected = [-1, 0, 0, 1, 0, 0, 0, 3, 0]
 
-        assert flattened_vertices[0] == -1
-        assert flattened_vertices[1] == 0
-        assert flattened_vertices[2] == 0
-
-        assert flattened_vertices[3] == 1
-        assert flattened_vertices[4] == 0
-        assert flattened_vertices[5] == 0
-
-        assert flattened_vertices[6] == 0
-        assert flattened_vertices[7] == 3
-        assert flattened_vertices[8] == 0
+        for i in range(len(expected)):
+            assert flattened[i] == expected[i]
 
     def test_named_element(self):
         name = "NAME"
@@ -67,13 +61,13 @@ class TestElement:
 
     def test_vertices_element(self):
         element = Element(vertices=[[0, 1, 2], [3, 4, 5]])
-        assert element.vertices[0][0] == 0.0
-        assert element.vertices[0][1] == 1.0
-        assert element.vertices[0][2] == 2.0
 
-        assert element.vertices[1][0] == 3.0
-        assert element.vertices[1][1] == 4.0
-        assert element.vertices[1][2] == 5.0
+        expected = [[0.0, 1.0, 2.0],
+                    [3.0, 4.0, 5.0]]
+
+        for i in range(len(expected)):
+            for j in range(3):
+                assert element.vertices[i][j] == expected[i][j]
 
     def test_empty_vertices(self):
         with pytest.raises(Exception):
@@ -83,10 +77,9 @@ class TestElement:
         element = Element(vertices=[[0, 1, 2]])
         element.vertices = [[9, 8, 7], [6, 5, 4]]
 
-        assert element.vertices[0][0] == 9.0
-        assert element.vertices[0][1] == 8.0
-        assert element.vertices[0][2] == 7.0
+        expected = [[9.0, 8.0, 7.0],
+                    [6.0, 5.0, 4.0]]
 
-        assert element.vertices[1][0] == 6.0
-        assert element.vertices[1][1] == 5.0
-        assert element.vertices[1][2] == 4.0
+        for i in range(len(expected)):
+            for j in range(3):
+                assert element.vertices[i][j] == expected[i][j]
