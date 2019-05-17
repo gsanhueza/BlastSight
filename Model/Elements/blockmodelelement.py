@@ -34,6 +34,7 @@ class BlockModelElement(Element):
 
         elif 'data' in kwargs.keys():
             self.data = kwargs.get('data')
+            assert len(self.data) >= 4
 
         else:
             raise KeyError(f'Must pass ["x", "y", "z"], "vertices" or "data" as kwargs, got {list(kwargs.keys())}.')
@@ -89,18 +90,26 @@ class BlockModelElement(Element):
     def value_str(self, value_str: str) -> None:
         self._value_str = value_str
 
-    def get_available_coords(self) -> list:
-        if self.x_str is None:
+    @property
+    def available_coordinates(self) -> list:
+        try:
+            return sorted([self.x_str, self.y_str, self.z_str])
+        except TypeError:
             return list(self.data.keys())
 
-        return sorted([self.x_str, self.y_str, self.z_str])
+    @available_coordinates.setter
+    def available_coordinates(self, available: list) -> None:
+        self._x_str, self._y_str, self._z_str = available
 
-    def get_available_values(self) -> list:
-        available = list(self.data.keys())
+    @property
+    def available_values(self) -> list:
+        available = list(self._data.keys())
 
         if self.x_str is not None:
             available.remove(self.x_str)
+        if self.y_str is not None:
             available.remove(self.y_str)
+        if self.z_str is not None:
             available.remove(self.z_str)
 
         return available

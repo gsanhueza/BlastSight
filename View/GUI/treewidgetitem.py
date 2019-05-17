@@ -72,12 +72,12 @@ class TreeWidgetItem(QTreeWidgetItem):
         dialog = DialogAvailableValues(self)
         element = self.gl_element.get_model_element()
 
-        for i in element.get_available_coords():
+        for i in element.available_coordinates:
             dialog.comboBox_x.addItem(i)
             dialog.comboBox_y.addItem(i)
             dialog.comboBox_z.addItem(i)
 
-        for i in element.get_available_values():
+        for i in element.available_values:
             dialog.comboBox_values.addItem(i)
 
         dialog.show()

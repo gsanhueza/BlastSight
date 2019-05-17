@@ -44,6 +44,166 @@ class TestBlockModelElement:
         with pytest.raises(Exception):
             BlockModelElement(x=[-1, 1], y=[0, 0], z=[0, 0, 1])
 
+    def test_named_element(self):
+        name = "NAME"
+        extension = "EXT"
+        element = BlockModelElement(x=[0], y=[1], z=[2], name=name, ext=extension)
+        assert element.name == name
+        assert element.ext == extension
+
+    def test_vertices_element(self):
+        element = BlockModelElement(vertices=[[0, 1, 2], [3, 4, 5]])
+        assert element.vertices[0][0] == 0.0
+        assert element.vertices[0][1] == 1.0
+        assert element.vertices[0][2] == 2.0
+
+        assert element.vertices[1][0] == 3.0
+        assert element.vertices[1][1] == 4.0
+        assert element.vertices[1][2] == 5.0
+
+    def test_empty_vertices(self):
+        with pytest.raises(Exception):
+            BlockModelElement(vertices=[])
+
+    def test_set_vertices(self):
+        element = BlockModelElement(vertices=[[0, 1, 2]])
+        element.vertices = [[9, 8, 7], [6, 5, 4]]
+
+        assert element.vertices[0][0] == 9.0
+        assert element.vertices[0][1] == 8.0
+        assert element.vertices[0][2] == 7.0
+
+        assert element.vertices[1][0] == 6.0
+        assert element.vertices[1][1] == 5.0
+        assert element.vertices[1][2] == 4.0
+
+    def test_data(self):
+        data = {'x': ('0', '2', '4', '6', '8', '10'),
+                'y': ('0', '0', '0', '3', '3', '1'),
+                'z': ('0', '3', '3', '3', '3', '3'),
+                'CuT': ('1', '0.4', '0.5', '0.8', '0.3', '0.2')}
+
+        element = BlockModelElement(data=data)
+        element.x_str = 'x'
+        element.y_str = 'y'
+        element.z_str = 'z'
+        element.value_str = 'CuT'
+
+        assert element.x.size == 0
+        assert element.y.size == 0
+        assert element.z.size == 0
+        assert element.values.size == 0
+
+        assert element.x_str == 'x'
+        assert element.y_str == 'y'
+        assert element.z_str == 'z'
+        assert element.value_str == 'CuT'
+
+        element.update_coords()
+        assert element.x.size == 6
+        assert element.y.size == 6
+        assert element.z.size == 6
+        assert list(element.values).__len__() == 0
+
+        element.update_values()
+        assert element.x.size == 6
+        assert element.y.size == 6
+        assert element.z.size == 6
+        assert list(element.values).__len__() == 6
+
+        assert element.data == data
+
+    def test_data_wrong_string(self):
+        data = {'x': ('0', '2', '4', '6', '8', '10'),
+                'y': ('0', '0', '0', '3', '3', '1'),
+                'z': ('0', '3', '3', '3', '3', '3'),
+                'CuT': ('1', '0.4', '0.5', '0.8', '0.3', '0.2')}
+
+        element = BlockModelElement(data=data)
+        element.x_str = 'x'
+        element.y_str = 'y'
+        element.z_str = 'z'
+        element.value_str = 'value'
+
+        assert element.x_str == 'x'
+        assert element.y_str == 'y'
+        assert element.z_str == 'z'
+        assert element.value_str == 'value'
+
+        element.update_coords()
+        assert element.x.size == 6
+        assert element.y.size == 6
+        assert element.z.size == 6
+
+        with pytest.raises(Exception):
+            element.update_values()
+
+    def test_available_coordinates(self):
+        data = {'x': ('0', '2', '4', '6', '8', '10'),
+                'y': ('0', '0', '0', '3', '3', '1'),
+                'z': ('0', '3', '3', '3', '3', '3'),
+                'CuT': ('1', '0.4', '0.5', '0.8', '0.3', '0.2')}
+
+        element = BlockModelElement(data=data)
+        assert 'x' in list(element.available_coordinates)
+        assert 'y' in list(element.available_coordinates)
+        assert 'z' in list(element.available_coordinates)
+        assert 'CuT' in list(element.available_coordinates)
+        assert 'random' not in list(element.available_coordinates)
+
+        element.x_str = 'x'
+        element.y_str = 'y'
+        element.z_str = 'z'
+        element.value_str = 'CuT'
+
+        assert 'x' in list(element.available_coordinates)
+        assert 'y' in list(element.available_coordinates)
+        assert 'z' in list(element.available_coordinates)
+        assert 'CuT' not in list(element.available_coordinates)
+        assert 'random' not in list(element.available_coordinates)
+
+    def test_set_multiple_coordinates(self):
+        data = {'x': ('0', '2', '4', '6', '8', '10'),
+                'y': ('0', '0', '0', '3', '3', '1'),
+                'z': ('0', '3', '3', '3', '3', '3'),
+                'CuT': ('1', '0.4', '0.5', '0.8', '0.3', '0.2')}
+
+        element = BlockModelElement(data=data)
+        element.available_coordinates = ['x', 'y', 'z']
+        assert 'x' in element.available_coordinates
+        assert 'y' in element.available_coordinates
+        assert 'z' in element.available_coordinates
+
+    def test_available_values(self):
+        data = {'x': ('0', '2', '4', '6', '8', '10'),
+                'y': ('0', '0', '0', '3', '3', '1'),
+                'z': ('0', '3', '3', '3', '3', '3'),
+                'CuT': ('1', '0.4', '0.5', '0.8', '0.3', '0.2')}
+
+        element = BlockModelElement(data=data)
+        assert 'x' in list(element.available_values)
+        assert 'y' in list(element.available_values)
+        assert 'z' in list(element.available_values)
+        assert 'CuT' in list(element.available_values)
+        assert 'random' not in list(element.available_values)
+
+        element.x_str = 'x'
+        assert 'x' not in list(element.available_values)
+
+        element.y_str = 'y'
+        assert 'y' not in list(element.available_values)
+
+        element.z_str = 'z'
+        assert 'z' not in list(element.available_values)
+
+        element.value_str = 'CuT'
+        assert 'CuT' in list(element.available_values)
+        assert 'random' not in list(element.available_values)
+
+    def test_empty_data(self):
+        with pytest.raises(Exception):
+            BlockModelElement(data={})
+
     #
     # def test_load_ordered(self, bmelement):
     #     bmelement.load('tests/mini.csv')
