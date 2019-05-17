@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 
 import traceback
+from collections import OrderedDict
+
 from PyQt5.QtCore import QFileInfo
 
-from collections import OrderedDict
 from Model.element import Element
 from Model.Mesh.meshelement import MeshElement
 from Model.BlockModel.blockmodelelement import BlockModelElement
@@ -16,24 +17,26 @@ from Model.BlockModel.csvparser import CSVParser
 class Model:
     def __init__(self):
         self.element_collection = OrderedDict()
-        self.parser_dict = {}  # Example: {"dxf": DXFParser, "off": OFFParser}
+        self.parser_dict = {}  # Example: {"dxf": (DXFParser, MeshElement)}
         self.last_id = 0
 
-        self.add_parser('dxf', DXFParser)
-        self.add_parser('off', OFFParser)
-        self.add_parser('csv', CSVParser)
+        self.add_parser('dxf', DXFParser, MeshElement)
+        self.add_parser('off', OFFParser, MeshElement)
+        self.add_parser('csv', CSVParser, BlockModelElement)
 
-    def add_parser(self, extension: str, handler) -> None:
-        self.parser_dict[extension] = handler
+    def add_parser(self, extension: str, handler, element_type) -> None:
+        self.parser_dict[extension] = (handler, element_type)
 
-    def get_parser(self, ext: str):
-        return self.parser_dict[ext]
+    def get_parser(self, ext: str, element_type=None):
+        if element_type is not None:
+            assert self.parser_dict[ext][1] == element_type
+        return self.parser_dict[ext][0]
 
     def add_mesh(self, file_path: str) -> int:
         try:
             name = QFileInfo(file_path).baseName()
             ext = QFileInfo(file_path).suffix()
-            vertices, indices = self.get_parser(ext).load_file(file_path)
+            vertices, indices = self.get_parser(ext, MeshElement).load_file(file_path)
             # [[x1, y1, z1], [x2, y2, z2]] -> [[x1, x2], [y1, y2], [z1, z2])
 
             self.element_collection[self.last_id] = MeshElement(vertices=vertices,
@@ -51,7 +54,7 @@ class Model:
         try:
             name = QFileInfo(file_path).baseName()
             ext = QFileInfo(file_path).suffix()
-            data = self.get_parser(ext).load_file(file_path)
+            data = self.get_parser(ext, BlockModelElement).load_file(file_path)
 
             self.element_collection[self.last_id] = BlockModelElement(data=data,
                                                                       name=name,
