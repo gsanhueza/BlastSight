@@ -143,13 +143,13 @@ class OpenGLWidget(QOpenGLWidget):
     def initializeGL(self) -> None:
         # Meshes currently in model
         for id_, mesh in self.model.get_mesh_collection():
-            mesh_gl = MeshGL(self.context(), mesh)
-            self.drawable_collection.add(id_, mesh_gl)
+            drawable = MeshGL(self.context(), mesh)
+            self.drawable_collection.add(id_, drawable)
 
         # Block models currently in model
         for id_, block_model in self.model.get_block_model_collection():
-            block_model_gl = BlockModelGL(self.context(), block_model)
-            self.drawable_collection.add(id_, block_model_gl)
+            drawable = BlockModelGL(self.context(), block_model)
+            self.drawable_collection.add(id_, drawable)
 
     def paintGL(self) -> None:
         self.painter.begin(self)

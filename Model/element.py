@@ -26,7 +26,7 @@ class Element:
                 f'Coordinates have different lengths: ({len(self.x)}, {len(self.y)}, {len(self.z)})'
 
         else:
-            raise KeyError(f'Must pass [x, y, z] as kwargs, got {list(kwargs.keys())}.')
+            raise KeyError(f'Must pass ["x", "y", "z"] or "vertices" as kwargs, got {list(kwargs.keys())}.')
 
     def get_vertices(self) -> np.ndarray:
         return np.array(list(zip(self.x, self.y, self.z)), np.float32)

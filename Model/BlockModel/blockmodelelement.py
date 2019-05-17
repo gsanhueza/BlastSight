@@ -9,7 +9,6 @@ class BlockModelElement(Element):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.data = kwargs.get('data')
         self.x_str = kwargs.get('easting')
         self.y_str = kwargs.get('northing')
         self.z_str = kwargs.get('elevation')
@@ -19,7 +18,21 @@ class BlockModelElement(Element):
         self.centroid = np.array([], np.float32)
 
     def _init_fill(self, *args, **kwargs):
-        pass
+        if 'vertices' in kwargs.keys():
+            self.x, self.y, self.z = zip(*kwargs.get('vertices'))
+
+        elif all(elem in list(kwargs.keys()) for elem in ['x', 'y', 'z']):
+            self.x = kwargs.get('x')
+            self.y = kwargs.get('y')
+            self.z = kwargs.get('z')
+            assert len(self.x) == len(self.y) == len(self.z), \
+                f'Coordinates have different lengths: ({len(self.x)}, {len(self.y)}, {len(self.z)})'
+
+        elif 'data' in kwargs.keys():
+            self.data = kwargs.get('data')
+
+        else:
+            raise KeyError(f'Must pass ["x", "y", "z"], "vertices" or "data" as kwargs, got {list(kwargs.keys())}.')
 
     def set_vertices(self, vertices: list) -> None:
         self.x, self.y, self.z = zip(*vertices)
