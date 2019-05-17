@@ -113,6 +113,39 @@ class TestBlockModelElement:
 
         assert element.data == data
 
+    def test_insufficient_data(self):
+        data = {'x': ('0', '2', '4', '6', '8', '10'),
+                'y': ('0', '0', '0', '3', '3', '1'),
+                'z': ('0', '3', '3', '3', '3', '3')}
+
+        with pytest.raises(Exception):
+            BlockModelElement(data)
+
+    def test_inconsistent_data(self):
+        data = {'x': ('0', '2', '4', '6', '8', '10'),
+                'y': ('0', '0', '0', '3', '3', '1'),
+                'z': ('0', '3', '3', '3', '3'),
+                'CuT': ('1', '0.4', '0.5', '0.8', '0.3', '0.2')}
+
+        with pytest.raises(Exception):
+            BlockModelElement(data)
+
+        data = {'x': ('0', '2', '4', '6', '8', '10'),
+                'y': ('0', '0', '0', '3', '3', '1'),
+                'z': ('0', '3', '3', '3', '3', '3'),
+                'CuT': ('1', '0.4', '0.5', '0.8', '0.3')}
+
+        with pytest.raises(Exception):
+            BlockModelElement(data)
+
+        data = {'x': ('0', '2', '4', '6', '8'),
+                'y': ('0', '0', '0', '3', '3'),
+                'z': ('0', '3', '3', '3', '3'),
+                'CuT': ('1', '0.4', '0.5', '0.8', '0.3', '0.2')}
+
+        with pytest.raises(Exception):
+            BlockModelElement(data)
+
     def test_data_wrong_string(self):
         data = {'x': ('0', '2', '4', '6', '8', '10'),
                 'y': ('0', '0', '0', '3', '3', '1'),
