@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 from PyQt5.QtWidgets import QTreeWidgetItem
-from View.GUI.dialog_available_values import DialogAvailableValues
+from View.GUI.availablevaluesdialog import DialogAvailableValues
 
 
 class TreeWidgetItem(QTreeWidgetItem):

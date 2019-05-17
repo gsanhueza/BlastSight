@@ -5,8 +5,8 @@ from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QAction
 from PyQt5.QtWidgets import QMenu
 from PyQt5.QtWidgets import QTreeWidget
-from View.Drawables.meshgl import MeshGL
-from View.Drawables.blockmodelgl import BlockModelGL
+from View.Drawables.meshdrawable import MeshGL
+from View.Drawables.blockmodeldrawable import BlockModelGL
 
 
 class TreeWidget(QTreeWidget):

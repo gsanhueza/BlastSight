@@ -31,12 +31,12 @@ class GLDrawableCollection:
     def add(self, id_: int, drawable: GLDrawable) -> None:
         self.drawable_dict[id_] = drawable
 
-    def draw(self) -> None:
+    def draw(self, proj_matrix, view_matrix, model_matrix) -> None:
         for drawable in self.drawable_dict.values():
             if not drawable.is_initialized:
                 drawable.initialize()
 
-            drawable.draw()
+            drawable.draw(proj_matrix, view_matrix, model_matrix)
 
     def clear(self) -> None:
         self.drawable_dict.clear()
