@@ -12,7 +12,7 @@ class TestElement:
 
     def test_one_vertex(self):
         element = Element(x=[0], y=[1], z=[2])
-        list_vertices = element.get_vertices()
+        list_vertices = element.vertices
         assert len(list_vertices) == 1
 
         v = list_vertices[0]
@@ -23,7 +23,7 @@ class TestElement:
 
     def test_one_triangle(self):
         element = Element(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0])
-        list_vertices = element.get_vertices()
+        list_vertices = element.vertices
         assert len(list_vertices) == 3
 
         for v in list_vertices:
@@ -35,14 +35,14 @@ class TestElement:
 
     def test_average_coords(self):
         element = Element(x=[-1, 1, 0], y=[0, 0, 3], z=[0, 0, 0])
-        average = element.average_by_coord(element.get_vertices())
+        average = element.average_by_coord(element.vertices)
         assert average[0] == 0
         assert average[1] == 1
         assert average[2] == 0
 
     def test_flatten(self):
         element = Element(x=[-1, 1, 0], y=[0, 0, 3], z=[0, 0, 0])
-        vertices = element.get_vertices()
+        vertices = element.vertices
 
         flattened_vertices = Element.flatten(vertices)
 

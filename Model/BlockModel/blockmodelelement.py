@@ -9,13 +9,13 @@ class BlockModelElement(Element):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.x_str = kwargs.get('easting')
-        self.y_str = kwargs.get('northing')
-        self.z_str = kwargs.get('elevation')
-        self.current_str = kwargs.get('value')
+        self._data = None
+        self._values = []
 
-        self.values = np.array([], np.float32)
-        self.centroid = np.array([], np.float32)
+        self.x_str = kwargs.get('easting', None)
+        self.y_str = kwargs.get('northing', None)
+        self.z_str = kwargs.get('elevation', None)
+        self.current_str = kwargs.get('value', None)
 
     def _init_fill(self, *args, **kwargs):
         if 'vertices' in kwargs.keys():
@@ -34,24 +34,24 @@ class BlockModelElement(Element):
         else:
             raise KeyError(f'Must pass ["x", "y", "z"], "vertices" or "data" as kwargs, got {list(kwargs.keys())}.')
 
-    def set_vertices(self, vertices: list) -> None:
-        self.x, self.y, self.z = zip(*vertices)
-        self.set_centroid(Element.average_by_coord(self.get_vertices()))
+        self.name = kwargs.get('name', None)
+        self.ext = kwargs.get('ext', None)
 
-    def set_centroid(self, centroid: list) -> None:
-        self.centroid = np.array(centroid, np.float32)
+    @property
+    def data(self) -> dict:
+        return self._data
 
-    def set_values(self, values: list) -> None:
-        self.values = np.array(values, np.float32)
+    @data.setter
+    def data(self, data: dict) -> None:
+        self._data = data
 
-    def set_data(self, data: dict) -> None:
-        self.data = data
+    @property
+    def values(self) -> np.ndarray:
+        return np.array(self._values, np.float32)
 
-    def get_values(self) -> np.array:
-        return self.values
-
-    def get_centroid(self) -> np.array:
-        return self.centroid
+    @values.setter
+    def values(self, values: list) -> None:
+        self._values = values
 
     # TODO Force the user to set these strings
     def set_x_string(self, string: str) -> None:
@@ -79,6 +79,7 @@ class BlockModelElement(Element):
         return self.current_str
 
     def get_available_coords(self) -> list:
+        print('get_available_coords', self.data)
         if self.x_str is None:
             return list(self.data.keys())
 
@@ -99,7 +100,7 @@ class BlockModelElement(Element):
         y = list(map(float, self.data[self.y_str]))
         z = list(map(float, self.data[self.z_str]))
 
-        self.set_vertices(list(zip(x, y, z)))
+        self.vertices = list(zip(x, y, z))
 
     def update_values(self):
         values = list(map(float, self.data[self.current_str]))
@@ -107,7 +108,7 @@ class BlockModelElement(Element):
         max_values = max(values)
 
         normalized_values = map(lambda val: BlockModelElement.normalize(val, min_values, max_values), values)
-        self.set_values(list(map(lambda hue: colorsys.hsv_to_rgb(hue, 1.0, 1.0), normalized_values)))
+        self.values = list(map(lambda hue: colorsys.hsv_to_rgb(hue, 1.0, 1.0), normalized_values))
 
     @staticmethod
     def normalize(x: float, min_val: float, max_val: float) -> float:

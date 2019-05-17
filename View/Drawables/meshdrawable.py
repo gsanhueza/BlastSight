@@ -55,8 +55,8 @@ class MeshGL(GLDrawable):
         _SIZE_OF_GL_FLOAT = 4
 
         # Data
-        vertices = self.element.get_vertices()
-        indices = self.element.get_indices()
+        vertices = self.element.vertices
+        indices = self.element.indices
 
         self.vertices_size = vertices.size
         self.indices_size = indices.size
@@ -80,7 +80,7 @@ class MeshGL(GLDrawable):
         self.color_loc = self.shader_program.uniformLocation('u_color')
         self.alpha_loc = self.shader_program.uniformLocation('u_alpha')
 
-        color = list(self.element.get_values())
+        color = list(self.element.values)
         self.color = QVector3D(color[0], color[1], color[2])
 
         alpha = 1.0  # self.model_element.get_alpha()

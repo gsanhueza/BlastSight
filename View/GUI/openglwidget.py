@@ -71,7 +71,7 @@ class OpenGLWidget(QOpenGLWidget):
         mesh_gl = MeshGL(self.context(), mesh)
         self.drawable_collection.add(id_, mesh_gl)
 
-        self.set_centroid(list(mesh.get_centroid()))
+        self.set_centroid(list(mesh.centroid))
 
         return id_
 
@@ -85,8 +85,8 @@ class OpenGLWidget(QOpenGLWidget):
         block_model_gl = BlockModelGL(self.context(), block_model)
         self.drawable_collection.add(id_, block_model_gl)
 
-        if block_model.get_centroid().size > 0:
-            self.set_centroid(list(block_model.get_centroid()))
+        if block_model.centroid.size > 0:
+            self.set_centroid(list(block_model.centroid))
 
         return id_
 

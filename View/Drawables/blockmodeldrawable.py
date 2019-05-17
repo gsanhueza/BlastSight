@@ -35,8 +35,8 @@ class BlockModelGL(GLDrawable):
         _SIZE_OF_GL_FLOAT = 4
 
         # Data
-        vertices = self.element.get_vertices()
-        values = self.element.get_values()
+        vertices = self.element.vertices
+        values = self.element.values
 
         self.vertices_size = vertices.size
         self.values_size = values.size

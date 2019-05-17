@@ -13,7 +13,7 @@ class TestMeshElement:
     def test_single_triangle(self):
         element = MeshElement(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], indices=[[0, 1, 2]])
 
-        list_vertices = element.get_vertices()
+        list_vertices = element.vertices
         assert len(list_vertices) == 3
 
         for v in list_vertices:
@@ -23,7 +23,7 @@ class TestMeshElement:
         assert all(list_vertices[1].tolist()) == all([1.0, 0.0, 0.0])
         assert all(list_vertices[2].tolist()) == all([0.0, 1.0, 0.0])
 
-        list_indices = element.get_indices()
+        list_indices = element.indices
         assert len(list_indices) == 1
         index = list_indices[0]
         assert index[0] == 0
@@ -33,7 +33,7 @@ class TestMeshElement:
     def test_shared_triangles(self):
         element = MeshElement(x=[-1, 1, 0, 2], y=[0, 0, 1, 1], z=[0, 0, 0, 0], indices=[[0, 1, 2], [1, 3, 2]])
 
-        list_vertices = element.get_vertices()
+        list_vertices = element.vertices
         assert len(list_vertices) == 4
 
         for v in list_vertices:
@@ -44,7 +44,7 @@ class TestMeshElement:
         assert all(list_vertices[2].tolist()) == all([0.0, 1.0, 0.0])
         assert all(list_vertices[2].tolist()) == all([2.0, 1.0, 0.0])
 
-        list_indices = element.get_indices()
+        list_indices = element.indices
         assert len(list_indices) == 2
 
         index_a = list_indices[0]
@@ -69,7 +69,7 @@ class TestMeshElement:
 
     def test_centroid_single(self):
         element = MeshElement(x=[-1, 1, 0], y=[0, 0, 3], z=[0, 0, 0], indices=[[0, 1, 2]])
-        centroid = element.get_centroid()
+        centroid = element.centroid
 
         assert centroid[0] == 0
         assert centroid[1] == 1

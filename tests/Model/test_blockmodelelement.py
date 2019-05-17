@@ -13,7 +13,7 @@ class TestBlockModelElement:
     def test_block_single(self):
         element = BlockModelElement(x=[-1], y=[0], z=[0])
 
-        list_vertices = element.get_vertices()
+        list_vertices = element.vertices
         assert len(list_vertices) == 1
 
         for v in list_vertices:
@@ -24,7 +24,7 @@ class TestBlockModelElement:
     def test_block_multiple(self):
         element = BlockModelElement(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0])
 
-        list_vertices = element.get_vertices()
+        list_vertices = element.vertices
         assert len(list_vertices) == 3
 
         for v in list_vertices:

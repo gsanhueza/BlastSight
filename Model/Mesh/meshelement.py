@@ -11,17 +11,24 @@ class MeshElement(Element):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.indices = np.array(kwargs.get('indices'), np.uint32)
-        self.centroid = list(map(mean, [self.x, self.y, self.z]))
+        self._indices = kwargs.get('indices')
+        self._values = []
 
         assert len(self.x) >= self.indices.max() + 1
 
-    def get_indices(self) -> np.array:
-        return np.array(self.indices, np.uint32)  # GL_UNSIGNED_INT = np.uint32
+    @property
+    def indices(self) -> np.array:
+        return np.array(self._indices, np.uint32)  # GL_UNSIGNED_INT = np.uint32
 
-    def get_centroid(self):
-        return self.centroid
+    @indices.setter
+    def indices(self, indices: list):
+        self._indices = indices
 
     # FIXME Does this have to exist?
-    def get_values(self):
+    @property
+    def values(self) -> list:
         return list(map(lambda x: random(), range(3)))
+
+    @values.setter
+    def values(self, values: list):
+        self._values = values
