@@ -43,7 +43,7 @@ class TestModel:
 
     def test_wrong_blockmodel(self):
         model = Model()
-        bm_id = model.add_mesh(f'{TEST_FILES_FOLDER_PATH}/nonexistent.csv')
+        bm_id = model.add_block_model(f'{TEST_FILES_FOLDER_PATH}/nonexistent.csv')
         assert bm_id == -1
 
     def test_get_blockmodel(self):
