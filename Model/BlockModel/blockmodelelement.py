@@ -7,21 +7,23 @@ from Model.element import Element
 
 class BlockModelElement(Element):
     def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
         self.data = kwargs.get('data')
         self.x_str = kwargs.get('easting')
         self.y_str = kwargs.get('northing')
         self.z_str = kwargs.get('elevation')
         self.current_str = kwargs.get('value')
 
-        self.name = kwargs.get('name', 'NO_NAME')
-        self.ext = kwargs.get('ext', 'NO_EXT')
-
         self.values = np.array([], np.float32)
         self.centroid = np.array([], np.float32)
 
+    def _init_fill(self, *args, **kwargs):
+        pass
+
     def set_vertices(self, vertices: list) -> None:
-        self.vertices = np.array(vertices, np.float32)
-        self.set_centroid(Element.average_by_coord(self.vertices))
+        self.x, self.y, self.z = zip(*vertices)
+        self.set_centroid(Element.average_by_coord(self.get_vertices()))
 
     def set_centroid(self, centroid: list) -> None:
         self.centroid = np.array(centroid, np.float32)

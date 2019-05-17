@@ -6,6 +6,15 @@ from statistics import mean
 
 class Element:
     def __init__(self, *args, **kwargs):
+        self.x = []
+        self.y = []
+        self.z = []
+        self.name = kwargs.get('name', 'NO_NAME')
+        self.ext = kwargs.get('ext', 'NO_EXT')
+
+        self._init_fill(*args, **kwargs)
+
+    def _init_fill(self, *args, **kwargs):
         if 'vertices' in kwargs.keys():
             self.x, self.y, self.z = zip(*kwargs.get('vertices'))
 
@@ -18,9 +27,6 @@ class Element:
 
         else:
             raise KeyError(f'Must pass [x, y, z] as kwargs, got {list(kwargs.keys())}.')
-
-        self.name = kwargs.get('name', 'NO_NAME')
-        self.ext = kwargs.get('ext', 'NO_EXT')
 
     def get_vertices(self) -> np.ndarray:
         return np.array(list(zip(self.x, self.y, self.z)), np.float32)
