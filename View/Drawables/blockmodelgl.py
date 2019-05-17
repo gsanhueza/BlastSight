@@ -41,6 +41,9 @@ class BlockModelGL(GLDrawable):
         self.vertices_size = vertices.size
         self.values_size = values.size
 
+        print(f'vertices: {vertices}')
+        print(f'type(vertices): {type(vertices)}')
+
         self.vao.bind()
 
         self.vertices_vbo.bind()
