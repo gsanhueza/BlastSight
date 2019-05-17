@@ -6,8 +6,8 @@ from PyQt5.QtGui import QVector2D
 
 
 class BlockModelGL(GLDrawable):
-    def __init__(self, context, element):
-        super().__init__(context, element)
+    def __init__(self, widget, element):
+        super().__init__(widget, element)
 
         # Uniforms
         self.model_view_matrix_loc = None
@@ -41,9 +41,7 @@ class BlockModelGL(GLDrawable):
         self.vertices_size = vertices.size
         self.values_size = values.size
 
-        print(f'vertices: {vertices}')
-        print(f'type(vertices): {type(vertices)}')
-
+        self.widget.makeCurrent()
         self.vao.bind()
 
         self.vertices_vbo.bind()

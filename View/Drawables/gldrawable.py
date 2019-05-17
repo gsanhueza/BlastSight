@@ -8,11 +8,12 @@ from PyQt5.QtGui import QOpenGLShader
 
 
 class GLDrawable:
-    def __init__(self, context, element):
+    def __init__(self, widget, element):
+        self.widget = widget
         self.element = element
 
         # Shaders
-        self.shader_program = QOpenGLShaderProgram(context)
+        self.shader_program = QOpenGLShaderProgram(self.widget.context())
         self.vertex_shader = None
         self.fragment_shader = None
         self.geometry_shader = None
