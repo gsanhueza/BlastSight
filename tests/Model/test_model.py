@@ -3,21 +3,23 @@
 import pytest
 from Model.model import Model
 
+TEST_FILES_FOLDER_PATH = 'tests/files'
+
 
 class TestModel:
     def test_add_mesh(self):
         model = Model()
-        mesh_id = model.add_mesh('tests/caseron.off')
+        mesh_id = model.add_mesh(f'{TEST_FILES_FOLDER_PATH}/caseron.off')
         assert mesh_id > -1
 
     def test_wrong_mesh(self):
         model = Model()
-        mesh_id = model.add_mesh('tests/nonexistent.off')
+        mesh_id = model.add_mesh(f'{TEST_FILES_FOLDER_PATH}/nonexistent.off')
         assert mesh_id == -1
 
     def test_get_mesh(self):
         model = Model()
-        mesh_id = model.add_mesh('tests/caseron.off')
+        mesh_id = model.add_mesh(f'{TEST_FILES_FOLDER_PATH}/caseron.off')
         mesh = model.get_mesh(mesh_id)
         meshe = model.get_element(mesh_id)
         assert mesh is not None
@@ -25,7 +27,7 @@ class TestModel:
 
     def test_delete_mesh(self):
         model = Model()
-        mesh_id = model.add_mesh('tests/caseron.off')
+        mesh_id = model.add_mesh(f'{TEST_FILES_FOLDER_PATH}/caseron.off')
         element = model.get_mesh(mesh_id)
         assert element is not None
 
@@ -36,17 +38,17 @@ class TestModel:
     # BlockModel
     def test_add_blockmodel(self):
         model = Model()
-        bm_id = model.add_block_model('tests/mini.csv')
+        bm_id = model.add_block_model(f'{TEST_FILES_FOLDER_PATH}/mini.csv')
         assert bm_id > -1
 
     def test_wrong_blockmodel(self):
         model = Model()
-        bm_id = model.add_mesh('tests/nonexistent.csv')
+        bm_id = model.add_mesh(f'{TEST_FILES_FOLDER_PATH}/nonexistent.csv')
         assert bm_id == -1
 
     def test_get_blockmodel(self):
         model = Model()
-        bm_id = model.add_block_model('tests/mini.csv')
+        bm_id = model.add_block_model(f'{TEST_FILES_FOLDER_PATH}/mini.csv')
         bm = model.get_block_model(bm_id)
         bme = model.get_block_model(bm_id)
         assert bm is not None
@@ -54,7 +56,7 @@ class TestModel:
 
     def test_delete_blockmodel(self):
         model = Model()
-        bm_id = model.add_block_model('tests/mini.csv')
+        bm_id = model.add_block_model(f'{TEST_FILES_FOLDER_PATH}/mini.csv')
         bm = model.get_block_model(bm_id)
         assert bm is not None
 
@@ -65,9 +67,9 @@ class TestModel:
     # Multiple
     def test_add_multiple(self):
         model = Model()
-        mesh_id1 = model.add_mesh('tests/caseron.off')
-        mesh_id2 = model.add_mesh('tests/caseron.dxf')
-        bm_id1 = model.add_block_model('tests/mini.csv')
+        mesh_id1 = model.add_mesh(f'{TEST_FILES_FOLDER_PATH}/caseron.off')
+        mesh_id2 = model.add_mesh(f'{TEST_FILES_FOLDER_PATH}/caseron.dxf')
+        bm_id1 = model.add_block_model(f'{TEST_FILES_FOLDER_PATH}/mini.csv')
 
         assert mesh_id1 != mesh_id2 != bm_id1
         mesh_1 = model.get_mesh(mesh_id1)
@@ -77,9 +79,9 @@ class TestModel:
 
     def test_get_multiple(self):
         model = Model()
-        mesh_id1 = model.add_mesh('tests/caseron.off')
-        mesh_id2 = model.add_mesh('tests/caseron.dxf')
-        bm_id1 = model.add_block_model('tests/mini.csv')
+        mesh_id1 = model.add_mesh(f'{TEST_FILES_FOLDER_PATH}/caseron.off')
+        mesh_id2 = model.add_mesh(f'{TEST_FILES_FOLDER_PATH}/caseron.dxf')
+        bm_id1 = model.add_block_model(f'{TEST_FILES_FOLDER_PATH}/mini.csv')
 
         m1 = model.get_mesh(mesh_id1)
         m2 = model.get_mesh(mesh_id2)
