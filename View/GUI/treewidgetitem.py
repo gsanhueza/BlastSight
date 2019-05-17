@@ -49,17 +49,12 @@ class TreeWidgetItem(QTreeWidgetItem):
         self.mainwindow.viewer.update()
 
     def update_parameters(self, dialog):
-        x = dialog.x
-        y = dialog.y
-        z = dialog.z
-        value = dialog.value
-
         element = self.gl_element.get_model_element()
 
-        element.set_x_string(x)
-        element.set_y_string(y)
-        element.set_z_string(z)
-        element.set_value_string(value)
+        element.x_str = dialog.x
+        element.y_str = dialog.y
+        element.z_str = dialog.z
+        element.value_str = dialog.value
 
         element.update_coords()
         element.update_values()
@@ -71,13 +66,7 @@ class TreeWidgetItem(QTreeWidgetItem):
 
     def get_strings(self):
         element = self.gl_element.get_model_element()
-
-        x = element.get_x_string()
-        y = element.get_y_string()
-        z = element.get_z_string()
-        val = element.get_value_string()
-
-        return x, y, z, val
+        return element.x_str, element.y_str, element.z_str, element.value_str
 
     def available_values(self) -> None:
         dialog = DialogAvailableValues(self)

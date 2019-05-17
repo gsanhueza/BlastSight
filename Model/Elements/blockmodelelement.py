@@ -9,6 +9,10 @@ class BlockModelElement(Element):
     def __init__(self, *args, **kwargs):
         self._data: dict = None
         self._values: np.ndarray = np.array([], np.float32)
+        self._x_str: str = None
+        self._y_str: str = None
+        self._z_str: str = None
+        self._value_str: str = None
 
         self.x_str = kwargs.get('easting', None)
         self.y_str = kwargs.get('northing', None)
@@ -53,30 +57,37 @@ class BlockModelElement(Element):
     def values(self, values: list):
         self._values = np.array(values, np.float32)
 
-    # TODO Force the user to set these strings
-    def set_x_string(self, string: str) -> None:
-        self.x_str = string
+    @property
+    def x_str(self) -> str:
+        return self._x_str
 
-    def set_y_string(self, string: str) -> None:
-        self.y_str = string
+    @x_str.setter
+    def x_str(self, x_str: str) -> None:
+        self._x_str = x_str
 
-    def set_z_string(self, string: str) -> None:
-        self.z_str = string
+    @property
+    def y_str(self) -> str:
+        return self._y_str
 
-    def set_value_string(self, string: str) -> None:
-        self.current_str = string
+    @y_str.setter
+    def y_str(self, y_str: str) -> None:
+        self._y_str = y_str
 
-    def get_x_string(self) -> str:
-        return self.x_str
+    @property
+    def z_str(self) -> str:
+        return self._z_str
 
-    def get_y_string(self) -> str:
-        return self.y_str
+    @z_str.setter
+    def z_str(self, z_str: str) -> None:
+        self._z_str = z_str
 
-    def get_z_string(self) -> str:
-        return self.z_str
+    @property
+    def value_str(self) -> str:
+        return self._value_str
 
-    def get_value_string(self) -> str:
-        return self.current_str
+    @value_str.setter
+    def value_str(self, value_str: str) -> None:
+        self._value_str = value_str
 
     def get_available_coords(self) -> list:
         if self.x_str is None:
@@ -100,7 +111,7 @@ class BlockModelElement(Element):
         self.z = list(map(float, self.data[self.z_str]))
 
     def update_values(self):
-        values = list(map(float, self.data[self.current_str]))
+        values = list(map(float, self.data[self.value_str]))
         min_values = min(values)
         max_values = max(values)
 
