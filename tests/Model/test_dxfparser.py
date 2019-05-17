@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import pytest
-from Model.Mesh.dxfparser import DXFParser
+from Model.Parsers.dxfparser import DXFParser
 
 
 class TestDXFParser:

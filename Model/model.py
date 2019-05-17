@@ -5,13 +5,13 @@ from collections import OrderedDict
 
 from PyQt5.QtCore import QFileInfo
 
-from Model.element import Element
-from Model.Mesh.meshelement import MeshElement
-from Model.BlockModel.blockmodelelement import BlockModelElement
+from Model.Elements.element import Element
+from Model.Elements.meshelement import MeshElement
+from Model.Elements.blockmodelelement import BlockModelElement
 
-from Model.Mesh.dxfparser import DXFParser
-from Model.Mesh.offparser import OFFParser
-from Model.BlockModel.csvparser import CSVParser
+from Model.Parsers.dxfparser import DXFParser
+from Model.Parsers.offparser import OFFParser
+from Model.Parsers.csvparser import CSVParser
 
 
 class Model:

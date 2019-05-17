@@ -47,8 +47,8 @@ def test_model():
 
 
 def test_element():
-    from Model.Mesh.offparser import OFFParser
-    from Model.element import Element
+    from Model.Parsers.offparser import OFFParser
+    from Model.Elements.element import Element
 
     file_path = '/home/gabriel/xyzrgb_statuette.off'
     input('before?')
@@ -63,8 +63,8 @@ def test_element():
 
 
 def test_meshelement():
-    from Model.Mesh.offparser import OFFParser
-    from Model.Mesh.meshelement import MeshElement
+    from Model.Parsers.offparser import OFFParser
+    from Model.Elements.meshelement import MeshElement
 
     file_path = '/home/gabriel/xyzrgb_statuette.off'
     input('before?')

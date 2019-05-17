@@ -2,7 +2,7 @@
 
 import pytest
 import numpy as np
-from Model.element import Element
+from Model.Elements.element import Element
 
 
 class TestElement:
@@ -44,7 +44,7 @@ class TestElement:
         element = Element(x=[-1, 1, 0], y=[0, 0, 3], z=[0, 0, 0])
         vertices = element.vertices
 
-        flattened_vertices = Element.flatten(vertices)
+        flattened_vertices = Element.flatten(list(vertices.tolist()))
 
         assert flattened_vertices[0] == -1
         assert flattened_vertices[1] == 0
@@ -57,3 +57,36 @@ class TestElement:
         assert flattened_vertices[6] == 0
         assert flattened_vertices[7] == 3
         assert flattened_vertices[8] == 0
+
+    def test_named_element(self):
+        name = "NAME"
+        extension = "EXT"
+        element = Element(x=[0], y=[1], z=[2], name=name, ext=extension)
+        assert element.name == name
+        assert element.ext == extension
+
+    def test_vertices_element(self):
+        element = Element(vertices=[[0, 1, 2], [3, 4, 5]])
+        assert element.vertices[0][0] == 0.0
+        assert element.vertices[0][1] == 1.0
+        assert element.vertices[0][2] == 2.0
+
+        assert element.vertices[1][0] == 3.0
+        assert element.vertices[1][1] == 4.0
+        assert element.vertices[1][2] == 5.0
+
+    def test_empty_vertices(self):
+        with pytest.raises(Exception):
+            Element(vertices=[])
+
+    def test_set_vertices(self):
+        element = Element(vertices=[[0, 1, 2]])
+        element.vertices = [[9, 8, 7], [6, 5, 4]]
+
+        assert element.vertices[0][0] == 9.0
+        assert element.vertices[0][1] == 8.0
+        assert element.vertices[0][2] == 7.0
+
+        assert element.vertices[1][0] == 6.0
+        assert element.vertices[1][1] == 5.0
+        assert element.vertices[1][2] == 4.0

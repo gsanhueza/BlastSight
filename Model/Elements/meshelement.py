@@ -3,7 +3,7 @@
 import numpy as np
 from random import random
 
-from Model.element import Element
+from Model.Elements.element import Element
 
 
 class MeshElement(Element):

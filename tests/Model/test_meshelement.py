@@ -2,7 +2,7 @@
 
 import numpy as np
 import pytest
-from Model.Mesh.meshelement import MeshElement
+from Model.Elements.meshelement import MeshElement
 
 
 class TestMeshElement:
@@ -74,3 +74,16 @@ class TestMeshElement:
         assert centroid[0] == 0
         assert centroid[1] == 1
         assert centroid[2] == 0
+
+    def test_set_values(self):
+        element = MeshElement(x=[-1, 1, 0], y=[0, 0, 3], z=[0, 0, 0], indices=[[0, 1, 2]])
+        assert element.values.size == 3
+        assert type(element.values[0]) == np.float32
+
+        element.values = [0, 1, 2]
+        assert element.values.size == 3
+        assert type(element.values[0]) == np.float32
+
+        assert element.values[0] == 0.0
+        assert element.values[1] == 1.0
+        assert element.values[2] == 2.0

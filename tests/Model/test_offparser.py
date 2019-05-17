@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import pytest
-from Model.Mesh.offparser import OFFParser
+from Model.Parsers.offparser import OFFParser
 
 
 class TestOFFParser:

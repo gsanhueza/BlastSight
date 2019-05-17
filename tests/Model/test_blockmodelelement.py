@@ -2,7 +2,7 @@
 
 import numpy as np
 import pytest
-from Model.BlockModel.blockmodelelement import BlockModelElement
+from Model.Elements.blockmodelelement import BlockModelElement
 
 
 class TestBlockModelElement:

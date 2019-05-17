@@ -2,7 +2,7 @@
 
 import colorsys
 import numpy as np
-from Model.element import Element
+from Model.Elements.element import Element
 
 
 class BlockModelElement(Element):

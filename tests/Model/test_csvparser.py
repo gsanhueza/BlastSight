@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import pytest
-from Model.BlockModel.csvparser import CSVParser
+from Model.Parsers.csvparser import CSVParser
 
 
 class TestDXFParser:
