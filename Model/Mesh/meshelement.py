@@ -2,33 +2,34 @@
 
 import numpy as np
 from random import random
-from statistics import mean
 
 from Model.element import Element
 
 
 class MeshElement(Element):
     def __init__(self, *args, **kwargs):
+        self._indices: np.ndarray = np.array([], np.float32)
+        self._values: np.ndarray = np.array([], np.float32)
+
         super().__init__(*args, **kwargs)
 
-        self._indices = kwargs.get('indices')
-        self._values = []
-
-        assert len(self.x) >= self.indices.max() + 1
+        self.indices = kwargs.get('indices')
+        self.values = list(map(lambda x: random(), range(3)))
+        assert self.x.size >= self.indices.max() + 1
 
     @property
     def indices(self) -> np.array:
-        return np.array(self._indices, np.uint32)  # GL_UNSIGNED_INT = np.uint32
+        return self._indices
 
     @indices.setter
     def indices(self, indices: list):
-        self._indices = indices
+        self._indices = np.array(indices, np.uint32)  # GL_UNSIGNED_INT = np.uint32
 
     # FIXME Does this have to exist?
     @property
-    def values(self) -> list:
-        return list(map(lambda x: random(), range(3)))
+    def values(self) -> np.ndarray:
+        return self._values
 
     @values.setter
     def values(self, values: list):
-        self._values = values
+        self._values = np.array(values, np.float32)

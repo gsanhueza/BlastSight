@@ -35,7 +35,7 @@ class TestElement:
 
     def test_average_coords(self):
         element = Element(x=[-1, 1, 0], y=[0, 0, 3], z=[0, 0, 0])
-        average = element.average_by_coord(element.vertices)
+        average = element.average_by_coord(element.x, element.y, element.z)
         assert average[0] == 0
         assert average[1] == 1
         assert average[2] == 0

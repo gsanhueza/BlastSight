@@ -7,8 +7,8 @@ from Model.element import Element
 
 class BlockModelElement(Element):
     def __init__(self, *args, **kwargs):
-        self._data = None
-        self._values = []
+        self._data: dict = None
+        self._values: np.ndarray = np.array([], np.float32)
 
         self.x_str = kwargs.get('easting', None)
         self.y_str = kwargs.get('northing', None)
@@ -47,11 +47,11 @@ class BlockModelElement(Element):
 
     @property
     def values(self) -> np.ndarray:
-        return np.array(self._values, np.float32)
+        return self._values
 
     @values.setter
-    def values(self, values: list) -> None:
-        self._values = values
+    def values(self, values: list):
+        self._values = np.array(values, np.float32)
 
     # TODO Force the user to set these strings
     def set_x_string(self, string: str) -> None:
@@ -95,11 +95,9 @@ class BlockModelElement(Element):
         return available
 
     def update_coords(self):
-        x = list(map(float, self.data[self.x_str]))
-        y = list(map(float, self.data[self.y_str]))
-        z = list(map(float, self.data[self.z_str]))
-
-        self.vertices = list(zip(x, y, z))
+        self.x = list(map(float, self.data[self.x_str]))
+        self.y = list(map(float, self.data[self.y_str]))
+        self.z = list(map(float, self.data[self.z_str]))
 
     def update_values(self):
         values = list(map(float, self.data[self.current_str]))
