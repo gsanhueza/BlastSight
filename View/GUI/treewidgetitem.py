@@ -64,7 +64,7 @@ class TreeWidgetItem(QTreeWidgetItem):
         element.update_coords()
         element.update_values()
 
-        self.mainwindow.viewer.set_centroid(element.get_centroid())
+        self.mainwindow.viewer.set_centroid(element.centroid)
 
         # Recreate the BlockModelGL instance with the "new" data
         self.gl_element.setup_vertex_attribs()

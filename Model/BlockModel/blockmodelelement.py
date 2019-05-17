@@ -7,8 +7,6 @@ from Model.element import Element
 
 class BlockModelElement(Element):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
         self._data = None
         self._values = []
 
@@ -16,6 +14,8 @@ class BlockModelElement(Element):
         self.y_str = kwargs.get('northing', None)
         self.z_str = kwargs.get('elevation', None)
         self.current_str = kwargs.get('value', None)
+
+        super().__init__(*args, **kwargs)
 
     def _init_fill(self, *args, **kwargs):
         if 'vertices' in kwargs.keys():
@@ -79,7 +79,6 @@ class BlockModelElement(Element):
         return self.current_str
 
     def get_available_coords(self) -> list:
-        print('get_available_coords', self.data)
         if self.x_str is None:
             return list(self.data.keys())
 
