@@ -13,7 +13,7 @@ from View.GUI.treewidgetitem import TreeWidgetItem
 from PyQt5 import uic
 
 
-class MainWindow(QMainWindow):
+class MineVis(QMainWindow):
     def __init__(self, parent=None):
         QMainWindow.__init__(self, parent)
         uic.loadUi('View/UI/mainwindow.ui', self)

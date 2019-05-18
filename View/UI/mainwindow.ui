@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>MainWindow</class>
- <widget class="QMainWindow" name="MainWindow">
+ <class>MineVis</class>
+ <widget class="QMainWindow" name="MineVis">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -191,7 +191,7 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>MainWindow</class>
+   <class>MineVis</class>
    <extends>QMainWindow</extends>
    <header>View/GUI/mainwindow.h</header>
   </customwidget>
@@ -211,7 +211,7 @@
   <connection>
    <sender>action_Quit</sender>
    <signal>triggered()</signal>
-   <receiver>MainWindow</receiver>
+   <receiver>MineVis</receiver>
    <slot>close()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -227,7 +227,7 @@
   <connection>
    <sender>action_Draw_mode</sender>
    <signal>triggered()</signal>
-   <receiver>MainWindow</receiver>
+   <receiver>MineVis</receiver>
    <slot>draw_mode_slot()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -243,7 +243,7 @@
   <connection>
    <sender>action_Normal_mode</sender>
    <signal>triggered()</signal>
-   <receiver>MainWindow</receiver>
+   <receiver>MineVis</receiver>
    <slot>normal_mode_slot()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -259,7 +259,7 @@
   <connection>
    <sender>action_Load_Mesh</sender>
    <signal>triggered()</signal>
-   <receiver>MainWindow</receiver>
+   <receiver>MineVis</receiver>
    <slot>load_mesh_slot()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -275,7 +275,7 @@
   <connection>
    <sender>action_Free_mode</sender>
    <signal>triggered()</signal>
-   <receiver>MainWindow</receiver>
+   <receiver>MineVis</receiver>
    <slot>free_mode_slot()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -291,7 +291,7 @@
   <connection>
    <sender>action_Help</sender>
    <signal>triggered()</signal>
-   <receiver>MainWindow</receiver>
+   <receiver>MineVis</receiver>
    <slot>help_slot()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -307,7 +307,7 @@
   <connection>
    <sender>action_Load_block_model</sender>
    <signal>triggered()</signal>
-   <receiver>MainWindow</receiver>
+   <receiver>MineVis</receiver>
    <slot>load_block_model_slot()</slot>
    <hints>
     <hint type="sourcelabel">

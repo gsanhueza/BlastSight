@@ -16,19 +16,16 @@ from Controller.normalmode import NormalMode
 from Controller.drawmode import DrawMode
 from Controller.freemode import FreeMode
 
-from Model.model import Model
 from Model.Elements.element import Element
+from Model.model import model_handler  # Model handler
 
 
 class OpenGLWidget(QOpenGLWidget):
-    def __init__(self, parent=None, model=Model()):
+    def __init__(self, parent=None):
         QOpenGLWidget.__init__(self, parent)
 
         # Controller mode
         self.current_mode = None
-
-        # Model
-        self._model = model
 
         # Drawable elements
         self.drawable_collection = GLDrawableCollection()
@@ -78,7 +75,7 @@ class OpenGLWidget(QOpenGLWidget):
 
     def add_mesh(self, file_path: str) -> int:
         try:
-            element = self.model.mesh_by_path(file_path)
+            element = model_handler.mesh_by_path(file_path)
             return self.add_drawable(element, MeshGL)
         except Exception:
             traceback.print_exc()
@@ -86,7 +83,7 @@ class OpenGLWidget(QOpenGLWidget):
 
     def add_block_model(self, file_path: str) -> int:
         try:
-            element = self.model.block_model_by_path(file_path)
+            element = model_handler.block_model_by_path(file_path)
             return self.add_drawable(element, BlockModelGL)
         except Exception:
             traceback.print_exc()
@@ -99,7 +96,7 @@ class OpenGLWidget(QOpenGLWidget):
         self.drawable_collection[id_].hide()
 
     def delete_element(self, id_: int) -> None:
-        self.model.delete(id_)
+        model_handler.delete(id_)
         del self.drawable_collection[id_]
 
     def get_element(self, id_: int) -> None:
@@ -140,22 +137,14 @@ class OpenGLWidget(QOpenGLWidget):
     Internal methods
     """
 
-    @property
-    def model(self) -> Model:
-        return self._model
-
-    @model.setter
-    def model(self, model: Model) -> None:
-        self._model = model
-
     def initializeGL(self) -> None:
         # Meshes currently in model
-        for id_, mesh in self.model.mesh_collection:
+        for id_, mesh in model_handler.mesh_collection:
             drawable = MeshGL(self, mesh)
             self.drawable_collection.add(id_, drawable)
 
         # Block models currently in model
-        for id_, block_model in self.model.block_model_collection:
+        for id_, block_model in model_handler.block_model_collection:
             drawable = BlockModelGL(self, block_model)
             self.drawable_collection.add(id_, drawable)
 
