@@ -14,6 +14,8 @@ from Model.Parsers.csvparser import CSVParser
 
 
 class Model:
+    _instance = None
+
     def __init__(self):
         self._element_collection = OrderedDict()
         self.parser_dict = {}  # Example: {"dxf": (DXFParser, MeshElement)}
@@ -96,18 +98,3 @@ class Model:
     @property
     def block_model_collection(self) -> list:
         return list(filter(lambda x: isinstance(x[1], BlockModelElement), self._element_collection.items()))
-
-
-# Singleton
-class ModelHandler:
-    instance = None
-
-    def __init__(self):
-        if self.instance is None:
-            self.instance = Model()
-
-    def __getattr__(self, name):
-        return getattr(self.instance, name)
-
-
-model_handler = ModelHandler()

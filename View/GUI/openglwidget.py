@@ -17,7 +17,7 @@ from Controller.drawmode import DrawMode
 from Controller.freemode import FreeMode
 
 from Model.Elements.element import Element
-from Model.model import model_handler  # Model handler
+from Model.modelhandler import model_handler  # Model handler
 
 
 class OpenGLWidget(QOpenGLWidget):
