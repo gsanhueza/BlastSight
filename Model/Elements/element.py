@@ -10,6 +10,7 @@ class Element:
         self._z: np.ndarray = np.array([], np.float32)
         self._name: str = None
         self._ext: str = None
+        self._id: int = None
 
         self._init_fill(*args, **kwargs)
 
@@ -20,7 +21,7 @@ class Element:
         elif all(elem in list(kwargs.keys()) for elem in ['x', 'y', 'z']):
             self.x, self.y, self.z = list(map(lambda s: kwargs.get(s), ['x', 'y', 'z']))
 
-            assert len(self.x) == len(self.y) == len(self.z),\
+            assert self.x.size == self.y.size == self.z.size,\
                 f'Coordinates have different lengths: ({self.x.size}, {self.y.size}, {self.z.size})'
 
         else:
@@ -68,6 +69,14 @@ class Element:
     @ext.setter
     def ext(self, ext: str) -> None:
         self._ext = ext
+
+    @property
+    def id(self) -> int:
+        return self._id
+
+    @id.setter
+    def id(self, _id: int) -> None:
+        self._id = _id
 
     @property
     def vertices(self) -> np.ndarray:
