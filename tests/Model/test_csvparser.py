@@ -3,7 +3,7 @@
 import pytest
 from Model.Parsers.csvparser import CSVParser
 
-TEST_FILES_FOLDER_PATH = 'tests/files'
+from tests.globals import *
 
 
 class TestDXFParser:
@@ -17,7 +17,7 @@ class TestDXFParser:
 
     def test_load_wrong_extension(self):
         with pytest.raises(Exception):
-            CSVParser.load_file(f'{TEST_FILES_FOLDER_PATH}/mini.xls')
+            CSVParser.load_file(f'{TEST_FILES_FOLDER_PATH}/caseron.off')
 
     def test_load_damaged(self):
         with pytest.raises(Exception):

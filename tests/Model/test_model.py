@@ -5,7 +5,7 @@ from Model.Parsers.offparser import OFFParser
 from Model.Parsers.csvparser import CSVParser
 from Model.model import Model
 
-TEST_FILES_FOLDER_PATH = 'tests/files'
+from tests.globals import *
 
 
 class TestModel:

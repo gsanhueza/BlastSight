@@ -20,7 +20,7 @@ class MineVisViewer(OpenGLWidget):
 
 def test_viewer():
     viewer = MineVisViewer()
-    id_off = viewer.add_mesh('tests/files/caseron.off')
+    id_off = viewer.add_mesh('tests/Files/caseron.off')
     # viewer.delete_element(id_off)
     viewer.show()
 

@@ -3,7 +3,7 @@
 import pytest
 from Model.Parsers.offparser import OFFParser
 
-TEST_FILES_FOLDER_PATH = 'tests/files'
+from tests.globals import *
 
 
 class TestOFFParser:

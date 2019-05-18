@@ -3,7 +3,7 @@
 import pytest
 from Model.Parsers.dxfparser import DXFParser
 
-TEST_FILES_FOLDER_PATH = 'tests/files'
+from tests.globals import *
 
 
 class TestDXFParser:

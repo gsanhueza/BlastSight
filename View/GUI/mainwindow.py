@@ -38,7 +38,7 @@ class MainWindow(QMainWindow):
         (file_path, selected_filter) = QFileDialog.getOpenFileName(
             parent=self,
             directory='.',
-            filter='Mesh files (*.dxf *.off);;DXF Files (*.dxf);;OFF Files (*.off)')
+            filter='Mesh Files (*.dxf *.off);;DXF Files (*.dxf);;OFF Files (*.off)')
 
         if file_path != '':
             self.load_mesh(file_path)
@@ -57,7 +57,7 @@ class MainWindow(QMainWindow):
         (file_path, selected_filter) = QFileDialog.getOpenFileName(
             parent=self,
             directory='.',
-            filter='CSV Files (*.csv);;All files (*.*)')
+            filter='CSV Files (*.csv);;All Files (*.*)')
 
         if file_path != '':
             self.load_block_model(file_path)
