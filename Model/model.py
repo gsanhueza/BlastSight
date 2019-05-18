@@ -28,8 +28,7 @@ class Model:
         self.parser_dict[extension] = (handler, element_type)
 
     def get_parser(self, ext: str, element_type=None):
-        if element_type is not None:
-            assert self.parser_dict[ext][1] == element_type
+        assert self.parser_dict[ext][1] == element_type
         return self.parser_dict[ext][0]
 
     def mesh(self, *args, **kwargs) -> MeshElement:

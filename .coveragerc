@@ -1,0 +1,10 @@
+[coverage:run]
+branch = True
+
+[coverage:report]
+show_missing = True
+omit = 
+    main.py
+    example.py
+    # tests/*
+

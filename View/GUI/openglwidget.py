@@ -8,7 +8,6 @@ from PyQt5.QtGui import QPainter
 from PyQt5.QtGui import QMatrix4x4
 
 from View.Drawables.drawablecollection import GLDrawableCollection
-from View.Drawables.gldrawable import GLDrawable
 from View.Drawables.blockmodelgl import BlockModelGL
 from View.Drawables.meshgl import MeshGL
 from View.fpscounter import FPSCounter
@@ -29,7 +28,7 @@ class OpenGLWidget(QOpenGLWidget):
         self.current_mode = None
 
         # Model
-        self.model = model
+        self._model = model
 
         # Drawable elements
         self.drawable_collection = GLDrawableCollection()
@@ -140,8 +139,14 @@ class OpenGLWidget(QOpenGLWidget):
     """
     Internal methods
     """
-    def set_model(self, model: Model) -> None:
-        self.model = model
+
+    @property
+    def model(self) -> Model:
+        return self._model
+
+    @model.setter
+    def model(self, model: Model) -> None:
+        self._model = model
 
     def initializeGL(self) -> None:
         # Meshes currently in model

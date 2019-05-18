@@ -28,6 +28,8 @@ class TestModel:
         mesh_2 = model.mesh_by_path(path=path)
 
         assert mesh_1.id != mesh_2.id
+        assert mesh_1.name == 'caseron'
+        assert mesh_1.ext == 'dxf'
 
     def test_wrong_mesh(self):
         model = Model()
