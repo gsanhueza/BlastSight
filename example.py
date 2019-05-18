@@ -18,35 +18,26 @@ class MineVisViewer(OpenGLWidget):
         sys.exit(self.app.exec_())
 
 
-def test_viewer():
+def try_viewer():
     viewer = MineVisViewer()
     id_off = viewer.add_mesh('tests/Files/caseron.off')
     # viewer.delete_element(id_off)
     viewer.show()
 
 
-def test_block_model():
-    viewer = MineVisViewer()
-    id_csv = viewer.add_block_model('Model/BlockModel/complex.csv')
-    bm = viewer.model.get_block_model(id_csv)
-    bm.set_value_string('Au')
-    bm.update_values()
-    viewer.show()
-
-
-def test_model():
+def try_model():
     model = Model()
-    id_1 = model.add_mesh('/home/gabriel/xyzrgb_statuette.off')
+    mesh_1 = model.mesh_by_path('/home/gabriel/xyzrgb_statuette.off')
     input('memory 1 ?')
-    id_2 = model.add_mesh('/home/gabriel/xyzrgb_statuette.off')
+    mesh_2 = model.mesh_by_path('/home/gabriel/xyzrgb_statuette.off')
     input('memory 1 + 2?')
-    model.delete_mesh(id_1)
+    model.delete(mesh_1.id)
     input('memory 2 - 1?')
-    model.delete_mesh(id_2)
+    model.delete(mesh_2.id)
     input('memory with no meshes?')
 
 
-def test_element():
+def try_element():
     from Model.Parsers.offparser import OFFParser
     from Model.Elements.element import Element
 
@@ -62,7 +53,7 @@ def test_element():
     print(element.name)
 
 
-def test_meshelement():
+def try_mesh():
     from Model.Parsers.offparser import OFFParser
     from Model.Elements.meshelement import MeshElement
 
@@ -78,5 +69,14 @@ def test_meshelement():
     print(mesh.name)
 
 
+def try_block_model():
+    viewer = MineVisViewer()
+    id_csv = viewer.add_block_model('Model/BlockModel/complex.csv')
+    bm = viewer.model.get_block_model(id_csv)
+    bm.set_value_string('Au')
+    bm.update_values()
+    viewer.show()
+
+
 if __name__ == '__main__':
-    test_viewer()
+    try_viewer()
