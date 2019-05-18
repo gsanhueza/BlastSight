@@ -20,8 +20,17 @@ class MainWindow(QMainWindow):
 
         self.statusBar.showMessage('Ready')
 
-    def set_model(self, model: Model) -> None:
-        self.viewer.set_model(model)
+    @property
+    def viewer(self):
+        return self.openglwidget
+
+    @property
+    def model(self) -> Model:
+        return self.viewer.model
+
+    @model.setter
+    def model(self, model: Model) -> None:
+        self.viewer.model = model
 
     def fill_tree_widget(self) -> None:
         # Tree widget

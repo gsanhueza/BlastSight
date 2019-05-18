@@ -12,7 +12,7 @@ if __name__ == '__main__':
     model = Model()
     # model.mesh_by_path('tests/Files/caseron.off')
     window = MainWindow()
-    window.set_model(model)
+    window.model = model
 
     window.show()
     sys.exit(app.exec_())
