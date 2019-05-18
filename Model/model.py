@@ -16,7 +16,7 @@ from Model.Parsers.csvparser import CSVParser
 
 class Model:
     def __init__(self):
-        self.element_collection = OrderedDict()
+        self._element_collection = OrderedDict()
         self.parser_dict = {}  # Example: {"dxf": (DXFParser, MeshElement)}
         self.last_id = 0
 
@@ -32,67 +32,81 @@ class Model:
             assert self.parser_dict[ext][1] == element_type
         return self.parser_dict[ext][0]
 
-    def add_mesh(self, file_path: str) -> int:
-        try:
-            name = QFileInfo(file_path).baseName()
-            ext = QFileInfo(file_path).suffix()
-            vertices, indices = self.get_parser(ext, MeshElement).load_file(file_path)
-            # [[x1, y1, z1], [x2, y2, z2]] -> [[x1, x2], [y1, y2], [z1, z2])
+    def mesh(self, *args, **kwargs) -> MeshElement:
+        name = kwargs.get('name', None)
+        ext = kwargs.get('ext', None)
 
-            self.element_collection[self.last_id] = MeshElement(vertices=vertices,
-                                                                indices=indices,
-                                                                name=name,
-                                                                ext=ext)
-            self.last_id += 1
+        indices = kwargs.get('indices')
+        if 'vertices' in kwargs.keys():
+            vertices = kwargs.get('vertices')
+            element = MeshElement(vertices=vertices, indices=indices, name=name, ext=ext)
+        else:
+            x = kwargs.get('x')
+            y = kwargs.get('y')
+            z = kwargs.get('z')
+            element = MeshElement(x=x, y=y, z=z, indices=indices, name=name, ext=ext)
 
-            return self.last_id - 1
-        except Exception:
-            traceback.print_exc()
-            return -1
+        element.id = self.last_id
 
-    def add_block_model(self, file_path: str) -> int:
-        try:
-            name = QFileInfo(file_path).baseName()
-            ext = QFileInfo(file_path).suffix()
-            data = self.get_parser(ext, BlockModelElement).load_file(file_path)
+        self._element_collection[self.last_id] = element
+        self.last_id += 1
 
-            self.element_collection[self.last_id] = BlockModelElement(data=data,
-                                                                      name=name,
-                                                                      ext=ext)
-            self.last_id += 1
+        return element
 
-            return self.last_id - 1
-        except Exception:
-            traceback.print_exc()
-            return -1
+    def mesh_by_path(self, path: str) -> MeshElement:
+        name = QFileInfo(path).baseName()
+        ext = QFileInfo(path).suffix()
+        vertices, indices = self.get_parser(ext, MeshElement).load_file(path)
 
-    # Generalization of delete
-    def delete_element(self, id_: int) -> bool:
-        self.element_collection.__delitem__(id_)
-        return True
+        element = MeshElement(vertices=vertices, indices=indices, name=name, ext=ext)
+        element.id = self.last_id
 
-    def delete_mesh(self, id_: int) -> bool:
-        return self.delete_element(id_)
+        self._element_collection[self.last_id] = element
+        self.last_id += 1
 
-    def delete_block_model(self, id_: int) -> bool:
-        return self.delete_element(id_)
+        return element
 
-    # Generalization of get
-    def get_element(self, id_: int) -> Element:
-        return self.element_collection[id_]
+    def block_model(self, *args, **kwargs) -> BlockModelElement:
+        name = kwargs.get('name', None)
+        ext = kwargs.get('ext', None)
 
-    def get_mesh(self, id_: int) -> Element:
-        return self.get_element(id_)
+        data = kwargs.get('data')
+        element = BlockModelElement(data=data, name=name, ext=ext)
 
-    def get_block_model(self, id_: int) -> Element:
-        return self.get_element(id_)
+        element.id = self.last_id
 
-    # Generalization of get collection
-    def get_element_collection(self) -> list:
-        return list(self.element_collection.items())
+        self._element_collection[self.last_id] = element
+        self.last_id += 1
 
-    def get_mesh_collection(self) -> list:
-        return list(filter(lambda x: isinstance(x[1], MeshElement), self.get_element_collection()))
+        return element
 
-    def get_block_model_collection(self) -> list:
-        return list(filter(lambda x: isinstance(x[1], BlockModelElement), self.get_element_collection()))
+    def block_model_by_path(self, path: str) -> BlockModelElement:
+        name = QFileInfo(path).baseName()
+        ext = QFileInfo(path).suffix()
+        data = self.get_parser(ext, BlockModelElement).load_file(path)
+
+        element = BlockModelElement(data=data, name=name, ext=ext)
+        element.id = self.last_id
+
+        self._element_collection[self.last_id] = element
+        self.last_id += 1
+
+        return element
+
+    def get(self, id_: int) -> Element:
+        return self._element_collection[id_]
+
+    def delete(self, id_: int) -> None:
+        self._element_collection.__delitem__(id_)
+
+    @property
+    def element_collection(self) -> list:
+        return list(self._element_collection.items())
+
+    @property
+    def mesh_collection(self) -> list:
+        return list(filter(lambda x: isinstance(x[1], MeshElement), self._element_collection.items()))
+
+    @property
+    def block_model_collection(self) -> list:
+        return list(filter(lambda x: isinstance(x[1], BlockModelElement), self._element_collection.items()))

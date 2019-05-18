@@ -11,6 +11,7 @@ class TestBlockModelElement:
             BlockModelElement()
 
     def test_block_single(self):
+        # FIXME At least there should be one "value"
         element = BlockModelElement(x=[-1], y=[0], z=[0])
         assert len(element.vertices) == 1
 
