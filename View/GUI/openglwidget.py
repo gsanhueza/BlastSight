@@ -61,7 +61,6 @@ class OpenGLWidget(QOpenGLWidget):
     """
     FACADE METHODS
     """
-    # FIXME We changed the way the model handles new data
     def add_drawable(self, element: Element, drawable_type: type):
         id_ = element.id
 
@@ -73,7 +72,15 @@ class OpenGLWidget(QOpenGLWidget):
 
         return id_
 
-    def add_mesh(self, file_path: str) -> int:
+    def mesh(self, *args, **kwargs):
+        try:
+            element = model_handler.mesh(*args, **kwargs)
+            return self.add_drawable(element, MeshGL)
+        except Exception:
+            traceback.print_exc()
+            return -1
+
+    def mesh_by_path(self, file_path: str):
         try:
             element = model_handler.mesh_by_path(file_path)
             return self.add_drawable(element, MeshGL)
@@ -81,7 +88,15 @@ class OpenGLWidget(QOpenGLWidget):
             traceback.print_exc()
             return -1
 
-    def add_block_model(self, file_path: str) -> int:
+    def block_model(self, *args, **kwargs) -> int:
+        try:
+            element = model_handler.block_model(*args, **kwargs)
+            return self.add_drawable(element, BlockModelGL)
+        except Exception:
+            traceback.print_exc()
+            return -1
+
+    def block_model_by_path(self, file_path: str) -> int:
         try:
             element = model_handler.block_model_by_path(file_path)
             return self.add_drawable(element, BlockModelGL)

@@ -23,7 +23,7 @@ def standalone():
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Starts MineVis in app or standalone viewer mode.')
+    parser = argparse.ArgumentParser(description='Starts MineVis in App or standalone Viewer mode.')
     parser.add_argument('--app', action='store_true', help='Starts in App mode.')
     parser.add_argument('--viewer', action='store_true', help='Starts in Viewer mode.')
 

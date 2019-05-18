@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-import traceback
 from collections import OrderedDict
 
 from PyQt5.QtCore import QFileInfo
@@ -57,13 +56,7 @@ class Model:
         ext = QFileInfo(path).suffix()
         vertices, indices = self.get_parser(ext, MeshElement).load_file(path)
 
-        element = MeshElement(vertices=vertices, indices=indices, name=name, ext=ext)
-        element.id = self.last_id
-
-        self._element_collection[self.last_id] = element
-        self.last_id += 1
-
-        return element
+        return self.mesh(vertices=vertices, indices=indices, name=name, ext=ext)
 
     def block_model(self, *args, **kwargs) -> BlockModelElement:
         name = kwargs.get('name', None)
@@ -84,13 +77,7 @@ class Model:
         ext = QFileInfo(path).suffix()
         data = self.get_parser(ext, BlockModelElement).load_file(path)
 
-        element = BlockModelElement(data=data, name=name, ext=ext)
-        element.id = self.last_id
-
-        self._element_collection[self.last_id] = element
-        self.last_id += 1
-
-        return element
+        return self.block_model(data=data, name=name, ext=ext)
 
     def get(self, id_: int) -> Element:
         return self._element_collection[id_]

@@ -65,7 +65,7 @@ class MineVis(QMainWindow):
             self.last_directory = QFileInfo(file_path).absoluteDir().absolutePath()
 
     def load_mesh(self, file_path: str) -> bool:
-        loaded = self.viewer.add_mesh(file_path) != -1
+        loaded = self.viewer.mesh_by_path(file_path) != -1
 
         if loaded:
             self.statusBar.showMessage('Mesh loaded')
@@ -84,7 +84,7 @@ class MineVis(QMainWindow):
             self.last_directory = QFileInfo(file_path).absoluteDir().absolutePath()
 
     def load_block_model(self, file_path: str) -> bool:
-        id_ = self.viewer.add_block_model(file_path)
+        id_ = self.viewer.block_model_by_path(file_path)
         loaded = id_ != -1
 
         if loaded:
