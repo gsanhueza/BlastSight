@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 
 from PyQt5.QtCore import Qt
+from PyQt5.QtCore import QFileInfo
+from PyQt5.QtCore import QSettings
 from PyQt5.QtWidgets import QFileDialog
 from PyQt5.QtWidgets import QMainWindow
 from PyQt5.QtWidgets import QMessageBox
@@ -15,9 +17,11 @@ class MainWindow(QMainWindow):
     def __init__(self, parent=None):
         QMainWindow.__init__(self, parent)
         uic.loadUi('View/UI/mainwindow.ui', self)
+
+        self._settings = QSettings('AMTC', application='MineVis', parent=self)
+
         self.setFocusPolicy(Qt.StrongFocus)
         self.setAcceptDrops(True)
-
         self.statusBar.showMessage('Ready')
 
     @property
@@ -32,6 +36,14 @@ class MainWindow(QMainWindow):
     def model(self, model: Model) -> None:
         self.viewer.model = model
 
+    @property
+    def last_directory(self) -> str:
+        return self._settings.value('last_directory', '.')
+
+    @last_directory.setter
+    def last_directory(self, last_dir: str) -> None:
+        self._settings.setValue('last_directory', last_dir)
+
     def fill_tree_widget(self) -> None:
         # Tree widget
         self.treeWidget.clear()
@@ -43,14 +55,14 @@ class MainWindow(QMainWindow):
 
     # Unless explicitly otherwise, slots are connected via Qt Designer
     def load_mesh_slot(self) -> None:
-        # TODO Use QSettings (or something) to remember last directory
         (file_path, selected_filter) = QFileDialog.getOpenFileName(
             parent=self,
-            directory='.',
+            directory=self.last_directory,
             filter='Mesh Files (*.dxf *.off);;DXF Files (*.dxf);;OFF Files (*.off)')
 
         if file_path != '':
             self.load_mesh(file_path)
+            self.last_directory = QFileInfo(file_path).absoluteDir().absolutePath()
 
     def load_mesh(self, file_path: str) -> bool:
         loaded = self.viewer.add_mesh(file_path) != -1
@@ -62,14 +74,14 @@ class MainWindow(QMainWindow):
         return loaded
 
     def load_block_model_slot(self) -> None:
-        # TODO Use QSettings (or something) to remember last directory
         (file_path, selected_filter) = QFileDialog.getOpenFileName(
             parent=self,
-            directory='.',
+            directory=self.last_directory,
             filter='CSV Files (*.csv);;All Files (*.*)')
 
         if file_path != '':
             self.load_block_model(file_path)
+            self.last_directory = QFileInfo(file_path).absoluteDir().absolutePath()
 
     def load_block_model(self, file_path: str) -> bool:
         id_ = self.viewer.add_block_model(file_path)
