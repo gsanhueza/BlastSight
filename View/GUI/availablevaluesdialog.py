@@ -9,7 +9,9 @@ from PyQt5 import uic
 class DialogAvailableValues(QDialog):
     def __init__(self, parent=None):
         QDialog.__init__(self, parent.mainwindow)
-        self.setAttribute(Qt.WA_DeleteOnClose)  # Avoids the QObject::startTimer warning
+
+        # Avoids the QObject::startTimer warning (maybe)
+        self.setAttribute(Qt.WA_DeleteOnClose)
 
         uic.loadUi('View/UI/dialogavailablevalues.ui', self)
         self.parent = parent
@@ -47,7 +49,7 @@ class DialogAvailableValues(QDialog):
 
     def comboBoxChanged(self, _):
         # We'll disable the OK button unless all the values are set
-        
+
         x_ready = bool(self.comboBox_x.currentText())
         y_ready = bool(self.comboBox_y.currentText())
         z_ready = bool(self.comboBox_z.currentText())

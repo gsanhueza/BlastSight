@@ -37,11 +37,11 @@ class MineVis(QMainWindow):
         self.viewer.model = model
 
     @property
-    def last_directory(self) -> str:
+    def last_dir(self) -> str:
         return self._settings.value('last_directory', '.')
 
-    @last_directory.setter
-    def last_directory(self, last_dir: str) -> None:
+    @last_dir.setter
+    def last_dir(self, last_dir: str) -> None:
         self._settings.setValue('last_directory', last_dir)
 
     def fill_tree_widget(self) -> None:
@@ -57,12 +57,14 @@ class MineVis(QMainWindow):
     def load_mesh_slot(self) -> None:
         (file_path, selected_filter) = QFileDialog.getOpenFileName(
             parent=self,
-            directory=self.last_directory,
-            filter='Mesh Files (*.dxf *.off);;DXF Files (*.dxf);;OFF Files (*.off)')
+            directory=self.last_dir,
+            filter='Mesh Files (*.dxf *.off);;'
+                   'DXF Files (*.dxf);;'
+                   'OFF Files (*.off)')
 
         if file_path != '':
             self.load_mesh(file_path)
-            self.last_directory = QFileInfo(file_path).absoluteDir().absolutePath()
+            self.last_dir = QFileInfo(file_path).absoluteDir().absolutePath()
 
     def load_mesh(self, file_path: str) -> bool:
         loaded = self.viewer.mesh_by_path(file_path) != -1
@@ -76,12 +78,12 @@ class MineVis(QMainWindow):
     def load_block_model_slot(self) -> None:
         (file_path, selected_filter) = QFileDialog.getOpenFileName(
             parent=self,
-            directory=self.last_directory,
+            directory=self.last_dir,
             filter='CSV Files (*.csv);;All Files (*.*)')
 
         if file_path != '':
             self.load_block_model(file_path)
-            self.last_directory = QFileInfo(file_path).absoluteDir().absolutePath()
+            self.last_dir = QFileInfo(file_path).absoluteDir().absolutePath()
 
     def load_block_model(self, file_path: str) -> bool:
         id_ = self.viewer.block_model_by_path(file_path)

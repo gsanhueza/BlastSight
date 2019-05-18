@@ -29,7 +29,7 @@ class TreeWidget(QTreeWidget):
         :param event: Qt Event.
         :return: None
         """
-        # Pop-up the context menu on current position, but only if an item is there
+        # Pop-up the context menu on current position, if an item is there
         item = self.itemAt(event)
 
         if item:
