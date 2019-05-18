@@ -1,124 +1,142 @@
 #!/usr/bin/env python
 
 import pytest
+from Model.Parsers.offparser import OFFParser
+from Model.Parsers.csvparser import CSVParser
 from Model.model import Model
-from Model.Mesh.meshelement import MeshElement
-from Model.BlockModel.blockmodelelement import BlockModelElement
+
+from tests.globals import *
 
 
 class TestModel:
-    def generate(self):
-        return Model()
-
-    # Mesh
     def test_add_mesh(self):
-        model = self.generate()
-        mesh_id = model.add_mesh('tests/caseron.off')
-        assert mesh_id > -1
+        model = Model()
+        path = f'{TEST_FILES_FOLDER_PATH}/caseron.off'
+        vertices, indices = OFFParser.load_file(path)
+        x, y, z = zip(*vertices)
+
+        mesh_1 = model.mesh(vertices=vertices, indices=indices, name='caseron', ext='off')
+        mesh_2 = model.mesh(x=x, y=y, z=z, indices=indices, name='caseron', ext='off')
+
+        assert mesh_1.id != mesh_2.id
+
+    def test_add_mesh_by_path(self):
+        model = Model()
+        path = f'{TEST_FILES_FOLDER_PATH}/caseron.dxf'
+
+        mesh_1 = model.mesh_by_path(path=path)
+        mesh_2 = model.mesh_by_path(path=path)
+
+        assert mesh_1.id != mesh_2.id
 
     def test_wrong_mesh(self):
-        model = self.generate()
-        mesh_id = model.add_mesh('tests/nonexistent.off')
-        assert mesh_id == -1
+        model = Model()
+        with pytest.raises(Exception):
+            model.mesh_by_path(f'{TEST_FILES_FOLDER_PATH}/nonexistent.off')
 
     def test_get_mesh(self):
         model = Model()
-        mesh_id = model.add_mesh('tests/caseron.off')
-        mesh = model.get_mesh(mesh_id)
-        meshe = model.get_element(mesh_id)
-        assert mesh is not None
-        assert mesh == meshe
+        path = f'{TEST_FILES_FOLDER_PATH}/caseron.off'
+        vertices, indices = OFFParser.load_file(path)
 
-    def test_update_mesh(self):
-        model = Model()
-        mesh_id = model.add_mesh('tests/caseron.off')
-        mesh_1 = model.get_element(mesh_id)
-        model.update_mesh(mesh_id, 'tests/caseron.off')
-        mesh_2 = model.get_element(mesh_id)
-        assert mesh_1.get_vertices().all() == mesh_2.get_vertices().all()
-        assert mesh_1.get_indices().all() == mesh_2.get_indices().all()
-        assert mesh_1.get_values().all() == mesh_2.get_values().all()
-        assert mesh_1.get_centroid().all() == mesh_2.get_centroid().all()
+        mesh = model.mesh(vertices=vertices, indices=indices)
+        mesh_get = model.get(mesh.id)
+
+        assert mesh is not None
+        assert mesh_get is not None
+        assert mesh.id == mesh_get.id
 
     def test_delete_mesh(self):
         model = Model()
-        mesh_id = model.add_mesh('tests/caseron.off')
-        element = model.get_mesh(mesh_id)
-        assert element is not None
+        path = f'{TEST_FILES_FOLDER_PATH}/caseron.off'
+        vertices, indices = OFFParser.load_file(path)
 
-        model.delete_mesh(mesh_id)
+        mesh = model.mesh(vertices=vertices, indices=indices)
+        id_ = mesh.id
+        model.delete(id_)
+
         with pytest.raises(Exception):
-            model.get_mesh(mesh_id)
+            model.get(id_)
 
-    # BlockModel
-    def test_add_blockmodel(self):
-        model = self.generate()
-        bm_id = model.add_block_model('tests/mini.csv')
-        assert bm_id > -1
+    def test_add_block_model(self):
+        model = Model()
+        path = f'{TEST_FILES_FOLDER_PATH}/mini.csv'
+        data = CSVParser.load_file(path)
+
+        bm_1 = model.block_model(data=data)
+        bm_2 = model.block_model(data=data)
+
+        assert bm_1.id != bm_2.id
+
+    def test_add_blockmodel_by_path(self):
+        model = Model()
+        path = f'{TEST_FILES_FOLDER_PATH}/mini.csv'
+
+        bm_1 = model.block_model_by_path(path=path)
+        bm_2 = model.block_model_by_path(path=path)
+
+        assert bm_1.id != bm_2.id
 
     def test_wrong_blockmodel(self):
-        model = self.generate()
-        bm_id = model.add_mesh('tests/nonexistent.csv')
-        assert bm_id == -1
+        model = Model()
+        with pytest.raises(Exception):
+            model.block_model_by_path(f'{TEST_FILES_FOLDER_PATH}/nonexistent.csv')
 
     def test_get_blockmodel(self):
         model = Model()
-        bm_id = model.add_block_model('tests/mini.csv')
-        bm = model.get_block_model(bm_id)
-        bme = model.get_block_model(bm_id)
-        assert bm is not None
-        assert bm == bme
+        path = f'{TEST_FILES_FOLDER_PATH}/mini.csv'
+        data = CSVParser.load_file(path)
 
-    def test_update_blockmodel(self):
-        model = Model()
-        bm_id = model.add_block_model('tests/mini.csv')
-        bm_1 = model.get_block_model(bm_id)
-        model.update_block_model(bm_id, 'tests/mini.csv')
-        bm_2 = model.get_block_model(bm_id)
-        assert bm_1.get_vertices().all() == bm_2.get_vertices().all()
-        assert bm_1.get_indices().all() == bm_2.get_indices().all()
-        assert bm_1.get_values().all() == bm_2.get_values().all()
-        assert bm_1.get_centroid().all() == bm_2.get_centroid().all()
+        bm = model.block_model(data=data)
+        bm_get = model.get(bm.id)
+
+        assert bm is not None
+        assert bm_get is not None
+        assert bm.id == bm_get.id
 
     def test_delete_blockmodel(self):
         model = Model()
-        bm_id = model.add_block_model('tests/mini.csv')
-        bm = model.get_block_model(bm_id)
-        assert bm is not None
+        path = f'{TEST_FILES_FOLDER_PATH}/mini.csv'
+        data = CSVParser.load_file(path)
 
-        model.delete_block_model(bm_id)
+        bm = model.block_model(data=data)
+        id_ = bm.id
+        model.delete(id_)
+
         with pytest.raises(Exception):
-            model.get_block_model(bm_id)
+            model.get(id_)
 
     # Multiple
     def test_add_multiple(self):
         model = Model()
-        mesh_id1 = model.add_mesh('tests/caseron.off')
-        mesh_id2 = model.add_mesh('tests/caseron.dxf')
-        bm_id1 = model.add_block_model('tests/mini.csv')
+        elem_1 = model.mesh_by_path(path=f'{TEST_FILES_FOLDER_PATH}/caseron.off')
+        elem_2 = model.mesh_by_path(path=f'{TEST_FILES_FOLDER_PATH}/caseron.dxf')
+        elem_3 = model.block_model_by_path(path=f'{TEST_FILES_FOLDER_PATH}/mini.csv')
 
-        assert mesh_id1 != mesh_id2 != bm_id1
-        mesh_1 = model.get_mesh(mesh_id1)
-        mesh_2 = model.get_mesh(mesh_id2)
-        bm_1 = model.get_block_model(bm_id1)
-        assert mesh_1 != mesh_2 != bm_1
+        assert elem_1.id != elem_2.id != elem_3.id
 
     def test_get_multiple(self):
         model = Model()
-        mesh_id1 = model.add_mesh('tests/caseron.off')
-        mesh_id2 = model.add_mesh('tests/caseron.dxf')
-        bm_id1 = model.add_block_model('tests/mini.csv')
+        elem_1 = model.mesh_by_path(path=f'{TEST_FILES_FOLDER_PATH}/caseron.off')
+        elem_2 = model.mesh_by_path(path=f'{TEST_FILES_FOLDER_PATH}/caseron.dxf')
+        elem_3 = model.block_model_by_path(path=f'{TEST_FILES_FOLDER_PATH}/mini.csv')
 
-        m1 = model.get_mesh(mesh_id1)
-        m2 = model.get_mesh(mesh_id2)
-        bm = model.get_block_model(bm_id1)
+        assert type(elem_1) == type(elem_2)
+        assert type(elem_2) != type(elem_3)
 
-        assert type(m1) == type(m2)
-        assert type(m1) != type(bm)
+        elem_get_1 = model.get(elem_1.id)
+        elem_get_2 = model.get(elem_2.id)
+        elem_get_3 = model.get(elem_3.id)
 
-        assert type(m1) == MeshElement
-        assert type(bm) == BlockModelElement
+        assert type(elem_get_1) == type(elem_get_2)
+        assert type(elem_get_2) != type(elem_get_3)
 
-        assert len(model.get_element_collection()) == 3
-        assert len(model.get_mesh_collection()) == 2
-        assert len(model.get_block_model_collection()) == 1
+    def test_collection_types(self):
+        model = Model()
+        model.mesh_by_path(path=f'{TEST_FILES_FOLDER_PATH}/caseron.off')
+        model.mesh_by_path(path=f'{TEST_FILES_FOLDER_PATH}/caseron.dxf')
+        model.block_model_by_path(path=f'{TEST_FILES_FOLDER_PATH}/mini.csv')
+
+        assert len(model.element_collection) == 3
+        assert len(model.mesh_collection) == 2
+        assert len(model.block_model_collection) == 1

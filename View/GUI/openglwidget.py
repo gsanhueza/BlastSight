@@ -1,20 +1,24 @@
 #!/usr/bin/env python
 
+import traceback
+
 from OpenGL.GL import *
 from PyQt5.QtWidgets import QOpenGLWidget
 from PyQt5.QtGui import QPainter
 from PyQt5.QtGui import QMatrix4x4
 
+from View.Drawables.drawablecollection import GLDrawableCollection
+from View.Drawables.gldrawable import GLDrawable
 from View.Drawables.blockmodelgl import BlockModelGL
-from View.fpscounter import FPSCounter
-from View.Drawables.gldrawablecollection import GLDrawableCollection
 from View.Drawables.meshgl import MeshGL
+from View.fpscounter import FPSCounter
 
 from Controller.normalmode import NormalMode
 from Controller.drawmode import DrawMode
 from Controller.freemode import FreeMode
 
 from Model.model import Model
+from Model.Elements.element import Element
 
 
 class OpenGLWidget(QOpenGLWidget):
@@ -28,7 +32,7 @@ class OpenGLWidget(QOpenGLWidget):
         self.model = model
 
         # Drawable elements
-        self.gl_collection = GLDrawableCollection()
+        self.drawable_collection = GLDrawableCollection()
 
         # Camera/World/Projection
         self.camera = QMatrix4x4()
@@ -61,56 +65,55 @@ class OpenGLWidget(QOpenGLWidget):
     """
     FACADE METHODS
     """
-    def add_mesh(self, file_path: str) -> int:
-        id_ = self.model.add_mesh(file_path)
+    # FIXME We changed the way the model handles new data
+    def add_drawable(self, element: Element, drawable_type: type):
+        id_ = element.id
 
-        if id_ < 0:
-            return -1
+        drawable = drawable_type(self, element)
+        self.drawable_collection.add(id_, drawable)
 
-        mesh = self.model.get_mesh(id_)
-        mesh_gl = MeshGL(self, mesh)
-        self.gl_collection.add(id_, mesh_gl)
-
-        self.set_centroid(list(mesh.get_centroid()))
+        if element.centroid.size > 0:
+            self.set_centroid(list(element.centroid))
 
         return id_
+
+    def add_mesh(self, file_path: str) -> int:
+        try:
+            element = self.model.mesh_by_path(file_path)
+            return self.add_drawable(element, MeshGL)
+        except Exception:
+            traceback.print_exc()
+            return -1
 
     def add_block_model(self, file_path: str) -> int:
-        id_ = self.model.add_block_model(file_path)
-
-        if id_ < 0:
+        try:
+            element = self.model.block_model_by_path(file_path)
+            return self.add_drawable(element, BlockModelGL)
+        except Exception:
+            traceback.print_exc()
             return -1
 
-        block_model = self.model.get_block_model(id_)
-        block_model_gl = BlockModelGL(self, block_model)
-        self.gl_collection.add(id_, block_model_gl)
-
-        if block_model.get_centroid().size > 0:
-            self.set_centroid(list(block_model.get_centroid()))
-
-        return id_
-
     def show_element(self, id_: int) -> None:
-        self.gl_collection[id_].show()
+        self.drawable_collection[id_].show()
 
     def hide_element(self, id_: int) -> None:
-        self.gl_collection[id_].hide()
+        self.drawable_collection[id_].hide()
 
     def delete_element(self, id_: int) -> None:
-        self.model.delete_element(id_)
-        del self.gl_collection[id_]
+        self.model.delete(id_)
+        del self.drawable_collection[id_]
 
     def get_element(self, id_: int) -> None:
-        return self.gl_collection[id_]
+        return self.drawable_collection[id_]
 
     def toggle_wireframe(self, id_: int) -> bool:
-        status = self.gl_collection[id_].toggle_wireframe()
+        status = self.drawable_collection[id_].toggle_wireframe()
         self.update()
 
         return status
 
     def get_gl_collection(self) -> GLDrawableCollection:
-        return self.gl_collection.items()
+        return self.drawable_collection.items()
 
     def set_world_position(self, x: float, y: float, z: float) -> None:
         self.xWorldPos = -x
@@ -142,14 +145,14 @@ class OpenGLWidget(QOpenGLWidget):
 
     def initializeGL(self) -> None:
         # Meshes currently in model
-        for id_, mesh in self.model.get_mesh_collection():
-            mesh_gl = MeshGL(self, mesh)
-            self.gl_collection.add(id_, mesh_gl)
+        for id_, mesh in self.model.mesh_collection:
+            drawable = MeshGL(self, mesh)
+            self.drawable_collection.add(id_, drawable)
 
         # Block models currently in model
-        for id_, block_model in self.model.get_block_model_collection():
-            block_model_gl = BlockModelGL(self, block_model)
-            self.gl_collection.add(id_, block_model_gl)
+        for id_, block_model in self.model.block_model_collection:
+            drawable = BlockModelGL(self, block_model)
+            self.drawable_collection.add(id_, drawable)
 
     def paintGL(self) -> None:
         self.painter.begin(self)
@@ -176,7 +179,7 @@ class OpenGLWidget(QOpenGLWidget):
                              self.zCentroid)
 
         # Draw every GLDrawable (meshes, block models, etc)
-        self.gl_collection.draw()
+        self.drawable_collection.draw(self.proj, self.camera, self.world)
 
         # QPainter can draw *after* OpenGL finishes
         self.painter.end()

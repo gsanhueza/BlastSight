@@ -1,70 +1,112 @@
 #!/usr/bin/env python
 
+import traceback
 from collections import OrderedDict
-from Model.modelelement import ModelElement
-from Model.Mesh.meshelement import MeshElement
-from Model.BlockModel.blockmodelelement import BlockModelElement
+
+from PyQt5.QtCore import QFileInfo
+
+from Model.Elements.element import Element
+from Model.Elements.meshelement import MeshElement
+from Model.Elements.blockmodelelement import BlockModelElement
+
+from Model.Parsers.dxfparser import DXFParser
+from Model.Parsers.offparser import OFFParser
+from Model.Parsers.csvparser import CSVParser
 
 
-# Main class
 class Model:
     def __init__(self):
-        self.element_collection = OrderedDict()
+        self._element_collection = OrderedDict()
+        self.parser_dict = {}  # Example: {"dxf": (DXFParser, MeshElement)}
         self.last_id = 0
 
-    # Generalization of add
-    def add_element(self, file_path: str, element: ModelElement) -> int:
-        if element.load(file_path):
-            self.element_collection[self.last_id] = element
-            self.last_id += 1
+        self.add_parser('dxf', DXFParser, MeshElement)
+        self.add_parser('off', OFFParser, MeshElement)
+        self.add_parser('csv', CSVParser, BlockModelElement)
 
-            return self.last_id - 1
-        return -1
+    def add_parser(self, extension: str, handler, element_type) -> None:
+        self.parser_dict[extension] = (handler, element_type)
 
-    def add_mesh(self, file_path: str) -> int:
-        return self.add_element(file_path, MeshElement())
+    def get_parser(self, ext: str, element_type=None):
+        if element_type is not None:
+            assert self.parser_dict[ext][1] == element_type
+        return self.parser_dict[ext][0]
 
-    def add_block_model(self, file_path: str) -> int:
-        return self.add_element(file_path, BlockModelElement())
+    def mesh(self, *args, **kwargs) -> MeshElement:
+        name = kwargs.get('name', None)
+        ext = kwargs.get('ext', None)
 
-    # Generalization of update
-    def update_element(self, id_: int, file_path: str, element: ModelElement) -> None:
-        element.load(file_path)
-        self.element_collection[id_] = element
+        indices = kwargs.get('indices')
+        if 'vertices' in kwargs.keys():
+            vertices = kwargs.get('vertices')
+            element = MeshElement(vertices=vertices, indices=indices, name=name, ext=ext)
+        else:
+            x = kwargs.get('x')
+            y = kwargs.get('y')
+            z = kwargs.get('z')
+            element = MeshElement(x=x, y=y, z=z, indices=indices, name=name, ext=ext)
 
-    def update_mesh(self, id_: int, file_path: str) -> None:
-        self.update_element(id_, file_path, MeshElement())
+        element.id = self.last_id
 
-    def update_block_model(self, id_: int, file_path: str) -> None:
-        self.update_element(id_, file_path, BlockModelElement())
+        self._element_collection[self.last_id] = element
+        self.last_id += 1
 
-    # Generalization of delete
-    def delete_element(self, id_: int) -> bool:
-        self.element_collection.__delitem__(id_)
-        return True
+        return element
 
-    def delete_mesh(self, id_: int) -> bool:
-        return self.delete_element(id_)
+    def mesh_by_path(self, path: str) -> MeshElement:
+        name = QFileInfo(path).baseName()
+        ext = QFileInfo(path).suffix()
+        vertices, indices = self.get_parser(ext, MeshElement).load_file(path)
 
-    def delete_block_model(self, id_: int) -> bool:
-        return self.delete_element(id_)
+        element = MeshElement(vertices=vertices, indices=indices, name=name, ext=ext)
+        element.id = self.last_id
 
-    # Generalization of get
-    def get_element(self, id_: int) -> ModelElement:
-        return self.element_collection[id_]
+        self._element_collection[self.last_id] = element
+        self.last_id += 1
 
-    def get_mesh(self, id_: int) -> ModelElement:
-        return self.get_element(id_)
+        return element
 
-    def get_block_model(self, id_: int) -> ModelElement:
-        return self.get_element(id_)
+    def block_model(self, *args, **kwargs) -> BlockModelElement:
+        name = kwargs.get('name', None)
+        ext = kwargs.get('ext', None)
 
-    # Generalization of get collection
-    def get_element_collection(self) -> list:
-        return list(self.element_collection.items())
+        data = kwargs.get('data')
+        element = BlockModelElement(data=data, name=name, ext=ext)
 
-    def get_mesh_collection(self) -> list:
-        return list(filter(lambda x: isinstance(x[1], MeshElement), self.get_element_collection()))
+        element.id = self.last_id
 
-    def get_block_model_collection(self) -> list:
-        return list(filter(lambda x: isinstance(x[1], BlockModelElement), self.get_element_collection()))
+        self._element_collection[self.last_id] = element
+        self.last_id += 1
+
+        return element
+
+    def block_model_by_path(self, path: str) -> BlockModelElement:
+        name = QFileInfo(path).baseName()
+        ext = QFileInfo(path).suffix()
+        data = self.get_parser(ext, BlockModelElement).load_file(path)
+
+        element = BlockModelElement(data=data, name=name, ext=ext)
+        element.id = self.last_id
+
+        self._element_collection[self.last_id] = element
+        self.last_id += 1
+
+        return element
+
+    def get(self, id_: int) -> Element:
+        return self._element_collection[id_]
+
+    def delete(self, id_: int) -> None:
+        self._element_collection.__delitem__(id_)
+
+    @property
+    def element_collection(self) -> list:
+        return list(self._element_collection.items())
+
+    @property
+    def mesh_collection(self) -> list:
+        return list(filter(lambda x: isinstance(x[1], MeshElement), self._element_collection.items()))
+
+    @property
+    def block_model_collection(self) -> list:
+        return list(filter(lambda x: isinstance(x[1], BlockModelElement), self._element_collection.items()))

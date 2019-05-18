@@ -8,10 +8,9 @@ from PyQt5.QtGui import QOpenGLShader
 
 
 class GLDrawable:
-    def __init__(self, opengl_widget, model_element):
-        super().__init__()
-        self.widget = opengl_widget
-        self.model_element = model_element
+    def __init__(self, widget, element):
+        self.widget = widget
+        self.element = element
 
         # Shaders
         self.shader_program = QOpenGLShaderProgram(self.widget.context())
@@ -44,7 +43,7 @@ class GLDrawable:
         self.is_visible = False
 
     def get_model_element(self):
-        return self.model_element
+        return self.element
 
     def initialize(self) -> None:
         # Remember to set shader sources in children of this class
@@ -106,7 +105,7 @@ class GLDrawable:
     def setup_uniforms(self) -> None:
         pass
 
-    def draw(self) -> None:
+    def draw(self, proj_matrix, view_matrix, model_matrix) -> None:
         pass
 
     """

@@ -8,8 +8,8 @@ from OpenGL.GL import *
 
 
 class MeshGL(GLDrawable):
-    def __init__(self, opengl_widget, model_element):
-        super().__init__(opengl_widget, model_element)
+    def __init__(self, widget, element):
+        super().__init__(widget, element)
 
         # Uniforms
         self.model_view_matrix_loc = None
@@ -55,8 +55,8 @@ class MeshGL(GLDrawable):
         _SIZE_OF_GL_FLOAT = 4
 
         # Data
-        vertices = self.model_element.get_vertices()
-        indices = self.model_element.get_indices()
+        vertices = self.element.vertices
+        indices = self.element.indices
 
         self.vertices_size = vertices.size
         self.indices_size = indices.size
@@ -81,7 +81,7 @@ class MeshGL(GLDrawable):
         self.color_loc = self.shader_program.uniformLocation('u_color')
         self.alpha_loc = self.shader_program.uniformLocation('u_alpha')
 
-        color = list(self.model_element.get_values())
+        color = list(self.element.values)
         self.color = QVector3D(color[0], color[1], color[2])
 
         alpha = 1.0  # self.model_element.get_alpha()
@@ -100,13 +100,13 @@ class MeshGL(GLDrawable):
             self.wireframe_enabled = True
         return self.wireframe_enabled
 
-    def draw(self) -> None:
+    def draw(self, proj_matrix, view_matrix, model_matrix) -> None:
         if not self.is_visible:
             return
 
         self.shader_program.bind()
-        self.shader_program.setUniformValue(self.proj_matrix_loc, self.widget.proj)
-        self.shader_program.setUniformValue(self.model_view_matrix_loc, self.widget.camera * self.widget.world)
+        self.shader_program.setUniformValue(self.proj_matrix_loc, proj_matrix)
+        self.shader_program.setUniformValue(self.model_view_matrix_loc, view_matrix * model_matrix)
         self.shader_program.setUniformValue(self.color_loc, self.color)
         self.shader_program.setUniformValue(self.alpha_loc, self.alpha)
         self.vao.bind()

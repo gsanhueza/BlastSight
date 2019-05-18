@@ -6,8 +6,8 @@ from PyQt5.QtGui import QVector2D
 
 
 class BlockModelGL(GLDrawable):
-    def __init__(self, opengl_widget, model_element):
-        super().__init__(opengl_widget, model_element)
+    def __init__(self, widget, element):
+        super().__init__(widget, element)
 
         # Uniforms
         self.model_view_matrix_loc = None
@@ -35,8 +35,8 @@ class BlockModelGL(GLDrawable):
         _SIZE_OF_GL_FLOAT = 4
 
         # Data
-        vertices = self.model_element.get_vertices()
-        values = self.model_element.get_values()
+        vertices = self.element.vertices
+        values = self.element.values
 
         self.vertices_size = vertices.size
         self.values_size = values.size
@@ -57,13 +57,13 @@ class BlockModelGL(GLDrawable):
 
         self.vao.release()
 
-    def draw(self) -> None:
+    def draw(self, proj_matrix, view_matrix, model_matrix) -> None:
         if not self.is_visible:
             return
 
         self.shader_program.bind()
-        self.shader_program.setUniformValue(self.proj_matrix_loc, self.widget.proj)
-        self.shader_program.setUniformValue(self.model_view_matrix_loc, self.widget.camera * self.widget.world)
+        self.shader_program.setUniformValue(self.proj_matrix_loc, proj_matrix)
+        self.shader_program.setUniformValue(self.model_view_matrix_loc, view_matrix * model_matrix)
         self.shader_program.setUniformValue(self.block_size_loc, QVector2D(self.block_size, 0.0))
 
         self.vao.bind()

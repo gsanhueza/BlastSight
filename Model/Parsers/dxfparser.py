@@ -1,18 +1,14 @@
 #!/usr/bin/env python
 
 import dxfgrabber
-import random
 from collections import OrderedDict
 
-from Model.modelelement import ModelElement
-from Model.parser import Parser
 
+class DXFParser:
+    @staticmethod
+    def load_file(file_path: str) -> tuple:
+        assert file_path.lower().endswith('dxf')
 
-class DXFParser(Parser):
-    def __init__(self):
-        super().__init__()
-
-    def load_file(self, file_path: str, model: ModelElement) -> None:
         dxf = dxfgrabber.readfile(file_path)
         vertices_dict = OrderedDict()
 
@@ -32,9 +28,7 @@ class DXFParser(Parser):
             faces.append(tuple(face_pointers))
 
         # Model data
-        model.set_vertices(list(vertices_dict.keys()))
-        model.set_indices(DXFParser.parse_faces(faces))
-        model.set_values([random.random() for _ in range(3)])
+        return list(vertices_dict.keys()), DXFParser.parse_faces(faces)
 
     @staticmethod
     def parse_faces(faces: list) -> list:
