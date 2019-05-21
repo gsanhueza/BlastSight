@@ -18,9 +18,13 @@ class BlockModelElement(Element):
 
     def _init_fill(self, *args, **kwargs):
         if 'vertices' in kwargs.keys():
+            assert len(kwargs.keys()) >= 2
+
             self.x, self.y, self.z = zip(*kwargs.get('vertices'))
 
         elif all(elem in list(kwargs.keys()) for elem in ['x', 'y', 'z']):
+            assert len(kwargs.keys()) >= 4
+
             self.x = kwargs.get('x')
             self.y = kwargs.get('y')
             self.z = kwargs.get('z')
@@ -32,11 +36,12 @@ class BlockModelElement(Element):
             assert len(self.data) >= 4
 
         else:
-            raise KeyError(f'Must pass ["x", "y", "z"], "vertices" or "data" as kwargs, got {list(kwargs.keys())}.')
+            raise KeyError(f'Must pass ["x", "y", "z", "values"], ["vertices", "values"] or ["data"] '
+                           f'as kwargs, got {list(kwargs.keys())}.')
 
         self.name = kwargs.get('name', None)
         self.ext = kwargs.get('ext', None)
-        self.values = []
+        self.values = kwargs.get('values', [])
 
     @property
     def data(self) -> dict:
