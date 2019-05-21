@@ -25,7 +25,6 @@ class MeshElement(Element):
     def indices(self, indices: list):
         self._indices = np.array(indices, np.uint32)  # GL_UNSIGNED_INT = np.uint32
 
-    # FIXME Does this have to exist?
     @property
     def values(self) -> np.ndarray:
         return self._values

@@ -8,16 +8,11 @@ from Model.Elements.element import Element
 class BlockModelElement(Element):
     def __init__(self, *args, **kwargs):
         self._data: dict = None
-        self._values: np.ndarray = np.array([], np.float32)
         self._x_str: str = None
         self._y_str: str = None
         self._z_str: str = None
         self._value_str: str = None
-
-        self.x_str = kwargs.get('easting', None)
-        self.y_str = kwargs.get('northing', None)
-        self.z_str = kwargs.get('elevation', None)
-        self.current_str = kwargs.get('value', None)
+        self._values: np.ndarray = None
 
         super().__init__(*args, **kwargs)
 
@@ -41,6 +36,7 @@ class BlockModelElement(Element):
 
         self.name = kwargs.get('name', None)
         self.ext = kwargs.get('ext', None)
+        self.values = []
 
     @property
     def data(self) -> dict:
