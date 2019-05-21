@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 from PyQt5.QtWidgets import QTreeWidgetItem
-from View.GUI.availablevaluesdialog import DialogAvailableValues
 
 
 class TreeWidgetItem(QTreeWidgetItem):
@@ -48,36 +47,5 @@ class TreeWidgetItem(QTreeWidgetItem):
         self.gl_element.toggle_wireframe()
         self.mainwindow.viewer.update()
 
-    def update_parameters(self, dialog):
-        element = self.gl_element.get_model_element()
-
-        element.x_str = dialog.x
-        element.y_str = dialog.y
-        element.z_str = dialog.z
-        element.value_str = dialog.value
-
-        element.update_coords()
-        element.update_values()
-
-        self.mainwindow.viewer.set_centroid(element.centroid)
-
-        # Recreate the BlockModelGL instance with the "new" data
-        self.gl_element.setup_vertex_attribs()
-
-    def get_strings(self):
-        element = self.gl_element.get_model_element()
-        return element.x_str, element.y_str, element.z_str, element.value_str
-
     def available_values(self) -> None:
-        dialog = DialogAvailableValues(self)
-        element = self.gl_element.get_model_element()
-
-        for i in element.available_coordinates:
-            dialog.comboBox_x.addItem(i)
-            dialog.comboBox_y.addItem(i)
-            dialog.comboBox_z.addItem(i)
-
-        for i in element.available_values:
-            dialog.comboBox_values.addItem(i)
-
-        dialog.show()
+        self.mainwindow.show_available_values(self.id_)

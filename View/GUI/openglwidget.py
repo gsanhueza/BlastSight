@@ -58,6 +58,10 @@ class OpenGLWidget(QOpenGLWidget):
         # FPS Counter
         self.fps_counter = FPSCounter()
 
+    @property
+    def model(self):
+        return model_handler
+
     """
     FACADE METHODS
     """

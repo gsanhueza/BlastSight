@@ -98,6 +98,22 @@ class MineVis(QMainWindow):
 
         return loaded
 
+    def show_available_values(self, id_):
+        from View.GUI.availablevaluesdialog import DialogAvailableValues
+
+        element = self.model.get(id_)
+        dialog = DialogAvailableValues(self, element)
+
+        for i in element.available_coordinates:
+            dialog.comboBox_x.addItem(i)
+            dialog.comboBox_y.addItem(i)
+            dialog.comboBox_z.addItem(i)
+
+        for i in element.available_values:
+            dialog.comboBox_values.addItem(i)
+
+        dialog.show()
+
     """
     Controller slots
     """
