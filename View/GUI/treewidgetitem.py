@@ -4,19 +4,14 @@ from PyQt5.QtWidgets import QTreeWidgetItem
 
 
 class TreeWidgetItem(QTreeWidgetItem):
-    def __init__(self, parent=None, mainwindow=None):
+    def __init__(self, parent=None, mainwindow=None, id_=None, drawable=None):
         super().__init__(parent)
         self.mainwindow = mainwindow
-        self.gl_element = None
+        self.drawable = drawable
 
-        self.id_: int = None
-        self.name: str = None
+        self.id_: int = id_
 
-    def set_element(self, id_: int) -> None:
-        self.id_ = id_
-        self.gl_element = self.mainwindow.viewer.get_drawable(self.id_)
-
-        element = self.gl_element.get_model_element()
+        element = self.drawable.get_model_element()
         self.name = f'{element.name}.{element.ext}'
         self.setText(0, self.name)
 
@@ -27,15 +22,15 @@ class TreeWidgetItem(QTreeWidgetItem):
         return self.name
 
     def get_type(self) -> type:
-        return type(self.gl_element)
+        return type(self.drawable)
 
     # Shown in contextual menu
     def show(self) -> None:
-        self.gl_element.show()
+        self.drawable.show()
         self.mainwindow.viewer.update()
 
     def hide(self) -> None:
-        self.gl_element.hide()
+        self.drawable.hide()
         self.mainwindow.viewer.update()
 
     def remove(self) -> None:
@@ -44,7 +39,7 @@ class TreeWidgetItem(QTreeWidgetItem):
         self.mainwindow.fill_tree_widget()
 
     def toggle_wireframe(self) -> None:
-        self.gl_element.toggle_wireframe()
+        self.drawable.toggle_wireframe()
         self.mainwindow.viewer.update()
 
     def available_values(self) -> None:
