@@ -16,49 +16,35 @@ class DialogAvailableValues(QDialog):
         uic.loadUi('View/UI/dialogavailablevalues.ui', self)
         self.parent = parent
         self.element = element
-        self.x = None
-        self.y = None
-        self.z = None
-        self.value = None
 
     def accept(self):
-        self.x = self.comboBox_x.currentText()
-        self.y = self.comboBox_y.currentText()
-        self.z = self.comboBox_z.currentText()
-        self.value = self.comboBox_values.currentText()
-
-        self.update_parameters()
-
-        super().accept()
-
-    def update_parameters(self):
-        self.element.x_str = self.x
-        self.element.y_str = self.y
-        self.element.z_str = self.z
-        self.element.value_str = self.value
+        self.element.x_str = self.comboBox_x.currentText()
+        self.element.y_str = self.comboBox_y.currentText()
+        self.element.z_str = self.comboBox_z.currentText()
+        self.element.value_str = self.comboBox_values.currentText()
 
         self.element.update_coords()
         self.element.update_values()
 
-        self.parent.viewer.set_centroid(self.element.centroid)
-
         # Recreate the BlockModelGL instance with the "new" data
+        self.parent.viewer.set_centroid(self.element.centroid)
         self.parent.viewer.get_element(self.element.id).setup_vertex_attribs()
 
+        super().accept()
+
     def show(self):
-        (x, y, z, val) = self.element.x_str, self.element.y_str, self.element.z_str, self.element.value_str
-
-        index = self.comboBox_x.findText(x)
-        self.comboBox_x.setCurrentIndex(index)
-
-        index = self.comboBox_y.findText(y)
-        self.comboBox_y.setCurrentIndex(index)
-
-        index = self.comboBox_z.findText(z)
-        self.comboBox_z.setCurrentIndex(index)
-
-        index = self.comboBox_values.findText(val)
-        self.comboBox_values.setCurrentIndex(index)
+        self.comboBox_x.setCurrentIndex(
+            self.comboBox_x.findText(self.element.x_str)
+        )
+        self.comboBox_y.setCurrentIndex(
+            self.comboBox_y.findText(self.element.y_str)
+        )
+        self.comboBox_z.setCurrentIndex(
+            self.comboBox_z.findText(self.element.z_str)
+        )
+        self.comboBox_values.setCurrentIndex(
+            self.comboBox_values.findText(self.element.value_str)
+        )
 
         super().show()
 

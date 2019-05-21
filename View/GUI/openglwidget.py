@@ -72,7 +72,7 @@ class OpenGLWidget(QOpenGLWidget):
         self.drawable_collection.add(id_, drawable)
 
         if element.centroid.size > 0:
-            self.set_centroid(list(element.centroid))
+            self.set_centroid(element.centroid)
 
         return id_
 
@@ -135,7 +135,7 @@ class OpenGLWidget(QOpenGLWidget):
         self.yWorldPos = -y
         self.zWorldPos = -z
 
-    def set_centroid(self, centroid: list) -> None:
+    def set_centroid(self, centroid) -> None:
         self.xCentroid = -centroid[0]
         self.yCentroid = -centroid[1]
         self.zCentroid = -centroid[2]

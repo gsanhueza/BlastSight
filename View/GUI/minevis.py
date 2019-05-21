@@ -7,7 +7,7 @@ from PyQt5.QtWidgets import QFileDialog
 from PyQt5.QtWidgets import QMainWindow
 from PyQt5.QtWidgets import QMessageBox
 
-from Model.model import Model
+from View.GUI.availablevaluesdialog import DialogAvailableValues
 from View.GUI.treewidgetitem import TreeWidgetItem
 
 from PyQt5 import uic
@@ -27,14 +27,6 @@ class MineVis(QMainWindow):
     @property
     def viewer(self):
         return self.openglwidget
-
-    @property
-    def model(self) -> Model:
-        return self.viewer.model
-
-    @model.setter
-    def model(self, model: Model) -> None:
-        self.viewer.model = model
 
     @property
     def last_dir(self) -> str:
@@ -93,15 +85,22 @@ class MineVis(QMainWindow):
             self.statusBar.showMessage('Block model loaded')
             self.fill_tree_widget()
 
-            # Auto-trigger of method in TreeWidgetItem
-            self.treeWidget.get_item_by_element_id(id_).available_values()
+            # Dialog auto-trigger
+            self.show_available_values(id_)
 
         return loaded
 
-    def show_available_values(self, id_):
-        from View.GUI.availablevaluesdialog import DialogAvailableValues
+    def toggle_wireframe(self, id_: int = 0) -> None:
+        try:
+            status = self.viewer.toggle_wireframe(id_)
+            msg = 'enabled' if status else 'disabled'
+            self.statusBar.showMessage(f'Wireframe {id_} {msg}')
+        except KeyError:
+            msg = 'unavailable'
+            self.statusBar.showMessage(f'Wireframe {msg}')
 
-        element = self.model.get(id_)
+    def show_available_values(self, id_):
+        element = self.viewer.model.get(id_)
         dialog = DialogAvailableValues(self, element)
 
         for i in element.available_coordinates:
@@ -130,15 +129,6 @@ class MineVis(QMainWindow):
         QMessageBox.information(self,
                                 'MineVis - Help',
                                 'TO-DO: Create help message box')
-
-    def toggle_wireframe(self, id_: int = 0) -> None:
-        try:
-            status = self.viewer.toggle_wireframe(id_)
-            msg = 'enabled' if status else 'disabled'
-            self.statusBar.showMessage(f'Wireframe {id_} {msg}')
-        except KeyError:
-            msg = 'unavailable'
-            self.statusBar.showMessage(f'Wireframe {msg}')
 
     """
     Overridden events
