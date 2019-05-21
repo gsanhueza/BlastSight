@@ -14,14 +14,14 @@ class StandaloneViewer(OpenGLWidget):
         super().__init__()
         self.setWindowTitle('MineVis: Stand-alone Viewer')
 
-    def show_element(self, id_: int) -> None:
-        self.command_queue.append(lambda this: OpenGLWidget.show_element(this, id_))
+    def show_drawable(self, id_: int) -> None:
+        self.command_queue.append(lambda this: OpenGLWidget.show_drawable(this, id_))
 
-    def hide_element(self, id_: int) -> None:
-        self.command_queue.append(lambda this: OpenGLWidget.hide_element(this, id_))
+    def hide_drawable(self, id_: int) -> None:
+        self.command_queue.append(lambda this: OpenGLWidget.hide_drawable(this, id_))
 
-    def delete_element(self, id_: int) -> None:
-        self.command_queue.append(lambda this: OpenGLWidget.delete_element(this, id_))
+    def delete(self, id_: int) -> None:
+        self.command_queue.append(lambda this: OpenGLWidget.delete(this, id_))
 
     def toggle_wireframe(self, id_: int) -> None:
         self.command_queue.append(lambda this: OpenGLWidget.toggle_wireframe(this, id_))

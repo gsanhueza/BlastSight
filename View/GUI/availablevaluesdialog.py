@@ -27,8 +27,7 @@ class DialogAvailableValues(QDialog):
         self.element.update_values()
 
         # Recreate the BlockModelGL instance with the "new" data
-        self.parent.viewer.set_centroid(self.element.centroid)
-        self.parent.viewer.get_element(self.element.id).setup_vertex_attribs()
+        self.parent.viewer.update_drawable(self.element.id)
 
         super().accept()
 

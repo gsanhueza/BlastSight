@@ -71,14 +71,12 @@ class OpenGLWidget(QOpenGLWidget):
         drawable = drawable_type(self, element)
         self.drawable_collection.add(id_, drawable)
 
-        if element.centroid.size > 0:
-            self.set_centroid(element.centroid)
-
         return id_
 
     def mesh(self, *args, **kwargs):
         try:
             element = model_handler.mesh(*args, **kwargs)
+            self.set_centroid(element.centroid)
             return self.add_drawable(element, MeshGL)
         except Exception:
             traceback.print_exc()
@@ -87,6 +85,7 @@ class OpenGLWidget(QOpenGLWidget):
     def mesh_by_path(self, file_path: str):
         try:
             element = model_handler.mesh_by_path(file_path)
+            self.set_centroid(element.centroid)
             return self.add_drawable(element, MeshGL)
         except Exception:
             traceback.print_exc()
@@ -108,18 +107,22 @@ class OpenGLWidget(QOpenGLWidget):
             traceback.print_exc()
             return -1
 
-    def show_element(self, id_: int) -> None:
+    def show_drawable(self, id_: int) -> None:
         self.drawable_collection[id_].show()
 
-    def hide_element(self, id_: int) -> None:
+    def hide_drawable(self, id_: int) -> None:
         self.drawable_collection[id_].hide()
 
-    def delete_element(self, id_: int) -> None:
+    def get_drawable(self, id_: int) -> None:
+        return self.drawable_collection[id_]
+
+    def update_drawable(self, id_: int) -> None:
+        self.set_centroid(self.model.get(id_).centroid)
+        self.get_drawable(id_).setup_vertex_attribs()
+
+    def delete(self, id_: int) -> None:
         model_handler.delete(id_)
         del self.drawable_collection[id_]
-
-    def get_element(self, id_: int) -> None:
-        return self.drawable_collection[id_]
 
     def toggle_wireframe(self, id_: int) -> bool:
         status = self.drawable_collection[id_].toggle_wireframe()

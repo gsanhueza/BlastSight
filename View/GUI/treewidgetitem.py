@@ -14,7 +14,7 @@ class TreeWidgetItem(QTreeWidgetItem):
 
     def set_element(self, id_: int) -> None:
         self.id_ = id_
-        self.gl_element = self.mainwindow.viewer.get_element(self.id_)
+        self.gl_element = self.mainwindow.viewer.get_drawable(self.id_)
 
         element = self.gl_element.get_model_element()
         self.name = f'{element.name}.{element.ext}'
@@ -39,7 +39,7 @@ class TreeWidgetItem(QTreeWidgetItem):
         self.mainwindow.viewer.update()
 
     def remove(self) -> None:
-        self.mainwindow.viewer.delete_element(self.id_)
+        self.mainwindow.viewer.delete(self.id_)
         self.mainwindow.viewer.update()
         self.mainwindow.fill_tree_widget()
 
