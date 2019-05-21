@@ -42,6 +42,7 @@ class TreeWidget(QTreeWidget):
         action_show = QAction('&Show', self)
         action_hide = QAction('&Hide', self)
         action_remove = QAction('&Remove', self)
+        action_center_camera = QAction('&Center camera', self)
         action_wireframe = QAction('&Toggle wireframe', self)
         action_available_values = QAction('&Available values', self)
 
@@ -56,18 +57,22 @@ class TreeWidget(QTreeWidget):
         action_wireframe.setIcon(icon)
         icon = QIcon.fromTheme('auto-type')
         action_available_values.setIcon(icon)
+        icon = QIcon.fromTheme('camera')
+        action_center_camera.setIcon(icon)
 
         # Action commands
         action_show.triggered.connect(item.show)
         action_hide.triggered.connect(item.hide)
         action_remove.triggered.connect(item.remove)
         action_wireframe.triggered.connect(item.toggle_wireframe)
+        action_center_camera.triggered.connect(item.center_camera)
         action_available_values.triggered.connect(item.available_values)
 
         # Add actions depending on item type
         menu.addAction(action_show)
         menu.addAction(action_hide)
         menu.addAction(action_remove)
+        menu.addAction(action_center_camera)
 
         # FIXME Design a better way to get type of element
         if item.get_type() == MeshGL:

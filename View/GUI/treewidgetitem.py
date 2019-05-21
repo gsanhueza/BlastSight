@@ -42,5 +42,10 @@ class TreeWidgetItem(QTreeWidgetItem):
         self.drawable.toggle_wireframe()
         self.mainwindow.viewer.update()
 
+    def center_camera(self) -> None:
+        element = self.drawable.get_model_element()
+        self.mainwindow.viewer.set_centroid(element.centroid)
+        self.mainwindow.viewer.update()
+
     def available_values(self) -> None:
         self.mainwindow.show_available_values(self.id_)
