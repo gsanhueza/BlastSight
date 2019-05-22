@@ -6,7 +6,7 @@ import time
 class FPSCounter:
     def __init__(self):
         self.start_time = time.time()
-        self.x = 1
+        self.seconds_resolution = 1
         self.counter = 0
 
     def __str__(self):
@@ -14,7 +14,7 @@ class FPSCounter:
 
     def tick(self):
         self.counter += 1
-        if (time.time() - self.start_time) > self.x:
+        if (time.time() - self.start_time) > self.seconds_resolution:
             print(self)
             self.counter = 0
             self.start_time = time.time()
