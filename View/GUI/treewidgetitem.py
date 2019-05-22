@@ -11,7 +11,7 @@ class TreeWidgetItem(QTreeWidgetItem):
 
         self.id_: int = id_
 
-        element = self.drawable.get_model_element()
+        element = self.drawable.element
         self.name = f'{element.name}.{element.ext}'
         self.setText(0, self.name)
 
@@ -43,7 +43,7 @@ class TreeWidgetItem(QTreeWidgetItem):
         self.mainwindow.viewer.update()
 
     def center_camera(self) -> None:
-        element = self.drawable.get_model_element()
+        element = self.drawable.element
         self.mainwindow.viewer.set_centroid(element.centroid)
         self.mainwindow.viewer.update()
 

@@ -9,8 +9,9 @@ from PyQt5.QtGui import QOpenGLShader
 
 class GLDrawable:
     def __init__(self, widget, element):
-        self.widget = widget
-        self.element = element
+        self._widget = widget
+        self._element = element
+        self._id = -1
 
         # Shaders
         self.shader_program = QOpenGLShaderProgram(self.widget.context())
@@ -36,14 +37,27 @@ class GLDrawable:
         self.indices_size = 0
         self.values_size = 0
 
+    @property
+    def id(self):
+        return self._id
+
+    @id.setter
+    def id(self, _id):
+        self._id = _id
+
+    @property
+    def widget(self):
+        return self._widget
+
+    @property
+    def element(self):
+        return self._element
+
     def show(self) -> None:
         self.is_visible = True
 
     def hide(self) -> None:
         self.is_visible = False
-
-    def get_model_element(self):
-        return self.element
 
     def initialize(self) -> None:
         # Remember to set shader sources in children of this class

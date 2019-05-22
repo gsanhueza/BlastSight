@@ -40,7 +40,7 @@ class MineVis(QMainWindow):
         # Tree widget
         self.treeWidget.clear()
 
-        for id_, gl_drawable in self.viewer.get_gl_collection():
+        for id_, gl_drawable in self.viewer.drawable_collection.items():
             item = TreeWidgetItem(self.treeWidget, self, id_, gl_drawable)
             self.treeWidget.addTopLevelItem(item)
 
@@ -58,7 +58,8 @@ class MineVis(QMainWindow):
             self.last_dir = QFileInfo(file_path).absoluteDir().absolutePath()
 
     def load_mesh(self, file_path: str) -> bool:
-        loaded = self.viewer.mesh_by_path(file_path) != -1
+        drawable = self.viewer.mesh_by_path(file_path)
+        loaded = bool(drawable)
 
         if loaded:
             self.statusBar.showMessage('Mesh loaded')
@@ -77,15 +78,15 @@ class MineVis(QMainWindow):
             self.last_dir = QFileInfo(file_path).absoluteDir().absolutePath()
 
     def load_block_model(self, file_path: str) -> bool:
-        id_ = self.viewer.block_model_by_path(file_path)
-        loaded = id_ != -1
+        drawable = self.viewer.block_model_by_path(file_path)
+        loaded = bool(drawable)
 
         if loaded:
             self.statusBar.showMessage('Block model loaded')
             self.fill_tree_widget()
 
             # Dialog auto-trigger
-            self.show_available_values(id_)
+            self.show_available_values(drawable.id)
 
         return loaded
 

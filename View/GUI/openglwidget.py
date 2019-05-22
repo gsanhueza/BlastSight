@@ -10,6 +10,7 @@ from PyQt5.QtGui import QMatrix4x4
 from View.Drawables.drawablecollection import GLDrawableCollection
 from View.Drawables.blockmodelgl import BlockModelGL
 from View.Drawables.meshgl import MeshGL
+from View.Drawables.gldrawable import GLDrawable
 from View.fpscounter import FPSCounter
 
 from Controller.normalmode import NormalMode
@@ -29,7 +30,7 @@ class OpenGLWidget(QOpenGLWidget):
         self.current_mode = None
 
         # Drawable elements
-        self.drawable_collection = GLDrawableCollection()
+        self._drawable_collection = GLDrawableCollection()
 
         # Camera/World/Projection
         self.camera = QMatrix4x4()
@@ -67,50 +68,55 @@ class OpenGLWidget(QOpenGLWidget):
     def model(self, model):
         self._model = model
 
+    @property
+    def drawable_collection(self):
+        return self._drawable_collection
+
     """
     FACADE METHODS
     """
-    def add_drawable(self, element: Element, drawable_type: type):
+    def add_drawable(self, element: Element, drawable_type: type) -> GLDrawable:
         id_ = element.id
 
         drawable = drawable_type(self, element)
+        drawable.id = id_
         self.drawable_collection.add(id_, drawable)
 
-        return id_
+        return drawable
 
-    def mesh(self, *args, **kwargs):
+    def mesh(self, *args, **kwargs) -> GLDrawable:
         try:
             element = self.model.mesh(*args, **kwargs)
             self.set_centroid(element.centroid)
             return self.add_drawable(element, MeshGL)
         except Exception:
             traceback.print_exc()
-            return -1
+            return None
 
-    def mesh_by_path(self, file_path: str):
+    def mesh_by_path(self, file_path: str) -> GLDrawable:
         try:
             element = self.model.mesh_by_path(file_path)
             self.set_centroid(element.centroid)
             return self.add_drawable(element, MeshGL)
         except Exception:
             traceback.print_exc()
-            return -1
+            return None
 
-    def block_model(self, *args, **kwargs) -> int:
+    def block_model(self, *args, **kwargs) -> GLDrawable:
         try:
             element = self.model.block_model(*args, **kwargs)
             return self.add_drawable(element, BlockModelGL)
         except Exception:
             traceback.print_exc()
-            return -1
+            return None
 
-    def block_model_by_path(self, file_path: str) -> int:
+    def block_model_by_path(self, file_path: str) -> GLDrawable:
         try:
             element = self.model.block_model_by_path(file_path)
             return self.add_drawable(element, BlockModelGL)
         except Exception:
             traceback.print_exc()
-            return -1
+            return None
 
     def show_drawable(self, id_: int) -> None:
         self.drawable_collection[id_].show()
@@ -134,9 +140,6 @@ class OpenGLWidget(QOpenGLWidget):
         self.update()
 
         return status
-
-    def get_gl_collection(self) -> GLDrawableCollection:
-        return self.drawable_collection.items()
 
     def set_world_position(self, x: float, y: float, z: float) -> None:
         self.xWorldPos = -x
