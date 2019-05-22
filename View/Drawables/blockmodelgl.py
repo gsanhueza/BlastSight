@@ -18,9 +18,9 @@ class BlockModelGL(GLDrawable):
         self.block_size = 2.0
 
     def initialize(self) -> None:
-        self.set_vertex_shader_source('View/Shaders/BlockModel/vertex.glsl')
-        self.set_fragment_shader_source('View/Shaders/BlockModel/fragment.glsl')
-        self.set_geometry_shader_source('View/Shaders/BlockModel/geometry.glsl')
+        self.vertex_shader_source = 'View/Shaders/BlockModel/vertex.glsl'
+        self.fragment_shader_source = 'View/Shaders/BlockModel/fragment.glsl'
+        self.geometry_shader_source = 'View/Shaders/BlockModel/geometry.glsl'
 
         super().initialize()
 

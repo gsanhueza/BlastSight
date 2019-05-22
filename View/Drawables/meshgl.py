@@ -44,9 +44,9 @@ class MeshGL(GLDrawable):
         self.shader_program.link()
 
     def initialize(self) -> None:
-        self.set_vertex_shader_source('View/Shaders/Mesh/vertex.glsl')
-        self.set_fragment_shader_source('View/Shaders/Mesh/fragment.glsl')
-        self.set_geometry_shader_source('View/Shaders/Mesh/geometry.glsl')
+        self.vertex_shader_source = 'View/Shaders/Mesh/vertex.glsl'
+        self.fragment_shader_source = 'View/Shaders/Mesh/fragment.glsl'
+        self.geometry_shader_source = 'View/Shaders/Mesh/geometry.glsl'
 
         super().initialize()
 

@@ -19,9 +19,9 @@ class GLDrawable:
         self.fragment_shader = None
         self.geometry_shader = None
 
-        self.vertex_shader_source = None
-        self.fragment_shader_source = None
-        self.geometry_shader_source = None
+        self._vertex_shader_source = None
+        self._fragment_shader_source = None
+        self._geometry_shader_source = None
 
         # Vertex {Array/Buffer} Objects
         self.vao = None
@@ -53,6 +53,30 @@ class GLDrawable:
     def element(self):
         return self._element
 
+    @property
+    def vertex_shader_source(self):
+        return self._vertex_shader_source
+
+    @vertex_shader_source.setter
+    def vertex_shader_source(self, source):
+        self._vertex_shader_source = source
+
+    @property
+    def fragment_shader_source(self):
+        return self._fragment_shader_source
+
+    @fragment_shader_source.setter
+    def fragment_shader_source(self, source):
+        self._fragment_shader_source = source
+
+    @property
+    def geometry_shader_source(self):
+        return self._geometry_shader_source
+
+    @geometry_shader_source.setter
+    def geometry_shader_source(self, source):
+        self._geometry_shader_source = source
+
     def show(self) -> None:
         self.is_visible = True
 
@@ -79,23 +103,14 @@ class GLDrawable:
 
         self.is_initialized = True
 
-    def set_vertex_shader_source(self, source: str) -> None:
-        self.vertex_shader_source = source
-
-    def set_fragment_shader_source(self, source: str) -> None:
-        self.fragment_shader_source = source
-
-    def set_geometry_shader_source(self, source: str) -> None:
-        self.geometry_shader_source = source
-
     def initialize_shader_program(self) -> None:
         self.vertex_shader = QOpenGLShader(QOpenGLShader.Vertex)
         self.fragment_shader = QOpenGLShader(QOpenGLShader.Fragment)
         self.geometry_shader = QOpenGLShader(QOpenGLShader.Geometry)
 
-        self.vertex_shader.compileSourceFile(self.vertex_shader_source)
-        self.fragment_shader.compileSourceFile(self.fragment_shader_source)
-        self.geometry_shader.compileSourceFile(self.geometry_shader_source)
+        self.vertex_shader.compileSourceFile(self._vertex_shader_source)
+        self.fragment_shader.compileSourceFile(self._fragment_shader_source)
+        self.geometry_shader.compileSourceFile(self._geometry_shader_source)
 
         self.shader_program.addShader(self.vertex_shader)
         self.shader_program.addShader(self.fragment_shader)

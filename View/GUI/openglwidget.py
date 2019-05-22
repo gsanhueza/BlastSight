@@ -168,6 +168,7 @@ class OpenGLWidget(QOpenGLWidget):
     """
 
     def initializeGL(self) -> None:
+        print('initializeGL')
         # Standalone viewer will put items here before "show()"
         # FIXME Wrong initialization, doesn't set toggled wireframe
         for id_, drawable in self.drawable_collection.items():
