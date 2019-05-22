@@ -12,7 +12,11 @@ class StandaloneViewer(OpenGLWidget):
         self.command_queue = []
 
         super().__init__()
-        self.setWindowTitle('MineVis: Stand-alone Viewer')
+        self.setWindowTitle('MineVis (Standalone)')
+
+        # FIXME If we set attributes correctly, we shouldn't need this before showing the viewer
+        super().show()
+        super().hide()
 
     def show_drawable(self, id_: int) -> None:
         self.command_queue.append(lambda this: OpenGLWidget.show_drawable(this, id_))

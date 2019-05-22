@@ -168,15 +168,10 @@ class OpenGLWidget(QOpenGLWidget):
     """
 
     def initializeGL(self) -> None:
-        # Meshes currently in model
-        for id_, mesh in self.model.mesh_collection:
-            drawable = MeshGL(self, mesh)
-            self.drawable_collection.add(id_, drawable)
-
-        # Block models currently in model
-        for id_, block_model in self.model.block_model_collection:
-            drawable = BlockModelGL(self, block_model)
-            self.drawable_collection.add(id_, drawable)
+        # Standalone viewer will put items here before "show()"
+        # FIXME Wrong initialization, doesn't set toggled wireframe
+        for id_, drawable in self.drawable_collection.items():
+            drawable.initialize()
 
     def paintGL(self) -> None:
         self.painter.begin(self)
