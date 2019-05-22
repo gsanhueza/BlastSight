@@ -17,25 +17,34 @@ class BlockModelElement(Element):
         super().__init__(*args, **kwargs)
 
     def _init_fill(self, *args, **kwargs):
-        if 'vertices' in kwargs.keys():
+        if all(elem in list(kwargs.keys()) for elem in ['vertices', 'values']):
             assert len(kwargs.keys()) >= 2
 
             self.x, self.y, self.z = zip(*kwargs.get('vertices'))
-            self.x_str, self.y_str, self.z_str = ['x', 'y', 'z']
+            self.values = kwargs.get('values')
 
-        elif all(elem in list(kwargs.keys()) for elem in ['x', 'y', 'z']):
+            assert len(self.x) == len(self.y) == len(self.z) == len(self.values), \
+                f'Coordinates have different lengths: ({len(self.x)}, {len(self.y)}, {len(self.z)}, {len(self.values)})'
+
+            self.x_str, self.y_str, self.z_str, self.value_str = ['x', 'y', 'z', 'values']
+
+        elif all(elem in list(kwargs.keys()) for elem in ['x', 'y', 'z', 'values']):
             assert len(kwargs.keys()) >= 4
 
             self.x = kwargs.get('x')
             self.y = kwargs.get('y')
             self.z = kwargs.get('z')
-            assert len(self.x) == len(self.y) == len(self.z), \
-                f'Coordinates have different lengths: ({len(self.x)}, {len(self.y)}, {len(self.z)})'
+            self.values = kwargs.get('values')
 
-            self.x_str, self.y_str, self.z_str = ['x', 'y', 'z']
+            assert len(self.x) == len(self.y) == len(self.z) == len(self.values), \
+                f'Coordinates have different lengths: ({len(self.x)}, {len(self.y)}, {len(self.z)}, {len(self.values)})'
 
-        elif 'data' in kwargs.keys():
+            self.x_str, self.y_str, self.z_str, self.value_str = ['x', 'y', 'z', 'values']
+
+        elif all(elem in list(kwargs.keys()) for elem in ['data']):
             self.data = kwargs.get('data')
+            self.values = []
+
             assert len(self.data) >= 4
 
         else:
@@ -44,7 +53,6 @@ class BlockModelElement(Element):
 
         self.name = kwargs.get('name', None)
         self.ext = kwargs.get('ext', None)
-        self.values = kwargs.get('values', [])
 
     @property
     def data(self) -> dict:
