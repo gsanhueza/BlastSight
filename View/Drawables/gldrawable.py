@@ -11,7 +11,7 @@ class GLDrawable:
     def __init__(self, widget, element):
         self._widget = widget
         self._element = element
-        self._id = -1
+        self._id = element.id
 
         # Shaders
         self.shader_program = QOpenGLShaderProgram(self.widget.context())
