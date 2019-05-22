@@ -21,6 +21,7 @@ class BlockModelElement(Element):
             assert len(kwargs.keys()) >= 2
 
             self.x, self.y, self.z = zip(*kwargs.get('vertices'))
+            self.x_str, self.y_str, self.z_str = ['x', 'y', 'z']
 
         elif all(elem in list(kwargs.keys()) for elem in ['x', 'y', 'z']):
             assert len(kwargs.keys()) >= 4
@@ -30,6 +31,8 @@ class BlockModelElement(Element):
             self.z = kwargs.get('z')
             assert len(self.x) == len(self.y) == len(self.z), \
                 f'Coordinates have different lengths: ({len(self.x)}, {len(self.y)}, {len(self.z)})'
+
+            self.x_str, self.y_str, self.z_str = ['x', 'y', 'z']
 
         elif 'data' in kwargs.keys():
             self.data = kwargs.get('data')

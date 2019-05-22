@@ -14,8 +14,6 @@ from Model.Parsers.csvparser import CSVParser
 
 
 class Model:
-    _instance = None
-
     def __init__(self):
         self._element_collection = OrderedDict()
         self.parser_dict = {}  # Example: {"dxf": (DXFParser, MeshElement)}
@@ -33,19 +31,7 @@ class Model:
         return self.parser_dict[ext][0]
 
     def mesh(self, *args, **kwargs) -> MeshElement:
-        name = kwargs.get('name', None)
-        ext = kwargs.get('ext', None)
-
-        indices = kwargs.get('indices')
-        if 'vertices' in kwargs.keys():
-            vertices = kwargs.get('vertices')
-            element = MeshElement(vertices=vertices, indices=indices, name=name, ext=ext)
-        else:
-            x = kwargs.get('x')
-            y = kwargs.get('y')
-            z = kwargs.get('z')
-            element = MeshElement(x=x, y=y, z=z, indices=indices, name=name, ext=ext)
-
+        element = MeshElement(*args, **kwargs)
         element.id = self.last_id
 
         self._element_collection[self.last_id] = element
@@ -61,12 +47,7 @@ class Model:
         return self.mesh(vertices=vertices, indices=indices, name=name, ext=ext)
 
     def block_model(self, *args, **kwargs) -> BlockModelElement:
-        name = kwargs.get('name', None)
-        ext = kwargs.get('ext', None)
-
-        data = kwargs.get('data')
-        element = BlockModelElement(data=data, name=name, ext=ext)
-
+        element = BlockModelElement(*args, **kwargs)
         element.id = self.last_id
 
         self._element_collection[self.last_id] = element

@@ -34,6 +34,3 @@ class StandaloneViewer(OpenGLWidget):
             command(self)
 
         sys.exit(self.app.exec_())
-
-
-viewer = StandaloneViewer()

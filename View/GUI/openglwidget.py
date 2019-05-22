@@ -17,13 +17,14 @@ from Controller.drawmode import DrawMode
 from Controller.freemode import FreeMode
 
 from Model.Elements.element import Element
-from Model.modelhandler import model_handler  # Model handler
+from Model.model import Model
 
 
 class OpenGLWidget(QOpenGLWidget):
     def __init__(self, parent=None):
         QOpenGLWidget.__init__(self, parent)
 
+        self._model = Model()
         # Controller mode
         self.current_mode = None
 
@@ -60,7 +61,11 @@ class OpenGLWidget(QOpenGLWidget):
 
     @property
     def model(self):
-        return model_handler
+        return self._model
+
+    @model.setter
+    def model(self, model):
+        self._model = model
 
     """
     FACADE METHODS
@@ -75,7 +80,7 @@ class OpenGLWidget(QOpenGLWidget):
 
     def mesh(self, *args, **kwargs):
         try:
-            element = model_handler.mesh(*args, **kwargs)
+            element = self.model.mesh(*args, **kwargs)
             self.set_centroid(element.centroid)
             return self.add_drawable(element, MeshGL)
         except Exception:
@@ -84,7 +89,7 @@ class OpenGLWidget(QOpenGLWidget):
 
     def mesh_by_path(self, file_path: str):
         try:
-            element = model_handler.mesh_by_path(file_path)
+            element = self.model.mesh_by_path(file_path)
             self.set_centroid(element.centroid)
             return self.add_drawable(element, MeshGL)
         except Exception:
@@ -93,7 +98,7 @@ class OpenGLWidget(QOpenGLWidget):
 
     def block_model(self, *args, **kwargs) -> int:
         try:
-            element = model_handler.block_model(*args, **kwargs)
+            element = self.model.block_model(*args, **kwargs)
             return self.add_drawable(element, BlockModelGL)
         except Exception:
             traceback.print_exc()
@@ -101,7 +106,7 @@ class OpenGLWidget(QOpenGLWidget):
 
     def block_model_by_path(self, file_path: str) -> int:
         try:
-            element = model_handler.block_model_by_path(file_path)
+            element = self.model.block_model_by_path(file_path)
             return self.add_drawable(element, BlockModelGL)
         except Exception:
             traceback.print_exc()
@@ -121,7 +126,7 @@ class OpenGLWidget(QOpenGLWidget):
         self.get_drawable(id_).setup_vertex_attribs()
 
     def delete(self, id_: int) -> None:
-        model_handler.delete(id_)
+        self.model.delete(id_)
         del self.drawable_collection[id_]
 
     def toggle_wireframe(self, id_: int) -> bool:
@@ -161,12 +166,12 @@ class OpenGLWidget(QOpenGLWidget):
 
     def initializeGL(self) -> None:
         # Meshes currently in model
-        for id_, mesh in model_handler.mesh_collection:
+        for id_, mesh in self.model.mesh_collection:
             drawable = MeshGL(self, mesh)
             self.drawable_collection.add(id_, drawable)
 
         # Block models currently in model
-        for id_, block_model in model_handler.block_model_collection:
+        for id_, block_model in self.model.block_model_collection:
             drawable = BlockModelGL(self, block_model)
             self.drawable_collection.add(id_, drawable)
 
