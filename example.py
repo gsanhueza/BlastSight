@@ -7,4 +7,3 @@ if __name__ == '__main__':
     drawable = viewer.mesh_by_path('tests/Files/caseron.off')
     # drawable.toggle_wireframe()
     viewer.show()
-

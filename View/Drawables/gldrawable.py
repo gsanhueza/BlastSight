@@ -9,6 +9,8 @@ from PyQt5.QtGui import QOpenGLShader
 
 class GLDrawable:
     def __init__(self, widget, element):
+        assert widget
+        assert element
         self._widget = widget
         self._element = element
 
@@ -91,27 +93,17 @@ class GLDrawable:
         # self.set_geometry_shader_source('View/Shaders/mesh_geometry.glsl')
 
         # Setup shaders and buffers
-        self.initialize_shader_program()
+        self.initialize_program()
         self.initialize_buffers()
-
-        # Setup vertex attributes
-        self.setup_vertex_attribs()
-
-        # Setup uniforms
+        self.compile_shaders()
+        self.bind_shaders()
+        self.setup_attributes()
         self.setup_uniforms()
 
         self.is_initialized = True
 
-    def initialize_shader_program(self) -> None:
+    def initialize_program(self) -> None:
         self.shader_program = QOpenGLShaderProgram(self.widget.context())
-
-        self.vertex_shader = QOpenGLShader(QOpenGLShader.Vertex)
-        self.fragment_shader = QOpenGLShader(QOpenGLShader.Fragment)
-        self.geometry_shader = QOpenGLShader(QOpenGLShader.Geometry)
-
-        self.vertex_shader.compileSourceFile(self._vertex_shader_source)
-        self.fragment_shader.compileSourceFile(self._fragment_shader_source)
-        self.geometry_shader.compileSourceFile(self._geometry_shader_source)
 
     def initialize_buffers(self) -> None:
         self.vao = QOpenGLVertexArrayObject()
@@ -124,7 +116,22 @@ class GLDrawable:
         self.indices_ibo.create()
         self.values_vbo.create()
 
-    def setup_vertex_attribs(self) -> None:
+    def compile_shaders(self) -> None:
+        self.vertex_shader = QOpenGLShader(QOpenGLShader.Vertex)
+        self.fragment_shader = QOpenGLShader(QOpenGLShader.Fragment)
+        self.geometry_shader = QOpenGLShader(QOpenGLShader.Geometry)
+
+        self.vertex_shader.compileSourceFile(self._vertex_shader_source)
+        self.fragment_shader.compileSourceFile(self._fragment_shader_source)
+        self.geometry_shader.compileSourceFile(self._geometry_shader_source)
+
+    def bind_shaders(self) -> None:
+        self.shader_program.addShader(self.vertex_shader)
+        self.shader_program.addShader(self.fragment_shader)
+        self.shader_program.addShader(self.geometry_shader)
+        self.shader_program.link()
+
+    def setup_attributes(self) -> None:
         pass
 
     def setup_uniforms(self) -> None:

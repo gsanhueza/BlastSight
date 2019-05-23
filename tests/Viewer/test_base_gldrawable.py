@@ -35,7 +35,7 @@ class TestGLDrawable:
     def test_overrideable_methods(self):
         drawable = GLDrawable(widget=OpenGLWidget(), element=self.element)
         drawable.setup_uniforms()
-        drawable.setup_vertex_attribs()
+        drawable.setup_attributes()
         drawable.draw(None, None, None)
 
         assert not drawable.toggle_wireframe()

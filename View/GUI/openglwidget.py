@@ -129,7 +129,7 @@ class OpenGLWidget(QOpenGLWidget):
 
     def update_drawable(self, id_: int) -> None:
         self.set_centroid(self.model.get(id_).centroid)
-        self.get_drawable(id_).setup_vertex_attribs()
+        self.get_drawable(id_).setup_attributes()
 
     def delete(self, id_: int) -> None:
         self.model.delete(id_)

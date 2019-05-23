@@ -25,26 +25,24 @@ class MeshGL(GLDrawable):
         # Extra shaders
         self.fragment_wireframe_shader = None
 
-    def initialize_shader_program(self) -> None:
-        super().initialize_shader_program()
+    def compile_shaders(self) -> None:
+        self.vertex_shader_source = 'View/Shaders/Mesh/vertex.glsl'
+        self.fragment_shader_source = 'View/Shaders/Mesh/fragment.glsl'
+        self.geometry_shader_source = 'View/Shaders/Mesh/geometry.glsl'
+
+        super().compile_shaders()
 
         # Extra shaders
         self.fragment_wireframe_shader = QOpenGLShader(QOpenGLShader.Fragment)
         self.fragment_wireframe_shader.compileSourceFile('View/Shaders/Mesh/fragment_wireframe.glsl')
 
+    def bind_shaders(self):
         self.shader_program.addShader(self.vertex_shader)
         self.shader_program.addShader(self.fragment_shader)
         # self.shader_program.addShader(self.geometry_shader)
         self.shader_program.link()
 
-    def initialize(self) -> None:
-        self.vertex_shader_source = 'View/Shaders/Mesh/vertex.glsl'
-        self.fragment_shader_source = 'View/Shaders/Mesh/fragment.glsl'
-        self.geometry_shader_source = 'View/Shaders/Mesh/geometry.glsl'
-
-        super().initialize()
-
-    def setup_vertex_attribs(self) -> None:
+    def setup_attributes(self) -> None:
         _POSITION = 0
         _SIZE_OF_GL_FLOAT = 4
 
