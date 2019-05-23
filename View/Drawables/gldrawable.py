@@ -85,7 +85,6 @@ class GLDrawable:
         self.is_visible = False
 
     def initialize(self) -> None:
-        print('INITIALIZE')
         self.initialize_program()
         self.initialize_buffers()
         self.compile_shaders()

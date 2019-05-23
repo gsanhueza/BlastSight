@@ -93,25 +93,17 @@ class MeshGL(GLDrawable):
 
         return self.wireframe_enabled
 
-    # FIXME Only fails at start, and only when disabling, but why?
     def disable_wireframe(self) -> None:
-        print(f'AD: {glGetError()}')
-        self.shader_program.removeShader(self.geometry_shader)
-        print(f'BD: {glGetError()}')
-        self.shader_program.removeShader(self.fragment_wireframe_shader)
-        print(f'CD: {glGetError()}')
+        self.shader_program.removeAllShaders()
+        self.shader_program.addShader(self.vertex_shader)
         self.shader_program.addShader(self.fragment_shader)
-        print(f'DD: {glGetError()}')
         self.wireframe_enabled = False
 
     def enable_wireframe(self):
-        print(f'AE: {glGetError()}')
-        self.shader_program.removeShader(self.fragment_shader)
-        print(f'BE: {glGetError()}')
+        self.shader_program.removeAllShaders()
+        self.shader_program.addShader(self.vertex_shader)
         self.shader_program.addShader(self.fragment_wireframe_shader)
-        print(f'CE: {glGetError()}')
         self.shader_program.addShader(self.geometry_shader)
-        print(f'DE: {glGetError()}')
         self.wireframe_enabled = True
 
     def draw(self, proj_matrix, view_matrix, model_matrix) -> None:
