@@ -26,13 +26,7 @@ class MeshGL(GLDrawable):
         self.fragment_wireframe_shader = None
 
     def initialize_shader_program(self) -> None:
-        self.vertex_shader = QOpenGLShader(QOpenGLShader.Vertex)
-        self.fragment_shader = QOpenGLShader(QOpenGLShader.Fragment)
-        self.geometry_shader = QOpenGLShader(QOpenGLShader.Geometry)
-
-        self.vertex_shader.compileSourceFile(self.vertex_shader_source)
-        self.fragment_shader.compileSourceFile(self.fragment_shader_source)
-        self.geometry_shader.compileSourceFile(self.geometry_shader_source)
+        super().initialize_shader_program()
 
         # Extra shaders
         self.fragment_wireframe_shader = QOpenGLShader(QOpenGLShader.Fragment)

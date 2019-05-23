@@ -13,7 +13,7 @@ class GLDrawable:
         self._element = element
 
         # Shaders
-        self.shader_program = QOpenGLShaderProgram(self.widget.context())
+        self.shader_program = None
         self.vertex_shader = None
         self.fragment_shader = None
         self.geometry_shader = None
@@ -103,6 +103,8 @@ class GLDrawable:
         self.is_initialized = True
 
     def initialize_shader_program(self) -> None:
+        self.shader_program = QOpenGLShaderProgram(self.widget.context())
+
         self.vertex_shader = QOpenGLShader(QOpenGLShader.Vertex)
         self.fragment_shader = QOpenGLShader(QOpenGLShader.Fragment)
         self.geometry_shader = QOpenGLShader(QOpenGLShader.Geometry)
@@ -110,11 +112,6 @@ class GLDrawable:
         self.vertex_shader.compileSourceFile(self._vertex_shader_source)
         self.fragment_shader.compileSourceFile(self._fragment_shader_source)
         self.geometry_shader.compileSourceFile(self._geometry_shader_source)
-
-        self.shader_program.addShader(self.vertex_shader)
-        self.shader_program.addShader(self.fragment_shader)
-        self.shader_program.addShader(self.geometry_shader)
-        self.shader_program.link()
 
     def initialize_buffers(self) -> None:
         self.vao = QOpenGLVertexArrayObject()

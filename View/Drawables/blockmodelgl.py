@@ -24,6 +24,14 @@ class BlockModelGL(GLDrawable):
 
         super().initialize()
 
+    def initialize_shader_program(self) -> None:
+        super().initialize_shader_program()
+
+        self.shader_program.addShader(self.vertex_shader)
+        self.shader_program.addShader(self.fragment_shader)
+        self.shader_program.addShader(self.geometry_shader)
+        self.shader_program.link()
+
     def setup_uniforms(self) -> None:
         self.model_view_matrix_loc = self.shader_program.uniformLocation('model_view_matrix')
         self.proj_matrix_loc = self.shader_program.uniformLocation('proj_matrix')
