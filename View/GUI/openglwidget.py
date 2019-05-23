@@ -137,6 +137,7 @@ class OpenGLWidget(QOpenGLWidget):
 
     def toggle_wireframe(self, id_: int) -> bool:
         status = self.drawable_collection[id_].toggle_wireframe()
+        self.drawable_collection[id_].update_wireframe()
         self.update()
 
         return status
@@ -168,11 +169,7 @@ class OpenGLWidget(QOpenGLWidget):
     """
 
     def initializeGL(self) -> None:
-        print('initializeGL')
-        # Standalone viewer will put items here before "show()"
-        # FIXME Wrong initialization, doesn't set toggled wireframe
-        for id_, drawable in self.drawable_collection.items():
-            drawable.initialize()
+        pass
 
     def paintGL(self) -> None:
         self.painter.begin(self)

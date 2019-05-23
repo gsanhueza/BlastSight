@@ -25,6 +25,10 @@ class MeshGL(GLDrawable):
         # Extra shaders
         self.fragment_wireframe_shader = None
 
+    def initialize(self):
+        super().initialize()
+        self.update_wireframe()
+
     def compile_shaders(self) -> None:
         self.vertex_shader_source = 'View/Shaders/Mesh/vertex.glsl'
         self.fragment_shader_source = 'View/Shaders/Mesh/fragment.glsl'
@@ -79,11 +83,18 @@ class MeshGL(GLDrawable):
         alpha = 1.0  # self.model_element.get_alpha()
         self.alpha = QVector2D(alpha, 0.0)
 
-    def toggle_wireframe(self) -> bool:
+    def update_wireframe(self) -> None:
+        print('^^^^^^^^^^ update_wireframe called ^^^^^^^^^^')
         if self.wireframe_enabled:
-            self.disable_wireframe()
-        else:
             self.enable_wireframe()
+        else:
+            self.disable_wireframe()
+
+    def toggle_wireframe(self) -> bool:
+        print('^^^^^^^^^^ toggle_wireframe called ^^^^^^^^^^')
+        self.wireframe_enabled = not self.wireframe_enabled
+        # self.update_wireframe()
+
         return self.wireframe_enabled
 
     def disable_wireframe(self) -> None:

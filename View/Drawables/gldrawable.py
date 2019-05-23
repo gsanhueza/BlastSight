@@ -85,14 +85,7 @@ class GLDrawable:
         self.is_visible = False
 
     def initialize(self) -> None:
-        # Remember to set shader sources in children of this class
-        # For example:
-
-        # self.set_vertex_shader_source('View/Shaders/mesh_vertex.glsl')
-        # self.set_fragment_shader_source('View/Shaders/mesh_fragment.glsl')
-        # self.set_geometry_shader_source('View/Shaders/mesh_geometry.glsl')
-
-        # Setup shaders and buffers
+        print('Initializing a drawable')
         self.initialize_program()
         self.initialize_buffers()
         self.compile_shaders()
@@ -117,6 +110,14 @@ class GLDrawable:
         self.values_vbo.create()
 
     def compile_shaders(self) -> None:
+        # Remember to set shader sources in children of this class
+        # For example:
+
+        # self.vertex_shader_source = 'View/Shaders/mesh_vertex.glsl'
+        # self.fragment_shader_source = 'View/Shaders/mesh_fragment.glsl'
+        # self.geometry_shader_source = 'View/Shaders/mesh_geometry.glsl'
+        # super().compile_shaders()
+
         self.vertex_shader = QOpenGLShader(QOpenGLShader.Vertex)
         self.fragment_shader = QOpenGLShader(QOpenGLShader.Fragment)
         self.geometry_shader = QOpenGLShader(QOpenGLShader.Geometry)
