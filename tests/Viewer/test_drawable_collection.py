@@ -8,8 +8,8 @@ from View.GUI.openglwidget import OpenGLWidget
 
 class TestGLDrawableCollection:
     element = Element(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0])
+    element.id = 0
     drawable = GLDrawable(widget=OpenGLWidget(), element=element)
-    drawable.id = 0
 
     def test_base(self):
         collection = GLDrawableCollection()
@@ -20,8 +20,10 @@ class TestGLDrawableCollection:
         collection = GLDrawableCollection()
         collection.add(0, self.drawable)
         assert len(collection) == 1
+        assert collection[0] == self.drawable
 
         drawable = collection[0]
+        assert drawable == collection[0]
         assert isinstance(drawable, GLDrawable)
         assert isinstance(drawable.id, int)
 

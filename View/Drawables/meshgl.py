@@ -89,16 +89,22 @@ class MeshGL(GLDrawable):
 
     def toggle_wireframe(self) -> bool:
         if self.wireframe_enabled:
-            self.shader_program.removeShader(self.geometry_shader)
-            self.shader_program.removeShader(self.fragment_wireframe_shader)
-            self.shader_program.addShader(self.fragment_shader)
-            self.wireframe_enabled = False
+            self.disable_wireframe()
         else:
-            self.shader_program.removeShader(self.fragment_shader)
-            self.shader_program.addShader(self.fragment_wireframe_shader)
-            self.shader_program.addShader(self.geometry_shader)
-            self.wireframe_enabled = True
+            self.enable_wireframe()
         return self.wireframe_enabled
+
+    def disable_wireframe(self) -> None:
+        self.shader_program.removeShader(self.geometry_shader)
+        self.shader_program.removeShader(self.fragment_wireframe_shader)
+        self.shader_program.addShader(self.fragment_shader)
+        self.wireframe_enabled = False
+
+    def enable_wireframe(self):
+        self.shader_program.removeShader(self.fragment_shader)
+        self.shader_program.addShader(self.fragment_wireframe_shader)
+        self.shader_program.addShader(self.geometry_shader)
+        self.wireframe_enabled = True
 
     def draw(self, proj_matrix, view_matrix, model_matrix) -> None:
         if not self.is_visible:
