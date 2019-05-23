@@ -56,7 +56,6 @@ class MeshGL(GLDrawable):
 
         self.vertices_size = vertices.size
         self.indices_size = indices.size
-
         self.widget.makeCurrent()
         self.vao.bind()
 
@@ -84,27 +83,25 @@ class MeshGL(GLDrawable):
         self.alpha = QVector2D(alpha, 0.0)
 
     def update_wireframe(self) -> None:
-        print('^^^^^^^^^^ update_wireframe called ^^^^^^^^^^')
         if self.wireframe_enabled:
             self.enable_wireframe()
         else:
             self.disable_wireframe()
 
     def toggle_wireframe(self) -> bool:
-        print('^^^^^^^^^^ toggle_wireframe called ^^^^^^^^^^')
         self.wireframe_enabled = not self.wireframe_enabled
-        # self.update_wireframe()
 
         return self.wireframe_enabled
 
     def disable_wireframe(self) -> None:
-        self.shader_program.removeShader(self.geometry_shader)
-        self.shader_program.removeShader(self.fragment_wireframe_shader)
+        self.shader_program.removeAllShaders()
+        self.shader_program.addShader(self.vertex_shader)
         self.shader_program.addShader(self.fragment_shader)
         self.wireframe_enabled = False
 
     def enable_wireframe(self):
-        self.shader_program.removeShader(self.fragment_shader)
+        self.shader_program.removeAllShaders()
+        self.shader_program.addShader(self.vertex_shader)
         self.shader_program.addShader(self.fragment_wireframe_shader)
         self.shader_program.addShader(self.geometry_shader)
         self.wireframe_enabled = True

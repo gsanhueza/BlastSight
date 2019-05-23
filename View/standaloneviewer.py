@@ -10,6 +10,7 @@ class StandaloneViewer(OpenGLWidget):
     def __init__(self):
         self.app = QApplication(sys.argv)
         super().__init__()
+        self.app_mode = False
         self.command_queue = []
         self.setWindowTitle('MineVis (Standalone)')
 
