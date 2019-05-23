@@ -6,8 +6,8 @@ from PyQt5.QtGui import QVector2D
 
 
 class BlockModelGL(GLDrawable):
-    def __init__(self, widget, element):
-        super().__init__(widget, element)
+    def __init__(self, widget=None, element=None, app_mode=False):
+        super().__init__(widget, element, app_mode)
 
         # Uniforms
         self.model_view_matrix_loc = None

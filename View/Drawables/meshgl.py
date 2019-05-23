@@ -8,8 +8,8 @@ from OpenGL.GL import *
 
 
 class MeshGL(GLDrawable):
-    def __init__(self, widget=None, element=None):
-        super().__init__(widget, element)
+    def __init__(self, widget=None, element=None, app_mode=False):
+        super().__init__(widget, element, app_mode)
 
         # Uniforms
         self.model_view_matrix_loc = None
@@ -27,7 +27,11 @@ class MeshGL(GLDrawable):
 
     def initialize(self):
         super().initialize()
-        self.update_wireframe()
+
+        # Not the best, but works as intended (Refactor ASAP)
+        print(self._app_mode)
+        if not self._app_mode:
+            self.update_wireframe()
 
     def compile_shaders(self) -> None:
         self.vertex_shader_source = 'View/Shaders/Mesh/vertex.glsl'
@@ -56,7 +60,6 @@ class MeshGL(GLDrawable):
 
         self.vertices_size = vertices.size
         self.indices_size = indices.size
-
         self.widget.makeCurrent()
         self.vao.bind()
 
@@ -84,16 +87,13 @@ class MeshGL(GLDrawable):
         self.alpha = QVector2D(alpha, 0.0)
 
     def update_wireframe(self) -> None:
-        print('^^^^^^^^^^ update_wireframe called ^^^^^^^^^^')
         if self.wireframe_enabled:
             self.enable_wireframe()
         else:
             self.disable_wireframe()
 
     def toggle_wireframe(self) -> bool:
-        print('^^^^^^^^^^ toggle_wireframe called ^^^^^^^^^^')
         self.wireframe_enabled = not self.wireframe_enabled
-        # self.update_wireframe()
 
         return self.wireframe_enabled
 

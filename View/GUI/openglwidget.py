@@ -24,6 +24,7 @@ from Model.model import Model
 class OpenGLWidget(QOpenGLWidget):
     def __init__(self, parent=None):
         QOpenGLWidget.__init__(self, parent)
+        self.app_mode = True
 
         self._model = Model()
         # Controller mode
@@ -78,7 +79,7 @@ class OpenGLWidget(QOpenGLWidget):
     def add_drawable(self, element: Element, drawable_type: type) -> GLDrawable:
         id_ = element.id
 
-        drawable = drawable_type(self, element)
+        drawable = drawable_type(self, element, app_mode=self.app_mode)
         drawable.id = id_
         self.drawable_collection.add(id_, drawable)
 
