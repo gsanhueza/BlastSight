@@ -8,12 +8,11 @@ from PyQt5.QtGui import QOpenGLShader
 
 
 class GLDrawable:
-    def __init__(self, widget, element, app_mode=False):
+    def __init__(self, widget, element):
         assert widget
         assert element
         self._widget = widget
         self._element = element
-        self._app_mode = app_mode
 
         # Shaders
         self.shader_program = None
@@ -86,6 +85,7 @@ class GLDrawable:
         self.is_visible = False
 
     def initialize(self) -> None:
+        print('INITIALIZE')
         self.initialize_program()
         self.initialize_buffers()
         self.compile_shaders()

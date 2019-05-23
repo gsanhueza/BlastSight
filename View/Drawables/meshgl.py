@@ -8,8 +8,8 @@ from OpenGL.GL import *
 
 
 class MeshGL(GLDrawable):
-    def __init__(self, widget=None, element=None, app_mode=False):
-        super().__init__(widget, element, app_mode)
+    def __init__(self, widget=None, element=None):
+        super().__init__(widget, element)
 
         # Uniforms
         self.model_view_matrix_loc = None
@@ -27,11 +27,7 @@ class MeshGL(GLDrawable):
 
     def initialize(self):
         super().initialize()
-
-        # Not the best, but works as intended (Refactor ASAP)
-        print(self._app_mode)
-        if not self._app_mode:
-            self.update_wireframe()
+        self.update_wireframe()
 
     def compile_shaders(self) -> None:
         self.vertex_shader_source = 'View/Shaders/Mesh/vertex.glsl'
@@ -97,16 +93,25 @@ class MeshGL(GLDrawable):
 
         return self.wireframe_enabled
 
+    # FIXME Only fails at start, and only when disabling, but why?
     def disable_wireframe(self) -> None:
+        print(f'AD: {glGetError()}')
         self.shader_program.removeShader(self.geometry_shader)
+        print(f'BD: {glGetError()}')
         self.shader_program.removeShader(self.fragment_wireframe_shader)
+        print(f'CD: {glGetError()}')
         self.shader_program.addShader(self.fragment_shader)
+        print(f'DD: {glGetError()}')
         self.wireframe_enabled = False
 
     def enable_wireframe(self):
+        print(f'AE: {glGetError()}')
         self.shader_program.removeShader(self.fragment_shader)
+        print(f'BE: {glGetError()}')
         self.shader_program.addShader(self.fragment_wireframe_shader)
+        print(f'CE: {glGetError()}')
         self.shader_program.addShader(self.geometry_shader)
+        print(f'DE: {glGetError()}')
         self.wireframe_enabled = True
 
     def draw(self, proj_matrix, view_matrix, model_matrix) -> None:
