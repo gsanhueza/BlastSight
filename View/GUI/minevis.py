@@ -61,7 +61,7 @@ class MineVis(QMainWindow):
                 self.last_dir = QFileInfo(file_path).absoluteDir().absolutePath()
 
         if len(file_paths) > 1:
-            self.statusBar.showMessage(f'{accum} of {len(file_paths)} meshes loaded')
+            self.statusBar.showMessage(f'{accum} of {len(file_paths)} meshes loaded.')
 
     def load_mesh(self, file_path: str) -> bool:
         drawable = self.viewer.mesh_by_path(file_path)
@@ -87,7 +87,7 @@ class MineVis(QMainWindow):
                 self.last_dir = QFileInfo(file_path).absoluteDir().absolutePath()
 
         if len(file_paths) > 1:
-            self.statusBar.showMessage(f'{accum} of {len(file_paths)} block models loaded')
+            self.statusBar.showMessage(f'{accum} of {len(file_paths)} block models loaded.')
 
     def load_block_model(self, file_path: str) -> bool:
         drawable = self.viewer.block_model_by_path(file_path)
@@ -148,15 +148,18 @@ class MineVis(QMainWindow):
             event.acceptProposedAction()
 
     def dropEvent(self, event, *args, **kwargs) -> None:
-        file_path = event.mimeData().urls()[0].toLocalFile()
         self.statusBar.showMessage('Loading...')
+        urls = event.mimeData().urls()
+        accum = 0
 
-        if self.load_mesh(file_path):
-            pass
-        elif self.load_block_model(file_path):
-            pass
-        else:
-            self.statusBar.showMessage('Cannot load file')
+        for url in urls:
+            file_path = url.toLocalFile()
+
+            # Brute-force trying to load
+            accum += int(self.load_mesh(file_path))
+            accum += int(self.load_block_model(file_path))
 
         self.fill_tree_widget()
         self.viewer.update()
+
+        self.statusBar.showMessage(f'{accum} of {len(urls)} files loaded.')
