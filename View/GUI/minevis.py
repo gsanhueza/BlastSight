@@ -16,7 +16,7 @@ from PyQt5 import uic
 class MineVis(QMainWindow):
     def __init__(self, parent=None):
         QMainWindow.__init__(self, parent)
-        uic.loadUi('View/UI/mainwindow.ui', self)
+        uic.loadUi('View/GUI/UI/mainwindow.ui', self)
 
         self._settings = QSettings('AMTC', application='MineVis', parent=self)
 

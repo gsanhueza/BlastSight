@@ -51,7 +51,6 @@
     </property>
     <addaction name="action_Normal_mode"/>
     <addaction name="action_Draw_mode"/>
-    <addaction name="action_Free_mode"/>
     <addaction name="separator"/>
    </widget>
    <addaction name="menu_File"/>
@@ -191,11 +190,6 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>MineVis</class>
-   <extends>QMainWindow</extends>
-   <header>View/GUI/mainwindow.h</header>
-  </customwidget>
-  <customwidget>
    <class>OpenGLWidget</class>
    <extends>QOpenGLWidget</extends>
    <header>View/GUI/openglwidget.h</header>
@@ -273,22 +267,6 @@
    </hints>
   </connection>
   <connection>
-   <sender>action_Free_mode</sender>
-   <signal>triggered()</signal>
-   <receiver>MineVis</receiver>
-   <slot>free_mode_slot()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>399</x>
-     <y>299</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>action_Help</sender>
    <signal>triggered()</signal>
    <receiver>MineVis</receiver>
@@ -325,7 +303,6 @@
   <slot>normal_mode_slot()</slot>
   <slot>draw_mode_slot()</slot>
   <slot>load_mesh_slot()</slot>
-  <slot>free_mode_slot()</slot>
   <slot>help_slot()</slot>
   <slot>load_block_model_slot()</slot>
  </slots>

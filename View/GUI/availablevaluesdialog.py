@@ -13,7 +13,7 @@ class DialogAvailableValues(QDialog):
         # Avoids the QObject::startTimer warning (maybe)
         self.setAttribute(Qt.WA_DeleteOnClose)
 
-        uic.loadUi('View/UI/dialogavailablevalues.ui', self)
+        uic.loadUi('View/GUI/UI/dialogavailablevalues.ui', self)
         self.parent = parent
         self.element = element
 
