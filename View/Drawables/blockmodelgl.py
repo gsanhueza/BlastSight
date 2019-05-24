@@ -21,17 +21,17 @@ class BlockModelGL(GLDrawable):
         self.block_size = 2.0
 
     def initialize_shaders(self) -> None:
-        self.vertex_shader = QOpenGLShader(QOpenGLShader.Vertex)
-        self.fragment_shader = QOpenGLShader(QOpenGLShader.Fragment)
-        self.geometry_shader = QOpenGLShader(QOpenGLShader.Geometry)
+        vertex_shader = QOpenGLShader(QOpenGLShader.Vertex)
+        fragment_shader = QOpenGLShader(QOpenGLShader.Fragment)
+        geometry_shader = QOpenGLShader(QOpenGLShader.Geometry)
 
-        self.vertex_shader.compileSourceFile('View/Shaders/BlockModel/vertex.glsl')
-        self.fragment_shader.compileSourceFile('View/Shaders/BlockModel/fragment.glsl')
-        self.geometry_shader.compileSourceFile('View/Shaders/BlockModel/geometry.glsl')
+        vertex_shader.compileSourceFile('View/Shaders/BlockModel/vertex.glsl')
+        fragment_shader.compileSourceFile('View/Shaders/BlockModel/fragment.glsl')
+        geometry_shader.compileSourceFile('View/Shaders/BlockModel/geometry.glsl')
 
-        self.shader_program.addShader(self.vertex_shader)
-        self.shader_program.addShader(self.fragment_shader)
-        self.shader_program.addShader(self.geometry_shader)
+        self.shader_program.addShader(vertex_shader)
+        self.shader_program.addShader(fragment_shader)
+        self.shader_program.addShader(geometry_shader)
         self.shader_program.link()
 
     def setup_uniforms(self) -> None:
