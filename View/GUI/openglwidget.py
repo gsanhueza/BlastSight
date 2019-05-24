@@ -83,11 +83,8 @@ class OpenGLWidget(QOpenGLWidget):
     FACADE METHODS
     """
     def add_drawable(self, element: Element, drawable_type: type) -> GLDrawable:
-        id_ = element.id
-
         drawable = drawable_type(self, element)
-        drawable.id = id_
-        self.drawable_collection.add(id_, drawable)
+        self.drawable_collection.add(drawable.id, drawable)
 
         return drawable
 
