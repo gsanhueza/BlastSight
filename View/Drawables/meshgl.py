@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 from PyQt5.QtGui import QOpenGLShader
+from PyQt5.QtGui import QOpenGLBuffer
 from PyQt5.QtGui import QVector2D
 from PyQt5.QtGui import QVector3D
 from View.Drawables.gldrawable import GLDrawable
@@ -50,6 +51,15 @@ class MeshGL(GLDrawable):
         _POSITION = 0
         _SIZE_OF_GL_FLOAT = 4
 
+        # VBO
+        vertices_vbo = QOpenGLBuffer(QOpenGLBuffer.VertexBuffer)
+        indices_ibo = QOpenGLBuffer(QOpenGLBuffer.IndexBuffer)
+        values_vbo = QOpenGLBuffer(QOpenGLBuffer.VertexBuffer)
+
+        vertices_vbo.create()
+        indices_ibo.create()
+        values_vbo.create()
+
         # Data
         vertices = self.element.vertices
         indices = self.element.indices
@@ -59,11 +69,11 @@ class MeshGL(GLDrawable):
         self.widget.makeCurrent()
         self.vao.bind()
 
-        self.vertices_vbo.bind()
+        vertices_vbo.bind()
         glBufferData(GL_ARRAY_BUFFER, _SIZE_OF_GL_FLOAT * self.vertices_size, vertices, GL_STATIC_DRAW)
         glVertexAttribPointer(_POSITION, 3, GL_FLOAT, False, 0, None)
 
-        self.indices_ibo.bind()
+        indices_ibo.bind()
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices, GL_STATIC_DRAW)
 
         glEnableVertexAttribArray(_POSITION)

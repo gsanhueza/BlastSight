@@ -1,9 +1,7 @@
 #!/usr/bin/env python
 
-from OpenGL.GL import *
 from PyQt5.QtGui import QOpenGLShaderProgram
 from PyQt5.QtGui import QOpenGLVertexArrayObject
-from PyQt5.QtGui import QOpenGLBuffer
 from PyQt5.QtGui import QOpenGLShader
 
 
@@ -24,11 +22,8 @@ class GLDrawable:
         self._fragment_shader_source = None
         self._geometry_shader_source = None
 
-        # Vertex {Array/Buffer} Objects
+        # Vertex Array Object
         self.vao = None
-        self.vertices_vbo = None
-        self.values_vbo = None
-        self.indices_ibo = None
 
         self.is_initialized = False
         self.is_visible = True
@@ -86,7 +81,6 @@ class GLDrawable:
 
     def initialize(self) -> None:
         self.initialize_program()
-        self.initialize_buffers()
         self.compile_shaders()
         self.bind_shaders()
         self.setup_attributes()
@@ -96,17 +90,8 @@ class GLDrawable:
 
     def initialize_program(self) -> None:
         self.shader_program = QOpenGLShaderProgram(self.widget.context())
-
-    def initialize_buffers(self) -> None:
         self.vao = QOpenGLVertexArrayObject()
-        self.vertices_vbo = QOpenGLBuffer(QOpenGLBuffer.VertexBuffer)
-        self.indices_ibo = QOpenGLBuffer(QOpenGLBuffer.IndexBuffer)
-        self.values_vbo = QOpenGLBuffer(QOpenGLBuffer.VertexBuffer)
-
         self.vao.create()
-        self.vertices_vbo.create()
-        self.indices_ibo.create()
-        self.values_vbo.create()
 
     def compile_shaders(self) -> None:
         # Remember to set shader sources in children of this class

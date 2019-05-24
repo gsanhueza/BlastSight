@@ -1,8 +1,10 @@
 #!/usr/bin/env python
 
+from PyQt5.QtGui import QVector2D
+from PyQt5.QtGui import QOpenGLBuffer
+
 from View.Drawables.gldrawable import GLDrawable
 from OpenGL.GL import *
-from PyQt5.QtGui import QVector2D
 
 
 class BlockModelGL(GLDrawable):
@@ -34,6 +36,15 @@ class BlockModelGL(GLDrawable):
         _COLOR = 1
         _SIZE_OF_GL_FLOAT = 4
 
+        # VBO
+        vertices_vbo = QOpenGLBuffer(QOpenGLBuffer.VertexBuffer)
+        indices_ibo = QOpenGLBuffer(QOpenGLBuffer.IndexBuffer)
+        values_vbo = QOpenGLBuffer(QOpenGLBuffer.VertexBuffer)
+
+        vertices_vbo.create()
+        indices_ibo.create()
+        values_vbo.create()
+
         # Data
         vertices = self.element.vertices
         values = self.element.values
@@ -44,11 +55,11 @@ class BlockModelGL(GLDrawable):
         self.widget.makeCurrent()
         self.vao.bind()
 
-        self.vertices_vbo.bind()
+        vertices_vbo.bind()
         glBufferData(GL_ARRAY_BUFFER, _SIZE_OF_GL_FLOAT * self.vertices_size, vertices, GL_STATIC_DRAW)
         glVertexAttribPointer(_POSITION, 3, GL_FLOAT, False, 0, None)
 
-        self.values_vbo.bind()
+        values_vbo.bind()
         glBufferData(GL_ARRAY_BUFFER, _SIZE_OF_GL_FLOAT * self.values_size, values, GL_STATIC_DRAW)
         glVertexAttribPointer(_COLOR, 3, GL_FLOAT, False, 0, None)
 
