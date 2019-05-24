@@ -122,9 +122,6 @@ class MineVis(QMainWindow):
     def draw_mode_slot(self) -> None:
         self.viewer.set_draw_mode()
 
-    def free_mode_slot(self) -> None:
-        self.viewer.set_free_mode()
-
     def help_slot(self) -> None:
         QMessageBox.information(self,
                                 'MineVis - Help',

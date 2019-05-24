@@ -54,7 +54,7 @@ class TestBaseDrawables:
         widget = OpenGLWidget()
         drawable = GLDrawable(widget=OpenGLWidget(), element=self.element)
 
-        added = widget.add_drawable(drawable, GLDrawable)
+        added = widget.add_drawable(self.element, GLDrawable)
         rescued = widget.get_drawable(drawable.id)
 
         assert added is rescued
