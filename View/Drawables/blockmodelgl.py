@@ -22,6 +22,14 @@ class BlockModelGL(GLDrawable):
         # Block size
         self.block_size = 2.0
 
+    @property
+    def available_coordinates(self):
+        return self.element.available_coordinates
+
+    @property
+    def available_values(self):
+        return self.element.available_values
+
     def initialize_program(self) -> None:
         self.shader_program = QOpenGLShaderProgram(self.widget.context())
         self.vao = QOpenGLVertexArrayObject()

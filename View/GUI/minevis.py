@@ -100,15 +100,15 @@ class MineVis(QMainWindow):
             self.statusBar.showMessage(f'Wireframe {msg}')
 
     def show_available_values(self, id_):
-        element = self.viewer.model.get(id_)
-        dialog = DialogAvailableValues(self, element)
+        drawable = self.viewer.get_drawable(id_)
+        dialog = DialogAvailableValues(self, drawable)
 
-        for i in element.available_coordinates:
+        for i in drawable.available_coordinates:
             dialog.comboBox_x.addItem(i)
             dialog.comboBox_y.addItem(i)
             dialog.comboBox_z.addItem(i)
 
-        for i in element.available_values:
+        for i in drawable.available_values:
             dialog.comboBox_values.addItem(i)
 
         dialog.show()

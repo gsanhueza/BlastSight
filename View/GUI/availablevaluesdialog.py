@@ -7,7 +7,7 @@ from PyQt5 import uic
 
 
 class DialogAvailableValues(QDialog):
-    def __init__(self, parent=None, element=None):
+    def __init__(self, parent=None, drawable=None):
         QDialog.__init__(self, parent)
 
         # Avoids the QObject::startTimer warning (maybe)
@@ -15,7 +15,11 @@ class DialogAvailableValues(QDialog):
 
         uic.loadUi('View/GUI/UI/dialogavailablevalues.ui', self)
         self.parent = parent
-        self.element = element
+        self.drawable = drawable
+
+    @property
+    def element(self):
+        return self.drawable.element
 
     def accept(self):
         self.element.x_str = self.comboBox_x.currentText()
