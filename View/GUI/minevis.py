@@ -103,12 +103,12 @@ class MineVis(QMainWindow):
         drawable = self.viewer.get_drawable(id_)
         dialog = DialogAvailableValues(self, drawable)
 
-        for i in drawable.available_coordinates:
+        for i in drawable.element.available_coordinates:
             dialog.comboBox_x.addItem(i)
             dialog.comboBox_y.addItem(i)
             dialog.comboBox_z.addItem(i)
 
-        for i in drawable.available_values:
+        for i in drawable.element.available_values:
             dialog.comboBox_values.addItem(i)
 
         dialog.show()
