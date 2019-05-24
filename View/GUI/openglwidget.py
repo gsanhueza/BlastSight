@@ -69,8 +69,18 @@ class OpenGLWidget(QOpenGLWidget):
         self._model = model
 
     @property
-    def drawable_collection(self):
+    def drawable_collection(self) -> GLDrawableCollection:
         return self._drawable_collection
+
+    @property
+    def centroid(self) -> list:
+        return [self.xCentroid, self.yCentroid, self.zCentroid]
+
+    @centroid.setter
+    def centroid(self, centroid: list) -> None:
+        self.xCentroid = -centroid[0]
+        self.yCentroid = -centroid[1]
+        self.zCentroid = -centroid[2]
 
     """
     FACADE METHODS
@@ -87,7 +97,7 @@ class OpenGLWidget(QOpenGLWidget):
     def mesh(self, *args, **kwargs) -> GLDrawable:
         try:
             element = self.model.mesh(*args, **kwargs)
-            self.set_centroid(element.centroid)
+            self.centroid = element.centroid
             return self.add_drawable(element, MeshGL)
         except Exception:
             traceback.print_exc()
@@ -96,7 +106,7 @@ class OpenGLWidget(QOpenGLWidget):
     def mesh_by_path(self, file_path: str) -> GLDrawable:
         try:
             element = self.model.mesh_by_path(file_path)
-            self.set_centroid(element.centroid)
+            self.centroid = element.centroid
             return self.add_drawable(element, MeshGL)
         except Exception:
             traceback.print_exc()
@@ -128,7 +138,7 @@ class OpenGLWidget(QOpenGLWidget):
         return self.drawable_collection[id_]
 
     def update_drawable(self, id_: int) -> None:
-        self.set_centroid(self.model.get(id_).centroid)
+        self.centroid = self.model.get(id_).centroid
         self.get_drawable(id_).setup_attributes()
 
     def delete(self, id_: int) -> None:
@@ -137,7 +147,6 @@ class OpenGLWidget(QOpenGLWidget):
 
     def toggle_wireframe(self, id_: int) -> bool:
         status = self.drawable_collection[id_].toggle_wireframe()
-        self.drawable_collection[id_].update_wireframe()
         self.update()
 
         return status
@@ -146,11 +155,6 @@ class OpenGLWidget(QOpenGLWidget):
         self.xWorldPos = -x
         self.yWorldPos = -y
         self.zWorldPos = -z
-
-    def set_centroid(self, centroid) -> None:
-        self.xCentroid = -centroid[0]
-        self.yCentroid = -centroid[1]
-        self.zCentroid = -centroid[2]
 
     """
     Controller modes

@@ -83,14 +83,15 @@ class MeshGL(GLDrawable):
         self.alpha = QVector2D(alpha, 0.0)
 
     def update_wireframe(self) -> None:
-        if self.wireframe_enabled:
-            self.enable_wireframe()
-        else:
-            self.disable_wireframe()
+        if self.shader_program:  # Will skip before viewer.show()
+            if self.wireframe_enabled:
+                self.enable_wireframe()
+            else:
+                self.disable_wireframe()
 
     def toggle_wireframe(self) -> bool:
         self.wireframe_enabled = not self.wireframe_enabled
-
+        self.update_wireframe()
         return self.wireframe_enabled
 
     def disable_wireframe(self) -> None:
