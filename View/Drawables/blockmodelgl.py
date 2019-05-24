@@ -2,6 +2,7 @@
 
 from PyQt5.QtGui import QVector2D
 from PyQt5.QtGui import QOpenGLBuffer
+from PyQt5.QtGui import QOpenGLShader
 
 from View.Drawables.gldrawable import GLDrawable
 from OpenGL.GL import *
@@ -19,12 +20,19 @@ class BlockModelGL(GLDrawable):
         # Block size
         self.block_size = 2.0
 
-    def compile_shaders(self) -> None:
-        self.vertex_shader_source = 'View/Shaders/BlockModel/vertex.glsl'
-        self.fragment_shader_source = 'View/Shaders/BlockModel/fragment.glsl'
-        self.geometry_shader_source = 'View/Shaders/BlockModel/geometry.glsl'
+    def initialize_shaders(self) -> None:
+        self.vertex_shader = QOpenGLShader(QOpenGLShader.Vertex)
+        self.fragment_shader = QOpenGLShader(QOpenGLShader.Fragment)
+        self.geometry_shader = QOpenGLShader(QOpenGLShader.Geometry)
 
-        super().compile_shaders()
+        self.vertex_shader.compileSourceFile('View/Shaders/BlockModel/vertex.glsl')
+        self.fragment_shader.compileSourceFile('View/Shaders/BlockModel/fragment.glsl')
+        self.geometry_shader.compileSourceFile('View/Shaders/BlockModel/geometry.glsl')
+
+        self.shader_program.addShader(self.vertex_shader)
+        self.shader_program.addShader(self.fragment_shader)
+        self.shader_program.addShader(self.geometry_shader)
+        self.shader_program.link()
 
     def setup_uniforms(self) -> None:
         self.model_view_matrix_loc = self.shader_program.uniformLocation('model_view_matrix')

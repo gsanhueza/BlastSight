@@ -30,21 +30,20 @@ class MeshGL(GLDrawable):
         super().initialize()
         self.update_wireframe()
 
-    def compile_shaders(self) -> None:
-        self.vertex_shader_source = 'View/Shaders/Mesh/vertex.glsl'
-        self.fragment_shader_source = 'View/Shaders/Mesh/fragment.glsl'
-        self.geometry_shader_source = 'View/Shaders/Mesh/geometry.glsl'
-
-        super().compile_shaders()
-
-        # Extra shaders
+    def initialize_shaders(self) -> None:
+        self.vertex_shader = QOpenGLShader(QOpenGLShader.Vertex)
+        self.fragment_shader = QOpenGLShader(QOpenGLShader.Fragment)
         self.fragment_wireframe_shader = QOpenGLShader(QOpenGLShader.Fragment)
-        self.fragment_wireframe_shader.compileSourceFile('View/Shaders/Mesh/fragment_wireframe.glsl')
+        self.geometry_shader = QOpenGLShader(QOpenGLShader.Geometry)
 
-    def bind_shaders(self):
+        self.vertex_shader.compileSourceFile('View/Shaders/Mesh/vertex.glsl')
+        self.fragment_shader.compileSourceFile('View/Shaders/Mesh/fragment.glsl')
+        self.fragment_wireframe_shader.compileSourceFile('View/Shaders/Mesh/fragment_wireframe.glsl')
+        self.geometry_shader.compileSourceFile('View/Shaders/Mesh/geometry.glsl')
+
         self.shader_program.addShader(self.vertex_shader)
         self.shader_program.addShader(self.fragment_shader)
-        # self.shader_program.addShader(self.geometry_shader)
+        self.shader_program.addShader(self.geometry_shader)
         self.shader_program.link()
 
     def setup_attributes(self) -> None:
