@@ -4,25 +4,36 @@ from PyQt5.QtWidgets import QTreeWidgetItem
 
 
 class TreeWidgetItem(QTreeWidgetItem):
-    def __init__(self, parent=None, mainwindow=None, id_=None, drawable=None):
+    def __init__(self, parent=None, mainwindow=None, drawable=None):
         super().__init__(parent)
-        self.mainwindow = mainwindow
-        self.drawable = drawable
+        self._mainwindow = mainwindow
+        self._drawable = drawable
 
-        self.id_: int = id_
+        self.setText(0, f'{self.name}.{self.ext}')
 
-        element = self.drawable.element
-        self.name = f'{element.name}.{element.ext}'
-        self.setText(0, self.name)
+    @property
+    def id(self) -> int:
+        return self.drawable.id
 
-    def get_id(self) -> int:
-        return self.id_
+    @property
+    def name(self) -> str:
+        return self.drawable.element.name
 
-    def get_name(self) -> str:
-        return self.name
+    @property
+    def ext(self) -> str:
+        return self.drawable.element.ext
 
-    def get_type(self) -> type:
+    @property
+    def type(self) -> type:
         return type(self.drawable)
+
+    @property
+    def mainwindow(self):
+        return self._mainwindow
+
+    @property
+    def drawable(self):
+        return self._drawable
 
     # Shown in contextual menu
     def show(self) -> None:
@@ -33,8 +44,8 @@ class TreeWidgetItem(QTreeWidgetItem):
         self.drawable.hide()
         self.mainwindow.viewer.update()
 
-    def remove(self) -> None:
-        self.mainwindow.viewer.delete(self.id_)
+    def delete(self) -> None:
+        self.mainwindow.viewer.delete(self.id)
         self.mainwindow.viewer.update()
         self.mainwindow.fill_tree_widget()
 
@@ -48,4 +59,4 @@ class TreeWidgetItem(QTreeWidgetItem):
         self.mainwindow.viewer.update()
 
     def available_values(self) -> None:
-        self.mainwindow.show_available_values(self.id_)
+        self.mainwindow.show_available_values(self.id)

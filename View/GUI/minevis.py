@@ -40,8 +40,8 @@ class MineVis(QMainWindow):
         # Tree widget
         self.treeWidget.clear()
 
-        for id_, gl_drawable in self.viewer.drawable_collection.items():
-            item = TreeWidgetItem(self.treeWidget, self, id_, gl_drawable)
+        for _, drawable in self.viewer.drawable_collection.items():
+            item = TreeWidgetItem(self.treeWidget, self, drawable)
             self.treeWidget.addTopLevelItem(item)
 
     # Unless explicitly otherwise, slots are connected via Qt Designer

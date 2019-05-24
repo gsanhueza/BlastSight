@@ -41,7 +41,7 @@ class TreeWidget(QTreeWidget):
         # Actions
         action_show = QAction('&Show', self)
         action_hide = QAction('&Hide', self)
-        action_remove = QAction('&Remove', self)
+        action_delete = QAction('&Delete', self)
         action_center_camera = QAction('&Center camera', self)
         action_wireframe = QAction('&Toggle wireframe', self)
         action_available_values = QAction('&Available values', self)
@@ -51,8 +51,8 @@ class TreeWidget(QTreeWidget):
         action_show.setIcon(icon)
         icon = QIcon.fromTheme('object-hidden')
         action_hide.setIcon(icon)
-        icon = QIcon.fromTheme('list-remove')
-        action_remove.setIcon(icon)
+        icon = QIcon.fromTheme('stock_close')
+        action_delete.setIcon(icon)
         icon = QIcon.fromTheme('draw-triangle')
         action_wireframe.setIcon(icon)
         icon = QIcon.fromTheme('auto-type')
@@ -63,7 +63,7 @@ class TreeWidget(QTreeWidget):
         # Action commands
         action_show.triggered.connect(item.show)
         action_hide.triggered.connect(item.hide)
-        action_remove.triggered.connect(item.remove)
+        action_delete.triggered.connect(item.delete)
         action_wireframe.triggered.connect(item.toggle_wireframe)
         action_center_camera.triggered.connect(item.center_camera)
         action_available_values.triggered.connect(item.available_values)
@@ -71,14 +71,16 @@ class TreeWidget(QTreeWidget):
         # Add actions depending on item type
         menu.addAction(action_show)
         menu.addAction(action_hide)
-        menu.addAction(action_remove)
         menu.addAction(action_center_camera)
 
         # FIXME Design a better way to get type of element
-        if item.get_type() == MeshGL:
+        if item.type == MeshGL:
             menu.addAction(action_wireframe)
-        elif item.get_type() == BlockModelGL:
+        elif item.type == BlockModelGL:
             menu.addAction(action_available_values)
+
+        menu.addSeparator()
+        menu.addAction(action_delete)
 
         menu.exec_(global_pos)
 
@@ -86,7 +88,7 @@ class TreeWidget(QTreeWidget):
         root = self.invisibleRootItem()
         for i in range(root.childCount()):
             item = root.child(i)
-            if item.id_ == id_:
+            if item.id == id_:
                 return item
         return None
 
