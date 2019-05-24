@@ -46,16 +46,22 @@ class MineVis(QMainWindow):
 
     # Unless explicitly otherwise, slots are connected via Qt Designer
     def load_mesh_slot(self) -> None:
-        (file_path, selected_filter) = QFileDialog.getOpenFileName(
+        (file_paths, selected_filter) = QFileDialog.getOpenFileNames(
             parent=self,
             directory=self.last_dir,
             filter='Mesh Files (*.dxf *.off);;'
                    'DXF Files (*.dxf);;'
                    'OFF Files (*.off)')
 
-        if file_path != '':
-            self.load_mesh(file_path)
-            self.last_dir = QFileInfo(file_path).absoluteDir().absolutePath()
+        accum = 0
+
+        for file_path in file_paths:
+            if file_path != '':
+                accum += int(self.load_mesh(file_path))
+                self.last_dir = QFileInfo(file_path).absoluteDir().absolutePath()
+
+        if len(file_paths) > 1:
+            self.statusBar.showMessage(f'{accum} of {len(file_paths)} meshes loaded')
 
     def load_mesh(self, file_path: str) -> bool:
         drawable = self.viewer.mesh_by_path(file_path)
@@ -68,14 +74,20 @@ class MineVis(QMainWindow):
         return loaded
 
     def load_block_model_slot(self) -> None:
-        (file_path, selected_filter) = QFileDialog.getOpenFileName(
+        (file_paths, selected_filter) = QFileDialog.getOpenFileNames(
             parent=self,
             directory=self.last_dir,
             filter='CSV Files (*.csv);;All Files (*.*)')
 
-        if file_path != '':
-            self.load_block_model(file_path)
-            self.last_dir = QFileInfo(file_path).absoluteDir().absolutePath()
+        accum = 0
+
+        for file_path in file_paths:
+            if file_path != '':
+                accum += int(self.load_block_model(file_path))
+                self.last_dir = QFileInfo(file_path).absoluteDir().absolutePath()
+
+        if len(file_paths) > 1:
+            self.statusBar.showMessage(f'{accum} of {len(file_paths)} block models loaded')
 
     def load_block_model(self, file_path: str) -> bool:
         drawable = self.viewer.block_model_by_path(file_path)

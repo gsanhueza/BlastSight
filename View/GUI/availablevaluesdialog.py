@@ -17,6 +17,8 @@ class DialogAvailableValues(QDialog):
         self.parent = parent
         self.drawable = drawable
 
+        self.setWindowTitle(f'Set available values ({drawable.element.name}.{drawable.element.ext})')
+
     @property
     def element(self):
         return self.drawable.element
