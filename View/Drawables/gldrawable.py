@@ -1,8 +1,5 @@
 #!/usr/bin/env python
 
-from PyQt5.QtGui import QOpenGLShaderProgram
-from PyQt5.QtGui import QOpenGLVertexArrayObject
-
 
 class GLDrawable:
     def __init__(self, widget, element):
@@ -42,11 +39,11 @@ class GLDrawable:
         return self._element
 
     @property
-    def shader_program(self) -> QOpenGLShaderProgram:
+    def shader_program(self):
         return self._shader_program
 
     @shader_program.setter
-    def shader_program(self, program: QOpenGLShaderProgram) -> None:
+    def shader_program(self, program) -> None:
         self._shader_program = program
 
     def initialize(self) -> None:
@@ -58,30 +55,9 @@ class GLDrawable:
         self.is_initialized = True
 
     def initialize_program(self) -> None:
-        self.shader_program = QOpenGLShaderProgram(self.widget.context())
-        self.vao = QOpenGLVertexArrayObject()
-        self.vao.create()
+        pass
 
     def initialize_shaders(self) -> None:
-        # Remember to set shader sources in children of this class
-        # For example:
-
-        # self.vertex_shader = QOpenGLShader(QOpenGLShader.Vertex)
-        # self.fragment_shader = QOpenGLShader(QOpenGLShader.Fragment)
-        # self.geometry_shader = QOpenGLShader(QOpenGLShader.Geometry)
-
-        # self.vertex_shader_source = 'View/Shaders/mesh_vertex.glsl'
-        # self.fragment_shader_source = 'View/Shaders/mesh_fragment.glsl'
-        # self.geometry_shader_source = 'View/Shaders/mesh_geometry.glsl'
-
-        # self.vertex_shader.compileSourceFile(self.vertex_shader_source)
-        # self.fragment_shader.compileSourceFile(self.fragment_shader_source)
-        # self.geometry_shader.compileSourceFile(self.geometry_shader_source)
-        #
-        # self.shader_program.addShader(self.vertex_shader)
-        # self.shader_program.addShader(self.fragment_shader)
-        # self.shader_program.addShader(self.geometry_shader)
-        # self.shader_program.link()
         pass
 
     def setup_attributes(self) -> None:

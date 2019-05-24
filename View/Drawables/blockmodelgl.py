@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+from PyQt5.QtGui import QOpenGLShaderProgram
+from PyQt5.QtGui import QOpenGLVertexArrayObject
 from PyQt5.QtGui import QVector2D
 from PyQt5.QtGui import QOpenGLBuffer
 from PyQt5.QtGui import QOpenGLShader
@@ -20,6 +22,11 @@ class BlockModelGL(GLDrawable):
         # Block size
         self.block_size = 2.0
 
+    def initialize_program(self) -> None:
+        self.shader_program = QOpenGLShaderProgram(self.widget.context())
+        self.vao = QOpenGLVertexArrayObject()
+        self.vao.create()
+
     def initialize_shaders(self) -> None:
         vertex_shader = QOpenGLShader(QOpenGLShader.Vertex)
         fragment_shader = QOpenGLShader(QOpenGLShader.Fragment)
@@ -33,11 +40,6 @@ class BlockModelGL(GLDrawable):
         self.shader_program.addShader(fragment_shader)
         self.shader_program.addShader(geometry_shader)
         self.shader_program.link()
-
-    def setup_uniforms(self) -> None:
-        self.model_view_matrix_loc = self.shader_program.uniformLocation('model_view_matrix')
-        self.proj_matrix_loc = self.shader_program.uniformLocation('proj_matrix')
-        self.block_size_loc = self.shader_program.uniformLocation('block_size')
 
     def setup_attributes(self) -> None:
         _POSITION = 0
@@ -75,6 +77,11 @@ class BlockModelGL(GLDrawable):
         glEnableVertexAttribArray(_COLOR)
 
         self.vao.release()
+
+    def setup_uniforms(self) -> None:
+        self.model_view_matrix_loc = self.shader_program.uniformLocation('model_view_matrix')
+        self.proj_matrix_loc = self.shader_program.uniformLocation('proj_matrix')
+        self.block_size_loc = self.shader_program.uniformLocation('block_size')
 
     def draw(self, proj_matrix, view_matrix, model_matrix) -> None:
         if not self.is_visible:
