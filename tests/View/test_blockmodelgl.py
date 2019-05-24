@@ -11,7 +11,6 @@ from View.GUI.openglwidget import OpenGLWidget
 from View.Drawables.blockmodelgl import BlockModelGL
 
 
-
 class TestBlockModelGL:
     qt_app = QApplication(sys.argv)
 

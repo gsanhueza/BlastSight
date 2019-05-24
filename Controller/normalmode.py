@@ -35,6 +35,9 @@ class NormalMode(Mode):
         if event.buttons() == Qt.LeftButton:
             self.set_x_rotation(self.widget.xWorldRot + 8 * dy)
             self.set_y_rotation(self.widget.yWorldRot + 8 * dx)
+        elif event.buttons() == Qt.MiddleButton:
+            self.set_x_movement(self.widget.xWorldPos + (dx / 200.0))
+            self.set_y_movement(self.widget.yWorldPos - (dy / 200.0))
         elif event.buttons() == Qt.RightButton:
             self.set_x_rotation(self.widget.xWorldRot + 8 * dy)
             self.set_z_rotation(self.widget.zWorldRot - 8 * dx)
@@ -58,3 +61,11 @@ class NormalMode(Mode):
         angle = normalize_angle(angle)
         if angle != self.widget.zWorldRot:
             self.widget.zWorldRot = angle
+
+    def set_x_movement(self, position):
+        if abs(position - self.widget.xWorldPos) > 0.01:
+            self.widget.xWorldPos = position
+
+    def set_y_movement(self, position):
+        if abs(position - self.widget.yWorldPos) > 0.01:
+            self.widget.yWorldPos = position

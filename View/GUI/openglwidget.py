@@ -15,7 +15,6 @@ from View.fpscounter import FPSCounter
 
 from Controller.normalmode import NormalMode
 from Controller.drawmode import DrawMode
-from Controller.freemode import FreeMode
 
 from Model.Elements.element import Element
 from Model.model import Model
@@ -151,9 +150,6 @@ class OpenGLWidget(QOpenGLWidget):
 
     def set_draw_mode(self) -> None:
         self.current_mode = DrawMode(self)
-
-    def set_free_mode(self) -> None:
-        self.current_mode = FreeMode(self)
 
     """
     Internal methods
