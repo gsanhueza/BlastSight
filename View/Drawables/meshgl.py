@@ -23,9 +23,6 @@ class MeshGL(GLDrawable):
         # Wireframe
         self.wireframe_enabled = False
 
-        # Extra shaders
-        self.fragment_wireframe_shader = None
-
     def initialize(self):
         super().initialize()
         self.update_wireframe()
@@ -65,6 +62,7 @@ class MeshGL(GLDrawable):
 
         self.vertices_size = vertices.size
         self.indices_size = indices.size
+
         self.widget.makeCurrent()
         self.vao.bind()
 

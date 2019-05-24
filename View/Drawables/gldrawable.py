@@ -2,7 +2,6 @@
 
 from PyQt5.QtGui import QOpenGLShaderProgram
 from PyQt5.QtGui import QOpenGLVertexArrayObject
-from PyQt5.QtGui import QOpenGLShader
 
 
 class GLDrawable:
@@ -13,7 +12,7 @@ class GLDrawable:
         self._element = element
 
         # Shader program
-        self.shader_program = None
+        self._shader_program = None
 
         # Vertex Array Object
         self.vao = None
@@ -27,11 +26,11 @@ class GLDrawable:
         self.values_size = 0
 
     @property
-    def id(self):
+    def id(self) -> int:
         return self._element.id
 
     @id.setter
-    def id(self, _id):
+    def id(self, _id: int) -> None:
         self._element.id = _id
 
     @property
@@ -42,11 +41,13 @@ class GLDrawable:
     def element(self):
         return self._element
 
-    def show(self) -> None:
-        self.is_visible = True
+    @property
+    def shader_program(self) -> QOpenGLShaderProgram:
+        return self._shader_program
 
-    def hide(self) -> None:
-        self.is_visible = False
+    @shader_program.setter
+    def shader_program(self, program: QOpenGLShaderProgram) -> None:
+        self._shader_program = program
 
     def initialize(self) -> None:
         self.initialize_program()
@@ -95,5 +96,8 @@ class GLDrawable:
     """
     API for QTreeWidgetItem
     """
-    def toggle_wireframe(self) -> bool:
-        return False
+    def show(self) -> None:
+        self.is_visible = True
+
+    def hide(self) -> None:
+        self.is_visible = False
