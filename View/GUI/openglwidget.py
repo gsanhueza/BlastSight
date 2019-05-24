@@ -78,9 +78,7 @@ class OpenGLWidget(QOpenGLWidget):
 
     @centroid.setter
     def centroid(self, centroid: list) -> None:
-        self.xCentroid = -centroid[0]
-        self.yCentroid = -centroid[1]
-        self.zCentroid = -centroid[2]
+        self.xCentroid, self.yCentroid, self.zCentroid = centroid
 
     """
     FACADE METHODS
@@ -134,7 +132,7 @@ class OpenGLWidget(QOpenGLWidget):
     def hide_drawable(self, id_: int) -> None:
         self.drawable_collection[id_].hide()
 
-    def get_drawable(self, id_: int) -> None:
+    def get_drawable(self, id_: int) -> GLDrawable:
         return self.drawable_collection[id_]
 
     def update_drawable(self, id_: int) -> None:
@@ -144,17 +142,6 @@ class OpenGLWidget(QOpenGLWidget):
     def delete(self, id_: int) -> None:
         self.model.delete(id_)
         del self.drawable_collection[id_]
-
-    def toggle_wireframe(self, id_: int) -> bool:
-        status = self.drawable_collection[id_].toggle_wireframe()
-        self.update()
-
-        return status
-
-    def set_world_position(self, x: float, y: float, z: float) -> None:
-        self.xWorldPos = -x
-        self.yWorldPos = -y
-        self.zWorldPos = -z
 
     """
     Controller modes
@@ -195,9 +182,9 @@ class OpenGLWidget(QOpenGLWidget):
         self.world.rotate(self.zWorldRot / 16.0, 0, 0, 1)
 
         # Translate by centroid
-        self.world.translate(self.xCentroid,
-                             self.yCentroid,
-                             self.zCentroid)
+        self.world.translate(-self.xCentroid,
+                             -self.yCentroid,
+                             -self.zCentroid)
 
         # Draw every GLDrawable (meshes, block models, etc)
         self.drawable_collection.draw(self.proj, self.camera, self.world)
