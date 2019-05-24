@@ -1,7 +1,10 @@
 #!/usr/bin/env python
 
+from PyQt5.QtGui import QOpenGLShaderProgram
+from PyQt5.QtGui import QOpenGLVertexArrayObject
 from PyQt5.QtGui import QVector2D
 from PyQt5.QtGui import QOpenGLBuffer
+from PyQt5.QtGui import QOpenGLShader
 
 from View.Drawables.gldrawable import GLDrawable
 from OpenGL.GL import *
@@ -19,17 +22,24 @@ class BlockModelGL(GLDrawable):
         # Block size
         self.block_size = 2.0
 
-    def compile_shaders(self) -> None:
-        self.vertex_shader_source = 'View/Shaders/BlockModel/vertex.glsl'
-        self.fragment_shader_source = 'View/Shaders/BlockModel/fragment.glsl'
-        self.geometry_shader_source = 'View/Shaders/BlockModel/geometry.glsl'
+    def initialize_program(self) -> None:
+        self.shader_program = QOpenGLShaderProgram(self.widget.context())
+        self.vao = QOpenGLVertexArrayObject()
+        self.vao.create()
 
-        super().compile_shaders()
+    def initialize_shaders(self) -> None:
+        vertex_shader = QOpenGLShader(QOpenGLShader.Vertex)
+        fragment_shader = QOpenGLShader(QOpenGLShader.Fragment)
+        geometry_shader = QOpenGLShader(QOpenGLShader.Geometry)
 
-    def setup_uniforms(self) -> None:
-        self.model_view_matrix_loc = self.shader_program.uniformLocation('model_view_matrix')
-        self.proj_matrix_loc = self.shader_program.uniformLocation('proj_matrix')
-        self.block_size_loc = self.shader_program.uniformLocation('block_size')
+        vertex_shader.compileSourceFile('View/Shaders/BlockModel/vertex.glsl')
+        fragment_shader.compileSourceFile('View/Shaders/BlockModel/fragment.glsl')
+        geometry_shader.compileSourceFile('View/Shaders/BlockModel/geometry.glsl')
+
+        self.shader_program.addShader(vertex_shader)
+        self.shader_program.addShader(fragment_shader)
+        self.shader_program.addShader(geometry_shader)
+        self.shader_program.link()
 
     def setup_attributes(self) -> None:
         _POSITION = 0
@@ -67,6 +77,11 @@ class BlockModelGL(GLDrawable):
         glEnableVertexAttribArray(_COLOR)
 
         self.vao.release()
+
+    def setup_uniforms(self) -> None:
+        self.model_view_matrix_loc = self.shader_program.uniformLocation('model_view_matrix')
+        self.proj_matrix_loc = self.shader_program.uniformLocation('proj_matrix')
+        self.block_size_loc = self.shader_program.uniformLocation('block_size')
 
     def draw(self, proj_matrix, view_matrix, model_matrix) -> None:
         if not self.is_visible:

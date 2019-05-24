@@ -42,6 +42,15 @@ class TestMeshGL:
 
         assert drawable.is_initialized
 
+    def test_meshgl_wireframe_no_init(self):
+        drawable = MeshGL(widget=OpenGLWidget(), element=self.element)
+
+        assert not drawable.wireframe_enabled
+        drawable.toggle_wireframe()
+        assert drawable.wireframe_enabled
+        drawable.toggle_wireframe()
+        assert not drawable.wireframe_enabled
+
     def test_meshgl_wireframe(self):
         drawable = MeshGL(widget=OpenGLWidget(), element=self.element)
         drawable.initialize()

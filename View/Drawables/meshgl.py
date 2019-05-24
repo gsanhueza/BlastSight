@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 
-from PyQt5.QtGui import QOpenGLShader
 from PyQt5.QtGui import QOpenGLBuffer
+from PyQt5.QtGui import QOpenGLShader
+from PyQt5.QtGui import QOpenGLShaderProgram
+from PyQt5.QtGui import QOpenGLVertexArrayObject
 from PyQt5.QtGui import QVector2D
 from PyQt5.QtGui import QVector3D
 from View.Drawables.gldrawable import GLDrawable
@@ -23,29 +25,42 @@ class MeshGL(GLDrawable):
         # Wireframe
         self.wireframe_enabled = False
 
-        # Extra shaders
-        self.fragment_wireframe_shader = None
+        # Programs
+        self.normal_program = None
+        self.wireframe_program = None
 
     def initialize(self):
         super().initialize()
         self.update_wireframe()
 
-    def compile_shaders(self) -> None:
-        self.vertex_shader_source = 'View/Shaders/Mesh/vertex.glsl'
-        self.fragment_shader_source = 'View/Shaders/Mesh/fragment.glsl'
-        self.geometry_shader_source = 'View/Shaders/Mesh/geometry.glsl'
+    def initialize_program(self) -> None:
+        self.normal_program = QOpenGLShaderProgram(self.widget.context())
+        self.wireframe_program = QOpenGLShaderProgram(self.widget.context())
 
-        super().compile_shaders()
+        self.vao = QOpenGLVertexArrayObject()
+        self.vao.create()
 
-        # Extra shaders
-        self.fragment_wireframe_shader = QOpenGLShader(QOpenGLShader.Fragment)
-        self.fragment_wireframe_shader.compileSourceFile('View/Shaders/Mesh/fragment_wireframe.glsl')
+    def initialize_shaders(self) -> None:
+        vertex_shader = QOpenGLShader(QOpenGLShader.Vertex)
+        fragment_shader = QOpenGLShader(QOpenGLShader.Fragment)
+        fragment_wireframe_shader = QOpenGLShader(QOpenGLShader.Fragment)
+        geometry_shader = QOpenGLShader(QOpenGLShader.Geometry)
 
-    def bind_shaders(self):
-        self.shader_program.addShader(self.vertex_shader)
-        self.shader_program.addShader(self.fragment_shader)
-        # self.shader_program.addShader(self.geometry_shader)
-        self.shader_program.link()
+        vertex_shader.compileSourceFile('View/Shaders/Mesh/vertex.glsl')
+        fragment_shader.compileSourceFile('View/Shaders/Mesh/fragment.glsl')
+        fragment_wireframe_shader.compileSourceFile('View/Shaders/Mesh/fragment_wireframe.glsl')
+        geometry_shader.compileSourceFile('View/Shaders/Mesh/geometry.glsl')
+
+        self.normal_program.addShader(vertex_shader)
+        self.normal_program.addShader(fragment_shader)
+        self.normal_program.link()
+
+        self.wireframe_program.addShader(vertex_shader)
+        self.wireframe_program.addShader(fragment_wireframe_shader)
+        self.wireframe_program.addShader(geometry_shader)
+        self.wireframe_program.link()
+
+        self.shader_program = self.normal_program
 
     def setup_attributes(self) -> None:
         _POSITION = 0
@@ -66,6 +81,7 @@ class MeshGL(GLDrawable):
 
         self.vertices_size = vertices.size
         self.indices_size = indices.size
+
         self.widget.makeCurrent()
         self.vao.bind()
 
@@ -105,16 +121,11 @@ class MeshGL(GLDrawable):
         return self.wireframe_enabled
 
     def disable_wireframe(self) -> None:
-        self.shader_program.removeAllShaders()
-        self.shader_program.addShader(self.vertex_shader)
-        self.shader_program.addShader(self.fragment_shader)
+        self.shader_program = self.normal_program
         self.wireframe_enabled = False
 
     def enable_wireframe(self):
-        self.shader_program.removeAllShaders()
-        self.shader_program.addShader(self.vertex_shader)
-        self.shader_program.addShader(self.fragment_wireframe_shader)
-        self.shader_program.addShader(self.geometry_shader)
+        self.shader_program = self.wireframe_program
         self.wireframe_enabled = True
 
     def draw(self, proj_matrix, view_matrix, model_matrix) -> None:

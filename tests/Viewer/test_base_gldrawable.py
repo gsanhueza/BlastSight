@@ -30,12 +30,3 @@ class TestGLDrawable:
 
         drawable.id = 50
         assert drawable.id == 50
-
-    # This test is practically useless, since we can't really expect to test methods with "pass".
-    def test_overrideable_methods(self):
-        drawable = GLDrawable(widget=OpenGLWidget(), element=self.element)
-        drawable.setup_uniforms()
-        drawable.setup_attributes()
-        drawable.draw(None, None, None)
-
-        assert not drawable.toggle_wireframe()
