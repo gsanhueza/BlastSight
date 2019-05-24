@@ -84,14 +84,6 @@ class TreeWidget(QTreeWidget):
 
         menu.exec_(global_pos)
 
-    def get_item_by_element_id(self, id_: int):
-        root = self.invisibleRootItem()
-        for i in range(root.childCount()):
-            item = root.child(i)
-            if item.id == id_:
-                return item
-        return None
-
     def single_click(self, item, col):
         print('single_click')
 
