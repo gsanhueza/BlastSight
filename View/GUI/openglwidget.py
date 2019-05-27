@@ -32,9 +32,9 @@ class OpenGLWidget(QOpenGLWidget):
         self._drawable_collection = GLDrawableCollection()
 
         # Camera/World/Projection
-        self.camera = QMatrix4x4()
-        self.world = QMatrix4x4()
-        self.proj = QMatrix4x4()
+        self._camera = QMatrix4x4()
+        self._world = QMatrix4x4()
+        self._proj = QMatrix4x4()
 
         # World (we don't move the camera)
         self.xWorldPos = 0.0
@@ -66,6 +66,18 @@ class OpenGLWidget(QOpenGLWidget):
     @model.setter
     def model(self, model):
         self._model = model
+
+    @property
+    def camera(self):
+        return self._camera
+
+    @property
+    def world(self):
+        return self._world
+
+    @property
+    def proj(self):
+        return self._proj
 
     @property
     def drawable_collection(self) -> GLDrawableCollection:

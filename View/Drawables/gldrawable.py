@@ -17,11 +17,6 @@ class GLDrawable:
         self.is_initialized = False
         self.is_visible = True
 
-        # Sizes
-        self.vertices_size = 0
-        self.indices_size = 0
-        self.values_size = 0
-
     @property
     def id(self) -> int:
         return self._element.id

@@ -19,6 +19,10 @@ class BlockModelGL(GLDrawable):
         self.proj_matrix_loc = None
         self.block_size_loc = None
 
+        # Sizes
+        self.vertices_size = 0
+        self.values_size = 0
+
         # Block size
         self.block_size = 2.0
 

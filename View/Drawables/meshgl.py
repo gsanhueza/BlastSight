@@ -22,6 +22,10 @@ class MeshGL(GLDrawable):
         self.color = None
         self.alpha = None
 
+        # Sizes
+        self.vertices_size = 0
+        self.indices_size = 0
+
         # Wireframe
         self.wireframe_enabled = False
 
