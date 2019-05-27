@@ -92,7 +92,7 @@ class OpenGLWidget(QOpenGLWidget):
         self.xCentroid, self.yCentroid, self.zCentroid = centroid
 
     """
-    FACADE METHODS
+    Load methods
     """
     def add_drawable(self, element: Element, drawable_type: type) -> GLDrawable:
         drawable = drawable_type(self, element)
@@ -134,6 +134,10 @@ class OpenGLWidget(QOpenGLWidget):
             traceback.print_exc()
             return None
 
+    """
+    Individual drawable manipulation
+    """
+
     def show_drawable(self, id_: int) -> None:
         self.drawable_collection[id_].show()
 
@@ -150,6 +154,11 @@ class OpenGLWidget(QOpenGLWidget):
     def delete(self, id_: int) -> None:
         self.model.delete(id_)
         del self.drawable_collection[id_]
+
+    def camera_at(self, id_: int) -> None:
+        drawable = self.get_drawable(id_)
+        self.centroid = drawable.element.centroid
+        self.update()
 
     """
     Controller modes
