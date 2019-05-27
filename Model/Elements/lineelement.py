@@ -12,7 +12,7 @@ class LineElement(Element):
 
         super().__init__(*args, **kwargs)
         assert len(self.vertices) >= 2
-        self.values = kwargs.get('color')
+        self.values = [kwargs.get('color') for _ in range(len(self.vertices))]
 
     @property
     def values(self) -> np.ndarray:
