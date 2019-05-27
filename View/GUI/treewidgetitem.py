@@ -12,10 +12,6 @@ class TreeWidgetItem(QTreeWidgetItem):
         self.setText(0, f'{self.name}.{self.ext}')
 
     @property
-    def id(self) -> int:
-        return self.drawable.id
-
-    @property
     def name(self) -> str:
         return self.drawable.element.name
 
@@ -45,7 +41,7 @@ class TreeWidgetItem(QTreeWidgetItem):
         self.mainwindow.viewer.update()
 
     def delete(self) -> None:
-        self.mainwindow.viewer.delete(self.id)
+        self.mainwindow.viewer.delete(self.drawable.id)
         self.mainwindow.viewer.update()
         self.mainwindow.fill_tree_widget()
 
@@ -59,4 +55,4 @@ class TreeWidgetItem(QTreeWidgetItem):
         self.mainwindow.viewer.update()
 
     def available_values(self) -> None:
-        self.mainwindow.show_available_values(self.id)
+        self.mainwindow.show_available_values(self.drawable.id)

@@ -28,7 +28,7 @@ class TestLineElement:
         # Color
         expected = [0.0, 1.0, 0.0]
         for i in range(len(expected)):
-            assert element.values[i] == expected[i]
+            assert element.color[i] == expected[i]
 
     def test_multiple_lines(self):
         element = LineElement(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], color=[1.0, 1.0, 0.0])
@@ -49,7 +49,7 @@ class TestLineElement:
         # Color
         expected = [1.0, 1.0, 0.0]
         for i in range(len(expected)):
-            assert element.values[i] == expected[i]
+            assert element.color[i] == expected[i]
 
     def test_wrong_lines(self):
         with pytest.raises(Exception):

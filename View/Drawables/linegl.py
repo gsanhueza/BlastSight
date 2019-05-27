@@ -20,7 +20,7 @@ class LineGL(GLDrawable):
 
         # Sizes
         self.vertices_size = 0
-        self.values_size = 0
+        self.color_size = 0
 
     def initialize_program(self) -> None:
         self.shader_program = QOpenGLShaderProgram(self.widget.context())
@@ -45,17 +45,19 @@ class LineGL(GLDrawable):
 
         # VBO
         vertices_vbo = QOpenGLBuffer(QOpenGLBuffer.VertexBuffer)
-        values_vbo = QOpenGLBuffer(QOpenGLBuffer.VertexBuffer)
+        color_vbo = QOpenGLBuffer(QOpenGLBuffer.VertexBuffer)
 
         vertices_vbo.create()
-        values_vbo.create()
+        color_vbo.create()
 
         # Data
         vertices = self.element.vertices
-        values = self.element.values
+        import numpy as np
+        # FIXME If color is the same for each line, make this an uniform (and we shouldn't need to import numpy)
+        color = np.array([self.element.color for _ in range(len(self.element.vertices))], np.float32)
 
         self.vertices_size = vertices.size
-        self.values_size = values.size
+        self.color_size = color.size
 
         self.widget.makeCurrent()
         self.vao.bind()
@@ -64,8 +66,8 @@ class LineGL(GLDrawable):
         glBufferData(GL_ARRAY_BUFFER, _SIZE_OF_GL_FLOAT * self.vertices_size, vertices, GL_STATIC_DRAW)
         glVertexAttribPointer(_POSITION, 3, GL_FLOAT, False, 0, None)
 
-        values_vbo.bind()
-        glBufferData(GL_ARRAY_BUFFER, _SIZE_OF_GL_FLOAT * self.values_size, values, GL_STATIC_DRAW)
+        color_vbo.bind()
+        glBufferData(GL_ARRAY_BUFFER, _SIZE_OF_GL_FLOAT * self.color_size, color, GL_STATIC_DRAW)
         glVertexAttribPointer(_COLOR, 3, GL_FLOAT, False, 0, None)
 
         glEnableVertexAttribArray(_POSITION)
