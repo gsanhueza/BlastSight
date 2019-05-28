@@ -8,8 +8,6 @@ from Model.Elements.element import Element
 
 class LineElement(Element):
     def __init__(self, *args, **kwargs):
-        self._color: np.ndarray = np.array([], np.float32)
-
         super().__init__(*args, **kwargs)
         assert len(self.vertices) >= 2
         self.color = kwargs.get('color')

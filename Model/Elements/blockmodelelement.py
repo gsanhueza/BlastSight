@@ -127,17 +127,18 @@ class BlockModelElement(Element):
         return available
 
     def update_coords(self):
-        self.x = list(map(float, self.data[self.x_str]))
-        self.y = list(map(float, self.data[self.y_str]))
-        self.z = list(map(float, self.data[self.z_str]))
+        self.x = np.array(list(map(float, self.data[self.x_str])), np.float32)
+        self.y = np.array(list(map(float, self.data[self.y_str])), np.float32)
+        self.z = np.array(list(map(float, self.data[self.z_str])), np.float32)
 
     def update_values(self):
-        values = list(map(float, self.data[self.value_str]))
-        min_values = min(values)
-        max_values = max(values)
+        values = np.array(list(map(float, self.data[self.value_str])), np.float32)
+        min_values = values.min()
+        max_values = values.max()
 
         normalized_values = map(lambda val: BlockModelElement.normalize(val, min_values, max_values), values)
-        self.values = list(map(lambda hue: colorsys.hsv_to_rgb(hue, 1.0, 1.0), normalized_values))
+        self.values = np.array(list(map(lambda hue: colorsys.hsv_to_rgb(hue, 1.0, 1.0), normalized_values)),
+                               np.float32)
 
     @staticmethod
     def normalize(x: float, min_val: float, max_val: float) -> float:
