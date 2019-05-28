@@ -127,16 +127,21 @@ class BlockModelElement(Element):
         return available
 
     def update_coords(self):
-        self.x = np.array(list(map(float, self.data[self.x_str])), np.float32)
-        self.y = np.array(list(map(float, self.data[self.y_str])), np.float32)
-        self.z = np.array(list(map(float, self.data[self.z_str])), np.float32)
+        self.x = np.vectorize(float, otypes=[np.float32])(self.data[self.x_str])
+        self.y = np.vectorize(float, otypes=[np.float32])(self.data[self.y_str])
+        self.z = np.vectorize(float, otypes=[np.float32])(self.data[self.z_str])
 
     def update_values(self):
-        values = np.array(list(map(float, self.data[self.value_str])), np.float32)
+        values = np.vectorize(float, otypes=[np.float32])(self.data[self.value_str])
         min_values = values.min()
         max_values = values.max()
 
-        normalized_values = map(lambda val: BlockModelElement.normalize(val, min_values, max_values), values)
+        normalized_values = np.vectorize(lambda val: BlockModelElement.normalize(val, min_values, max_values),
+                                         otypes=[np.float32])(values)
+
+        # FIXME colorsys.hsv_to_rgb returns a tuple. but np.vectorize doesn't accept it as tuple
+        # self.values = np.vectorize(lambda hue: colorsys.hsv_to_rgb(hue, 1.0, 1.0),
+        #                            otypes=[np.float32])(normalized_values)
         self.values = np.array(list(map(lambda hue: colorsys.hsv_to_rgb(hue, 1.0, 1.0), normalized_values)),
                                np.float32)
 
