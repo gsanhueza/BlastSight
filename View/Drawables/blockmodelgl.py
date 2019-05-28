@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 
+import numpy as np
+import colorsys
+
 from PyQt5.QtGui import QOpenGLShaderProgram
 from PyQt5.QtGui import QOpenGLVertexArrayObject
 from PyQt5.QtGui import QVector2D
@@ -46,6 +49,9 @@ class BlockModelGL(GLDrawable):
         self.shader_program.link()
 
     def setup_attributes(self) -> None:
+        def normalize(x: float, min_val: float, max_val: float) -> float:
+            return (x - min_val) / (max_val - min_val) if max_val != min_val else 0
+
         _POSITION = 0
         _COLOR = 1
         _SIZE_OF_GL_FLOAT = 4
@@ -60,6 +66,19 @@ class BlockModelGL(GLDrawable):
         # Data
         vertices = self.element.vertices
         values = self.element.values
+
+        try:
+            min_val = values.min()
+            max_val = values.max()
+        except ValueError:
+            min_val = 0.0
+            max_val = 1.0
+
+        # FIXME Paint colors from red to green, not to blue
+        normalized_values = np.vectorize(lambda val: normalize(val, min_val, max_val), otypes=[np.float32])(values)
+
+        # WARNING colorsys.hsv_to_rgb returns a tuple. but np.vectorize doesn't accept it as tuple
+        values = np.array(list(map(lambda hue: colorsys.hsv_to_rgb(hue, 1.0, 1.0), normalized_values)), np.float32)
 
         self.vertices_size = vertices.size
         self.values_size = values.size

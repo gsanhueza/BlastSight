@@ -132,19 +132,4 @@ class BlockModelElement(Element):
         self.z = np.vectorize(float, otypes=[np.float32])(self.data[self.z_str])
 
     def update_values(self):
-        values = np.vectorize(float, otypes=[np.float32])(self.data[self.value_str])
-        min_values = values.min()
-        max_values = values.max()
-
-        normalized_values = np.vectorize(lambda val: BlockModelElement.normalize(val, min_values, max_values),
-                                         otypes=[np.float32])(values)
-
-        # FIXME colorsys.hsv_to_rgb returns a tuple. but np.vectorize doesn't accept it as tuple
-        # self.values = np.vectorize(lambda hue: colorsys.hsv_to_rgb(hue, 1.0, 1.0),
-        #                            otypes=[np.float32])(normalized_values)
-        self.values = np.array(list(map(lambda hue: colorsys.hsv_to_rgb(hue, 1.0, 1.0), normalized_values)),
-                               np.float32)
-
-    @staticmethod
-    def normalize(x: float, min_val: float, max_val: float) -> float:
-        return (x - min_val) / (max_val - min_val) if max_val != min_val else 0
+        self.values = np.vectorize(float, otypes=[np.float32])(self.data[self.value_str])
