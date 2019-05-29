@@ -10,6 +10,7 @@ from PyQt5.QtGui import QMatrix4x4
 from View.Drawables.drawablecollection import GLDrawableCollection
 from View.Drawables.blockmodelgl import BlockModelGL
 from View.Drawables.meshgl import MeshGL
+from View.Drawables.linegl import LineGL
 from View.Drawables.gldrawable import GLDrawable
 from View.fpscounter import FPSCounter
 
@@ -130,6 +131,14 @@ class OpenGLWidget(QOpenGLWidget):
         try:
             element = self.model.block_model_by_path(file_path)
             return self.add_drawable(element, BlockModelGL)
+        except Exception:
+            traceback.print_exc()
+            return None
+
+    def lines(self, *args, **kwargs) -> GLDrawable:
+        try:
+            element = self.model.lines(*args, **kwargs)
+            return self.add_drawable(element, LineGL)
         except Exception:
             traceback.print_exc()
             return None

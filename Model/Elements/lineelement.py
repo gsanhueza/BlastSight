@@ -10,6 +10,7 @@ class LineElement(Element):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         assert len(self.vertices) >= 2
+        assert kwargs.get('color')
         self.color = kwargs.get('color')
 
     @property

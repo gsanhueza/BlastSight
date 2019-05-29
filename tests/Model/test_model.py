@@ -9,6 +9,7 @@ from tests.globals import *
 
 
 class TestModel:
+    # Mesh
     def test_add_mesh(self):
         model = Model()
         path = f'{TEST_FILES_FOLDER_PATH}/caseron.off'
@@ -60,6 +61,7 @@ class TestModel:
         with pytest.raises(Exception):
             model.get(id_)
 
+    # Block model
     def test_add_block_model(self):
         model = Model()
         path = f'{TEST_FILES_FOLDER_PATH}/mini.csv'
@@ -103,6 +105,49 @@ class TestModel:
 
         bm = model.block_model(data=data)
         id_ = bm.id
+        model.delete(id_)
+
+        with pytest.raises(Exception):
+            model.get(id_)
+
+    # Lines
+    def test_add_lines(self):
+        model = Model()
+        vertices = [[-0.5, -2.0, -0.0],
+                    [0.5, 1.5, 0.0]]
+
+        color = [1.0, 0.0, 0.0]
+        x, y, z = zip(*vertices)
+
+        lines_1 = model.lines(vertices=vertices, color=color)
+        lines_2 = model.lines(x=x, y=y, z=z, color=color)
+
+        assert lines_1.id != lines_2.id
+
+    def test_get_lines(self):
+        model = Model()
+        vertices = [[-0.5, -2.0, -0.0],
+                    [0.5, 1.5, 0.0]]
+
+        color = [1.0, 0.0, 0.0]
+
+        lines = model.lines(vertices=vertices, color=color)
+        lines_get = model.get(lines.id)
+
+        assert lines is not None
+        assert lines_get is not None
+        assert lines.id == lines_get.id
+
+    def test_delete_lines(self):
+        model = Model()
+        vertices = [[-0.5, -2.0, -0.0],
+                    [0.5, 1.5, 0.0]]
+
+        color = [1.0, 0.0, 0.0]
+
+        lines = model.lines(vertices=vertices, color=color)
+
+        id_ = lines.id
         model.delete(id_)
 
         with pytest.raises(Exception):

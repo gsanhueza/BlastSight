@@ -5,8 +5,9 @@ from collections import OrderedDict
 from PyQt5.QtCore import QFileInfo
 
 from Model.Elements.element import Element
-from Model.Elements.meshelement import MeshElement
 from Model.Elements.blockmodelelement import BlockModelElement
+from Model.Elements.lineelement import LineElement
+from Model.Elements.meshelement import MeshElement
 
 from Model.Parsers.dxfparser import DXFParser
 from Model.Parsers.offparser import OFFParser
@@ -61,6 +62,15 @@ class Model:
         data = self.get_parser(ext, BlockModelElement).load_file(path)
 
         return self.block_model(data=data, name=name, ext=ext)
+
+    def lines(self, *args, **kwargs) -> LineElement:
+        element = LineElement(*args, **kwargs)
+        element.id = self.last_id
+
+        self._element_collection[self.last_id] = element
+        self.last_id += 1
+
+        return element
 
     def get(self, id_: int) -> Element:
         return self._element_collection[id_]
