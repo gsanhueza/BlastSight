@@ -104,9 +104,9 @@ class BlockModelElement(Element):
 
     @property
     def available_coordinates(self) -> list:
-        try:
+        if self.x_str and self.y_str and self.z_str:
             return sorted([self.x_str, self.y_str, self.z_str])
-        except TypeError:
+        else:
             return list(self.data.keys())
 
     @available_coordinates.setter

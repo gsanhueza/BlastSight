@@ -102,15 +102,6 @@ class MineVis(QMainWindow):
 
         return loaded
 
-    def toggle_wireframe(self, id_: int = 0) -> None:
-        try:
-            status = self.viewer.toggle_wireframe(id_)
-            msg = 'enabled' if status else 'disabled'
-            self.statusBar.showMessage(f'Wireframe {id_} {msg}')
-        except KeyError:
-            msg = 'unavailable'
-            self.statusBar.showMessage(f'Wireframe {msg}')
-
     def show_available_values(self, id_):
         drawable = self.viewer.get_drawable(id_)
         dialog = DialogAvailableValues(self, drawable)
