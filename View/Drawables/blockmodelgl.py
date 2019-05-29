@@ -66,12 +66,8 @@ class BlockModelGL(GLDrawable):
         vertices = self.element.vertices
         values = self.element.values
 
-        try:
-            min_val = values.min()
-            max_val = values.max()
-        except ValueError:
-            min_val = 0.0
-            max_val = 1.0
+        min_val = values.min() if values.size > 0 else 0.0
+        max_val = values.max() if values.size > 0 else 1.0
 
         normalized_values = np.vectorize(lambda val: normalize(val, min_val, max_val), otypes=[np.float32])(values)
 

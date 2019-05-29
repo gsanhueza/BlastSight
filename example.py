@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 from View.standaloneviewer import StandaloneViewer
-from View.Drawables.meshgl import MeshGL
 from View.Drawables.linegl import LineGL
 from Model.Elements.lineelement import LineElement
 
