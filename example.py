@@ -9,7 +9,8 @@ if __name__ == '__main__':
     mesh = viewer.mesh(x=[-1, 1, 0],
                        y=[0, 0, 1],
                        z=[0, 0, 0],
-                       indices=[[0, 1, 2]])
+                       indices=[[0, 1, 2]],
+                       name='MESHNAME')
 
     block = viewer.block_model(x=[-3, 3, 0],
                                y=[0, 0, 3],
@@ -20,4 +21,8 @@ if __name__ == '__main__':
                         y=[-2.0, 1.5],
                         z=[0.0, 0.0],
                         color=[0.2, 0.8, 0.8])
+
+    for id_, drawable in viewer.drawable_collection.items():
+        print(f'Drawable {id_}: Name: {drawable.element.name}')
+
     viewer.show()
