@@ -52,20 +52,32 @@ class TubeGL(GLDrawable):
         # Data
         import numpy as np
 
-        # TODO Create a polygon with radius (self.element.radius) and resolution (self.element.resolution)
+        # Idea
+        # TODO Create a polygon with self.element.radius, self.element.resolution, from position `v`.
+        # TODO Same thing, with position `vv` (triangle fan should start in the same way as the previous step).
+        # TODO Join these polygons with triangles, using difference between positions as the direction
+        # TODO Add to `vertices` vector
+
+        # Alternative
+        # TODO Create a cylinder mesh base (the "template")
+        # TODO Detect direction (difference between positions)
+        # TODO Use transformation/rotation matrices (math) to the template to get the expected result
+        # TODO Add to `vertices` vector
         vertices_ = []
-        for v in self.element.vertices:
-            vertices_.append([v[0] - 1,
-                              v[1] + 0,
-                              v[2] + 0])
+        for v, vv in zip(self.element.vertices[:-1], self.element.vertices[1:]):
+            direction = list(map(lambda t: t[1] - t[0], zip(v, vv)))
+            print(direction)
+            vertices_.append([v[0] - 0.1,
+                              v[1] + 0.0,
+                              v[2] + 0.0])
 
-            vertices_.append([v[0] + 1,
-                              v[1] + 0,
-                              v[2] + 0])
+            vertices_.append([v[0] + 0.1,
+                              v[1] + 0.0,
+                              v[2] + 0.0])
 
-            vertices_.append([v[0] + 0,
-                              v[1] + 1,
-                              v[2] + 0])
+            vertices_.append([v[0] + 0.0,
+                              v[1] + 0.1,
+                              v[2] + 0.0])
 
         vertices = np.array(vertices_, np.float32)
 
@@ -77,6 +89,7 @@ class TubeGL(GLDrawable):
 
         self.widget.makeCurrent()
         self.vao.bind()
+
         vertices_vbo.bind()
         glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * self.vertices_size, vertices, GL_STATIC_DRAW)
         glVertexAttribPointer(_POSITION, 3, GL_FLOAT, False, 0, None)
