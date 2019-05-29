@@ -99,6 +99,4 @@ class Element:
 
     @staticmethod
     def average_by_coord(x: np.array, y: np.array, z: np.array) -> np.array:
-        # Given: [[x1, y1, z1], [x2, y2, z2], [x3, y3, z3]]
-        # Expected: [mean([x1, x2, x3]), mean([y1, y2, y3]), mean([z1, z2, z3])]
         return np.array([x.mean(), y.mean(), z.mean()], np.float32)

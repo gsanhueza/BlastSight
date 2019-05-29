@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 import numpy as np
-from random import random
 
 from Model.Elements.element import Element
 
@@ -10,7 +9,7 @@ class LineElement(Element):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         assert len(self.vertices) >= 2
-        assert kwargs.get('color')
+        assert 'color' in kwargs.keys()
         self.color = kwargs.get('color')
 
     @property

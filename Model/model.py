@@ -8,6 +8,7 @@ from Model.Elements.element import Element
 from Model.Elements.blockmodelelement import BlockModelElement
 from Model.Elements.lineelement import LineElement
 from Model.Elements.meshelement import MeshElement
+from Model.Elements.tubeelement import TubeElement
 
 from Model.Parsers.dxfparser import DXFParser
 from Model.Parsers.offparser import OFFParser
@@ -65,6 +66,15 @@ class Model:
 
     def lines(self, *args, **kwargs) -> LineElement:
         element = LineElement(*args, **kwargs)
+        element.id = self.last_id
+
+        self._element_collection[self.last_id] = element
+        self.last_id += 1
+
+        return element
+
+    def tubes(self, *args, **kwargs) -> LineElement:
+        element = TubeElement(*args, **kwargs)
         element.id = self.last_id
 
         self._element_collection[self.last_id] = element

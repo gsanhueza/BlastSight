@@ -8,10 +8,13 @@ from PyQt5.QtGui import QPainter
 from PyQt5.QtGui import QMatrix4x4
 
 from View.Drawables.drawablecollection import GLDrawableCollection
+from View.Drawables.gldrawable import GLDrawable
+
 from View.Drawables.blockmodelgl import BlockModelGL
 from View.Drawables.meshgl import MeshGL
 from View.Drawables.linegl import LineGL
-from View.Drawables.gldrawable import GLDrawable
+from View.Drawables.tubegl import TubeGL
+
 from View.fpscounter import FPSCounter
 
 from Controller.normalmode import NormalMode
@@ -139,6 +142,14 @@ class OpenGLWidget(QOpenGLWidget):
         try:
             element = self.model.lines(*args, **kwargs)
             return self.add_drawable(element, LineGL)
+        except Exception:
+            traceback.print_exc()
+            return None
+
+    def tubes(self, *args, **kwargs) -> GLDrawable:
+        try:
+            element = self.model.tubes(*args, **kwargs)
+            return self.add_drawable(element, TubeGL)
         except Exception:
             traceback.print_exc()
             return None
