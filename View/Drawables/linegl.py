@@ -41,7 +41,6 @@ class LineGL(GLDrawable):
     def setup_attributes(self) -> None:
         _POSITION = 0
         _COLOR = 1
-        _SIZE_OF_GL_FLOAT = 4
 
         # VBO
         vertices_vbo = QOpenGLBuffer(QOpenGLBuffer.VertexBuffer)
@@ -61,13 +60,12 @@ class LineGL(GLDrawable):
 
         self.widget.makeCurrent()
         self.vao.bind()
-
         vertices_vbo.bind()
-        glBufferData(GL_ARRAY_BUFFER, _SIZE_OF_GL_FLOAT * self.vertices_size, vertices, GL_STATIC_DRAW)
+        glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * self.vertices_size, vertices, GL_STATIC_DRAW)
         glVertexAttribPointer(_POSITION, 3, GL_FLOAT, False, 0, None)
 
         color_vbo.bind()
-        glBufferData(GL_ARRAY_BUFFER, _SIZE_OF_GL_FLOAT * self.color_size, color, GL_STATIC_DRAW)
+        glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * self.color_size, color, GL_STATIC_DRAW)
         glVertexAttribPointer(_COLOR, 3, GL_FLOAT, False, 0, None)
 
         glEnableVertexAttribArray(_POSITION)

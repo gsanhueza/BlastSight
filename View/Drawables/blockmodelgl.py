@@ -54,7 +54,6 @@ class BlockModelGL(GLDrawable):
 
         _POSITION = 0
         _COLOR = 1
-        _SIZE_OF_GL_FLOAT = 4
 
         # VBO
         vertices_vbo = QOpenGLBuffer(QOpenGLBuffer.VertexBuffer)
@@ -74,11 +73,11 @@ class BlockModelGL(GLDrawable):
             min_val = 0.0
             max_val = 1.0
 
-        # FIXME Paint colors from red to green, not to blue
         normalized_values = np.vectorize(lambda val: normalize(val, min_val, max_val), otypes=[np.float32])(values)
 
         # WARNING colorsys.hsv_to_rgb returns a tuple. but np.vectorize doesn't accept it as tuple
-        values = np.array(list(map(lambda hue: colorsys.hsv_to_rgb(hue, 1.0, 1.0), normalized_values)), np.float32)
+        # hue[0/3, 1/3, 2/3, 3/3] == [red, green, blue, red]
+        values = np.array(list(map(lambda hue: colorsys.hsv_to_rgb(hue/3, 1.0, 1.0), normalized_values)), np.float32)
 
         self.vertices_size = vertices.size
         self.values_size = values.size
@@ -87,11 +86,11 @@ class BlockModelGL(GLDrawable):
         self.vao.bind()
 
         vertices_vbo.bind()
-        glBufferData(GL_ARRAY_BUFFER, _SIZE_OF_GL_FLOAT * self.vertices_size, vertices, GL_STATIC_DRAW)
+        glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * self.vertices_size, vertices, GL_STATIC_DRAW)
         glVertexAttribPointer(_POSITION, 3, GL_FLOAT, False, 0, None)
 
         values_vbo.bind()
-        glBufferData(GL_ARRAY_BUFFER, _SIZE_OF_GL_FLOAT * self.values_size, values, GL_STATIC_DRAW)
+        glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * self.values_size, values, GL_STATIC_DRAW)
         glVertexAttribPointer(_COLOR, 3, GL_FLOAT, False, 0, None)
 
         glEnableVertexAttribArray(_POSITION)
