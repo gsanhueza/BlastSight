@@ -12,8 +12,8 @@ if __name__ == '__main__':
                        indices=[[0, 1, 2]],
                        name='MESHNAME')
 
-    block = viewer.block_model(x=[-3, 5, 0],
-                               y=[0, 0, 3],
+    block = viewer.block_model(x=[-3, 3, 0],
+                               y=[0, 0, 5],
                                z=[0, 0, 0],
                                values=[0.5, 1.0, 1.5])
 

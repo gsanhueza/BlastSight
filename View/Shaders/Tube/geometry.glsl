@@ -5,11 +5,19 @@
 layout (lines) in;
 layout (triangle_strip, max_vertices = 6) out;
 
+// max_vertices = 2 * resolution, where resolution is a uniform
+// If resolution == 3, we should create 6 triangles to form the cylinder (prism)
+
 layout (location = 1) in vec3 v_color[2];
 layout (location = 1) out vec3 f_color;
 
 void main()
 {
+    float radius = 1.0;  // FIXME This should come as uniform
+    int resolution = 3;  // FIXME This should come as uniform too
+
+    vec4 tube_direction = normalize(gl_in[1].gl_Position - gl_in[0].gl_Position);
+
     // Triangle A
     gl_Position = gl_in[0].gl_Position;
     f_color = v_color[0];
