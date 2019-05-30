@@ -43,7 +43,6 @@ void main()
 {
     vec4 normal = normalize(v_position[1] - v_position[0]);
     vec4 tangent = vec4(normal.y, -normal.x, normal.zw);
-    vec4 bitangent = vec4(cross(normal.xyz, tangent.xyz), normal.w);
 
     mat4 MVP = proj_matrix * model_view_matrix;
 
@@ -55,37 +54,44 @@ void main()
         mat4 rot_matrix2 = rotationMatrix(normal.xyz, 2 * M_PI * (res + 1) / resolution);
         vec4 translated2 = radius * (rot_matrix2 * tangent);
 
+        vec4 pos = v_position[0] + translated2;
+
         // Triangle A
-        gl_Position = MVP * (v_position[0] + translated2);
-        v_pos_mv = (model_view_matrix * (v_position[0] + translated2)).xyz;
+        gl_Position = MVP * pos;
+        v_pos_mv = (model_view_matrix * pos).xyz;
         f_color = v_color[0];
         EmitVertex();
 
-        gl_Position = MVP * (v_position[1] + translated2);
-        v_pos_mv = (model_view_matrix * (v_position[1] + translated2)).xyz;
+        pos = v_position[1] + translated2;
+        gl_Position = MVP * pos;
+        v_pos_mv = (model_view_matrix * pos).xyz;
         f_color = v_color[0];
         EmitVertex();
 
-        gl_Position = MVP * (v_position[1] + translated);
-        v_pos_mv = (model_view_matrix * (v_position[1] + translated)).xyz;
+        pos = v_position[1] + translated;
+        gl_Position = MVP * pos;
+        v_pos_mv = (model_view_matrix * pos).xyz;
         f_color = v_color[0];
         EmitVertex();
 
         EndPrimitive();
 
         // Triangle B
-        gl_Position = MVP * (v_position[1] + translated);
-        v_pos_mv = (model_view_matrix * (v_position[1] + translated)).xyz;
+        pos = v_position[1] + translated;
+        gl_Position = MVP * pos;
+        v_pos_mv = (model_view_matrix * pos).xyz;
         f_color = v_color[0];
         EmitVertex();
 
-        gl_Position = MVP * (v_position[0] + translated);
-        v_pos_mv = (model_view_matrix * (v_position[0] + translated)).xyz;
+        pos = v_position[0] + translated;
+        gl_Position = MVP * pos;
+        v_pos_mv = (model_view_matrix * pos).xyz;
         f_color = v_color[0];
         EmitVertex();
 
-        gl_Position = MVP * (v_position[0] + translated2);
-        v_pos_mv = (model_view_matrix * (v_position[0] + translated2)).xyz;
+        pos = v_position[0] + translated2;
+        gl_Position = MVP * pos;
+        v_pos_mv = (model_view_matrix * pos).xyz;
         f_color = v_color[0];
         EmitVertex();
 
