@@ -7,12 +7,11 @@
 //uniform float radius;
 //uniform int resolution;
 
-const float radius = 0.3;  // FIXME This should come as uniform
-const int resolution = 3;  // FIXME This should come as uniform too
-
+const float radius = 0.02;  // FIXME This should come as uniform
+const int resolution = 15;  // FIXME This should come as uniform too
 
 layout (lines) in;
-layout (triangle_strip, max_vertices = 18) out;
+layout (triangle_strip, max_vertices = 90) out;
 
 // max_vertices = 6 * resolution, where resolution is a uniform
 // If resolution == 3, we should create 6 triangles to form the cylinder (prism)
@@ -51,39 +50,42 @@ void main()
     for (int res = 0; res < resolution; res++)
     {
         mat4 rot_matrix = rotationMatrix(normal.xyz, 2 * M_PI * res / resolution);
-        vec4 rotated = radius * (rot_matrix * tangent);
+        vec4 translated = radius * (rot_matrix * tangent);
+
+        mat4 rot_matrix2 = rotationMatrix(normal.xyz, 2 * M_PI * (res + 1) / resolution);
+        vec4 translated2 = radius * (rot_matrix2 * tangent);
 
         // Triangle A
-        gl_Position = MVP * (v_position[0] - rotated);
-        v_pos_mv = (model_view_matrix * (v_position[0] - rotated)).xyz;
+        gl_Position = MVP * (v_position[0] + translated2);
+        v_pos_mv = (model_view_matrix * (v_position[0] + translated2)).xyz;
         f_color = v_color[0];
         EmitVertex();
 
-        gl_Position = MVP * (v_position[1] - rotated);
-        v_pos_mv = (model_view_matrix * (v_position[1] - rotated)).xyz;
+        gl_Position = MVP * (v_position[1] + translated2);
+        v_pos_mv = (model_view_matrix * (v_position[1] + translated2)).xyz;
         f_color = v_color[0];
         EmitVertex();
 
-        gl_Position = MVP * (v_position[1] + rotated);
-        v_pos_mv = (model_view_matrix * (v_position[1] + rotated)).xyz;
+        gl_Position = MVP * (v_position[1] + translated);
+        v_pos_mv = (model_view_matrix * (v_position[1] + translated)).xyz;
         f_color = v_color[0];
         EmitVertex();
 
         EndPrimitive();
 
         // Triangle B
-        gl_Position = MVP * (v_position[1] + rotated);
-        v_pos_mv = (model_view_matrix * (v_position[1] + rotated)).xyz;
+        gl_Position = MVP * (v_position[1] + translated);
+        v_pos_mv = (model_view_matrix * (v_position[1] + translated)).xyz;
         f_color = v_color[0];
         EmitVertex();
 
-        gl_Position = MVP * (v_position[0] + rotated);
-        v_pos_mv = (model_view_matrix * (v_position[0] + rotated)).xyz;
+        gl_Position = MVP * (v_position[0] + translated);
+        v_pos_mv = (model_view_matrix * (v_position[0] + translated)).xyz;
         f_color = v_color[0];
         EmitVertex();
 
-        gl_Position = MVP * (v_position[0] - rotated);
-        v_pos_mv = (model_view_matrix * (v_position[0] - rotated)).xyz;
+        gl_Position = MVP * (v_position[0] + translated2);
+        v_pos_mv = (model_view_matrix * (v_position[0] + translated2)).xyz;
         f_color = v_color[0];
         EmitVertex();
 
