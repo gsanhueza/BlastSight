@@ -13,38 +13,45 @@ layout (location = 1) out vec3 f_color;
 
 void main()
 {
-    float radius = 1.0;  // FIXME This should come as uniform
-    int resolution = 3;  // FIXME This should come as uniform too
+    float radius = 0.3;  // FIXME This should come as uniform
+    int resolution = 1;  // FIXME This should come as uniform too
 
-    vec4 tube_direction = normalize(gl_in[1].gl_Position - gl_in[0].gl_Position);
+    vec4 normal = normalize(gl_in[1].gl_Position - gl_in[0].gl_Position);
+    vec4 tangent = vec4(normal.y, -normal.x, normal.zw);
+    vec4 bitangent = vec4(cross(normal.xyz, tangent.xyz), normal.w);
 
-    // Triangle A
-    gl_Position = gl_in[0].gl_Position;
-    f_color = v_color[0];
-    EmitVertex();
+    vec4 rotated = radius * tangent;
 
-    gl_Position = gl_in[1].gl_Position;
-    f_color = v_color[0];
-    EmitVertex();
+    for (int res = 0; res < resolution; res++)
+    {
+        // Triangle A
+        gl_Position = gl_in[0].gl_Position - rotated;
+        f_color = v_color[0];
+        EmitVertex();
 
-    gl_Position = gl_in[1].gl_Position + vec4(0.0, 1.0, 0.0, 1.0);
-    f_color = v_color[0];
-    EmitVertex();
+        gl_Position = gl_in[1].gl_Position - rotated;
+        f_color = v_color[0];
+        EmitVertex();
 
-    EndPrimitive();
+        gl_Position = gl_in[1].gl_Position + rotated;
+        f_color = v_color[0];
+        EmitVertex();
 
-    // Triangle B
-    gl_Position = gl_in[1].gl_Position + vec4(0.0, 1.0, 0.0, 1.0);
-    f_color = v_color[0];
-    EmitVertex();
+        EndPrimitive();
 
-    gl_Position = gl_in[0].gl_Position + vec4(0.0, 1.0, 0.0, 1.0);
-    f_color = v_color[0];
-    EmitVertex();
+        // Triangle B
+        gl_Position = gl_in[1].gl_Position + rotated;
+        f_color = v_color[0];
+        EmitVertex();
 
-    gl_Position = gl_in[0].gl_Position;
-    f_color = v_color[0];
-    EmitVertex();
+        gl_Position = gl_in[0].gl_Position + rotated;
+        f_color = v_color[0];
+        EmitVertex();
 
-	EndPrimitive();
+        gl_Position = gl_in[0].gl_Position - rotated;
+        f_color = v_color[0];
+        EmitVertex();
+
+        EndPrimitive();
+    }
 }
