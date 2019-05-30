@@ -29,12 +29,15 @@ class TubeGL(GLDrawable):
 
     def initialize_shaders(self) -> None:
         vertex_shader = QOpenGLShader(QOpenGLShader.Vertex)
+        geometry_shader = QOpenGLShader(QOpenGLShader.Geometry)
         fragment_shader = QOpenGLShader(QOpenGLShader.Fragment)
 
         vertex_shader.compileSourceFile('View/Shaders/Tube/vertex.glsl')
+        geometry_shader.compileSourceFile('View/Shaders/Tube/geometry.glsl')
         fragment_shader.compileSourceFile('View/Shaders/Tube/fragment.glsl')
 
         self.shader_program.addShader(vertex_shader)
+        self.shader_program.addShader(geometry_shader)
         self.shader_program.addShader(fragment_shader)
         self.shader_program.link()
 
@@ -51,35 +54,7 @@ class TubeGL(GLDrawable):
 
         # Data
         import numpy as np
-
-        # Idea
-        # TODO Create a polygon with self.element.radius, self.element.resolution, from position `v`.
-        # TODO Same thing, with position `vv` (triangle fan should start in the same way as the previous step).
-        # TODO Join these polygons with triangles, using difference between positions as the direction
-        # TODO Add to `vertices` vector
-
-        # Alternative
-        # TODO Create a cylinder mesh base (the "template")
-        # TODO Detect direction (difference between positions)
-        # TODO Use transformation/rotation matrices (math) to the template to get the expected result
-        # TODO Add to `vertices` vector
-        vertices_ = []
-        for v, vv in zip(self.element.vertices[:-1], self.element.vertices[1:]):
-            direction = list(map(lambda t: t[1] - t[0], zip(v, vv)))
-            print(direction)
-            vertices_.append([v[0] - 0.1,
-                              v[1] + 0.0,
-                              v[2] + 0.0])
-
-            vertices_.append([v[0] + 0.1,
-                              v[1] + 0.0,
-                              v[2] + 0.0])
-
-            vertices_.append([v[0] + 0.0,
-                              v[1] + 0.1,
-                              v[2] + 0.0])
-
-        vertices = np.array(vertices_, np.float32)
+        vertices = self.element.vertices
 
         # FIXME If color is the same for each tube, make this an uniform (and we shouldn't need to import numpy)
         color = np.array([self.element.color for _ in range(len(vertices))], np.float32)
@@ -118,6 +93,6 @@ class TubeGL(GLDrawable):
         self.vao.bind()
 
         # np.array([[0, 1, 2]], type) has size 3, despite having only 1 list there
-        glDrawArrays(GL_TRIANGLES, 0, self.vertices_size)
+        glDrawArrays(GL_LINE_STRIP, 0, self.vertices_size)
 
         self.vao.release()

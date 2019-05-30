@@ -12,7 +12,7 @@ if __name__ == '__main__':
                        indices=[[0, 1, 2]],
                        name='MESHNAME')
 
-    block = viewer.block_model(x=[-3, 3, 0],
+    block = viewer.block_model(x=[-3, 5, 0],
                                y=[0, 0, 3],
                                z=[0, 0, 0],
                                values=[0.5, 1.0, 1.5])
@@ -22,12 +22,12 @@ if __name__ == '__main__':
                          z=[0.0, 0.0],
                          color=[0.2, 0.8, 0.8])
 
-    tubes = viewer.tubes(x=[0.5, -0.5],
-                         y=[-2.0, 1.5],
-                         z=[0.0, 0.0],
+    tubes = viewer.tubes(x=[0.5, -0.5, 1.5, 1.5],
+                         y=[-2.0, 1.8, 1.8, 0.0],
+                         z=[0.0, 0.0, 0.0, 0.0],
                          radius=0.5,
                          resolution=8,
-                         color=[0.2, 0.8, 0.8])
+                         color=[0.9, 0.2, 0.2])
 
     for id_, drawable in viewer.drawable_collection.items():
         print(f'Drawable {id_}: Name: {drawable.element.name}')
