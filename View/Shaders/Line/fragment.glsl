@@ -1,11 +1,8 @@
-#version 150
-#extension GL_ARB_separate_shader_objects : enable
+#version 120
 
-layout (location = 1) in vec3 v_color;
-
-out vec4 out_color;
+varying vec3 v_color;
 
 void main()
 {
-    out_color = vec4(v_color, 1.0);
+    gl_FragColor = vec4(v_color, 1.0);
 }
