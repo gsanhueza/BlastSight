@@ -48,12 +48,10 @@ class MeshGL(GLDrawable):
         vertex_shader = QOpenGLShader(QOpenGLShader.Vertex)
         fragment_shader = QOpenGLShader(QOpenGLShader.Fragment)
         fragment_wireframe_shader = QOpenGLShader(QOpenGLShader.Fragment)
-        geometry_shader = QOpenGLShader(QOpenGLShader.Geometry)
 
         vertex_shader.compileSourceFile('View/Shaders/Mesh/vertex.glsl')
         fragment_shader.compileSourceFile('View/Shaders/Mesh/fragment.glsl')
         fragment_wireframe_shader.compileSourceFile('View/Shaders/Mesh/fragment_wireframe.glsl')
-        geometry_shader.compileSourceFile('View/Shaders/Mesh/geometry.glsl')
 
         self.normal_program.addShader(vertex_shader)
         self.normal_program.addShader(fragment_shader)
@@ -61,7 +59,6 @@ class MeshGL(GLDrawable):
 
         self.wireframe_program.addShader(vertex_shader)
         self.wireframe_program.addShader(fragment_wireframe_shader)
-        self.wireframe_program.addShader(geometry_shader)
         self.wireframe_program.link()
 
         self.shader_program = self.normal_program
@@ -141,5 +138,12 @@ class MeshGL(GLDrawable):
         self.shader_program.setUniformValue(self.color_loc, self.color)
         self.shader_program.setUniformValue(self.alpha_loc, self.alpha)
         self.vao.bind()
-        glDrawElements(GL_TRIANGLES, self.indices_size, GL_UNSIGNED_INT, None)
+
+        if self.wireframe_enabled:
+            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
+            glDrawElements(GL_TRIANGLES, self.indices_size, GL_UNSIGNED_INT, None)
+            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)
+        else:
+            glDrawElements(GL_TRIANGLES, self.indices_size, GL_UNSIGNED_INT, None)
+
         self.vao.release()

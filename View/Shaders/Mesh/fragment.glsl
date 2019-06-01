@@ -1,11 +1,9 @@
-#version 150
-#extension GL_ARB_separate_shader_objects : enable
+#version 120
 
-layout (location = 1) in vec3 v_pos_mv;
+varying vec3 v_pos_mv;
+
 uniform vec3 u_color;
 uniform vec2 u_alpha;
-
-out vec4 out_color;
 
 float lambertian(vec3 N, vec3 L)
 {
@@ -29,5 +27,5 @@ void main()
     vec3 col = lambert(v_normal, light_position, u_color);
     vec3 ambient_light = vec3(0.1);
 
-    out_color = vec4(ambient_light + col, u_alpha.x);
+    gl_FragColor = vec4(ambient_light + col, u_alpha.x);
 }
