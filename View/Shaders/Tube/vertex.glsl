@@ -1,11 +1,11 @@
 #version 150
 #extension GL_ARB_separate_shader_objects : enable
 
-layout (location = 0) in vec3 a_position;
-layout (location = 1) in vec3 a_color;
+in vec3 a_position;
+in vec3 a_color;
 
-layout (location = 1) out vec3 v_color;
-layout (location = 2) out vec4 v_position;
+out vec3 v_color;
+out vec4 v_position;
 
 uniform mat4 proj_matrix;
 uniform mat4 model_view_matrix;

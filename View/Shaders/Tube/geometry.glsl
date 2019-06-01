@@ -19,11 +19,11 @@ layout (triangle_strip, max_vertices = 90) out;
 uniform mat4 proj_matrix;
 uniform mat4 model_view_matrix;
 
-layout (location = 1) in vec3 v_color[2];
-layout (location = 1) out vec3 f_color;
+in vec3 v_color[2];
+out vec3 f_color;
 
-layout (location = 2) in vec4 v_position[2];
-layout (location = 2) out vec3 v_pos_mv;
+in vec4 v_position[2];
+out vec3 f_pos_mv;
 
 // Taken from http://www.neilmendoza.com/glsl-rotation-about-an-arbitrary-axis/
 mat4 rotationMatrix(vec3 axis, float angle)
@@ -58,19 +58,19 @@ void main()
 
         // Triangle A
         gl_Position = MVP * pos;
-        v_pos_mv = (model_view_matrix * pos).xyz;
+        f_pos_mv = (model_view_matrix * pos).xyz;
         f_color = v_color[0];
         EmitVertex();
 
         pos = v_position[1] + translated2;
         gl_Position = MVP * pos;
-        v_pos_mv = (model_view_matrix * pos).xyz;
+        f_pos_mv = (model_view_matrix * pos).xyz;
         f_color = v_color[0];
         EmitVertex();
 
         pos = v_position[1] + translated;
         gl_Position = MVP * pos;
-        v_pos_mv = (model_view_matrix * pos).xyz;
+        f_pos_mv = (model_view_matrix * pos).xyz;
         f_color = v_color[0];
         EmitVertex();
 
@@ -79,19 +79,19 @@ void main()
         // Triangle B
         pos = v_position[1] + translated;
         gl_Position = MVP * pos;
-        v_pos_mv = (model_view_matrix * pos).xyz;
+        f_pos_mv = (model_view_matrix * pos).xyz;
         f_color = v_color[0];
         EmitVertex();
 
         pos = v_position[0] + translated;
         gl_Position = MVP * pos;
-        v_pos_mv = (model_view_matrix * pos).xyz;
+        f_pos_mv = (model_view_matrix * pos).xyz;
         f_color = v_color[0];
         EmitVertex();
 
         pos = v_position[0] + translated2;
         gl_Position = MVP * pos;
-        v_pos_mv = (model_view_matrix * pos).xyz;
+        f_pos_mv = (model_view_matrix * pos).xyz;
         f_color = v_color[0];
         EmitVertex();
 

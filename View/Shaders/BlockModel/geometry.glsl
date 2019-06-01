@@ -5,10 +5,10 @@
 layout (points) in;
 layout (triangle_strip, max_vertices = 24) out;
 
-layout (location = 1) in vec3 v_color[1];
-layout (location = 1) out vec3 f_color;
+in vec3 v_color[1];
 
-layout (location = 2) out vec3 normal;
+out vec3 f_color;
+out vec3 v_normal;
 
 uniform mat4 proj_matrix;
 uniform mat4 model_view_matrix;
@@ -35,22 +35,22 @@ void AddQuad(vec4 center, vec4 dy, vec4 dx)
 
     gl_Position = v1;
     f_color = v_color[0];
-    normal = N;
+    v_normal = N;
     EmitVertex();
 
     gl_Position = v2;
     f_color = v_color[0];
-    normal = N;
+    v_normal = N;
     EmitVertex();
 
     gl_Position = v3;
     f_color = v_color[0];
-    normal = N;
+    v_normal = N;
     EmitVertex();
 
     gl_Position = v4;
     f_color = v_color[0];
-    normal = N;
+    v_normal = N;
     EmitVertex();
 
     EndPrimitive();
