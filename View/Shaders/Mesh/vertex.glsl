@@ -1,7 +1,8 @@
-#version 120
+#version 150
+#extension GL_ARB_separate_shader_objects : enable
 
-attribute vec3 a_position;
-varying vec3 v_pos_mv;
+layout (location = 0) in vec3 a_position;
+layout (location = 1) out vec3 v_pos_mv;
 
 uniform mat4 proj_matrix;
 uniform mat4 model_view_matrix;
