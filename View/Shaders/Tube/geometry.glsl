@@ -1,5 +1,4 @@
 #version 150
-#extension GL_ARB_separate_shader_objects : enable
 #extension GL_EXT_geometry_shader4 : enable
 
 #define M_PI 3.1415926535897932384626433832795

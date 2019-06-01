@@ -29,7 +29,7 @@ if __name__ == '__main__':
                          resolution=8,
                          color=[0.9, 0.2, 0.2])
 
-    mesh.toggle_wireframe()
+    # mesh.toggle_wireframe()
 
     for id_, drawable in viewer.drawable_collection.items():
         print(f'Drawable {id_}: Name = {drawable.element.name}')

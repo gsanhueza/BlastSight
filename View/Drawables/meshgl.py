@@ -105,11 +105,8 @@ class MeshGL(GLDrawable):
         self.color_loc = self.shader_program.uniformLocation('u_color')
         self.alpha_loc = self.shader_program.uniformLocation('u_alpha')
 
-        color = list(self.element.values)
-        self.color = QVector3D(color[0], color[1], color[2])
-
-        alpha = 1.0  # self.model_element.get_alpha()
-        self.alpha = QVector2D(alpha, 0.0)
+        self.color = self.element.values
+        self.alpha = 1.0  # self.model_element.get_alpha()
 
     def update_wireframe(self) -> None:
         if self.shader_program:  # Will skip before viewer.show()
@@ -138,8 +135,11 @@ class MeshGL(GLDrawable):
         self.shader_program.bind()
         self.shader_program.setUniformValue(self.proj_matrix_loc, proj_matrix)
         self.shader_program.setUniformValue(self.model_view_matrix_loc, view_matrix * model_matrix)
-        self.shader_program.setUniformValue(self.color_loc, self.color)
-        self.shader_program.setUniformValue(self.alpha_loc, self.alpha)
+        self.shader_program.setUniformValue(self.color_loc,
+                                            self.color[0],
+                                            self.color[1],
+                                            self.color[2],
+                                            self.alpha)
         self.vao.bind()
         glDrawElements(GL_TRIANGLES, self.indices_size, GL_UNSIGNED_INT, None)
         self.vao.release()
