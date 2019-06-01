@@ -1,11 +1,11 @@
 #version 150
 #extension GL_ARB_separate_shader_objects : enable
 
-layout (location = 1) in vec3 v_pos_mv;
+in vec3 pos_mv;
+out vec4 out_color;
+
 uniform vec3 u_color;
 uniform vec2 u_alpha;
-
-out vec4 out_color;
 
 float lambertian(vec3 N, vec3 L)
 {
@@ -21,8 +21,8 @@ vec3 lambert(vec3 N, vec3 L, vec3 color)
 
 void main()
 {
-    vec3 X = dFdx(v_pos_mv);
-    vec3 Y = dFdy(v_pos_mv);
+    vec3 X = dFdx(pos_mv);
+    vec3 Y = dFdy(pos_mv);
     vec3 v_normal = normalize(cross(X, Y));
 
     vec3 light_position = vec3(0.0, 0.0, 1000.0);
