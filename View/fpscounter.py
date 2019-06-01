@@ -10,7 +10,10 @@ class FPSCounter:
         self.counter = 0
 
     def __str__(self):
-        return f'FPS: {self.counter / (time.time() - self.start_time)}'  # FPS = 1 / time to process loop
+        diff = (time.time() - self.start_time)
+
+        # FPS = 1 / time to process loop
+        return f'FPS: {self.counter / diff}' if diff else f'FPS: 0.0'
 
     def tick(self):
         self.counter += 1
