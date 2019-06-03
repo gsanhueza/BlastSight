@@ -135,7 +135,7 @@ class MineVis(QMainWindow):
     """
 
     def dragEnterEvent(self, event, *args, **kwargs) -> None:
-        if event.mimeData().hasFormat('text/plain'):
+        if event.mimeData().hasText():
             event.acceptProposedAction()
 
     def dropEvent(self, event, *args, **kwargs) -> None:
