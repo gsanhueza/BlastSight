@@ -177,6 +177,7 @@ class OpenGLWidget(QOpenGLWidget):
 
     def camera_at(self, id_: int) -> None:
         drawable = self.get_drawable(id_)
+        self.xWorldPos, self.yWorldPos, self.zWorldPos = 0.0, 0.0, -3.0  # Return to initial
         self.centroid = drawable.element.centroid
         self.update()
 
@@ -211,9 +212,9 @@ class OpenGLWidget(QOpenGLWidget):
                              self.zWorldPos)
 
         # Allow rotation of the world
-        self.world.rotate(self.xWorldRot / 16.0, 1, 0, 0)
-        self.world.rotate(self.yWorldRot / 16.0, 0, 1, 0)
-        self.world.rotate(self.zWorldRot / 16.0, 0, 0, 1)
+        self.world.rotate(self.xWorldRot, 1, 0, 0)
+        self.world.rotate(self.yWorldRot, 0, 1, 0)
+        self.world.rotate(self.zWorldRot, 0, 0, 1)
 
         # Translate by centroid
         self.world.translate(-self.xCentroid,
