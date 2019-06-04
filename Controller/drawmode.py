@@ -27,12 +27,24 @@ class DrawMode(Mode):
     def mouseReleaseEvent(self, event):
         self.lastPos = event.pos()
 
+        # x = self.widget.width() / 2
+        # y = self.widget.height() / 2
         x = self.lastPos.x()
         y = self.lastPos.y()
         z = 1.0
         ray: QVector3D = self.unproject(x, y, z, self.widget.world, self.widget.camera, self.widget.proj)
 
-        origin = -self.widget.world.column(3).toVector3D()
+        # FIXME With this, I can make it work on Y-axis rotation only
+        from PyQt5.QtGui import QMatrix4x4
+        rot_matrix = QMatrix4x4()
+        rot_matrix.rotate(self.widget.xWorldRot, 1, 0, 0)
+        rot_matrix.rotate(self.widget.yWorldRot, 0, 1, 0)
+        rot_matrix.rotate(self.widget.zWorldRot, 0, 0, 1)
+        print(f'Ray: {ray}')
+        origin = (rot_matrix * self.widget.world.column(3)).toVector3D()
+        origin.setZ(-origin.z())
+        print(f'Origin: {origin}')
+        # origin = -self.widget.world.column(3).toVector3D()
         d = 0
         n = QVector3D(0.0, 0.0, 1.0).normalized()  # FIXME Calculate from a real figure
 
