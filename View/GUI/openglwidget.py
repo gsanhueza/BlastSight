@@ -253,49 +253,31 @@ class OpenGLWidget(QOpenGLWidget):
             for it in mesh.indices:
                 t = np.array([mesh.vertices[it[0]], mesh.vertices[it[1]], mesh.vertices[it[2]]])
 
-                n, d = self.plane_equation(t)
-                i = self.plane_intersection(ray_origin, ray, n, d)
-                ans = self.is_inside(t, i, n)
-
+                ans = self.triangle_intersection(ray_origin, ray, t)
                 if ans:
-                    print(f'Mesh {mesh.id}: Intersected at {i}')
                     intersection_exists = True
+                    break
 
-            if intersection_exists:
-                print(f'Collision with mesh {mesh.id}')
-            else:
-                print(f'No collision detected')
+            print('-------------------------------')
+            print(f'| Intersects: {intersection_exists} |')
             print('-------------------------------')
 
-    @staticmethod
-    def plane_equation(triangle):
-        # FIXME Should be in Model, not in View
+    def triangle_intersection(self, origin, ray, triangle):
         A = triangle[0]
         B = triangle[1]
         C = triangle[2]
 
-        AB = B - A
-        BC = C - B
-
-        cross = np.cross(AB, BC)
-        norm = np.linalg.norm(cross)
-        cross_norm = cross / norm
+        cross = np.cross(B - A, C - B)
+        normal = cross / np.linalg.norm(cross)
         d = np.dot(cross, A)
 
-        return cross_norm, float(d)
-
-    # Taken from https://courses.cs.washington.edu/courses/cse457/09au/lectures/triangle_intersection.pdf
-    @staticmethod
-    def is_inside(triangle, point, normal):
-        A = triangle[0]
-        B = triangle[1]
-        C = triangle[2]
-        P = point
+        P = self.plane_intersection(origin, ray, normal, d)
 
         return np.dot(np.cross(B - A, P - A), normal) > 0 and \
                np.dot(np.cross(C - B, P - B), normal) > 0 and \
                np.dot(np.cross(A - C, P - C), normal) > 0
 
+    # Taken from https://courses.cs.washington.edu/courses/cse457/09au/lectures/triangle_intersection.pdf
     @staticmethod
     def plane_intersection(ray_origin, ray_direction, plane_normal, plane_d) -> np.ndarray:
         t = (plane_d - np.dot(plane_normal, ray_origin)) / np.dot(plane_normal, ray_direction)
