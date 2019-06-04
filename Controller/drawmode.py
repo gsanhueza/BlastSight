@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QVector3D
 from PyQt5.QtGui import QVector4D
 from Controller.mode import Mode
 
@@ -23,32 +24,20 @@ class DrawMode(Mode):
         self.initPos = event.pos()
         self.lastPos = event.pos()
 
-        # if event.button() == Qt.MouseButton.LeftButton:
-        #     print("Pressing in Draw Mode with LeftButton")
-        # elif event.button() == Qt.MouseButton.MiddleButton:
-        #     print("Pressing in Draw Mode with MiddleButton")
-        # elif event.button() == Qt.MouseButton.RightButton:
-        #     print("Pressing in Draw Mode with RightButton")
-
     def mouseReleaseEvent(self, event):
         self.lastPos = event.pos()
 
-        P = self.widget.proj
-        V = self.widget.camera
-        M = self.widget.world
+        x = self.lastPos.x()
+        y = self.lastPos.y()
+        z = 1.0
+        ray: QVector3D = self.unproject(x, y, z, self.widget.world, self.widget.camera, self.widget.proj)
 
-        pos = self.screen_to_normalized(self.lastPos)
+        print(ray)
 
-        print(f'World coordinates (bad z) = : {pos}')
-
-        # If P * V * M * v = position in screen...
-        # M^-1 * V^-1 * P^-1 * P * V * M * v = M^-1 * V^-1 * P^-1 * pos = v
-        # With pos = ((2*r_x / res_x) - 1, (2*r_x / res_x) - 1, get_z_depth(), 1.0)
-        # That means we need to implement get_z_depth().
-        # TODO Multiply/invert/do something to get the world coordinates from the click on screen
         self.active = False
 
     def overpaint(self):
+        return
         if self.active or True:
             self.widget.painter.begin(self.widget)
             self.widget.painter.setPen(Qt.yellow)
@@ -61,17 +50,30 @@ class DrawMode(Mode):
 
             self.widget.painter.end()
 
-    def screen_to_normalized(self, event_pos):
-        res_x = 800  # FIXME Get from screen
-        res_y = 530  # FIXME Get from screen
+    def screen_to_normalized(self, _x, _y, _z) -> QVector3D:
+        res_x = self.widget.width()
+        res_y = self.widget.height()
 
-        x = (2 * event_pos.x() / res_x) - 1
-        y = (2 * event_pos.y() / res_y) - 1
-        z = self.get_z_depth(event_pos)
-        w = 1  # Constant
+        x = (2.0 * _x / res_x) - 1.0
+        y = 1.0 - (2.0 * _y / res_y)
+        z = _z
 
-        return QVector4D(x, -y, z, w)
+        return QVector3D(x, y, z)
 
-    def get_z_depth(self, event_pos):
-        # TODO Get Z depth
-        return 0
+    # Taken from http://antongerdelan.net/opengl/raycasting.html
+    def unproject(self, x, y, z, model, view, proj) -> QVector3D:
+        # Step 1
+        ray_nds: QVector3D = self.screen_to_normalized(x, y, z)
+
+        # Step 2
+        ray_clip: QVector4D = QVector4D(ray_nds.x(), ray_nds.y(), -1.0, 1.0)
+
+        # Step 3
+        ray_eye: QVector4D = proj.inverted()[0] * ray_clip
+        ray_eye = QVector4D(ray_eye.x(), ray_eye.y(), -1.0, 0.0)
+
+        # Step 4
+        ray_wor: QVector3D = ((view * model).inverted()[0] * ray_eye).toVector3D()
+        ray_wor.normalize()
+
+        return ray_wor
