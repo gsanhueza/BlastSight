@@ -14,6 +14,12 @@ class NormalMode(Mode):
     def mousePressEvent(self, event):
         self.lastPos = QPoint(event.pos())
 
+    def mouseReleaseEvent(self, event):
+        intersection = self.widget.detect_intersection(event.pos().x(), event.pos().y(), 1.0)
+
+        print(f'Intersection at {intersection}')
+        print('-------------------------------')
+
     def mouseMoveEvent(self, event):
         dx = event.x() - self.lastPos.x()
         dy = event.y() - self.lastPos.y()
