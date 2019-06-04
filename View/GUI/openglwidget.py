@@ -250,6 +250,7 @@ class OpenGLWidget(QOpenGLWidget):
         for mesh in meshes:
             intersection_exists = False
 
+            # TODO Optimize ray casting to avoid scanning *every* triangle
             for it in mesh.indices:
                 t = np.array([mesh.vertices[it[0]], mesh.vertices[it[1]], mesh.vertices[it[2]]])
 
@@ -259,23 +260,24 @@ class OpenGLWidget(QOpenGLWidget):
                     break
 
             print('-------------------------------')
-            print(f'| Intersects: {intersection_exists} |')
+            print(f'| (Mesh {mesh.id}) Intersects: {intersection_exists} |')
             print('-------------------------------')
 
     def triangle_intersection(self, origin, ray, triangle):
-        A = triangle[0]
-        B = triangle[1]
-        C = triangle[2]
+        a = triangle[0]
+        b = triangle[1]
+        c = triangle[2]
 
-        cross = np.cross(B - A, C - B)
+        cross = np.cross(b - a, c - b)
         normal = cross / np.linalg.norm(cross)
-        d = np.dot(cross, A)
+        d = np.dot(cross, a)
 
-        P = self.plane_intersection(origin, ray, normal, d)
+        p = self.plane_intersection(origin, ray, normal, d)
 
-        return np.dot(np.cross(B - A, P - A), normal) > 0 and \
-               np.dot(np.cross(C - B, P - B), normal) > 0 and \
-               np.dot(np.cross(A - C, P - C), normal) > 0
+        return \
+            np.dot(np.cross(b - a, p - a), normal) > 0 and \
+            np.dot(np.cross(c - b, p - b), normal) > 0 and \
+            np.dot(np.cross(a - c, p - c), normal) > 0
 
     # Taken from https://courses.cs.washington.edu/courses/cse457/09au/lectures/triangle_intersection.pdf
     @staticmethod
