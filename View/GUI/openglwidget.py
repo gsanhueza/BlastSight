@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import numpy as np
 import traceback
 
 from OpenGL.GL import *
@@ -240,41 +241,35 @@ class OpenGLWidget(QOpenGLWidget):
         camera_pos = self.camera.column(3)
         ray_origin = (self.world.inverted()[0] * camera_pos).toVector3D()
 
+        # To Numpy array
+        ray = np.array([ray.x(), ray.y(), ray.z()])
+        ray_origin = np.array([ray_origin.x(), ray_origin.y(), ray_origin.z()])
+
         meshes = self.model.mesh_collection
 
-        accum_intersected = 0
-        accum_missed = 0
-
         for mesh in meshes:
+            intersection_exists = False
+
             for it in mesh.indices:
-                t = [mesh.vertices[it[0]], mesh.vertices[it[1]], mesh.vertices[it[2]]]
+                t = np.array([mesh.vertices[it[0]], mesh.vertices[it[1]], mesh.vertices[it[2]]])
 
                 n, d = self.plane_equation(t)
                 i = self.plane_intersection(ray_origin, ray, n, d)
                 ans = self.is_inside(t, i, n)
 
                 if ans:
-                    accum_intersected += 1
-                else:
-                    accum_missed += 1
+                    print(f'Mesh {mesh.id}: Intersected at {i}')
+                    intersection_exists = True
 
-            print(f'Mesh {mesh.id}: '
-                  f'{accum_intersected} intersected, {accum_missed} missed.')
-
-        # FIXME Calculate from a real figure
-        d = 0
-        n = QVector3D(0.0, 0.0, 1.0).normalized()
-
-        return self.plane_intersection(ray_origin=ray_origin,
-                                       ray_direction=ray,
-                                       plane_normal=n,
-                                       plane_d=d)
+            if intersection_exists:
+                print(f'Collision with mesh {mesh.id}')
+            else:
+                print(f'No collision detected')
+            print('-------------------------------')
 
     @staticmethod
     def plane_equation(triangle):
         # FIXME Should be in Model, not in View
-        import numpy as np
-
         A = triangle[0]
         B = triangle[1]
         C = triangle[2]
@@ -287,37 +282,23 @@ class OpenGLWidget(QOpenGLWidget):
         cross_norm = cross / norm
         d = np.dot(cross, A)
 
-        normal = QVector3D(cross_norm[0], cross_norm[1], cross_norm[2])
-
-        return normal, float(d)
+        return cross_norm, float(d)
 
     # Taken from https://courses.cs.washington.edu/courses/cse457/09au/lectures/triangle_intersection.pdf
-    def is_inside(self, triangle, point, normal):
-        import numpy as np
-
+    @staticmethod
+    def is_inside(triangle, point, normal):
         A = triangle[0]
         B = triangle[1]
         C = triangle[2]
-        P = np.array([point.x(), point.y(), point.z()])
+        P = point
 
-        AB = B - A
-        BC = C - B
-        CA = A - C
-
-        AP = P - A
-        BP = P - B
-        CP = P - C
-
-        r_A = np.dot(np.cross(AB, AP), np.array([normal.x(), normal.y(), normal.z()]))
-        r_B = np.dot(np.cross(BC, BP), np.array([normal.x(), normal.y(), normal.z()]))
-        r_C = np.dot(np.cross(CA, CP), np.array([normal.x(), normal.y(), normal.z()]))
-
-        return r_A > 0 and r_B > 0 and r_C > 0
+        return np.dot(np.cross(B - A, P - A), normal) > 0 and \
+               np.dot(np.cross(C - B, P - B), normal) > 0 and \
+               np.dot(np.cross(A - C, P - C), normal) > 0
 
     @staticmethod
-    def plane_intersection(ray_origin, ray_direction, plane_normal, plane_d) -> QVector3D:
-        t = (plane_d - QVector3D.dotProduct(plane_normal, ray_origin)) /\
-            (QVector3D.dotProduct(plane_normal, ray_direction))
+    def plane_intersection(ray_origin, ray_direction, plane_normal, plane_d) -> np.ndarray:
+        t = (plane_d - np.dot(plane_normal, ray_origin)) / np.dot(plane_normal, ray_direction)
 
         return ray_origin + t * ray_direction
 
