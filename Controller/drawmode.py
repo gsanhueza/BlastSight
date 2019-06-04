@@ -32,9 +32,25 @@ class DrawMode(Mode):
         z = 1.0
         ray: QVector3D = self.unproject(x, y, z, self.widget.world, self.widget.camera, self.widget.proj)
 
-        print(ray)
+        origin = -self.widget.world.column(3).toVector3D()
+        d = 0
+        n = QVector3D(0.0, 0.0, 1.0).normalized()  # FIXME Calculate from a real figure
+
+        intersection = self.plane_intersection(ray_origin=origin,
+                                               ray_direction=ray,
+                                               plane_normal=n,
+                                               plane_d=d)
+
+        print(f'Intersection at {intersection}')
+        print('-------------------------------')
 
         self.active = False
+
+    def plane_intersection(self, ray_origin, ray_direction, plane_normal, plane_d) -> QVector3D:
+        t = (plane_d - QVector3D.dotProduct(plane_normal, ray_origin)) /\
+            (QVector3D.dotProduct(plane_normal, ray_direction))
+
+        return ray_origin + t * ray_direction
 
     def overpaint(self):
         return
