@@ -1,11 +1,14 @@
 #!/usr/bin/env python
 
+import numpy as np
 import traceback
 
 from OpenGL.GL import *
 from PyQt5.QtWidgets import QOpenGLWidget
 from PyQt5.QtGui import QPainter
 from PyQt5.QtGui import QMatrix4x4
+from PyQt5.QtGui import QVector3D
+from PyQt5.QtGui import QVector4D
 
 from View.Drawables.drawablecollection import GLDrawableCollection
 from View.Drawables.gldrawable import GLDrawable
@@ -19,6 +22,7 @@ from View.fpscounter import FPSCounter
 
 from Controller.normalmode import NormalMode
 from Controller.drawmode import DrawMode
+from Controller.selectionmode import SelectionMode
 
 from Model.Elements.element import Element
 from Model.model import Model
@@ -182,15 +186,6 @@ class OpenGLWidget(QOpenGLWidget):
         self.update()
 
     """
-    Controller modes
-    """
-    def set_normal_mode(self) -> None:
-        self.current_mode = NormalMode(self)
-
-    def set_draw_mode(self) -> None:
-        self.current_mode = DrawMode(self)
-
-    """
     Internal methods
     """
 
@@ -238,6 +233,100 @@ class OpenGLWidget(QOpenGLWidget):
         # ortho(float left, float right, float bottom, float top, float nearPlane, float farPlane)
         # scale_factor = self.zWorldPos * 200
         # self.proj.ortho(-w/scale_factor, w/scale_factor, -h/scale_factor, h/scale_factor, 0.01, 10000)
+
+    """
+    Utilities
+    """
+    def detect_intersection(self, x, y, z) -> None:
+        ray: QVector3D = self.unproject(x, y, z, self.world, self.camera, self.proj)
+        camera_pos = self.camera.column(3)
+        ray_origin = (self.world.inverted()[0] * camera_pos).toVector3D()
+
+        # To Numpy array
+        ray = np.array([ray.x(), ray.y(), ray.z()])
+        ray_origin = np.array([ray_origin.x(), ray_origin.y(), ray_origin.z()])
+
+        print('-------------------------------')
+        for mesh in self.model.mesh_collection:
+            print(f'(Mesh {mesh.id}) Intersects: {self.mesh_intersection(ray_origin, ray, mesh)}')
+        print('-------------------------------')
+
+    def mesh_intersection(self, origin, ray, mesh) -> bool:
+        # TODO Optimize ray casting to avoid scanning *every* triangle
+        for it in mesh.indices:
+            t = np.array([mesh.vertices[it[0]], mesh.vertices[it[1]], mesh.vertices[it[2]]])
+
+            if self.triangle_intersection(origin, ray, t):
+                return True
+
+        return False
+
+    def triangle_intersection(self, origin, ray, triangle) -> bool:
+        def sign(num):
+            if num > 0:
+                return 1
+            elif num < 0:
+                return -1
+            else:
+                return 0
+
+        a = triangle[0]
+        b = triangle[1]
+        c = triangle[2]
+
+        cross = np.cross(b - a, c - b)
+        normal = cross / np.linalg.norm(cross)
+        d = np.dot(cross, a)
+
+        p = self.plane_intersection(origin, ray, normal, d)
+
+        return \
+            sign(np.dot(np.cross(b - a, p - a), normal)) == \
+            sign(np.dot(np.cross(c - b, p - b), normal)) == \
+            sign(np.dot(np.cross(a - c, p - c), normal))
+
+    # Taken from https://courses.cs.washington.edu/courses/cse457/09au/lectures/triangle_intersection.pdf
+    @staticmethod
+    def plane_intersection(ray_origin, ray_direction, plane_normal, plane_d) -> np.ndarray:
+        t = (plane_d - np.dot(plane_normal, ray_origin)) / np.dot(plane_normal, ray_direction)
+
+        return ray_origin + t * ray_direction
+
+    # Taken from http://antongerdelan.net/opengl/raycasting.html
+    def unproject(self, _x, _y, _z, model, view, proj) -> QVector3D:
+        # Called from NormalMode.mouseReleaseEvent(event)
+
+        # Step 0
+        x = (2.0 * _x / self.width()) - 1.0
+        y = 1.0 - (2.0 * _y / self.height())
+        z = _z
+
+        # Step 1
+        ray_nds: QVector3D = QVector3D(x, y, z)
+
+        # Step 2
+        ray_clip: QVector4D = QVector4D(ray_nds.x(), ray_nds.y(), -1.0, 1.0)
+
+        # Step 3
+        ray_eye: QVector4D = proj.inverted()[0] * ray_clip
+        ray_eye = QVector4D(ray_eye.x(), ray_eye.y(), -1.0, 0.0)
+
+        # Step 4
+        ray_world: QVector3D = ((view * model).inverted()[0] * ray_eye).toVector3D()
+
+        return ray_world.normalized()
+
+    """
+    Controller
+    """
+    def set_normal_mode(self) -> None:
+        self.current_mode = NormalMode(self)
+
+    def set_draw_mode(self) -> None:
+        self.current_mode = DrawMode(self)
+
+    def set_selection_mode(self) -> None:
+        self.current_mode = SelectionMode(self)
 
     # Controller dependent on current mode
     def mouseMoveEvent(self, event, *args, **kwargs) -> None:

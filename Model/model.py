@@ -94,8 +94,8 @@ class Model:
 
     @property
     def mesh_collection(self) -> list:
-        return list(filter(lambda x: isinstance(x[1], MeshElement), self._element_collection.items()))
+        return list(filter(lambda x: isinstance(x, MeshElement), self._element_collection.values()))
 
     @property
     def block_model_collection(self) -> list:
-        return list(filter(lambda x: isinstance(x[1], BlockModelElement), self._element_collection.items()))
+        return list(filter(lambda x: isinstance(x, BlockModelElement), self._element_collection.values()))

@@ -51,6 +51,7 @@
     </property>
     <addaction name="action_Normal_mode"/>
     <addaction name="action_Draw_mode"/>
+    <addaction name="action_Selection_mode"/>
     <addaction name="separator"/>
    </widget>
    <addaction name="menu_File"/>
@@ -186,6 +187,18 @@
     <string>Ctrl+E</string>
    </property>
   </action>
+  <action name="action_Selection_mode">
+   <property name="icon">
+    <iconset theme="edit-select">
+     <normaloff>.</normaloff>.</iconset>
+   </property>
+   <property name="text">
+    <string>Selection mode</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
@@ -298,10 +311,27 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>action_Selection_mode</sender>
+   <signal>triggered()</signal>
+   <receiver>MineVis</receiver>
+   <slot>selection_mode_slot()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>449</x>
+     <y>249</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>normal_mode_slot()</slot>
   <slot>draw_mode_slot()</slot>
+  <slot>selection_mode_slot()</slot>
   <slot>load_mesh_slot()</slot>
   <slot>help_slot()</slot>
   <slot>load_block_model_slot()</slot>
