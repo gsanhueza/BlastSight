@@ -17,6 +17,7 @@ from View.Drawables.blockmodelgl import BlockModelGL
 from View.Drawables.meshgl import MeshGL
 from View.Drawables.linegl import LineGL
 from View.Drawables.tubegl import TubeGL
+from View.Drawables.backgroundgl import BackgroundGL
 
 from View.fpscounter import FPSCounter
 
@@ -38,7 +39,8 @@ class OpenGLWidget(QOpenGLWidget):
         self.current_mode = None
 
         # Drawable elements
-        self._drawable_collection = GLDrawableCollection()
+        self.background = BackgroundGL(self, True)
+        self.drawable_collection = GLDrawableCollection()
 
         # Camera/World/Projection
         self._camera = QMatrix4x4()
@@ -87,10 +89,6 @@ class OpenGLWidget(QOpenGLWidget):
     @property
     def proj(self):
         return self._proj
-
-    @property
-    def drawable_collection(self) -> GLDrawableCollection:
-        return self._drawable_collection
 
     @property
     def centroid(self) -> list:
@@ -191,13 +189,14 @@ class OpenGLWidget(QOpenGLWidget):
     """
 
     def initializeGL(self) -> None:
-        pass
+        glClearColor(0.0, 0.0, 0.0, 1.0)
+        self.background.initialize()
 
     def paintGL(self) -> None:
         self.painter.begin(self)
+
         # Clear screen
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-        glEnable(GL_DEPTH_TEST)
         glDisable(GL_CULL_FACE)
 
         self.world.setToIdentity()
@@ -216,6 +215,11 @@ class OpenGLWidget(QOpenGLWidget):
         self.world.translate(-self.xCentroid,
                              -self.yCentroid,
                              -self.zCentroid)
+
+        # Draw gradient background
+        glDisable(GL_DEPTH_TEST)
+        self.background.draw()
+        glEnable(GL_DEPTH_TEST)
 
         # Draw every GLDrawable (meshes, block models, etc)
         self.drawable_collection.draw(self.proj, self.camera, self.world)
