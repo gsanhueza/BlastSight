@@ -26,6 +26,7 @@ from Controller.selectionmode import SelectionMode
 
 from Model.Elements.element import Element
 from Model.model import Model
+from Model.utils import mesh_intersection
 
 
 class OpenGLWidget(QOpenGLWidget):
@@ -248,49 +249,8 @@ class OpenGLWidget(QOpenGLWidget):
 
         print('-------------------------------')
         for mesh in self.model.mesh_collection:
-            print(f'(Mesh {mesh.id}) Intersects: {self.mesh_intersection(ray_origin, ray, mesh)}')
+            print(f'(Mesh {mesh.id}) Intersects: {mesh_intersection(ray_origin, ray, mesh)}')
         print('-------------------------------')
-
-    def mesh_intersection(self, origin, ray, mesh) -> bool:
-        # TODO Optimize ray casting to avoid scanning *every* triangle
-        for it in mesh.indices:
-            t = np.array([mesh.vertices[it[0]], mesh.vertices[it[1]], mesh.vertices[it[2]]])
-
-            if self.triangle_intersection(origin, ray, t):
-                return True
-
-        return False
-
-    def triangle_intersection(self, origin, ray, triangle) -> bool:
-        def sign(num):
-            if num > 0:
-                return 1
-            elif num < 0:
-                return -1
-            else:
-                return 0
-
-        a = triangle[0]
-        b = triangle[1]
-        c = triangle[2]
-
-        cross = np.cross(b - a, c - b)
-        normal = cross / np.linalg.norm(cross)
-        d = np.dot(cross, a)
-
-        p = self.plane_intersection(origin, ray, normal, d)
-
-        return \
-            sign(np.dot(np.cross(b - a, p - a), normal)) == \
-            sign(np.dot(np.cross(c - b, p - b), normal)) == \
-            sign(np.dot(np.cross(a - c, p - c), normal))
-
-    # Taken from https://courses.cs.washington.edu/courses/cse457/09au/lectures/triangle_intersection.pdf
-    @staticmethod
-    def plane_intersection(ray_origin, ray_direction, plane_normal, plane_d) -> np.ndarray:
-        t = (plane_d - np.dot(plane_normal, ray_origin)) / np.dot(plane_normal, ray_direction)
-
-        return ray_origin + t * ray_direction
 
     # Taken from http://antongerdelan.net/opengl/raycasting.html
     def unproject(self, _x, _y, _z, model, view, proj) -> QVector3D:
