@@ -236,7 +236,7 @@ class OpenGLWidget(QOpenGLWidget):
     """
     Utilities
     """
-    def detect_intersection(self, x, y, z):
+    def detect_intersection(self, x, y, z) -> None:
         ray: QVector3D = self.unproject(x, y, z, self.world, self.camera, self.proj)
         camera_pos = self.camera.column(3)
         ray_origin = (self.world.inverted()[0] * camera_pos).toVector3D()
@@ -245,25 +245,30 @@ class OpenGLWidget(QOpenGLWidget):
         ray = np.array([ray.x(), ray.y(), ray.z()])
         ray_origin = np.array([ray_origin.x(), ray_origin.y(), ray_origin.z()])
 
-        meshes = self.model.mesh_collection
+        print('-------------------------------')
+        for mesh in self.model.mesh_collection:
+            print(f'(Mesh {mesh.id}) Intersects: {self.mesh_intersection(ray_origin, ray, mesh)}')
+        print('-------------------------------')
 
-        for mesh in meshes:
-            intersection_exists = False
+    def mesh_intersection(self, origin, ray, mesh) -> bool:
+        # TODO Optimize ray casting to avoid scanning *every* triangle
+        for it in mesh.indices:
+            t = np.array([mesh.vertices[it[0]], mesh.vertices[it[1]], mesh.vertices[it[2]]])
 
-            # TODO Optimize ray casting to avoid scanning *every* triangle
-            for it in mesh.indices:
-                t = np.array([mesh.vertices[it[0]], mesh.vertices[it[1]], mesh.vertices[it[2]]])
+            if self.triangle_intersection(origin, ray, t):
+                return True
 
-                ans = self.triangle_intersection(ray_origin, ray, t)
-                if ans:
-                    intersection_exists = True
-                    break
+        return False
 
-            print('-------------------------------')
-            print(f'| (Mesh {mesh.id}) Intersects: {intersection_exists} |')
-            print('-------------------------------')
+    def triangle_intersection(self, origin, ray, triangle) -> bool:
+        def sign(num):
+            if num > 0:
+                return 1
+            elif num < 0:
+                return -1
+            else:
+                return 0
 
-    def triangle_intersection(self, origin, ray, triangle):
         a = triangle[0]
         b = triangle[1]
         c = triangle[2]
@@ -275,9 +280,9 @@ class OpenGLWidget(QOpenGLWidget):
         p = self.plane_intersection(origin, ray, normal, d)
 
         return \
-            np.dot(np.cross(b - a, p - a), normal) > 0 and \
-            np.dot(np.cross(c - b, p - b), normal) > 0 and \
-            np.dot(np.cross(a - c, p - c), normal) > 0
+            sign(np.dot(np.cross(b - a, p - a), normal)) == \
+            sign(np.dot(np.cross(c - b, p - b), normal)) == \
+            sign(np.dot(np.cross(a - c, p - c), normal))
 
     # Taken from https://courses.cs.washington.edu/courses/cse457/09au/lectures/triangle_intersection.pdf
     @staticmethod
