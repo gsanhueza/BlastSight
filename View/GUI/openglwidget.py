@@ -22,6 +22,7 @@ from View.fpscounter import FPSCounter
 
 from Controller.normalmode import NormalMode
 from Controller.drawmode import DrawMode
+from Controller.selectionmode import SelectionMode
 
 from Model.Elements.element import Element
 from Model.model import Model
@@ -323,6 +324,9 @@ class OpenGLWidget(QOpenGLWidget):
 
     def set_draw_mode(self) -> None:
         self.current_mode = DrawMode(self)
+
+    def set_selection_mode(self) -> None:
+        self.current_mode = SelectionMode(self)
 
     # Controller dependent on current mode
     def mouseMoveEvent(self, event, *args, **kwargs) -> None:
