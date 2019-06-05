@@ -39,7 +39,8 @@ class OpenGLWidget(QOpenGLWidget):
         self.current_mode = None
 
         # Drawable elements
-        self._drawable_collection = GLDrawableCollection()
+        self.background = BackgroundGL(self, True)
+        self.drawable_collection = GLDrawableCollection()
 
         # Camera/World/Projection
         self._camera = QMatrix4x4()
@@ -88,10 +89,6 @@ class OpenGLWidget(QOpenGLWidget):
     @property
     def proj(self):
         return self._proj
-
-    @property
-    def drawable_collection(self) -> GLDrawableCollection:
-        return self._drawable_collection
 
     @property
     def centroid(self) -> list:
@@ -193,9 +190,7 @@ class OpenGLWidget(QOpenGLWidget):
 
     def initializeGL(self) -> None:
         glClearColor(0.0, 0.0, 0.0, 1.0)
-        glEnable(GL_DEPTH_TEST)
-        # self.background = BackgroundGL(self, True)
-        # self.background.initialize()
+        self.background.initialize()
 
     def paintGL(self) -> None:
         self.painter.begin(self)
@@ -221,7 +216,11 @@ class OpenGLWidget(QOpenGLWidget):
                              -self.yCentroid,
                              -self.zCentroid)
 
-        # self.background.draw()
+        # Draw gradient background
+        glDisable(GL_DEPTH_TEST)
+        self.background.draw()
+        glEnable(GL_DEPTH_TEST)
+
         # Draw every GLDrawable (meshes, block models, etc)
         self.drawable_collection.draw(self.proj, self.camera, self.world)
 
