@@ -61,7 +61,7 @@ class GLDrawable:
     def setup_uniforms(self) -> None:
         pass
 
-    def draw(self, proj_matrix, view_matrix, model_matrix) -> None:
+    def draw(self, proj_matrix=None, view_matrix=None, model_matrix=None) -> None:
         pass
 
     """

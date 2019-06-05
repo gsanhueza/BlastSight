@@ -17,6 +17,7 @@ from View.Drawables.blockmodelgl import BlockModelGL
 from View.Drawables.meshgl import MeshGL
 from View.Drawables.linegl import LineGL
 from View.Drawables.tubegl import TubeGL
+from View.Drawables.backgroundgl import BackgroundGL
 
 from View.fpscounter import FPSCounter
 
@@ -191,13 +192,16 @@ class OpenGLWidget(QOpenGLWidget):
     """
 
     def initializeGL(self) -> None:
-        pass
+        glClearColor(0.0, 0.0, 0.0, 1.0)
+        glEnable(GL_DEPTH_TEST)
+        # self.background = BackgroundGL(self, True)
+        # self.background.initialize()
 
     def paintGL(self) -> None:
         self.painter.begin(self)
+
         # Clear screen
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-        glEnable(GL_DEPTH_TEST)
         glDisable(GL_CULL_FACE)
 
         self.world.setToIdentity()
@@ -217,6 +221,7 @@ class OpenGLWidget(QOpenGLWidget):
                              -self.yCentroid,
                              -self.zCentroid)
 
+        # self.background.draw()
         # Draw every GLDrawable (meshes, block models, etc)
         self.drawable_collection.draw(self.proj, self.camera, self.world)
 
