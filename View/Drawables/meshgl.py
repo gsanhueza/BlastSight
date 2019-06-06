@@ -1,11 +1,9 @@
 #!/usr/bin/env python
 
-from PyQt5.QtGui import QOpenGLBuffer
-from PyQt5.QtGui import QOpenGLShader
-from PyQt5.QtGui import QOpenGLShaderProgram
-from PyQt5.QtGui import QOpenGLVertexArrayObject
-from PyQt5.QtGui import QVector2D
-from PyQt5.QtGui import QVector3D
+from qtpy.QtGui import QOpenGLBuffer
+from qtpy.QtGui import QOpenGLShader
+from qtpy.QtGui import QOpenGLShaderProgram
+from qtpy.QtGui import QOpenGLVertexArrayObject
 from View.Drawables.gldrawable import GLDrawable
 from OpenGL.GL import *
 
@@ -136,9 +134,9 @@ class MeshGL(GLDrawable):
         self.shader_program.setUniformValue(self.proj_matrix_loc, proj_matrix)
         self.shader_program.setUniformValue(self.model_view_matrix_loc, view_matrix * model_matrix)
         self.shader_program.setUniformValue(self.color_loc,
-                                            self.color[0],
-                                            self.color[1],
-                                            self.color[2],
+                                            float(self.color[0]),
+                                            float(self.color[1]),
+                                            float(self.color[2]),
                                             self.alpha)
         self.vao.bind()
         glDrawElements(GL_TRIANGLES, self.indices_size, GL_UNSIGNED_INT, None)

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from PyQt5.QtWidgets import QTreeWidgetItem
+from qtpy.QtWidgets import QTreeWidgetItem
 
 
 class TreeWidgetItem(QTreeWidgetItem):

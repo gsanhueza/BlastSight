@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from PyQt5.QtCore import Qt, QPoint
+from qtpy.QtCore import Qt, QPoint
 from Controller.mode import Mode
 
 

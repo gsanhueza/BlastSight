@@ -2,7 +2,7 @@
 
 from collections import OrderedDict
 
-from PyQt5.QtCore import QFileInfo
+from qtpy.QtCore import QFileInfo
 
 from Model.Elements.element import Element
 from Model.Elements.blockmodelelement import BlockModelElement

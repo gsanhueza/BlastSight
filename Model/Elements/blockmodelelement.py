@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-import colorsys
 import numpy as np
 from Model.Elements.element import Element
 

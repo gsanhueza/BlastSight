@@ -3,8 +3,8 @@
 import sys
 import pytest
 
-from PyQt5.QtGui import QMatrix4x4
-from PyQt5.QtWidgets import QApplication
+from qtpy.QtGui import QMatrix4x4
+from qtpy.QtWidgets import QApplication
 
 from Model.Elements.blockmodelelement import BlockModelElement
 from View.GUI.openglwidget import OpenGLWidget

@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
-from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QAction
-from PyQt5.QtWidgets import QMenu
-from PyQt5.QtWidgets import QTreeWidget
+from qtpy.QtCore import Qt
+from qtpy.QtGui import QIcon
+from qtpy.QtWidgets import QAction
+from qtpy.QtWidgets import QMenu
+from qtpy.QtWidgets import QTreeWidget
 from View.Drawables.meshgl import MeshGL
 from View.Drawables.blockmodelgl import BlockModelGL
 

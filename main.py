@@ -5,7 +5,7 @@ import argparse
 
 
 def application():
-    from PyQt5.QtWidgets import QApplication
+    from qtpy.QtWidgets import QApplication
     from View.GUI.minevis import MineVis
 
     qt_app = QApplication(sys.argv)

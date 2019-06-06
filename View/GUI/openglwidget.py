@@ -4,11 +4,11 @@ import numpy as np
 import traceback
 
 from OpenGL.GL import *
-from PyQt5.QtCore import QRect
-from PyQt5.QtWidgets import QOpenGLWidget
-from PyQt5.QtGui import QPainter
-from PyQt5.QtGui import QMatrix4x4
-from PyQt5.QtGui import QVector3D
+from qtpy.QtCore import QRect
+from qtpy.QtWidgets import QOpenGLWidget
+from qtpy.QtGui import QPainter
+from qtpy.QtGui import QMatrix4x4
+from qtpy.QtGui import QVector3D
 
 from View.Drawables.drawablecollection import GLDrawableCollection
 from View.Drawables.gldrawable import GLDrawable
