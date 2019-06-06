@@ -126,7 +126,7 @@ class MeshGL(GLDrawable):
         self.shader_program = self.wireframe_program
         self.wireframe_enabled = True
 
-    def draw(self, proj_matrix, view_matrix, model_matrix) -> None:
+    def draw(self, proj_matrix=None, view_matrix=None, model_matrix=None):
         if not self.is_visible:
             return
 

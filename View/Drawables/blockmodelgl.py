@@ -99,7 +99,7 @@ class BlockModelGL(GLDrawable):
         self.proj_matrix_loc = self.shader_program.uniformLocation('proj_matrix')
         self.block_size_loc = self.shader_program.uniformLocation('block_size')
 
-    def draw(self, proj_matrix, view_matrix, model_matrix) -> None:
+    def draw(self, proj_matrix=None, view_matrix=None, model_matrix=None):
         if not self.is_visible:
             return
 

@@ -6,5 +6,6 @@ show_missing = True
 omit = 
     main.py
     example.py
+    venv/*
     # tests/*
 

@@ -15,9 +15,11 @@ show_missing = True
 omit = 
     main.py
     example.py
+    venv/*
     # tests/*
 
 ```
 
 Run the following command: `python -m pytest --cov=. tests/`
+Alternatively, run `./run_tests.sh`
 
