@@ -4,11 +4,11 @@ import numpy as np
 import traceback
 
 from OpenGL.GL import *
+from PyQt5.QtCore import QRect
 from PyQt5.QtWidgets import QOpenGLWidget
 from PyQt5.QtGui import QPainter
 from PyQt5.QtGui import QMatrix4x4
 from PyQt5.QtGui import QVector3D
-from PyQt5.QtGui import QVector4D
 
 from View.Drawables.drawablecollection import GLDrawableCollection
 from View.Drawables.gldrawable import GLDrawable
@@ -48,13 +48,11 @@ class OpenGLWidget(QOpenGLWidget):
         self._proj = QMatrix4x4()
 
         # World (we don't move the camera)
-        self.xWorldPos = 0.0
-        self.yWorldPos = 0.0
-        self.zWorldPos = -3.0
+        self._initial_position = [0.0, 0.0, -3.0]
+        self._initial_rotation = [0.0, 0.0, 0.0]
 
-        self.xWorldRot = 0.0
-        self.yWorldRot = 0.0
-        self.zWorldRot = 0.0
+        self.xWorldPos, self.yWorldPos, self.zWorldPos = self._initial_position
+        self.xWorldRot, self.yWorldRot, self.zWorldRot = self._initial_rotation
 
         # Centroid (objects will rotate around this)
         self.xCentroid = 0.0
@@ -110,7 +108,6 @@ class OpenGLWidget(QOpenGLWidget):
     def mesh(self, *args, **kwargs) -> GLDrawable:
         try:
             element = self.model.mesh(*args, **kwargs)
-            self.centroid = element.centroid
             return self.add_drawable(element, MeshGL)
         except Exception:
             traceback.print_exc()
@@ -119,7 +116,6 @@ class OpenGLWidget(QOpenGLWidget):
     def mesh_by_path(self, file_path: str) -> GLDrawable:
         try:
             element = self.model.mesh_by_path(file_path)
-            self.centroid = element.centroid
             return self.add_drawable(element, MeshGL)
         except Exception:
             traceback.print_exc()
@@ -160,7 +156,6 @@ class OpenGLWidget(QOpenGLWidget):
     """
     Individual drawable manipulation
     """
-
     def show_drawable(self, id_: int) -> None:
         self.drawable_collection[id_].show()
 
@@ -180,14 +175,13 @@ class OpenGLWidget(QOpenGLWidget):
 
     def camera_at(self, id_: int) -> None:
         drawable = self.get_drawable(id_)
-        self.xWorldPos, self.yWorldPos, self.zWorldPos = 0.0, 0.0, -3.0  # Return to initial
+        self.xWorldPos, self.yWorldPos, self.zWorldPos = self._initial_position
         self.centroid = drawable.element.centroid
         self.update()
 
     """
     Internal methods
     """
-
     def initializeGL(self) -> None:
         glClearColor(0.0, 0.0, 0.0, 1.0)
         self.background.initialize()
@@ -207,9 +201,9 @@ class OpenGLWidget(QOpenGLWidget):
                              self.zWorldPos)
 
         # Allow rotation of the world
-        self.world.rotate(self.xWorldRot, 1, 0, 0)
-        self.world.rotate(self.yWorldRot, 0, 1, 0)
-        self.world.rotate(self.zWorldRot, 0, 0, 1)
+        self.world.rotate(self.xWorldRot, 1.0, 0.0, 0.0)
+        self.world.rotate(self.yWorldRot, 0.0, 1.0, 0.0)
+        self.world.rotate(self.zWorldRot, 0.0, 0.0, 1.0)
 
         # Translate by centroid
         self.world.translate(-self.xCentroid,
@@ -243,42 +237,21 @@ class OpenGLWidget(QOpenGLWidget):
     Utilities
     """
     def detect_intersection(self, x, y, z) -> None:
-        ray: QVector3D = self.unproject(x, y, z, self.world, self.camera, self.proj)
+        # For more info, read http://antongerdelan.net/opengl/raycasting.html
+        ray = QVector3D(x, y, z).unproject((self.camera * self.world), self.proj,
+                                           QRect(0, 0, self.width(), self.height())).normalized()
+        ray.setY(-ray.y())  # Qt's y() to OpenGL's y()
+
         camera_pos = self.camera.column(3)
-        ray_origin = (self.world.inverted()[0] * camera_pos).toVector3D()
+        ray_origin = ((self.camera * self.world).inverted()[0] * camera_pos).toVector3D()
 
         # To Numpy array
         ray = np.array([ray.x(), ray.y(), ray.z()])
         ray_origin = np.array([ray_origin.x(), ray_origin.y(), ray_origin.z()])
 
-        print('-------------------------------')
         for mesh in self.model.mesh_collection:
             print(f'(Mesh {mesh.id}) Intersects: {mesh_intersection(ray_origin, ray, mesh)}')
         print('-------------------------------')
-
-    # Taken from http://antongerdelan.net/opengl/raycasting.html
-    def unproject(self, _x, _y, _z, model, view, proj) -> QVector3D:
-        # Called from NormalMode.mouseReleaseEvent(event)
-
-        # Step 0
-        x = (2.0 * _x / self.width()) - 1.0
-        y = 1.0 - (2.0 * _y / self.height())
-        z = _z
-
-        # Step 1
-        ray_nds: QVector3D = QVector3D(x, y, z)
-
-        # Step 2
-        ray_clip: QVector4D = QVector4D(ray_nds.x(), ray_nds.y(), -1.0, 1.0)
-
-        # Step 3
-        ray_eye: QVector4D = proj.inverted()[0] * ray_clip
-        ray_eye = QVector4D(ray_eye.x(), ray_eye.y(), -1.0, 0.0)
-
-        # Step 4
-        ray_world: QVector3D = ((view * model).inverted()[0] * ray_eye).toVector3D()
-
-        return ray_world.normalized()
 
     """
     Controller
