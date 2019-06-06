@@ -102,7 +102,7 @@ class OpenGLWidget(QOpenGLWidget):
     def add_drawable(self, element: Element, drawable_type: type) -> GLDrawable:
         drawable = drawable_type(self, element)
         self.drawable_collection.add(drawable.id, drawable)
-
+        self.update()
         return drawable
 
     def mesh(self, *args, **kwargs) -> GLDrawable:
