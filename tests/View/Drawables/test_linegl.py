@@ -12,8 +12,6 @@ from View.Drawables.linegl import LineGL
 
 
 class TestLineGL:
-    qt_app = QApplication(sys.argv)
-
     element = LineElement(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], color=[1.0, 0.0, 0.0])
     element.id = 0
 

@@ -12,8 +12,6 @@ from View.Drawables.meshgl import MeshGL
 
 
 class TestMeshGL:
-    qt_app = QApplication(sys.argv)
-
     element = MeshElement(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], indices=[[0, 1, 2]])
     element.id = 0
 

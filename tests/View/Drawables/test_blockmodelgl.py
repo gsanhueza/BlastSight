@@ -12,8 +12,6 @@ from View.Drawables.blockmodelgl import BlockModelGL
 
 
 class TestBlockModelGL:
-    qt_app = QApplication(sys.argv)
-
     element = BlockModelElement(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], values=[0, 1, 2])
     element.id = 0
 
