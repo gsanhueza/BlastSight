@@ -173,6 +173,9 @@ class OpenGLWidget(QOpenGLWidget):
         self.model.delete(id_)
         del self.drawable_collection[id_]
 
+    def camera_position(self, x, y, z) -> None:
+        self.xWorldPos, self.yWorldPos, self.zWorldPos = -x, -y, -z
+
     def camera_at(self, id_: int) -> None:
         drawable = self.get_drawable(id_)
         self.xWorldPos, self.yWorldPos, self.zWorldPos = self._initial_position
