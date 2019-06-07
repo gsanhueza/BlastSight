@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import numpy as np
+from multiprocess import Pool
 from Model.Elements.element import Element
 
 
@@ -126,9 +127,12 @@ class BlockModelElement(Element):
         return available
 
     def update_coords(self):
-        self.x = np.vectorize(float, otypes=[np.float32])(self.data[self.x_str])
-        self.y = np.vectorize(float, otypes=[np.float32])(self.data[self.y_str])
-        self.z = np.vectorize(float, otypes=[np.float32])(self.data[self.z_str])
+        with Pool(processes=3) as pool:
+            self.x, self.y, self.z = pool.map(np.float32, [
+                self.data[self.x_str],
+                self.data[self.y_str],
+                self.data[self.z_str],
+            ])
 
     def update_values(self):
-        self.values = np.vectorize(float, otypes=[np.float32])(self.data[self.value_str])
+        self.values = list(map(np.float32, self.data[self.value_str]))
