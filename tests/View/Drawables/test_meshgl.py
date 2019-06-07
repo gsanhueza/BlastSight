@@ -1,10 +1,8 @@
 #!/usr/bin/env python
 
-import sys
 import pytest
 
 from qtpy.QtGui import QMatrix4x4
-from qtpy.QtWidgets import QApplication
 
 from Model.Elements.meshelement import MeshElement
 from View.GUI.openglwidget import OpenGLWidget
