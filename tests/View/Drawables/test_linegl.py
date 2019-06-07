@@ -1,10 +1,8 @@
 #!/usr/bin/env python
 
-import sys
 import pytest
 
-from PyQt5.QtGui import QMatrix4x4
-from PyQt5.QtWidgets import QApplication
+from qtpy.QtGui import QMatrix4x4
 
 from Model.Elements.lineelement import LineElement
 from View.GUI.openglwidget import OpenGLWidget
@@ -12,8 +10,6 @@ from View.Drawables.linegl import LineGL
 
 
 class TestLineGL:
-    qt_app = QApplication(sys.argv)
-
     element = LineElement(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], color=[1.0, 0.0, 0.0])
     element.id = 0
 

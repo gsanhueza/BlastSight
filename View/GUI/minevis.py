@@ -1,16 +1,16 @@
 #!/usr/bin/env python
 
-from PyQt5.QtCore import Qt
-from PyQt5.QtCore import QFileInfo
-from PyQt5.QtCore import QSettings
-from PyQt5.QtWidgets import QFileDialog
-from PyQt5.QtWidgets import QMainWindow
-from PyQt5.QtWidgets import QMessageBox
+from qtpy.QtCore import Qt
+from qtpy.QtCore import QFileInfo
+from qtpy.QtCore import QSettings
+from qtpy.QtWidgets import QFileDialog
+from qtpy.QtWidgets import QMainWindow
+from qtpy.QtWidgets import QMessageBox
 
 from View.GUI.availablevaluesdialog import DialogAvailableValues
 from View.GUI.treewidgetitem import TreeWidgetItem
 
-from PyQt5 import uic
+from qtpy import uic
 
 
 class MineVis(QMainWindow):

@@ -2,10 +2,10 @@
 
 from OpenGL.GL import *
 
-from PyQt5.QtGui import QOpenGLShaderProgram
-from PyQt5.QtGui import QOpenGLVertexArrayObject
-from PyQt5.QtGui import QOpenGLShader
-from PyQt5.QtGui import QVector4D
+from qtpy.QtGui import QOpenGLShaderProgram
+from qtpy.QtGui import QOpenGLVertexArrayObject
+from qtpy.QtGui import QOpenGLShader
+from qtpy.QtGui import QVector4D
 
 from View.Drawables.gldrawable import GLDrawable
 

@@ -3,11 +3,11 @@
 import numpy as np
 import colorsys
 
-from PyQt5.QtGui import QOpenGLShaderProgram
-from PyQt5.QtGui import QOpenGLVertexArrayObject
-from PyQt5.QtGui import QVector2D
-from PyQt5.QtGui import QOpenGLBuffer
-from PyQt5.QtGui import QOpenGLShader
+from qtpy.QtGui import QOpenGLShaderProgram
+from qtpy.QtGui import QOpenGLVertexArrayObject
+from qtpy.QtGui import QVector2D
+from qtpy.QtGui import QOpenGLBuffer
+from qtpy.QtGui import QOpenGLShader
 
 from View.Drawables.gldrawable import GLDrawable
 from OpenGL.GL import *
@@ -73,7 +73,7 @@ class BlockModelGL(GLDrawable):
 
         # WARNING colorsys.hsv_to_rgb returns a tuple. but np.vectorize doesn't accept it as tuple
         # hue[0/3, 1/3, 2/3, 3/3] == [red, green, blue, red]
-        values = np.array(list(map(lambda hue: colorsys.hsv_to_rgb(hue/3, 1.0, 1.0), normalized_values)), np.float32)
+        values = np.array(list(map(lambda hue: colorsys.hsv_to_rgb(hue / 3, 1.0, 1.0), normalized_values)), np.float32)
 
         self.vertices_size = vertices.size
         self.values_size = values.size
@@ -99,7 +99,7 @@ class BlockModelGL(GLDrawable):
         self.proj_matrix_loc = self.shader_program.uniformLocation('proj_matrix')
         self.block_size_loc = self.shader_program.uniformLocation('block_size')
 
-    def draw(self, proj_matrix, view_matrix, model_matrix) -> None:
+    def draw(self, proj_matrix=None, view_matrix=None, model_matrix=None):
         if not self.is_visible:
             return
 

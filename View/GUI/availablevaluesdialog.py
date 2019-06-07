@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QDialog
-from PyQt5.QtWidgets import QDialogButtonBox
-from PyQt5 import uic
+from qtpy.QtCore import Qt
+from qtpy.QtWidgets import QDialog
+from qtpy.QtWidgets import QDialogButtonBox
+from qtpy import uic
 
 
 class DialogAvailableValues(QDialog):

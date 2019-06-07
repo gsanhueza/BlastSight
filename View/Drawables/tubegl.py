@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
-from PyQt5.QtGui import QOpenGLShaderProgram
-from PyQt5.QtGui import QOpenGLVertexArrayObject
-from PyQt5.QtGui import QOpenGLBuffer
-from PyQt5.QtGui import QOpenGLShader
+from qtpy.QtGui import QOpenGLShaderProgram
+from qtpy.QtGui import QOpenGLVertexArrayObject
+from qtpy.QtGui import QOpenGLBuffer
+from qtpy.QtGui import QOpenGLShader
 
 from View.Drawables.gldrawable import GLDrawable
 from OpenGL.GL import *
@@ -82,7 +82,7 @@ class TubeGL(GLDrawable):
         self.model_view_matrix_loc = self.shader_program.uniformLocation('model_view_matrix')
         self.proj_matrix_loc = self.shader_program.uniformLocation('proj_matrix')
 
-    def draw(self, proj_matrix, view_matrix, model_matrix) -> None:
+    def draw(self, proj_matrix=None, view_matrix=None, model_matrix=None):
         if not self.is_visible:
             return
 
