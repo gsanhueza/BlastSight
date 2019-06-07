@@ -27,7 +27,7 @@ class BlockModelGL(GLDrawable):
         self.values_size = 0
 
         # Block size
-        self.block_size = 2.0
+        self.block_size = 1.0
 
     def initialize_program(self) -> None:
         self.shader_program = QOpenGLShaderProgram(self.widget.context())
@@ -37,15 +37,12 @@ class BlockModelGL(GLDrawable):
     def initialize_shaders(self) -> None:
         vertex_shader = QOpenGLShader(QOpenGLShader.Vertex)
         fragment_shader = QOpenGLShader(QOpenGLShader.Fragment)
-        geometry_shader = QOpenGLShader(QOpenGLShader.Geometry)
 
         vertex_shader.compileSourceFile('View/Shaders/BlockModel/vertex.glsl')
         fragment_shader.compileSourceFile('View/Shaders/BlockModel/fragment.glsl')
-        geometry_shader.compileSourceFile('View/Shaders/BlockModel/geometry.glsl')
 
         self.shader_program.addShader(vertex_shader)
         self.shader_program.addShader(fragment_shader)
-        self.shader_program.addShader(geometry_shader)
         self.shader_program.link()
 
     def setup_attributes(self) -> None:
@@ -54,26 +51,32 @@ class BlockModelGL(GLDrawable):
 
         _POSITION = 0
         _COLOR = 1
+        _TEMPLATE = 2
 
         # VBO
         vertices_vbo = QOpenGLBuffer(QOpenGLBuffer.VertexBuffer)
         values_vbo = QOpenGLBuffer(QOpenGLBuffer.VertexBuffer)
+        template_vbo = QOpenGLBuffer(QOpenGLBuffer.VertexBuffer)
 
         vertices_vbo.create()
         values_vbo.create()
+        template_vbo.create()
 
         # Data
+        template = self.generate_cube(self.block_size)
         vertices = self.element.vertices
         values = self.element.values
 
         min_val = values.min() if values.size > 0 else 0.0
         max_val = values.max() if values.size > 0 else 1.0
 
-        normalized_values = np.vectorize(lambda val: normalize(val, min_val, max_val), otypes=[np.float32])(values)
+        normalized_values = np.vectorize(lambda val: normalize(val, min_val, max_val),
+                                         otypes=[np.float32])(values)
 
         # WARNING colorsys.hsv_to_rgb returns a tuple. but np.vectorize doesn't accept it as tuple
         # hue[0/3, 1/3, 2/3, 3/3] == [red, green, blue, red]
-        values = np.array(list(map(lambda hue: colorsys.hsv_to_rgb(hue / 3, 1.0, 1.0), normalized_values)), np.float32)
+        values = np.array(list(map(lambda hue: colorsys.hsv_to_rgb(hue / 3, 1.0, 1.0),
+                                   normalized_values)), np.float32)
 
         self.vertices_size = vertices.size
         self.values_size = values.size
@@ -89,8 +92,17 @@ class BlockModelGL(GLDrawable):
         glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * self.values_size, values, GL_STATIC_DRAW)
         glVertexAttribPointer(_COLOR, 3, GL_FLOAT, False, 0, None)
 
+        template_vbo.bind()
+        glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * template.size, template, GL_STATIC_DRAW)
+        glVertexAttribPointer(_TEMPLATE, 3, GL_FLOAT, False, 0, None)
+
+        glVertexAttribDivisor(_POSITION, 1)
+        glVertexAttribDivisor(_COLOR, 1)
+        glVertexAttribDivisor(_TEMPLATE, 0)
+
         glEnableVertexAttribArray(_POSITION)
         glEnableVertexAttribArray(_COLOR)
+        glEnableVertexAttribArray(_TEMPLATE)
 
         self.vao.release()
 
@@ -111,7 +123,28 @@ class BlockModelGL(GLDrawable):
         self.vao.bind()
 
         # np.array([[0, 1, 2]], type) has size 3, despite having only 1 list there
-        glEnable(GL_PROGRAM_POINT_SIZE)
-        glDrawArrays(GL_POINTS, 0, self.vertices_size // 3)
+        glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 14, self.vertices_size // 3)
 
         self.vao.release()
+
+    # Taken from https://stackoverflow.com/questions/28375338/cube-using-single-gl-triangle-strip
+    @staticmethod
+    def generate_cube(size: float) -> np.ndarray:
+        cube_strip = [
+            -size, size, size,  # Front-top-left
+            size, size, size,  # Front-top-right
+            -size, -size, size,  # Front-bottom-left
+            size, -size, size,  # Front-bottom-right
+            size, -size, -size,  # Back-bottom-right
+            size, size, size,  # Front-top-right
+            size, size, -size,  # Back-top-right
+            -size, size, size,  # Front-top-left
+            -size, size, -size,  # Back-top-left
+            -size, -size, size,  # Front-bottom-left
+            -size, -size, -size,  # Back-bottom-left
+            size, -size, -size,  # Back-bottom-right
+            -size, size, -size,  # Back-top-left
+            size, size, -size  # Back-top-right
+        ]
+
+        return np.array(cube_strip, np.float32)
