@@ -9,6 +9,7 @@ if __name__ == '__main__':
     mesh = viewer.mesh(x=[-1, 1, 0],
                        y=[0, 0, 1],
                        z=[0, 0, 0],
+                       color=[0.0, 0.0, 1.0],
                        indices=[[0, 1, 2]],
                        name='mesh_name')
 
