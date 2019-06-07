@@ -96,6 +96,14 @@ class OpenGLWidget(QOpenGLWidget):
     def centroid(self, centroid: list) -> None:
         self.xCentroid, self.yCentroid, self.zCentroid = centroid
 
+    @property
+    def camera_position(self) -> list:
+        return [-self.xWorldPos, -self.yWorldPos, -self.zWorldPos]
+
+    @camera_position.setter
+    def camera_position(self, pos: list) -> None:
+        self.xWorldPos, self.yWorldPos, self.zWorldPos = [-pos[0], -pos[1], -pos[2]]
+
     """
     Load methods
     """
@@ -113,9 +121,9 @@ class OpenGLWidget(QOpenGLWidget):
             traceback.print_exc()
             return None
 
-    def mesh_by_path(self, file_path: str) -> GLDrawable:
+    def mesh_by_path(self, file_path, *args, **kwargs) -> GLDrawable:
         try:
-            element = self.model.mesh_by_path(file_path)
+            element = self.model.mesh_by_path(file_path, *args, **kwargs)
             return self.add_drawable(element, MeshGL)
         except Exception:
             traceback.print_exc()
@@ -172,9 +180,6 @@ class OpenGLWidget(QOpenGLWidget):
     def delete(self, id_: int) -> None:
         self.model.delete(id_)
         del self.drawable_collection[id_]
-
-    def camera_position(self, x, y, z) -> None:
-        self.xWorldPos, self.yWorldPos, self.zWorldPos = -x, -y, -z
 
     def camera_at(self, id_: int) -> None:
         drawable = self.get_drawable(id_)

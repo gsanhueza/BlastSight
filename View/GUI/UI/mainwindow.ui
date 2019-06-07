@@ -53,6 +53,7 @@
     <addaction name="action_Draw_mode"/>
     <addaction name="action_Selection_mode"/>
     <addaction name="separator"/>
+    <addaction name="action_Camera_position"/>
    </widget>
    <addaction name="menu_File"/>
    <addaction name="menu_View"/>
@@ -199,6 +200,17 @@
     <string>Ctrl+S</string>
    </property>
   </action>
+  <action name="action_Camera_position">
+   <property name="icon">
+    <iconset theme="camera-video-symbolic"/>
+   </property>
+   <property name="text">
+    <string>&amp;Camera position</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+C</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
@@ -327,6 +339,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>action_Camera_position</sender>
+   <signal>triggered()</signal>
+   <receiver>MineVis</receiver>
+   <slot>dialog_camera_position()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>449</x>
+     <y>249</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>normal_mode_slot()</slot>
@@ -335,5 +363,6 @@
   <slot>load_mesh_slot()</slot>
   <slot>help_slot()</slot>
   <slot>load_block_model_slot()</slot>
+  <slot>dialog_camera_position()</slot>
  </slots>
 </ui>

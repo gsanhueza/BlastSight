@@ -7,7 +7,8 @@ from qtpy.QtWidgets import QFileDialog
 from qtpy.QtWidgets import QMainWindow
 from qtpy.QtWidgets import QMessageBox
 
-from View.GUI.availablevaluesdialog import DialogAvailableValues
+from View.GUI.dialogavailablevalues import DialogAvailableValues
+from View.GUI.dialogcameraposition import DialogCameraPosition
 from View.GUI.treewidgetitem import TreeWidgetItem
 
 from qtpy import uic
@@ -98,22 +99,18 @@ class MineVis(QMainWindow):
             self.fill_tree_widget()
 
             # Dialog auto-trigger
-            self.show_available_values(drawable.id)
+            self.dialog_available_values(drawable.id)
 
         return loaded
 
-    def show_available_values(self, id_):
+    def dialog_available_values(self, id_):
         drawable = self.viewer.get_drawable(id_)
         dialog = DialogAvailableValues(self, drawable)
 
-        for i in drawable.element.available_coordinates:
-            dialog.comboBox_x.addItem(i)
-            dialog.comboBox_y.addItem(i)
-            dialog.comboBox_z.addItem(i)
+        dialog.show()
 
-        for i in drawable.element.available_values:
-            dialog.comboBox_values.addItem(i)
-
+    def dialog_camera_position(self):
+        dialog = DialogCameraPosition(self)
         dialog.show()
 
     """

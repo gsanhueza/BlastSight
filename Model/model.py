@@ -41,12 +41,12 @@ class Model:
 
         return element
 
-    def mesh_by_path(self, path: str) -> MeshElement:
+    def mesh_by_path(self, path: str, *args, **kwargs) -> MeshElement:
         name = QFileInfo(path).baseName()
         ext = QFileInfo(path).suffix()
         vertices, indices = self.get_parser(ext, MeshElement).load_file(path)
 
-        return self.mesh(vertices=vertices, indices=indices, name=name, ext=ext)
+        return self.mesh(vertices=vertices, indices=indices, name=name, ext=ext, *args, **kwargs)
 
     def block_model(self, *args, **kwargs) -> BlockModelElement:
         element = BlockModelElement(*args, **kwargs)

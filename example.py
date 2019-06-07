@@ -13,6 +13,9 @@ if __name__ == '__main__':
                        indices=[[0, 1, 2]],
                        name='mesh_name')
 
+    mesh_p = viewer.mesh_by_path('tests/Files/caseron.off', color=[1.0, 0.0, 0.0])
+    mesh_p.enable_wireframe()
+
     block = viewer.block_model(x=[-3, 3, 0],
                                y=[0, 0, 5],
                                z=[0, 0, 0],
@@ -30,7 +33,7 @@ if __name__ == '__main__':
                          resolution=8,
                          color=[0.9, 0.2, 0.2])
 
-    viewer.camera_position(0.0, 2.0, 15.0)
+    viewer.camera_position = [0.0, 2.0, 15.0]
 
     for id_, drawable in viewer.drawable_collection.items():
         print(f'Drawable {id_}: Name = {drawable.element.name}')
