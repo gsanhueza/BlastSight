@@ -64,7 +64,7 @@ class BlockModelGL(GLDrawable):
         template_vbo.create()
 
         # Data
-        template = self.generate_cube(self.block_size)
+        template = self.generate_cube(5, 5, 4)
         vertices = self.element.vertices
         values = self.element.values
 
@@ -76,7 +76,7 @@ class BlockModelGL(GLDrawable):
 
         # WARNING colorsys.hsv_to_rgb returns a tuple. but np.vectorize doesn't accept it as tuple
         # hue[0/3, 1/3, 2/3, 3/3] == [red, green, blue, red]
-        values = np.array(list(map(lambda hue: colorsys.hsv_to_rgb(hue / 3, 1.0, 1.0),
+        values = np.array(list(map(lambda hue: colorsys.hsv_to_rgb(2 * hue / 3, 1.0, 1.0),
                                    normalized_values)), np.float32)
 
         self.vertices_size = vertices.size
@@ -130,22 +130,26 @@ class BlockModelGL(GLDrawable):
 
     # Taken from https://stackoverflow.com/questions/28375338/cube-using-single-gl-triangle-strip
     @staticmethod
-    def generate_cube(size: float) -> np.ndarray:
+    def generate_cube(size_x: float, size_y: float, size_z: float) -> np.ndarray:
+        size_x /= 2
+        size_y /= 2
+        size_z /= 2
+
         cube_strip = [
-            -size, size, size,  # Front-top-left
-            size, size, size,  # Front-top-right
-            -size, -size, size,  # Front-bottom-left
-            size, -size, size,  # Front-bottom-right
-            size, -size, -size,  # Back-bottom-right
-            size, size, size,  # Front-top-right
-            size, size, -size,  # Back-top-right
-            -size, size, size,  # Front-top-left
-            -size, size, -size,  # Back-top-left
-            -size, -size, size,  # Front-bottom-left
-            -size, -size, -size,  # Back-bottom-left
-            size, -size, -size,  # Back-bottom-right
-            -size, size, -size,  # Back-top-left
-            size, size, -size  # Back-top-right
+            -size_x, size_y, size_z,  # Front-top-left
+            size_x, size_y, size_z,  # Front-top-right
+            -size_x, -size_y, size_z,  # Front-bottom-left
+            size_x, -size_y, size_z,  # Front-bottom-right
+            size_x, -size_y, -size_z,  # Back-bottom-right
+            size_x, size_y, size_z,  # Front-top-right
+            size_x, size_y, -size_z,  # Back-top-right
+            -size_x, size_y, size_z,  # Front-top-left
+            -size_x, size_y, -size_z,  # Back-top-left
+            -size_x, -size_y, size_z,  # Front-bottom-left
+            -size_x, -size_y, -size_z,  # Back-bottom-left
+            size_x, -size_y, -size_z,  # Back-bottom-right
+            -size_x, size_y, -size_z,  # Back-top-left
+            size_x, size_y, -size_z # Back-top-right
         ]
 
         return np.array(cube_strip, np.float32)

@@ -41,8 +41,8 @@ class BackgroundGL(GLDrawable):
     # Taken from http://www.cs.princeton.edu/~mhalber/blog/ogl_gradient/
     def draw(self, proj_matrix=None, view_matrix=None, model_matrix=None):
         self.shader_program.bind()
-        self.shader_program.setUniformValue(self.top_color_loc, QVector4D(0.1, 0.1, 0.5, 1.0))
-        self.shader_program.setUniformValue(self.bot_color_loc, QVector4D(0.1, 0.1, 0.2, 1.0))
+        self.shader_program.setUniformValue(self.top_color_loc, QVector4D(30, 47, 73, 255) / 255)
+        self.shader_program.setUniformValue(self.bot_color_loc, QVector4D(109, 126, 146, 255) / 255)
 
         self.vao.bind()
         glDrawArrays(GL_TRIANGLES, 0, 3)
