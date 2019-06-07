@@ -2,6 +2,7 @@
 
 import numpy as np
 import colorsys
+from functools import partial
 
 from qtpy.QtGui import QOpenGLShaderProgram
 from qtpy.QtGui import QOpenGLVertexArrayObject
@@ -46,7 +47,7 @@ class BlockModelGL(GLDrawable):
         self.shader_program.link()
 
     def setup_attributes(self) -> None:
-        def normalize(x: float, min_val: float, max_val: float) -> float:
+        def normalize(min_val: float, max_val: float, x: float) -> float:
             return (x - min_val) / (max_val - min_val) if max_val != min_val else 0
 
         _POSITION = 0
@@ -70,8 +71,8 @@ class BlockModelGL(GLDrawable):
         min_val = values.min() if values.size > 0 else 0.0
         max_val = values.max() if values.size > 0 else 1.0
 
-        normalized_values = np.vectorize(lambda val: normalize(val, min_val, max_val),
-                                         otypes=[np.float32])(values)
+        norm_func = partial(partial(normalize, min_val), max_val)
+        normalized_values = np.vectorize(norm_func, otypes=[np.float32])(values)
 
         # WARNING colorsys.hsv_to_rgb returns a tuple. but np.vectorize doesn't accept it as tuple
         # hue[0/3, 1/3, 2/3, 3/3] == [red, green, blue, red]
