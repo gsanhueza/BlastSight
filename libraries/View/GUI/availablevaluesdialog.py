@@ -15,7 +15,7 @@ class AvailableValuesDialog(QDialog):
         # Avoids the QObject::startTimer warning (maybe)
         self.setAttribute(Qt.WA_DeleteOnClose)
 
-        uic.loadUi(f'{pathlib.Path(__file__).parent}/UI/dialogavailablevalues.ui', self)
+        uic.loadUi(f'{pathlib.Path(__file__).parent}/UI/availablevaluesdialog.ui', self)
         self.parent = parent
         self.drawable = drawable
 

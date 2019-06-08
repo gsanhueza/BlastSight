@@ -109,6 +109,14 @@ class IntegrableViewer(QOpenGLWidget):
         self.xWorldPos, self.yWorldPos, self.zWorldPos = [-pos[0], -pos[1], -pos[2]]
 
     @property
+    def camera_rotation(self) -> list:
+        return [self.xWorldRot, self.yWorldRot, self.zWorldRot]
+
+    @camera_rotation.setter
+    def camera_rotation(self, rot: list) -> None:
+        self.xWorldRot, self.yWorldRot, self.zWorldRot = [rot[0], rot[1], rot[2]]
+
+    @property
     def last_id(self) -> int:
         return list(self.drawable_collection.keys())[-1]
 
