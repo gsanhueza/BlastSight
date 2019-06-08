@@ -4,8 +4,7 @@ import pytest
 from Model.Parsers.offparser import OFFParser
 from Model.Parsers.csvparser import CSVParser
 from Model.model import Model
-
-from tests.globals import *
+from Model.tests.globals import *
 
 
 class TestModel:

@@ -11,6 +11,7 @@ from View.Drawables.gldrawable import GLDrawable
 from View.Drawables.meshgl import MeshGL
 from View.Drawables.blockmodelgl import BlockModelGL
 from View.GUI.openglwidget import OpenGLWidget
+from Model.tests.globals import *
 
 
 class TestBaseDrawables:
@@ -62,7 +63,7 @@ class TestBaseDrawables:
     def test_openglwidget_add_mesh(self):
         widget = OpenGLWidget()
         widget.mesh(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], indices=[[0, 1, 2]])
-        widget.mesh_by_path('tests/Files/caseron.dxf')
+        widget.mesh_by_path(f'{TEST_FILES_FOLDER_PATH}/caseron.dxf')
 
         assert widget.drawable_collection.__len__() == 2
         assert isinstance(widget.get_drawable(0), MeshGL)
@@ -82,7 +83,7 @@ class TestBaseDrawables:
     def test_openglwidget_add_block_model(self):
         widget = OpenGLWidget()
         widget.block_model(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], values=[0, 1, 2])
-        widget.block_model_by_path('tests/Files/mini.csv')
+        widget.block_model_by_path(f'{TEST_FILES_FOLDER_PATH}/mini.csv')
 
         assert widget.drawable_collection.__len__() == 2
         assert isinstance(widget.get_drawable(0), BlockModelGL)

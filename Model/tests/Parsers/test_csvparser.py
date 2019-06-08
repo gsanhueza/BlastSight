@@ -2,8 +2,7 @@
 
 import pytest
 from Model.Parsers.csvparser import CSVParser
-
-from tests.globals import *
+from Model.tests.globals import *
 
 
 class TestDXFParser:
