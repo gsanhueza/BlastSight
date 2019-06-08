@@ -21,7 +21,7 @@ omit =
 
 ```
 
-Run the following command: `python -m pytest --cov=.`.
+Run the following command: `pytest --cov=.`.
 
 Alternatively, run `./run_tests.sh`.
 

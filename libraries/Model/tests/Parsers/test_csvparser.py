@@ -17,7 +17,6 @@ class TestDXFParser:
         with pytest.raises(Exception):
             assert data['abc']
 
-    # TODO Rest of tests
     def test_load_inexistent(self):
         with pytest.raises(Exception):
             CSVParser.load_file(f'{TEST_FILES_FOLDER_PATH}/nonexistent.csv')

@@ -17,7 +17,6 @@ from libraries.Model.tests.globals import *
 class TestBaseDrawables:
     qt_app = QApplication(sys.argv)
 
-    # FIXME Why do we need to run this before to avoid a segfault, even if we don't use it anywhere?
     # Needed to create OpenGLWidget.context()
     widget = IntegrableViewer()
     widget.show()

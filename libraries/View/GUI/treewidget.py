@@ -73,7 +73,6 @@ class TreeWidget(QTreeWidget):
         menu.addAction(action_hide)
         menu.addAction(action_center_camera)
 
-        # FIXME Design a better way to get type of element
         if item.type == MeshGL:
             menu.addAction(action_wireframe)
         elif item.type == BlockModelGL:
