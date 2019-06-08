@@ -42,7 +42,7 @@ class MineVis(QMainWindow):
         # Tree widget
         self.treeWidget.clear()
 
-        for _, drawable in self.viewer.drawable_collection.items():
+        for drawable in self.viewer.drawable_collection.values():
             item = TreeWidgetItem(self.treeWidget, self, drawable)
             self.treeWidget.addTopLevelItem(item)
 

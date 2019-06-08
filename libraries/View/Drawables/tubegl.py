@@ -13,11 +13,6 @@ class TubeGL(GLDrawable):
     def __init__(self, widget=None, element=None):
         super().__init__(widget, element)
 
-        # Uniforms
-        self.model_view_matrix_loc = None
-        self.proj_matrix_loc = None
-        self.block_size_loc = None
-
         # Sizes
         self.vertices_size = 0
         self.color_size = 0

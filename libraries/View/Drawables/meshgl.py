@@ -13,10 +13,7 @@ class MeshGL(GLDrawable):
         super().__init__(widget, element)
 
         # Uniforms
-        self.model_view_matrix_loc = None
-        self.proj_matrix_loc = None
         self.color_loc = None
-        self.alpha_loc = None
         self.color = None
         self.alpha = None
 
@@ -101,7 +98,6 @@ class MeshGL(GLDrawable):
         self.model_view_matrix_loc = self.shader_program.uniformLocation('model_view_matrix')
         self.proj_matrix_loc = self.shader_program.uniformLocation('proj_matrix')
         self.color_loc = self.shader_program.uniformLocation('u_color')
-        self.alpha_loc = self.shader_program.uniformLocation('u_alpha')
 
         self.color = self.element.values
         self.alpha = 1.0  # self.model_element.get_alpha()

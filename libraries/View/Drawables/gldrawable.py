@@ -17,6 +17,10 @@ class GLDrawable:
         # Vertex Array Object
         self.vao = None
 
+        # Uniforms
+        self.model_view_matrix_loc = None
+        self.proj_matrix_loc = None
+
         self.is_initialized = False
         self.is_visible = True
 

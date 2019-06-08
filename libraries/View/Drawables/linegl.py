@@ -14,8 +14,6 @@ class LineGL(GLDrawable):
         super().__init__(widget, element)
 
         # Uniforms
-        self.model_view_matrix_loc = None
-        self.proj_matrix_loc = None
         self.block_size_loc = None
 
         # Sizes
