@@ -32,7 +32,25 @@ class Model:
 
     def mesh(self, *args, **kwargs) -> MeshElement:
         element = MeshElement(*args, **kwargs)
-        self._element_collection.add(element)
+        self.element_collection.add(element)
+
+        return element
+
+    def block_model(self, *args, **kwargs) -> BlockModelElement:
+        element = BlockModelElement(*args, **kwargs)
+        self.element_collection.add(element)
+
+        return element
+
+    def lines(self, *args, **kwargs) -> LineElement:
+        element = LineElement(*args, **kwargs)
+        self.element_collection.add(element)
+
+        return element
+
+    def tubes(self, *args, **kwargs) -> TubeElement:
+        element = TubeElement(*args, **kwargs)
+        self.element_collection.add(element)
 
         return element
 
@@ -43,12 +61,6 @@ class Model:
 
         return self.mesh(vertices=vertices, indices=indices, name=name, ext=ext, *args, **kwargs)
 
-    def block_model(self, *args, **kwargs) -> BlockModelElement:
-        element = BlockModelElement(*args, **kwargs)
-        self._element_collection.add(element)
-
-        return element
-
     def block_model_by_path(self, path: str) -> BlockModelElement:
         name = QFileInfo(path).baseName()
         ext = QFileInfo(path).suffix()
@@ -56,32 +68,24 @@ class Model:
 
         return self.block_model(data=data, name=name, ext=ext)
 
-    def lines(self, *args, **kwargs) -> LineElement:
-        element = LineElement(*args, **kwargs)
-        self._element_collection.add(element)
-
-        return element
-
-    def tubes(self, *args, **kwargs) -> TubeElement:
-        element = TubeElement(*args, **kwargs)
-        self._element_collection.add(element)
-
-        return element
-
     def get(self, id_: int) -> Element:
-        return self._element_collection[id_]
+        return self.element_collection[id_]
 
     def delete(self, id_: int) -> None:
-        self._element_collection.__delitem__(id_)
+        self.element_collection.__delitem__(id_)
 
     @property
-    def element_collection(self) -> list:
+    def element_collection(self) -> ElementCollection:
+        return self._element_collection
+
+    @property
+    def collection(self) -> list:
         return list(self._element_collection.items())
 
     @property
     def mesh_collection(self) -> list:
-        return list(filter(lambda x: isinstance(x, MeshElement), self._element_collection.values()))
+        return list(filter(lambda x: isinstance(x, MeshElement), self.element_collection.values()))
 
     @property
     def block_model_collection(self) -> list:
-        return list(filter(lambda x: isinstance(x, BlockModelElement), self._element_collection.values()))
+        return list(filter(lambda x: isinstance(x, BlockModelElement), self.element_collection.values()))
