@@ -152,6 +152,49 @@ class TestModel:
         with pytest.raises(Exception):
             model.get(id_)
 
+    # Tubes
+    def test_add_tubes(self):
+        model = Model()
+        vertices = [[-0.5, -2.0, -0.0],
+                    [0.5, 1.5, 0.0]]
+
+        color = [1.0, 0.0, 0.0]
+        x, y, z = zip(*vertices)
+
+        tubes_1 = model.tubes(vertices=vertices, color=color)
+        tubes_2 = model.tubes(x=x, y=y, z=z, color=color)
+
+        assert tubes_1.id != tubes_2.id
+
+    def test_get_tubes(self):
+        model = Model()
+        vertices = [[-0.5, -2.0, -0.0],
+                    [0.5, 1.5, 0.0]]
+
+        color = [1.0, 0.0, 0.0]
+
+        tubes = model.tubes(vertices=vertices, color=color)
+        tubes_get = model.get(tubes.id)
+
+        assert tubes is not None
+        assert tubes_get is not None
+        assert tubes.id == tubes_get.id
+
+    def test_delete_tubes(self):
+        model = Model()
+        vertices = [[-0.5, -2.0, -0.0],
+                    [0.5, 1.5, 0.0]]
+
+        color = [1.0, 0.0, 0.0]
+
+        tubes = model.tubes(vertices=vertices, color=color)
+
+        id_ = tubes.id
+        model.delete(id_)
+
+        with pytest.raises(Exception):
+            model.get(id_)
+
     # Multiple
     def test_add_multiple(self):
         model = Model()

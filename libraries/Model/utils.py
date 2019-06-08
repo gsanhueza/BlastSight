@@ -11,8 +11,10 @@ from .Elements.meshelement import MeshElement
 def mesh_intersection(origin: np.ndarray, ray: np.ndarray, mesh: MeshElement) -> bool:
     curry_triangle = partial(partial(triangle_intersection, origin), ray)
 
+    def triangle_generator(it): return list(map(lambda x: mesh.vertices[it[x]], range(3)))
+
     with Pool() as pool:
-        triangles = pool.map(lambda it: list(map(lambda x: mesh.vertices[it[x]], range(3))), mesh.indices)
+        triangles = pool.map(triangle_generator, mesh.indices)
         results = pool.map(curry_triangle, triangles)
 
     return reduce(operator.__or__, results)

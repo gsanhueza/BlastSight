@@ -4,7 +4,7 @@ from libraries.Model.tests.globals import *
 from libraries.View.standaloneviewer import StandaloneViewer
 
 
-def main():
+if __name__ == '__main__':
     viewer = StandaloneViewer()
 
     mesh = viewer.mesh(x=[-1, 1, 0],
@@ -30,8 +30,6 @@ def main():
     tubes = viewer.tubes(x=[0.5, -0.5, 1.5, 1.5],
                          y=[-2.0, 1.8, 1.8, 0.0],
                          z=[0.0, 0.0, 0.0, 0.0],
-                         radius=0.5,
-                         resolution=8,
                          color=[0.9, 0.2, 0.2])
 
     viewer.camera_position = [0.0, 2.0, 15.0]
@@ -40,7 +38,3 @@ def main():
         print(f'Drawable {id_}: Name = {drawable.element.name}')
 
     viewer.show()
-
-
-if __name__ == '__main__':
-    main()
