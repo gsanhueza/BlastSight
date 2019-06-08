@@ -146,7 +146,7 @@ class BlockModelGL(GLDrawable):
             -size_x, -size_y, -size_z,  # Back-bottom-left
             size_x, -size_y, -size_z,  # Back-bottom-right
             -size_x, size_y, -size_z,  # Back-top-left
-            size_x, size_y, -size_z # Back-top-right
+            size_x, size_y, -size_z,  # Back-top-right
         ]
 
         return np.array(cube_strip, np.float32)
