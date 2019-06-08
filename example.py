@@ -20,6 +20,7 @@ if __name__ == '__main__':
     block = viewer.block_model(x=[-3, 3, 0],
                                y=[0, 0, 5],
                                z=[0, 0, 0],
+                               block_size=[1.0, 1.0, 1.0],
                                values=[0.5, 1.0, 1.5])
 
     lines = viewer.lines(x=[-0.5, 0.5],

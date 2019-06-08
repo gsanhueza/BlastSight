@@ -13,10 +13,13 @@ class BlockModelElement(Element):
         self._z_str: str = None
         self._value_str: str = None
         self._values: np.ndarray = None
+        self._block_size: np.ndarray = None
 
         super().__init__(*args, **kwargs)
 
     def _init_fill(self, *args, **kwargs):
+        self.block_size = kwargs.get('block_size', [1.0, 1.0, 1.0])
+
         if all(elem in list(kwargs.keys()) for elem in ['vertices', 'values']):
             assert len(kwargs.keys()) >= 2
 
@@ -125,6 +128,14 @@ class BlockModelElement(Element):
             available.remove(self.z_str)
 
         return available
+
+    @property
+    def block_size(self) -> np.ndarray:
+        return self._block_size
+
+    @block_size.setter
+    def block_size(self, size: list) -> None:
+        self._block_size = np.array(size, np.float32)
 
     def update_coords(self):
         with Pool(processes=3) as pool:

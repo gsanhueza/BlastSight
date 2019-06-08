@@ -63,7 +63,7 @@ class BlockModelGL(GLDrawable):
         template_vbo.create()
 
         # Data
-        template = self.generate_cube(5, 5, 4)
+        template = self.generate_cube(self.element.block_size)
         vertices = self.element.vertices
         values = self.element.values
 
@@ -129,10 +129,10 @@ class BlockModelGL(GLDrawable):
 
     # Taken from https://stackoverflow.com/questions/28375338/cube-using-single-gl-triangle-strip
     @staticmethod
-    def generate_cube(size_x: float, size_y: float, size_z: float) -> np.ndarray:
-        size_x /= 2
-        size_y /= 2
-        size_z /= 2
+    def generate_cube(size: np.ndarray) -> np.ndarray:
+        size_x = size[0] / 2
+        size_y = size[1] / 2
+        size_z = size[2] / 2
 
         cube_strip = [
             -size_x, size_y, size_z,  # Front-top-left
