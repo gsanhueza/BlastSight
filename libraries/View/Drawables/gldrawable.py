@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+import pathlib
+
 
 class GLDrawable:
     def __init__(self, widget, element):
@@ -7,7 +9,7 @@ class GLDrawable:
         assert element
         self._widget = widget
         self._element = element
-        self._shader_dir = 'libraries/View/Shaders'
+        self._shader_dir = f'{pathlib.Path(__file__).parent}/../Shaders'
 
         # Shader program
         self._shader_program = None
