@@ -4,8 +4,9 @@ branch = True
 [coverage:report]
 show_missing = True
 omit = 
+    *__init__.py*
     main.py
     example.py
     venv/*
-    # tests/*
+    libraries/*/tests/*
 
