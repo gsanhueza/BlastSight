@@ -16,7 +16,7 @@
   <widget class="QWidget" name="centralWidget">
    <layout class="QHBoxLayout" name="horizontalLayout">
     <item>
-     <widget class="OpenGLWidget" name="openglwidget"/>
+     <widget class="IntegrableViewer" name="openglwidget"/>
     </item>
    </layout>
   </widget>
@@ -216,9 +216,9 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>OpenGLWidget</class>
+   <class>IntegrableViewer</class>
    <extends>QOpenGLWidget</extends>
-   <header>libraries/View/GUI/openglwidget.h</header>
+   <header>libraries/View/GUI/integrableviewer.h</header>
    <slots>
     <signal>file_dropped_signal()</signal>
    </slots>

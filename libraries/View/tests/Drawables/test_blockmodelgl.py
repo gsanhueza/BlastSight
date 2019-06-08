@@ -5,7 +5,7 @@ import pytest
 from qtpy.QtGui import QMatrix4x4
 
 from libraries.Model.Elements.blockmodelelement import BlockModelElement
-from libraries.View.GUI.openglwidget import OpenGLWidget
+from libraries.View.GUI.integrableviewer import IntegrableViewer
 from libraries.View.Drawables.blockmodelgl import BlockModelGL
 
 
@@ -22,16 +22,16 @@ class TestBlockModelGL:
             BlockModelGL(widget=None, element=self.element)
 
     def test_block_model_base(self):
-        drawable = BlockModelGL(widget=OpenGLWidget(), element=self.element)
+        drawable = BlockModelGL(widget=IntegrableViewer(), element=self.element)
 
         assert drawable
         assert drawable.id == 0
-        assert isinstance(drawable.widget, OpenGLWidget)
+        assert isinstance(drawable.widget, IntegrableViewer)
 
         assert not drawable.is_initialized
 
     def test_block_model_initialize(self):
-        drawable = BlockModelGL(widget=OpenGLWidget(), element=self.element)
+        drawable = BlockModelGL(widget=IntegrableViewer(), element=self.element)
         assert not drawable.is_initialized
 
         drawable.initialize()
@@ -39,7 +39,7 @@ class TestBlockModelGL:
         assert drawable.is_initialized
 
     def test_draw(self):
-        drawable = BlockModelGL(widget=OpenGLWidget(), element=self.element)
+        drawable = BlockModelGL(widget=IntegrableViewer(), element=self.element)
         drawable.initialize()
 
         drawable.hide()

@@ -17,8 +17,8 @@ def application():
 
 
 def standalone():
-    from libraries.View.standaloneviewer import StandaloneViewer
-    viewer = StandaloneViewer()
+    from libraries.View.viewer import Viewer
+    viewer = Viewer()
 
     viewer.show()
 

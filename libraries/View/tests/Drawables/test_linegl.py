@@ -5,7 +5,7 @@ import pytest
 from qtpy.QtGui import QMatrix4x4
 
 from libraries.Model.Elements.lineelement import LineElement
-from libraries.View.GUI.openglwidget import OpenGLWidget
+from libraries.View.GUI.integrableviewer import IntegrableViewer
 from libraries.View.Drawables.linegl import LineGL
 
 
@@ -22,16 +22,16 @@ class TestLineGL:
             LineGL(widget=None, element=self.element)
 
     def test_line_base(self):
-        drawable = LineGL(widget=OpenGLWidget(), element=self.element)
+        drawable = LineGL(widget=IntegrableViewer(), element=self.element)
 
         assert drawable
         assert drawable.id == 0
-        assert isinstance(drawable.widget, OpenGLWidget)
+        assert isinstance(drawable.widget, IntegrableViewer)
 
         assert not drawable.is_initialized
 
     def test_line_initialize(self):
-        drawable = LineGL(widget=OpenGLWidget(), element=self.element)
+        drawable = LineGL(widget=IntegrableViewer(), element=self.element)
         assert not drawable.is_initialized
 
         drawable.initialize()
@@ -39,7 +39,7 @@ class TestLineGL:
         assert drawable.is_initialized
 
     def test_draw(self):
-        drawable = LineGL(widget=OpenGLWidget(), element=self.element)
+        drawable = LineGL(widget=IntegrableViewer(), element=self.element)
         drawable.initialize()
 
         drawable.hide()

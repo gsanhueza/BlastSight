@@ -3,14 +3,14 @@
 import sys
 
 from qtpy.QtWidgets import QApplication
-from .GUI.openglwidget import OpenGLWidget
+from .GUI.integrableviewer import IntegrableViewer
 
 
-class StandaloneViewer(OpenGLWidget):
+class Viewer(IntegrableViewer):
     def __init__(self):
         self.app = QApplication(sys.argv)
         super().__init__()
-        self.setWindowTitle('MineVis (Standalone)')
+        self.setWindowTitle('MineVis (Viewer)')
 
     def show(self):
         super().show()

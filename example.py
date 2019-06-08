@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 
 from libraries.Model.tests.globals import *
-from libraries.View.standaloneviewer import StandaloneViewer
+from libraries.View.viewer import Viewer
 
 
 if __name__ == '__main__':
-    viewer = StandaloneViewer()
+    viewer = Viewer()
 
     mesh = viewer.mesh(x=[-1, 1, 0],
                        y=[0, 0, 1],

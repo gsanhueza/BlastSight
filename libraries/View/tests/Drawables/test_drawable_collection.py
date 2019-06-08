@@ -3,13 +3,13 @@
 from libraries.Model.Elements.element import Element
 from libraries.View.Drawables.gldrawablecollection import GLDrawableCollection
 from libraries.View.Drawables.gldrawable import GLDrawable
-from libraries.View.GUI.openglwidget import OpenGLWidget
+from libraries.View.GUI.integrableviewer import IntegrableViewer
 
 
 class TestGLDrawableCollection:
     element = Element(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0])
     element.id = 0
-    drawable = GLDrawable(widget=OpenGLWidget(), element=element)
+    drawable = GLDrawable(widget=IntegrableViewer(), element=element)
 
     def test_base(self):
         collection = GLDrawableCollection()
@@ -64,8 +64,8 @@ class TestGLDrawableCollection:
 
     def test_draw(self):
         collection = GLDrawableCollection()
-        drawable_1 = GLDrawable(widget=OpenGLWidget(), element=self.element)
-        drawable_2 = GLDrawable(widget=OpenGLWidget(), element=self.element)
+        drawable_1 = GLDrawable(widget=IntegrableViewer(), element=self.element)
+        drawable_2 = GLDrawable(widget=IntegrableViewer(), element=self.element)
         collection.add(0, drawable_1)
         drawable_2.initialize()
         collection.add(1, drawable_2)

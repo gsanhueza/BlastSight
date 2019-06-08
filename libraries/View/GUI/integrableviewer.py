@@ -30,7 +30,7 @@ from ...Model.model import Model
 from ...Model.utils import mesh_intersection
 
 
-class OpenGLWidget(QOpenGLWidget):
+class IntegrableViewer(QOpenGLWidget):
     # Signals
     file_dropped_signal = Signal()
 

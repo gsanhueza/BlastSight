@@ -5,7 +5,7 @@ import pytest
 from qtpy.QtGui import QMatrix4x4
 
 from libraries.Model.Elements.meshelement import MeshElement
-from libraries.View.GUI.openglwidget import OpenGLWidget
+from libraries.View.GUI.integrableviewer import IntegrableViewer
 from libraries.View.Drawables.meshgl import MeshGL
 
 
@@ -22,16 +22,16 @@ class TestMeshGL:
             MeshGL(widget=None, element=self.element)
 
     def test_meshgl_base(self):
-        drawable = MeshGL(widget=OpenGLWidget(), element=self.element)
+        drawable = MeshGL(widget=IntegrableViewer(), element=self.element)
 
         assert drawable
         assert drawable.id == 0
-        assert isinstance(drawable.widget, OpenGLWidget)
+        assert isinstance(drawable.widget, IntegrableViewer)
 
         assert not drawable.is_initialized
 
     def test_meshgl_initialize(self):
-        drawable = MeshGL(widget=OpenGLWidget(), element=self.element)
+        drawable = MeshGL(widget=IntegrableViewer(), element=self.element)
         assert not drawable.is_initialized
 
         drawable.initialize()
@@ -39,7 +39,7 @@ class TestMeshGL:
         assert drawable.is_initialized
 
     def test_meshgl_wireframe_no_init(self):
-        drawable = MeshGL(widget=OpenGLWidget(), element=self.element)
+        drawable = MeshGL(widget=IntegrableViewer(), element=self.element)
 
         assert not drawable.wireframe_enabled
         drawable.toggle_wireframe()
@@ -48,7 +48,7 @@ class TestMeshGL:
         assert not drawable.wireframe_enabled
 
     def test_meshgl_wireframe(self):
-        drawable = MeshGL(widget=OpenGLWidget(), element=self.element)
+        drawable = MeshGL(widget=IntegrableViewer(), element=self.element)
         drawable.initialize()
 
         assert not drawable.wireframe_enabled
@@ -58,7 +58,7 @@ class TestMeshGL:
         assert not drawable.wireframe_enabled
 
     def test_draw(self):
-        drawable = MeshGL(widget=OpenGLWidget(), element=self.element)
+        drawable = MeshGL(widget=IntegrableViewer(), element=self.element)
         drawable.initialize()
 
         drawable.hide()

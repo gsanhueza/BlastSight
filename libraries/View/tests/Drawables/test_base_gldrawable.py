@@ -10,7 +10,7 @@ from libraries.Model.model import Model
 from libraries.View.Drawables.gldrawable import GLDrawable
 from libraries.View.Drawables.meshgl import MeshGL
 from libraries.View.Drawables.blockmodelgl import BlockModelGL
-from libraries.View.GUI.openglwidget import OpenGLWidget
+from libraries.View.GUI.integrableviewer import IntegrableViewer
 from libraries.Model.tests.globals import *
 
 
@@ -19,7 +19,7 @@ class TestBaseDrawables:
 
     # FIXME Why do we need to run this before to avoid a segfault, even if we don't use it anywhere?
     # Needed to create OpenGLWidget.context()
-    widget = OpenGLWidget()
+    widget = IntegrableViewer()
     widget.show()
     widget.hide()
 
@@ -27,17 +27,17 @@ class TestBaseDrawables:
     element.id = 0
 
     def test_base(self):
-        assert GLDrawable(widget=OpenGLWidget(), element=self.element)
+        assert GLDrawable(widget=IntegrableViewer(), element=self.element)
 
     def test_drawable_id(self):
-        drawable = GLDrawable(widget=OpenGLWidget(), element=self.element)
+        drawable = GLDrawable(widget=IntegrableViewer(), element=self.element)
         assert drawable.id == self.element.id
 
         drawable.id = 50
         assert drawable.id == 50
 
     def test_openglwidget_model(self):
-        widget = OpenGLWidget()
+        widget = IntegrableViewer()
         orig_model = widget.model
         widget.model = Model()
         new_model = widget.model
@@ -45,15 +45,15 @@ class TestBaseDrawables:
         assert orig_model is not new_model
 
     def test_openglwidget_centroid(self):
-        widget = OpenGLWidget()
+        widget = IntegrableViewer()
         assert widget.centroid == [0.0, 0.0, 0.0]
 
         widget.centroid = [1.0, 2.0, 3.0]
         assert widget.centroid == [1.0, 2.0, 3.0]
 
     def test_openglwidget_add_drawable(self):
-        widget = OpenGLWidget()
-        drawable = GLDrawable(widget=OpenGLWidget(), element=self.element)
+        widget = IntegrableViewer()
+        drawable = GLDrawable(widget=IntegrableViewer(), element=self.element)
 
         added = widget.add_drawable(self.element, GLDrawable)
         rescued = widget.get_drawable(drawable.id)
@@ -61,7 +61,7 @@ class TestBaseDrawables:
         assert added is rescued
 
     def test_openglwidget_add_mesh(self):
-        widget = OpenGLWidget()
+        widget = IntegrableViewer()
         widget.mesh(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], indices=[[0, 1, 2]])
         widget.mesh_by_path(f'{TEST_FILES_FOLDER_PATH}/caseron.dxf')
 
@@ -70,7 +70,7 @@ class TestBaseDrawables:
         assert isinstance(widget.get_drawable(1), MeshGL)
 
     def test_openglwidget_add_wrong_mesh(self):
-        widget = OpenGLWidget()
+        widget = IntegrableViewer()
 
         added = widget.mesh()
         assert added is None
@@ -81,7 +81,7 @@ class TestBaseDrawables:
         assert widget.drawable_collection.__len__() == 0
 
     def test_openglwidget_add_block_model(self):
-        widget = OpenGLWidget()
+        widget = IntegrableViewer()
         widget.block_model(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], values=[0, 1, 2])
         widget.block_model_by_path(f'{TEST_FILES_FOLDER_PATH}/mini.csv')
 
@@ -90,7 +90,7 @@ class TestBaseDrawables:
         assert isinstance(widget.get_drawable(1), BlockModelGL)
 
     def test_openglwidget_add_wrong_block_model(self):
-        widget = OpenGLWidget()
+        widget = IntegrableViewer()
 
         added = widget.block_model()
         assert added is None
@@ -101,7 +101,7 @@ class TestBaseDrawables:
         assert widget.drawable_collection.__len__() == 0
 
     def test_openglwidget_drawable_visibility(self):
-        widget = OpenGLWidget()
+        widget = IntegrableViewer()
         widget.mesh(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], indices=[[0, 1, 2]])
         widget.block_model(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], values=[0, 1, 2])
 
@@ -126,7 +126,7 @@ class TestBaseDrawables:
         assert widget.get_drawable(1).is_visible
 
     def test_openglwidget_delete_drawable(self):
-        widget = OpenGLWidget()
+        widget = IntegrableViewer()
         widget.mesh(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], indices=[[0, 1, 2]])
         widget.block_model(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], values=[0, 1, 2])
 
