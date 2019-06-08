@@ -48,6 +48,8 @@ class BlockModelElement(Element):
             self.data = kwargs.get('data')
             self.values = []
 
+            assert len(self.data) > 0
+
         else:
             raise KeyError(f'Must pass ["x", "y", "z", "values"], ["vertices", "values"] or ["data"] '
                            f'as kwargs, got {list(kwargs.keys())}.')

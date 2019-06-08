@@ -1,10 +1,9 @@
 #!/usr/bin/env python
 
-from collections import OrderedDict
-
 from qtpy.QtCore import QFileInfo
 
 from .Elements.element import Element
+from .Elements.elementcollection import ElementCollection
 from .Elements.blockmodelelement import BlockModelElement
 from .Elements.lineelement import LineElement
 from .Elements.meshelement import MeshElement
@@ -17,9 +16,8 @@ from .Parsers.csvparser import CSVParser
 
 class Model:
     def __init__(self):
-        self._element_collection = OrderedDict()
+        self._element_collection = ElementCollection()
         self.parser_dict = {}  # Example: {"dxf": (DXFParser, MeshElement)}
-        self.last_id = -1
 
         self.add_parser('dxf', DXFParser, MeshElement)
         self.add_parser('off', OFFParser, MeshElement)
@@ -34,10 +32,7 @@ class Model:
 
     def mesh(self, *args, **kwargs) -> MeshElement:
         element = MeshElement(*args, **kwargs)
-        self.last_id += 1
-
-        element.id = self.last_id
-        self._element_collection[self.last_id] = element
+        self._element_collection.add(element)
 
         return element
 
@@ -50,10 +45,7 @@ class Model:
 
     def block_model(self, *args, **kwargs) -> BlockModelElement:
         element = BlockModelElement(*args, **kwargs)
-        self.last_id += 1
-
-        element.id = self.last_id
-        self._element_collection[self.last_id] = element
+        self._element_collection.add(element)
 
         return element
 
@@ -66,19 +58,13 @@ class Model:
 
     def lines(self, *args, **kwargs) -> LineElement:
         element = LineElement(*args, **kwargs)
-        element.id = self.last_id
-
-        self._element_collection[self.last_id] = element
-        self.last_id += 1
+        self._element_collection.add(element)
 
         return element
 
-    def tubes(self, *args, **kwargs) -> LineElement:
+    def tubes(self, *args, **kwargs) -> TubeElement:
         element = TubeElement(*args, **kwargs)
-        element.id = self.last_id
-
-        self._element_collection[self.last_id] = element
-        self.last_id += 1
+        self._element_collection.add(element)
 
         return element
 
