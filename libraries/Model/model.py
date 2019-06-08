@@ -19,7 +19,7 @@ class Model:
     def __init__(self):
         self._element_collection = OrderedDict()
         self.parser_dict = {}  # Example: {"dxf": (DXFParser, MeshElement)}
-        self.last_id = 0
+        self.last_id = -1
 
         self.add_parser('dxf', DXFParser, MeshElement)
         self.add_parser('off', OFFParser, MeshElement)
@@ -34,10 +34,10 @@ class Model:
 
     def mesh(self, *args, **kwargs) -> MeshElement:
         element = MeshElement(*args, **kwargs)
-        element.id = self.last_id
-
-        self._element_collection[self.last_id] = element
         self.last_id += 1
+
+        element.id = self.last_id
+        self._element_collection[self.last_id] = element
 
         return element
 
@@ -50,10 +50,10 @@ class Model:
 
     def block_model(self, *args, **kwargs) -> BlockModelElement:
         element = BlockModelElement(*args, **kwargs)
-        element.id = self.last_id
-
-        self._element_collection[self.last_id] = element
         self.last_id += 1
+
+        element.id = self.last_id
+        self._element_collection[self.last_id] = element
 
         return element
 

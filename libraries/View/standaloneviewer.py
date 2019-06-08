@@ -15,3 +15,11 @@ class StandaloneViewer(OpenGLWidget):
     def show(self):
         super().show()
         sys.exit(self.app.exec_())
+
+    def dragEnterEvent(self, event, *args, **kwargs) -> None:
+        if event.mimeData().hasText():
+            event.acceptProposedAction()
+
+    def dropEvent(self, event, *args, **kwargs) -> None:
+        super().dropEvent(event, *args, **kwargs)
+        self.camera_at(self.model.last_id)
