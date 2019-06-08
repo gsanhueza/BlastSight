@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 
-import sys
 import argparse
+import sys
 
 
 def application():
     from qtpy.QtWidgets import QApplication
-    from View.GUI.minevis import MineVis
+    from libraries.View.GUI.minevis import MineVis
 
     qt_app = QApplication(sys.argv)
 
@@ -17,7 +17,7 @@ def application():
 
 
 def standalone():
-    from View.standaloneviewer import StandaloneViewer
+    from libraries.View.standaloneviewer import StandaloneViewer
     viewer = StandaloneViewer()
 
     viewer.show()

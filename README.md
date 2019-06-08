@@ -20,6 +20,6 @@ omit =
 
 ```
 
-Run the following command: `python -m pytest --cov=. tests/`
+Run the following command: `python -m pytest --cov=.`
 Alternatively, run `./run_tests.sh`
 

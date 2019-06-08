@@ -1,4 +1,4 @@
 #!/usr/bin/env sh
 
-python -m pytest --cov=. tests/ 
+python -m pytest --cov=.
 

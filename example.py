@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 
-from View.standaloneviewer import StandaloneViewer
+from libraries.Model.tests.globals import *
+from libraries.View.standaloneviewer import StandaloneViewer
 
 
-if __name__ == '__main__':
+def main():
     viewer = StandaloneViewer()
 
     mesh = viewer.mesh(x=[-1, 1, 0],
@@ -13,7 +14,7 @@ if __name__ == '__main__':
                        indices=[[0, 1, 2]],
                        name='mesh_name')
 
-    mesh_p = viewer.mesh_by_path('tests/Files/caseron.off', color=[1.0, 0.0, 0.0])
+    mesh_p = viewer.mesh_by_path(f'{TEST_FILES_FOLDER_PATH}/caseron.off', color=[1.0, 0.0, 0.0])
     mesh_p.enable_wireframe()
 
     block = viewer.block_model(x=[-3, 3, 0],
@@ -39,3 +40,7 @@ if __name__ == '__main__':
         print(f'Drawable {id_}: Name = {drawable.element.name}')
 
     viewer.show()
+
+
+if __name__ == '__main__':
+    main()
