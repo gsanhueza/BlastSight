@@ -106,28 +106,12 @@ class BlockModelElement(Element):
         self._value_str = value_str
 
     @property
-    def available_coordinates(self) -> list:
-        if self.x_str and self.y_str and self.z_str:
-            return sorted([self.x_str, self.y_str, self.z_str])
-        else:
-            return list(self.data.keys())
-
-    @available_coordinates.setter
-    def available_coordinates(self, available: list) -> None:
-        self._x_str, self._y_str, self._z_str = available
-
-    @property
     def available_values(self) -> list:
-        available = list(self._data.keys())
+        return list(self._data.keys())
 
-        if self.x_str is not None:
-            available.remove(self.x_str)
-        if self.y_str is not None:
-            available.remove(self.y_str)
-        if self.z_str is not None:
-            available.remove(self.z_str)
-
-        return available
+    @available_values.setter
+    def available_values(self, values: list) -> None:
+        self.x_str, self.y_str, self.z_str, self.value_str = values
 
     @property
     def block_size(self) -> np.ndarray:
@@ -137,13 +121,11 @@ class BlockModelElement(Element):
     def block_size(self, size: list) -> None:
         self._block_size = np.array(size, np.float32)
 
-    def update_coords(self):
-        with Pool(processes=3) as pool:
-            self.x, self.y, self.z = pool.map(np.float32, [
+    def update_values(self):
+        with Pool(processes=4) as pool:
+            self.x, self.y, self.z, self.values = pool.map(np.float32, [
                 self.data[self.x_str],
                 self.data[self.y_str],
                 self.data[self.z_str],
+                self.data[self.value_str],
             ])
-
-    def update_values(self):
-        self.values = list(map(np.float32, self.data[self.value_str]))
