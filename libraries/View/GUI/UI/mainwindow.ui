@@ -202,7 +202,8 @@
   </action>
   <action name="action_Camera_position">
    <property name="icon">
-    <iconset theme="camera-video-symbolic"/>
+    <iconset theme="camera-video-symbolic">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>&amp;Camera position</string>
@@ -218,6 +219,9 @@
    <class>OpenGLWidget</class>
    <extends>QOpenGLWidget</extends>
    <header>libraries/View/GUI/openglwidget.h</header>
+   <slots>
+    <signal>file_dropped_signal()</signal>
+   </slots>
   </customwidget>
   <customwidget>
    <class>TreeWidget</class>
@@ -355,6 +359,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>openglwidget</sender>
+   <signal>file_dropped_signal()</signal>
+   <receiver>MineVis</receiver>
+   <slot>fill_tree_widget()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>586</x>
+     <y>260</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>449</x>
+     <y>249</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>normal_mode_slot()</slot>
@@ -364,5 +384,6 @@
   <slot>help_slot()</slot>
   <slot>load_block_model_slot()</slot>
   <slot>dialog_camera_position()</slot>
+  <slot>fill_tree_widget()</slot>
  </slots>
 </ui>

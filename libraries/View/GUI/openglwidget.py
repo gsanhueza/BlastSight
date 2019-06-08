@@ -4,13 +4,13 @@ import numpy as np
 import traceback
 
 from OpenGL.GL import *
-from qtpy.QtCore import QRect
+from qtpy.QtCore import QRect, Signal
 from qtpy.QtWidgets import QOpenGLWidget
 from qtpy.QtGui import QPainter
 from qtpy.QtGui import QMatrix4x4
 from qtpy.QtGui import QVector3D
 
-from ..Drawables.drawablecollection import GLDrawableCollection
+from ..Drawables.gldrawablecollection import GLDrawableCollection
 from ..Drawables.gldrawable import GLDrawable
 
 from ..Drawables.blockmodelgl import BlockModelGL
@@ -31,8 +31,12 @@ from ...Model.utils import mesh_intersection
 
 
 class OpenGLWidget(QOpenGLWidget):
+    # Signals
+    file_dropped_signal = Signal()
+
     def __init__(self, parent=None):
         QOpenGLWidget.__init__(self, parent)
+        self.setAcceptDrops(True)
 
         self._model = Model()
         # Controller mode
@@ -290,3 +294,18 @@ class OpenGLWidget(QOpenGLWidget):
     def wheelEvent(self, event, *args, **kwargs) -> None:
         self.current_mode.wheelEvent(event)
         self.update()
+
+    def dragEnterEvent(self, event, *args, **kwargs) -> None:
+        if event.mimeData().hasText():
+            event.acceptProposedAction()
+
+    def dropEvent(self, event, *args, **kwargs) -> None:
+        for url in event.mimeData().urls():
+            file_path = url.toLocalFile()
+
+            # Brute-force trying to load
+            self.mesh_by_path(file_path)
+            self.block_model_by_path(file_path)
+
+        self.update()
+        self.file_dropped_signal.emit()

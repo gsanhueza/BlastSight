@@ -8,7 +8,7 @@ from qtpy.QtWidgets import QDialogButtonBox
 from qtpy import uic
 
 
-class DialogAvailableValues(QDialog):
+class AvailableValuesDialog(QDialog):
     def __init__(self, parent=None, drawable=None):
         QDialog.__init__(self, parent)
 

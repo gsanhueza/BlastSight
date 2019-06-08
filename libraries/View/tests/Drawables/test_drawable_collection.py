@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 from libraries.Model.Elements.element import Element
-from libraries.View.Drawables.drawablecollection import GLDrawableCollection
+from libraries.View.Drawables.gldrawablecollection import GLDrawableCollection
 from libraries.View.Drawables.gldrawable import GLDrawable
 from libraries.View.GUI.openglwidget import OpenGLWidget
 

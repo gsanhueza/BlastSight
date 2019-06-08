@@ -10,8 +10,8 @@ from qtpy.QtWidgets import QFileDialog
 from qtpy.QtWidgets import QMainWindow
 from qtpy.QtWidgets import QMessageBox
 
-from .dialogavailablevalues import DialogAvailableValues
-from .dialogcameraposition import DialogCameraPosition
+from .availablevaluesdialog import AvailableValuesDialog
+from .camerapositiondialog import CameraPositionDialog
 from .treewidgetitem import TreeWidgetItem
 
 
@@ -106,12 +106,12 @@ class MineVis(QMainWindow):
 
     def dialog_available_values(self, id_):
         drawable = self.viewer.get_drawable(id_)
-        dialog = DialogAvailableValues(self, drawable)
+        dialog = AvailableValuesDialog(self, drawable)
 
         dialog.show()
 
     def dialog_camera_position(self):
-        dialog = DialogCameraPosition(self)
+        dialog = CameraPositionDialog(self)
         dialog.show()
 
     """
@@ -140,18 +140,4 @@ class MineVis(QMainWindow):
             event.acceptProposedAction()
 
     def dropEvent(self, event, *args, **kwargs) -> None:
-        self.statusBar.showMessage('Loading...')
-        urls = event.mimeData().urls()
-        accum = 0
-
-        for url in urls:
-            file_path = url.toLocalFile()
-
-            # Brute-force trying to load
-            accum += int(self.load_mesh(file_path))
-            accum += int(self.load_block_model(file_path))
-
-        self.fill_tree_widget()
-        self.viewer.update()
-
-        self.statusBar.showMessage(f'{accum} of {len(urls)} files loaded.')
+        self.viewer.dropEvent(event, *args, **kwargs)

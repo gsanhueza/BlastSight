@@ -7,7 +7,7 @@ from qtpy.QtWidgets import QDialog
 from qtpy import uic
 
 
-class DialogCameraPosition(QDialog):
+class CameraPositionDialog(QDialog):
     def __init__(self, parent=None, drawable=None):
         QDialog.__init__(self, parent)
 

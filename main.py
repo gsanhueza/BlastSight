@@ -6,7 +6,7 @@ import sys
 
 def application():
     from qtpy.QtWidgets import QApplication
-    from libraries.View.GUI.minevis import MineVis
+    from libraries.View.GUI.mainwindow import MineVis
 
     qt_app = QApplication(sys.argv)
 
