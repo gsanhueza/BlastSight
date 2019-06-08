@@ -52,5 +52,5 @@ class TreeWidgetItem(QTreeWidgetItem):
     def center_camera(self) -> None:
         self.mainwindow.viewer.camera_at(self.drawable.id)
 
-    def available_values(self) -> None:
+    def available_value_names(self) -> None:
         self.mainwindow.dialog_available_values(self.drawable.id)

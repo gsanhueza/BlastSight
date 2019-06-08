@@ -48,8 +48,6 @@ class BlockModelElement(Element):
             self.data = kwargs.get('data')
             self.values = []
 
-            assert len(self.data) >= 4
-
         else:
             raise KeyError(f'Must pass ["x", "y", "z", "values"], ["vertices", "values"] or ["data"] '
                            f'as kwargs, got {list(kwargs.keys())}.')
@@ -106,11 +104,11 @@ class BlockModelElement(Element):
         self._value_str = value_str
 
     @property
-    def available_values(self) -> list:
+    def available_value_names(self) -> list:
         return list(self._data.keys())
 
-    @available_values.setter
-    def available_values(self, values: list) -> None:
+    @available_value_names.setter
+    def available_value_names(self, values: list) -> None:
         self.x_str, self.y_str, self.z_str, self.value_str = values
 
     @property

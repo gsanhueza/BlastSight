@@ -22,7 +22,7 @@ class AvailableValuesDialog(QDialog):
         self.setWindowTitle(f'Set available values ({drawable.element.name}.{drawable.element.ext})')
 
         # Fill content
-        for i in drawable.element.available_values:
+        for i in drawable.element.available_value_names:
             self.comboBox_x.addItem(i)
             self.comboBox_y.addItem(i)
             self.comboBox_z.addItem(i)

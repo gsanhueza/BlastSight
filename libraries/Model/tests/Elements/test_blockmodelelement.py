@@ -200,11 +200,11 @@ class TestBlockModelElement:
                 'CuT': ('1', '0.4', '0.5', '0.8', '0.3', '0.2')}
 
         element = BlockModelElement(data=data)
-        assert 'easting' in list(element.available_values)
-        assert 'northing' in list(element.available_values)
-        assert 'elevation' in list(element.available_values)
-        assert 'CuT' in list(element.available_values)
-        assert 'random' not in list(element.available_values)
+        assert 'easting' in list(element.available_value_names)
+        assert 'northing' in list(element.available_value_names)
+        assert 'elevation' in list(element.available_value_names)
+        assert 'CuT' in list(element.available_value_names)
+        assert 'random' not in list(element.available_value_names)
 
     def test_set_multiple_coordinates(self):
         data = {'x': ('0', '2', '4', '6', '8', '10'),
@@ -213,11 +213,11 @@ class TestBlockModelElement:
                 'CuT': ('1', '0.4', '0.5', '0.8', '0.3', '0.2')}
 
         element = BlockModelElement(data=data)
-        element.available_values = ['x', 'y', 'z', 'CuT']
-        assert 'x' in element.available_values
-        assert 'y' in element.available_values
-        assert 'z' in element.available_values
-        assert 'CuT' in element.available_values
+        element.available_value_names = ['x', 'y', 'z', 'CuT']
+        assert 'x' in element.available_value_names
+        assert 'y' in element.available_value_names
+        assert 'z' in element.available_value_names
+        assert 'CuT' in element.available_value_names
 
     def test_empty_data(self):
         with pytest.raises(Exception):
