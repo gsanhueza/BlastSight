@@ -108,6 +108,10 @@ class OpenGLWidget(QOpenGLWidget):
     def camera_position(self, pos: list) -> None:
         self.xWorldPos, self.yWorldPos, self.zWorldPos = [-pos[0], -pos[1], -pos[2]]
 
+    @property
+    def last_id(self) -> int:
+        return list(self.drawable_collection.keys())[-1]
+
     """
     Load methods
     """

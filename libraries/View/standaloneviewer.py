@@ -22,4 +22,4 @@ class StandaloneViewer(OpenGLWidget):
 
     def dropEvent(self, event, *args, **kwargs) -> None:
         super().dropEvent(event, *args, **kwargs)
-        self.camera_at(self.model.last_id)
+        self.camera_at(self.last_id)

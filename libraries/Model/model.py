@@ -79,10 +79,6 @@ class Model:
         return self._element_collection
 
     @property
-    def collection(self) -> list:
-        return list(self._element_collection.items())
-
-    @property
     def mesh_collection(self) -> list:
         return list(filter(lambda x: isinstance(x, MeshElement), self.element_collection.values()))
 
