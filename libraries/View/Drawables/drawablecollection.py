@@ -5,9 +5,6 @@ from .gldrawable import GLDrawable
 
 
 class GLDrawableCollection(OrderedDict):
-    def __init__(self):
-        super().__init__()
-
     def add(self, id_: int, drawable: GLDrawable) -> None:
         self.__setitem__(id_, drawable)
 

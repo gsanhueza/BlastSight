@@ -244,11 +244,12 @@ class OpenGLWidget(QOpenGLWidget):
     """
     Utilities
     """
-    def detect_intersection(self, x, y, z) -> None:
+    def detect_intersection(self, x: float, y: float, z: float) -> None:
         # For more info, read http://antongerdelan.net/opengl/raycasting.html
+        y = self.height() - y  # Qt's y() to OpenGL's y()
+
         ray = QVector3D(x, y, z).unproject((self.camera * self.world), self.proj,
                                            QRect(0, 0, self.width(), self.height())).normalized()
-        ray.setY(-ray.y())  # Qt's y() to OpenGL's y()
 
         camera_pos = self.camera.column(3)
         ray_origin = ((self.camera * self.world).inverted()[0] * camera_pos).toVector3D()
