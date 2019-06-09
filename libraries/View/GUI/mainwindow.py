@@ -24,7 +24,7 @@ class MineVis(QMainWindow):
 
         self.setFocusPolicy(Qt.StrongFocus)
         self.setAcceptDrops(True)
-        self.statusBar.showMessage('Ready')
+        self.statusBar.showMessage('Ready.')
 
     @property
     def viewer(self):
@@ -70,8 +70,9 @@ class MineVis(QMainWindow):
         loaded = bool(drawable)
 
         if loaded:
-            self.statusBar.showMessage('Mesh loaded')
-            self.fill_tree_widget()
+            self.statusBar.showMessage('Mesh loaded.')
+        else:
+            self.statusBar.showMessage('Cannot load mesh.')
 
         return loaded
 
@@ -96,11 +97,10 @@ class MineVis(QMainWindow):
         loaded = bool(drawable)
 
         if loaded:
-            self.statusBar.showMessage('Block model loaded')
-            self.fill_tree_widget()
-
-            # Dialog auto-trigger
-            self.dialog_available_values(drawable.id)
+            self.statusBar.showMessage('Block model loaded.')
+            self.dialog_available_values(drawable.id)  # Dialog auto-trigger
+        else:
+            self.statusBar.showMessage('Cannot load block model.')
 
         return loaded
 
@@ -134,10 +134,8 @@ class MineVis(QMainWindow):
     """
     Overridden events
     """
-
     def dragEnterEvent(self, event, *args, **kwargs) -> None:
-        if event.mimeData().hasText():
-            event.acceptProposedAction()
+        self.viewer.dragEnterEvent(event, *args, **kwargs)
 
     def dropEvent(self, event, *args, **kwargs) -> None:
         self.viewer.dropEvent(event, *args, **kwargs)

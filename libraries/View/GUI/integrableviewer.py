@@ -126,7 +126,10 @@ class IntegrableViewer(QOpenGLWidget):
     def add_drawable(self, element: Element, drawable_type: type) -> GLDrawable:
         drawable = drawable_type(self, element)
         self.drawable_collection.add(drawable.id, drawable)
+
+        self.file_dropped_signal.emit()
         self.update()
+
         return drawable
 
     def mesh(self, *args, **kwargs) -> GLDrawable:
@@ -318,6 +321,3 @@ class IntegrableViewer(QOpenGLWidget):
             # Brute-force trying to load
             self.mesh_by_path(file_path)
             self.block_model_by_path(file_path)
-
-        self.update()
-        self.file_dropped_signal.emit()
