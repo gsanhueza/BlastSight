@@ -47,7 +47,9 @@ class IntegrableViewer(QOpenGLWidget):
         self.drawable_collection = GLDrawableCollection()
 
         # Camera/World/Projection
-        self._camera, self._world, self._proj = QMatrix4x4()
+        self._camera = QMatrix4x4()
+        self._world = QMatrix4x4()
+        self._proj = QMatrix4x4()
 
         # World (we don't move the camera)
         self._initial_position = [0.0, 0.0, -3.0]
@@ -71,8 +73,8 @@ class IntegrableViewer(QOpenGLWidget):
         return self._model
 
     @model.setter
-    def model(self, model):
-        self._model = model
+    def model(self, _model):
+        self._model = _model
 
     @property
     def camera(self):
@@ -85,14 +87,6 @@ class IntegrableViewer(QOpenGLWidget):
     @property
     def proj(self):
         return self._proj
-
-    @property
-    def centroid(self) -> list:
-        return [self.xCentroid, self.yCentroid, self.zCentroid]
-
-    @centroid.setter
-    def centroid(self, centroid: list) -> None:
-        self.xCentroid, self.yCentroid, self.zCentroid = centroid
 
     @property
     def camera_position(self) -> list:
@@ -111,8 +105,19 @@ class IntegrableViewer(QOpenGLWidget):
         self.xWorldRot, self.yWorldRot, self.zWorldRot = [rot[0], rot[1], rot[2]]
 
     @property
+    def centroid(self) -> list:
+        return [self.xCentroid, self.yCentroid, self.zCentroid]
+
+    @centroid.setter
+    def centroid(self, _centroid: list) -> None:
+        self.xCentroid, self.yCentroid, self.zCentroid = _centroid
+
+    @property
     def last_id(self) -> int:
-        return list(self.drawable_collection.keys())[-1]
+        try:
+            return list(self.drawable_collection.keys())[-1]
+        except IndexError:
+            return -1
 
     """
     Load methods
@@ -162,7 +167,7 @@ class IntegrableViewer(QOpenGLWidget):
         return self.drawable_collection[id_]
 
     def update_drawable(self, id_: int) -> None:
-        self.centroid = self.model.get(id_).centroid
+        self.xCentroid, self.yCentroid, self.zCentroid = self.model.get(id_).centroid
         self.get_drawable(id_).setup_attributes()
 
     def delete(self, id_: int) -> None:
@@ -172,7 +177,8 @@ class IntegrableViewer(QOpenGLWidget):
     def camera_at(self, id_: int) -> None:
         drawable = self.get_drawable(id_)
         self.xWorldPos, self.yWorldPos, self.zWorldPos = self._initial_position
-        self.centroid = drawable.element.centroid
+        self.xCentroid, self.yCentroid, self.zCentroid = drawable.element.centroid
+
         self.update()
 
     """
@@ -225,7 +231,7 @@ class IntegrableViewer(QOpenGLWidget):
         self.proj.setToIdentity()
         self.proj.perspective(45.0, (w / h), 0.01, 10000.0)
 
-        # ortho(float left, float right, float bottom, float top, float nearPlane, float farPlane)
+        ## ortho(float left, float right, float bottom, float top, float nearPlane, float farPlane)
         # scale_factor = self.zWorldPos * 200
         # self.proj.ortho(-w/scale_factor, w/scale_factor, -h/scale_factor, h/scale_factor, 0.01, 10000)
 
@@ -262,7 +268,7 @@ class IntegrableViewer(QOpenGLWidget):
     def set_selection_mode(self) -> None:
         self.current_mode = SelectionMode(self)
 
-    # Controller dependent on current mode
+    # Movement/actions dependent on current mode
     def mouseMoveEvent(self, event, *args, **kwargs) -> None:
         self.current_mode.mouseMoveEvent(event)
         self.update()
