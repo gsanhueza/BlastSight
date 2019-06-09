@@ -46,63 +46,57 @@ class MineVis(QMainWindow):
             item = TreeWidgetItem(self.treeWidget, self, drawable)
             self.treeWidget.addTopLevelItem(item)
 
-    # Unless explicitly otherwise, slots are connected via Qt Designer
-    def load_mesh_slot(self) -> None:
-        (file_paths, selected_filter) = QFileDialog.getOpenFileNames(
-            parent=self,
-            directory=self.last_dir,
-            filter='Mesh Files (*.dxf *.off);;'
-                   'DXF Files (*.dxf);;'
-                   'OFF Files (*.off)')
+    def _load_element(self, method: classmethod, path: str, name: str) -> bool:
+        drawable = method(path)
+        loaded = bool(drawable)
 
-        accum = 0
+        if loaded:
+            self.statusBar.showMessage(f'{name} loaded.')
+        else:
+            self.statusBar.showMessage(f'{name} couldn\'t be loaded.')
 
-        for file_path in file_paths:
-            if file_path != '':
-                accum += int(self.load_mesh(file_path))
-                self.last_dir = QFileInfo(file_path).absoluteDir().absolutePath()
-
-        if len(file_paths) > 1:
-            self.statusBar.showMessage(f'{accum} of {len(file_paths)} meshes loaded.')
+        return loaded
 
     def load_mesh(self, file_path: str) -> bool:
-        drawable = self.viewer.mesh_by_path(file_path)
-        loaded = bool(drawable)
+        return self._load_element(method=self.viewer.mesh_by_path,
+                                  path=file_path,
+                                  name='Mesh')
 
-        if loaded:
-            self.statusBar.showMessage('Mesh loaded.')
-        else:
-            self.statusBar.showMessage('Cannot load mesh.')
+    def load_block_model(self, file_path: str) -> bool:
+        status = self._load_element(method=self.viewer.block_model_by_path,
+                                    path=file_path,
+                                    name='Block model')
 
-        return loaded
+        if status:
+            self.dialog_available_values(self.viewer.last_id)  # Dialog auto-trigger
+        return status
 
-    def load_block_model_slot(self) -> None:
+    # Unless explicitly otherwise, slots are connected via Qt Designer
+    def _load_element_slot(self, method: classmethod, filters: str, name: str) -> None:
         (file_paths, selected_filter) = QFileDialog.getOpenFileNames(
             parent=self,
             directory=self.last_dir,
-            filter='CSV Files (*.csv);;All Files (*.*)')
+            filter=filters)
 
         accum = 0
 
         for file_path in file_paths:
             if file_path != '':
-                accum += int(self.load_block_model(file_path))
+                accum += int(method(file_path))
                 self.last_dir = QFileInfo(file_path).absoluteDir().absolutePath()
 
         if len(file_paths) > 1:
-            self.statusBar.showMessage(f'{accum} of {len(file_paths)} block models loaded.')
+            self.statusBar.showMessage(f'{accum} of {len(file_paths)} {name} loaded.')
 
-    def load_block_model(self, file_path: str) -> bool:
-        drawable = self.viewer.block_model_by_path(file_path)
-        loaded = bool(drawable)
+    def load_mesh_slot(self) -> None:
+        self._load_element_slot(method=self.load_mesh,
+                                filters='Mesh Files (*.dxf *.off);;DXF Files (*.dxf);;OFF Files (*.off)',
+                                name='meshes')
 
-        if loaded:
-            self.statusBar.showMessage('Block model loaded.')
-            self.dialog_available_values(drawable.id)  # Dialog auto-trigger
-        else:
-            self.statusBar.showMessage('Cannot load block model.')
-
-        return loaded
+    def load_block_model_slot(self) -> None:
+        self._load_element_slot(method=self.load_block_model,
+                                filters='CSV Files (*.csv);;All Files (*.*)',
+                                name='block models')
 
     def dialog_available_values(self, id_):
         drawable = self.viewer.get_drawable(id_)
