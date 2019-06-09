@@ -30,29 +30,23 @@ class Model:
         assert self.parser_dict[ext][1] == element_type
         return self.parser_dict[ext][0]
 
-    def mesh(self, *args, **kwargs) -> MeshElement:
-        element = MeshElement(*args, **kwargs)
+    def _element(self, element_type: type, *args, **kwargs):
+        element = element_type(*args, **kwargs)
         self.element_collection.add(element)
 
         return element
+
+    def mesh(self, *args, **kwargs) -> MeshElement:
+        return self._element(MeshElement, *args, **kwargs)
 
     def block_model(self, *args, **kwargs) -> BlockModelElement:
-        element = BlockModelElement(*args, **kwargs)
-        self.element_collection.add(element)
-
-        return element
+        return self._element(BlockModelElement, *args, **kwargs)
 
     def lines(self, *args, **kwargs) -> LineElement:
-        element = LineElement(*args, **kwargs)
-        self.element_collection.add(element)
-
-        return element
+        return self._element(LineElement, *args, **kwargs)
 
     def tubes(self, *args, **kwargs) -> TubeElement:
-        element = TubeElement(*args, **kwargs)
-        self.element_collection.add(element)
-
-        return element
+        return self._element(TubeElement, *args, **kwargs)
 
     def mesh_by_path(self, path: str, *args, **kwargs) -> MeshElement:
         name = QFileInfo(path).baseName()
