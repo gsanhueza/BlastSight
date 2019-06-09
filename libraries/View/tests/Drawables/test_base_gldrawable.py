@@ -50,15 +50,6 @@ class TestBaseDrawables:
         widget.centroid = [1.0, 2.0, 3.0]
         assert widget.centroid == [1.0, 2.0, 3.0]
 
-    def test_openglwidget_add_drawable(self):
-        widget = IntegrableViewer()
-        drawable = GLDrawable(widget=IntegrableViewer(), element=self.element)
-
-        added = widget.add_drawable(self.element, GLDrawable)
-        rescued = widget.get_drawable(drawable.id)
-
-        assert added is rescued
-
     def test_openglwidget_add_mesh(self):
         widget = IntegrableViewer()
         widget.mesh(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], indices=[[0, 1, 2]])

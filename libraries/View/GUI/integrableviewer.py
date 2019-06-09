@@ -25,7 +25,6 @@ from ...Controller.normalmode import NormalMode
 from ...Controller.drawmode import DrawMode
 from ...Controller.selectionmode import SelectionMode
 
-from ...Model.Elements.element import Element
 from ...Model.model import Model
 from ...Model.utils import mesh_intersection
 
@@ -41,15 +40,14 @@ class IntegrableViewer(QOpenGLWidget):
         self._model = Model()
         # Controller mode
         self.current_mode = None
+        self.set_normal_mode()
 
         # Drawable elements
         self.background = BackgroundGL(self, True)
         self.drawable_collection = GLDrawableCollection()
 
         # Camera/World/Projection
-        self._camera = QMatrix4x4()
-        self._world = QMatrix4x4()
-        self._proj = QMatrix4x4()
+        self._camera, self._world, self._proj = QMatrix4x4()
 
         # World (we don't move the camera)
         self._initial_position = [0.0, 0.0, -3.0]
@@ -59,15 +57,11 @@ class IntegrableViewer(QOpenGLWidget):
         self.xWorldRot, self.yWorldRot, self.zWorldRot = self._initial_rotation
 
         # Centroid (objects will rotate around this)
-        self.xCentroid = 0.0
-        self.yCentroid = 0.0
-        self.zCentroid = 0.0
+        self._initial_centroid = [0.0, 0.0, 0.0]
+        self.xCentroid, self.yCentroid, self.zCentroid = self._initial_centroid
 
         # QPainter (after OpenGL)
         self.painter = QPainter()
-
-        # Controller
-        self.set_normal_mode()
 
         # FPS Counter
         self.fps_counter = FPSCounter()
@@ -123,62 +117,37 @@ class IntegrableViewer(QOpenGLWidget):
     """
     Load methods
     """
-    def add_drawable(self, element: Element, drawable_type: type) -> GLDrawable:
-        drawable = drawable_type(self, element)
-        self.drawable_collection.add(drawable.id, drawable)
+    def add_drawable(self, method: classmethod, drawable: type, *args, **kwargs):
+        try:
+            element = method(*args, **kwargs)
+            drawable = drawable(self, element)
+            self.drawable_collection.add(drawable.id, drawable)
 
-        self.file_dropped_signal.emit()
-        self.update()
+            self.file_dropped_signal.emit()
+            self.update()
 
-        return drawable
+            return drawable
+        except Exception:
+            traceback.print_exc()
+            return None
 
     def mesh(self, *args, **kwargs) -> GLDrawable:
-        try:
-            element = self.model.mesh(*args, **kwargs)
-            return self.add_drawable(element, MeshGL)
-        except Exception:
-            traceback.print_exc()
-            return None
-
-    def mesh_by_path(self, file_path, *args, **kwargs) -> GLDrawable:
-        try:
-            element = self.model.mesh_by_path(file_path, *args, **kwargs)
-            return self.add_drawable(element, MeshGL)
-        except Exception:
-            traceback.print_exc()
-            return None
+        return self.add_drawable(self.model.mesh, MeshGL, *args, **kwargs)
 
     def block_model(self, *args, **kwargs) -> GLDrawable:
-        try:
-            element = self.model.block_model(*args, **kwargs)
-            return self.add_drawable(element, BlockModelGL)
-        except Exception:
-            traceback.print_exc()
-            return None
-
-    def block_model_by_path(self, file_path: str) -> GLDrawable:
-        try:
-            element = self.model.block_model_by_path(file_path)
-            return self.add_drawable(element, BlockModelGL)
-        except Exception:
-            traceback.print_exc()
-            return None
+        return self.add_drawable(self.model.block_model, BlockModelGL, *args, **kwargs)
 
     def lines(self, *args, **kwargs) -> GLDrawable:
-        try:
-            element = self.model.lines(*args, **kwargs)
-            return self.add_drawable(element, LineGL)
-        except Exception:
-            traceback.print_exc()
-            return None
+        return self.add_drawable(self.model.lines, LineGL, *args, **kwargs)
 
     def tubes(self, *args, **kwargs) -> GLDrawable:
-        try:
-            element = self.model.tubes(*args, **kwargs)
-            return self.add_drawable(element, TubeGL)
-        except Exception:
-            traceback.print_exc()
-            return None
+        return self.add_drawable(self.model.tubes, TubeGL, *args, **kwargs)
+
+    def mesh_by_path(self, file_path: str, *args, **kwargs) -> GLDrawable:
+        return self.add_drawable(self.model.mesh_by_path, MeshGL, file_path, *args, **kwargs)
+
+    def block_model_by_path(self, file_path: str, *args, **kwargs) -> GLDrawable:
+        return self.add_drawable(self.model.block_model_by_path, BlockModelGL, file_path, *args, **kwargs)
 
     """
     Individual drawable manipulation
