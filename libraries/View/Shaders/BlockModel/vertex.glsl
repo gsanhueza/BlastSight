@@ -14,5 +14,5 @@ void main()
 {
     gl_Position = proj_matrix * model_view_matrix * vec4(a_position + a_template, 1.0);
     v_color = a_color;
-    pos_mv = (model_view_matrix * vec4(a_position + a_template, 1.0)).xyz;
+//    pos_mv = (model_view_matrix * vec4(a_position + a_template, 1.0)).xyz;
 }
