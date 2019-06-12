@@ -33,4 +33,5 @@ void main()
 //
 //    out_color = vec4(0.05 + (front_light_bias * color_front) + ((1 - front_light_bias) * color_up), 1.0);
     out_color = vec4(v_color, 1.0);
+    out_color = vec4(1.0);
 }

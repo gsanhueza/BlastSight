@@ -68,13 +68,13 @@ class BlockModelGL(GLDrawable):
         min_val = values.min() if values.size > 0 else 0.0
         max_val = values.max() if values.size > 0 else 1.0
 
-        norm_func = partial(partial(normalize, min_val), max_val)
-        normalized_values = np.vectorize(norm_func, otypes=[np.float32])(values)
+        # norm_func = partial(partial(normalize, min_val), max_val)
+        # normalized_values = np.vectorize(norm_func, otypes=[np.float32])(values)
 
         # WARNING colorsys.hsv_to_rgb returns a tuple. but np.vectorize doesn't accept it as tuple
         # hue[0/3, 1/3, 2/3, 3/3] == [red, green, blue, red]
-        values = np.array(list(map(lambda hue: colorsys.hsv_to_rgb(2 * hue / 3, 1.0, 1.0),
-                                   normalized_values)), np.float32)
+        # values = np.array(list(map(lambda hue: colorsys.hsv_to_rgb(2 * hue / 3, 1.0, 1.0),
+        #                            normalized_values)), np.float32)
 
         self.vertices_size = vertices.size
         self.values_size = values.size
