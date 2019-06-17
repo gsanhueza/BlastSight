@@ -49,19 +49,20 @@ class BlockModelGL(GLDrawable):
 
         _POSITION = 0
         _COLOR = 1
-        # _TEMPLATE = 2
+        _TEMPLATE = 2
 
         # VBO
         vertices_vbo = QOpenGLBuffer(QOpenGLBuffer.VertexBuffer)
         values_vbo = QOpenGLBuffer(QOpenGLBuffer.VertexBuffer)
-        # template_vbo = QOpenGLBuffer(QOpenGLBuffer.VertexBuffer)
+        template_vbo = QOpenGLBuffer(QOpenGLBuffer.VertexBuffer)
 
         vertices_vbo.create()
         values_vbo.create()
-        # template_vbo.create()
+        template_vbo.create()
 
         # Data
         # template = self.generate_cube(self.element.block_size)
+        template = np.array([0.0, 0.0, 0.0], np.float32)
         vertices = self.element.vertices
         values = self.element.values
 
@@ -90,17 +91,17 @@ class BlockModelGL(GLDrawable):
         glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * self.values_size, values, GL_STATIC_DRAW)
         glVertexAttribPointer(_COLOR, 3, GL_FLOAT, False, 0, None)
 
-        # template_vbo.bind()
-        # glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * template.size, template, GL_STATIC_DRAW)
-        # glVertexAttribPointer(_TEMPLATE, 3, GL_FLOAT, False, 0, None)
+        template_vbo.bind()
+        glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * template.size, template, GL_STATIC_DRAW)
+        glVertexAttribPointer(_TEMPLATE, 3, GL_FLOAT, False, 0, None)
 
-        # glVertexAttribDivisor(_POSITION, 1)
-        # glVertexAttribDivisor(_COLOR, 1)
-        # glVertexAttribDivisor(_TEMPLATE, 0)
+        glVertexAttribDivisor(_POSITION, 1)
+        glVertexAttribDivisor(_COLOR, 1)
+        glVertexAttribDivisor(_TEMPLATE, 0)
 
         glEnableVertexAttribArray(_POSITION)
         glEnableVertexAttribArray(_COLOR)
-        # glEnableVertexAttribArray(_TEMPLATE)
+        glEnableVertexAttribArray(_TEMPLATE)
 
         self.vao.release()
 
@@ -122,7 +123,7 @@ class BlockModelGL(GLDrawable):
 
         # np.array([[0, 1, 2]], type) has size 3, despite having only 1 list there
         # glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 14, self.vertices_size // 3)
-        glDrawArrays(GL_POINTS, 0, self.vertices_size // 3)
+        glDrawArraysInstanced(GL_POINTS, 0, 3, self.vertices_size // 3)
 
         self.vao.release()
 
