@@ -25,6 +25,9 @@ class BlockModelGL(GLDrawable):
         self.vertices_size = 0
         self.values_size = 0
 
+        self.min_val = 0.0
+        self.max_val = 1.0
+
         # Block size
         self.block_size = 1.0
 
@@ -111,9 +114,6 @@ class BlockModelGL(GLDrawable):
         self.block_size_loc = self.shader_program.uniformLocation('block_size')
         self.min_max_loc = self.shader_program.uniformLocation('min_max')
 
-        self.shader_program.setUniformValue(self.block_size_loc, QVector2D(self.block_size, 0.0))
-        self.shader_program.setUniformValue(self.min_max_loc, QVector2D(self.min_val, self.max_val))
-
     def draw(self, proj_matrix=None, view_matrix=None, model_matrix=None):
         if not self.is_visible:
             return
@@ -121,6 +121,8 @@ class BlockModelGL(GLDrawable):
         self.shader_program.bind()
         self.shader_program.setUniformValue(self.proj_matrix_loc, proj_matrix)
         self.shader_program.setUniformValue(self.model_view_matrix_loc, view_matrix * model_matrix)
+        self.shader_program.setUniformValue(self.block_size_loc, QVector2D(self.block_size, 0.0))
+        self.shader_program.setUniformValue(self.min_max_loc, QVector2D(self.min_val, self.max_val))
 
         self.vao.bind()
 
