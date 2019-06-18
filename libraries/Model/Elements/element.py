@@ -16,7 +16,7 @@ class Element:
 
     def _init_fill(self, *args, **kwargs):
         if 'vertices' in kwargs.keys():
-            self.x, self.y, self.z = zip(*kwargs.get('vertices'))
+            self.vertices = kwargs.get('vertices')
 
         elif all(elem in list(kwargs.keys()) for elem in ['x', 'y', 'z']):
             self.x, self.y, self.z = list(map(lambda s: kwargs.get(s), ['x', 'y', 'z']))
@@ -84,10 +84,7 @@ class Element:
 
     @vertices.setter
     def vertices(self, vertices: list) -> None:
-        x, y, z = zip(*vertices)
-        self._x = np.array(x, np.float32)
-        self._y = np.array(y, np.float32)
-        self._z = np.array(z, np.float32)
+        self._x, self._y, self._z = np.array(vertices).T
 
     @property
     def centroid(self) -> np.ndarray:
