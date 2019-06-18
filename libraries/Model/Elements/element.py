@@ -16,16 +16,18 @@ class Element:
 
     def _init_fill(self, *args, **kwargs):
         if 'vertices' in kwargs.keys():
-            self.x, self.y, self.z = zip(*kwargs.get('vertices'))
+            self.vertices = kwargs.get('vertices')
 
         elif all(elem in list(kwargs.keys()) for elem in ['x', 'y', 'z']):
-            self.x, self.y, self.z = list(map(lambda s: kwargs.get(s), ['x', 'y', 'z']))
-
-            assert self.x.size == self.y.size == self.z.size,\
-                f'Coordinates have different lengths: ({self.x.size}, {self.y.size}, {self.z.size})'
+            self.x = kwargs.get('x')
+            self.y = kwargs.get('y')
+            self.z = kwargs.get('z')
 
         else:
             raise KeyError(f'Must pass ["x", "y", "z"] or "vertices" as kwargs, got {list(kwargs.keys())}.')
+
+        assert self.x.size == self.y.size == self.z.size, \
+            f'Coordinates have different lengths: ({self.x.size}, {self.y.size}, {self.z.size})'
 
         self.name = kwargs.get('name', None)
         self.ext = kwargs.get('ext', None)
@@ -80,14 +82,11 @@ class Element:
 
     @property
     def vertices(self) -> np.ndarray:
-        return np.array(list(zip(self._x, self._y, self._z)), np.float32)
+        return np.column_stack((self._x, self._y, self._z))
 
     @vertices.setter
     def vertices(self, vertices: list) -> None:
-        x, y, z = zip(*vertices)
-        self._x = np.array(x, np.float32)
-        self._y = np.array(y, np.float32)
-        self._z = np.array(z, np.float32)
+        self._x, self._y, self._z = np.array(vertices, np.float32).T
 
     @property
     def centroid(self) -> np.ndarray:

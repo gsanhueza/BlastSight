@@ -15,7 +15,8 @@ class MeshElement(Element):
 
         self.indices = kwargs.get('indices')
         self.values = kwargs.get('color', list(map(lambda x: random(), range(3))))
-        assert self.x.size >= self.indices.max() + 1
+
+        assert self.x.size == self.indices.max() + 1
 
     @property
     def indices(self) -> np.array:
