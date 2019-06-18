@@ -19,13 +19,15 @@ class Element:
             self.vertices = kwargs.get('vertices')
 
         elif all(elem in list(kwargs.keys()) for elem in ['x', 'y', 'z']):
-            self.x, self.y, self.z = list(map(lambda s: kwargs.get(s), ['x', 'y', 'z']))
-
-            assert self.x.size == self.y.size == self.z.size,\
-                f'Coordinates have different lengths: ({self.x.size}, {self.y.size}, {self.z.size})'
+            self.x = kwargs.get('x')
+            self.y = kwargs.get('y')
+            self.z = kwargs.get('z')
 
         else:
             raise KeyError(f'Must pass ["x", "y", "z"] or "vertices" as kwargs, got {list(kwargs.keys())}.')
+
+        assert self.x.size == self.y.size == self.z.size, \
+            f'Coordinates have different lengths: ({self.x.size}, {self.y.size}, {self.z.size})'
 
         self.name = kwargs.get('name', None)
         self.ext = kwargs.get('ext', None)
