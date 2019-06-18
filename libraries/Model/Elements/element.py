@@ -80,7 +80,7 @@ class Element:
 
     @property
     def vertices(self) -> np.ndarray:
-        return np.array(list(zip(self._x, self._y, self._z)), np.float32)
+        return np.column_stack((self._x, self._y, self._z))
 
     @vertices.setter
     def vertices(self, vertices: list) -> None:
