@@ -84,7 +84,7 @@ class Element:
 
     @vertices.setter
     def vertices(self, vertices: list) -> None:
-        self._x, self._y, self._z = np.array(vertices).T
+        self._x, self._y, self._z = np.array(vertices, np.float32).T
 
     @property
     def centroid(self) -> np.ndarray:
