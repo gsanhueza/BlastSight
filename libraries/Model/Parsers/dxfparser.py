@@ -25,16 +25,7 @@ class DXFParser:
 
                 # Faces
                 face_pointers.append(vertices_dict[vertex])
-            faces.append(tuple(face_pointers))
+            faces.append(face_pointers[:3])
 
         # Model data
-        return list(vertices_dict.keys()), DXFParser.parse_faces(faces)
-
-    @staticmethod
-    def parse_faces(faces: list) -> list:
-        # Converts a list of 4-tuples into a list of 3-tuples
-        # WARNING Why does this happen?
-        # tuple((f[0], f[1], f[2])) is useful
-        # tuple((f[2], f[3], f[0])) isn't useful
-
-        return list(map(lambda x: x[:3], faces))
+        return list(vertices_dict.keys()), faces
