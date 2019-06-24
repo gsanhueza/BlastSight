@@ -15,6 +15,7 @@ from ..Drawables.gldrawable import GLDrawable
 
 from ..Drawables.blockmodelgl import BlockModelGL
 from ..Drawables.meshgl import MeshGL
+from ..Drawables.pointgl import PointGL
 from ..Drawables.linegl import LineGL
 from ..Drawables.tubegl import TubeGL
 from ..Drawables.backgroundgl import BackgroundGL
@@ -141,6 +142,9 @@ class IntegrableViewer(QOpenGLWidget):
 
     def block_model(self, *args, **kwargs) -> GLDrawable:
         return self.add_drawable(self.model.block_model, BlockModelGL, *args, **kwargs)
+
+    def points(self, *args, **kwargs) -> GLDrawable:
+        return self.add_drawable(self.model.points, PointGL, *args, **kwargs)
 
     def lines(self, *args, **kwargs) -> GLDrawable:
         return self.add_drawable(self.model.lines, LineGL, *args, **kwargs)

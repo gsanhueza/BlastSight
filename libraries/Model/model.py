@@ -5,6 +5,7 @@ from qtpy.QtCore import QFileInfo
 from .Elements.element import Element
 from .Elements.elementcollection import ElementCollection
 from .Elements.blockmodelelement import BlockModelElement
+from .Elements.pointelement import PointElement
 from .Elements.lineelement import LineElement
 from .Elements.meshelement import MeshElement
 from .Elements.tubeelement import TubeElement
@@ -41,6 +42,9 @@ class Model:
 
     def block_model(self, *args, **kwargs) -> BlockModelElement:
         return self._element(BlockModelElement, *args, **kwargs)
+
+    def points(self, *args, **kwargs) -> PointElement:
+        return self._element(PointElement, *args, **kwargs)
 
     def lines(self, *args, **kwargs) -> LineElement:
         return self._element(LineElement, *args, **kwargs)

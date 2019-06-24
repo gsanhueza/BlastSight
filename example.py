@@ -17,11 +17,17 @@ if __name__ == '__main__':
     mesh_p = viewer.mesh_by_path(f'{TEST_FILES_FOLDER_PATH}/caseron.off', color=[1.0, 0.0, 0.0])
     mesh_p.enable_wireframe()
 
-    block = viewer.block_model(x=[-3, 3, 0],
-                               y=[0, 0, 5],
-                               z=[0, 0, 0],
-                               block_size=[1.0, 1.0, 1.0],
-                               values=[0.5, 1.0, 1.5])
+    blocks = viewer.block_model(x=[-3, 3, 0],
+                                y=[0, 0, 5],
+                                z=[0, 0, 0],
+                                block_size=[1.0, 1.0, 1.0],
+                                values=[0.5, 1.0, 1.5])
+
+    points = viewer.points(x=[-3, 0, 3],
+                           y=[2, 2, 2],
+                           z=[0, 1, 2],
+                           point_size=10.0,
+                           values=[1.5, 1.0, 0.5])
 
     lines = viewer.lines(x=[-0.5, 0.5],
                          y=[-2.0, 1.5],

@@ -17,8 +17,7 @@ class Viewer(IntegrableViewer):
         sys.exit(self.app.exec_())
 
     def dragEnterEvent(self, event, *args, **kwargs) -> None:
-        if event.mimeData().hasText():
-            event.acceptProposedAction()
+        super().dragEnterEvent(event, *args, **kwargs)
 
     def dropEvent(self, event, *args, **kwargs) -> None:
         super().dropEvent(event, *args, **kwargs)
