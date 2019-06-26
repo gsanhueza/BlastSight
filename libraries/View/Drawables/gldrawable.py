@@ -69,7 +69,8 @@ class GLDrawable:
         pass
 
     def draw(self, proj_matrix=None, view_matrix=None, model_matrix=None) -> None:
-        pass
+        if not self.is_initialized:
+            self.initialize()
 
     """
     API for QTreeWidgetItem

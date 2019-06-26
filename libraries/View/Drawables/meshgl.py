@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 
 from qtpy.QtGui import QOpenGLBuffer
-from qtpy.QtGui import QOpenGLShader
-from qtpy.QtGui import QOpenGLShaderProgram
 from qtpy.QtGui import QOpenGLVertexArrayObject
 from .gldrawable import GLDrawable
 from OpenGL.GL import *
@@ -69,10 +67,8 @@ class MeshGL(GLDrawable):
 
         self.vao.release()
 
-    def draw(self, proj_matrix=None, view_matrix=None, model_matrix=None):
-        if not self.is_initialized:
-            self.initialize()
-
+    def draw(self):
+        super().draw()
         if not self.is_visible:
             return
 

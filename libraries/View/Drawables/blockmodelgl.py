@@ -1,15 +1,9 @@
 #!/usr/bin/env python
 
 import numpy as np
-import colorsys
-from functools import partial
 
-from qtpy.QtGui import QOpenGLShaderProgram
-from qtpy.QtGui import QOpenGLVertexArrayObject
-from qtpy.QtGui import QVector2D
 from qtpy.QtGui import QOpenGLBuffer
-from qtpy.QtGui import QOpenGLShader
-
+from qtpy.QtGui import QOpenGLVertexArrayObject
 from .gldrawable import GLDrawable
 from OpenGL.GL import *
 
@@ -17,9 +11,6 @@ from OpenGL.GL import *
 class BlockModelGL(GLDrawable):
     def __init__(self, widget=None, element=None):
         super().__init__(widget, element)
-
-        # Uniforms
-        self.block_size_loc = None
 
         # Sizes
         self.vertices_size = 0
@@ -31,25 +22,14 @@ class BlockModelGL(GLDrawable):
         # Block size
         self.block_size = 1.0
 
-    def initialize_program(self) -> None:
-        self.shader_program = QOpenGLShaderProgram(self.widget.context())
-        self.vao = QOpenGLVertexArrayObject()
-        self.vao.create()
-
-    def initialize_shaders(self) -> None:
-        vertex_shader = QOpenGLShader(QOpenGLShader.Vertex)
-        fragment_shader = QOpenGLShader(QOpenGLShader.Fragment)
-        vertex_shader.compileSourceFile(f'{self._shader_dir}/BlockModel/vertex.glsl')
-        fragment_shader.compileSourceFile(f'{self._shader_dir}/BlockModel/fragment.glsl')
-
-        self.shader_program.addShader(vertex_shader)
-        self.shader_program.addShader(fragment_shader)
-        self.shader_program.link()
-
     def setup_attributes(self) -> None:
         _POSITION = 0
         _COLOR = 1
         _TEMPLATE = 2
+
+        self.vao = QOpenGLVertexArrayObject()
+        if not self.vao.isCreated():
+            self.vao.create()
 
         # VBO
         vertices_vbo = QOpenGLBuffer(QOpenGLBuffer.VertexBuffer)
@@ -104,29 +84,14 @@ class BlockModelGL(GLDrawable):
 
         self.vao.release()
 
-    def setup_uniforms(self) -> None:
-        self.model_view_matrix_loc = self.shader_program.uniformLocation('model_view_matrix')
-        self.proj_matrix_loc = self.shader_program.uniformLocation('proj_matrix')
-
-        self.block_size_loc = self.shader_program.uniformLocation('block_size')
-        self.min_max_loc = self.shader_program.uniformLocation('min_max')
-
-    def draw(self, proj_matrix=None, view_matrix=None, model_matrix=None):
+    def draw(self):
+        super().draw()
         if not self.is_visible:
             return
 
-        self.shader_program.bind()
-        self.shader_program.setUniformValue(self.proj_matrix_loc, proj_matrix)
-        self.shader_program.setUniformValue(self.model_view_matrix_loc, view_matrix * model_matrix)
-        self.shader_program.setUniformValue(self.block_size_loc, QVector2D(self.block_size, 0.0))
-        self.shader_program.setUniformValue(self.min_max_loc, QVector2D(self.min_val, self.max_val))
-
         self.vao.bind()
-
         # np.array([[0, 1, 2]], type) has size 3, despite having only 1 list there
         glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 14, self.vertices_size // 3)
-
-        self.vao.release()
 
     # Taken from https://stackoverflow.com/questions/28375338/cube-using-single-gl-triangle-strip
     @staticmethod
