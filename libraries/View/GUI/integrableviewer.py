@@ -53,7 +53,7 @@ class IntegrableViewer(QOpenGLWidget):
         self._proj = QMatrix4x4()
 
         # World (we don't move the camera)
-        self._initial_position = [0.0, 0.0, -3.0]
+        self._initial_position = [0.0, 0.0, -200.0]
         self._initial_rotation = [0.0, 0.0, 0.0]
 
         self.xWorldPos, self.yWorldPos, self.zWorldPos = self._initial_position
