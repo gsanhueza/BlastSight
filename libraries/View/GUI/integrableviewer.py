@@ -45,7 +45,7 @@ class IntegrableViewer(QOpenGLWidget):
 
         # Drawable elements
         self.background = BackgroundGL(self, True)
-        self.drawable_collection = GLDrawableCollection()
+        self.drawable_collection = GLDrawableCollection(self)
 
         # Camera/World/Projection
         self._camera = QMatrix4x4()
@@ -220,6 +220,9 @@ class IntegrableViewer(QOpenGLWidget):
         glDisable(GL_DEPTH_TEST)
         self.background.draw()
         glEnable(GL_DEPTH_TEST)
+
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
+        glEnable(GL_BLEND)
 
         # Draw every GLDrawable (meshes, block models, etc)
         self.drawable_collection.draw(self.proj, self.camera, self.world)
