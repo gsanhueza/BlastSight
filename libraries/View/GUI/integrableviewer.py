@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import math
 import numpy as np
 import traceback
 
@@ -186,6 +187,12 @@ class IntegrableViewer(QOpenGLWidget):
         self.xWorldPos, self.yWorldPos, self.zWorldPos = self._initial_position
         self.xCentroid, self.yCentroid, self.zCentroid = drawable.element.centroid
 
+        dx = abs(drawable.element.x.max() - drawable.element.x.min())
+        dy = abs(drawable.element.y.max() - drawable.element.y.min())
+        dz = abs(drawable.element.z.max() - drawable.element.z.min())
+
+        # Put the camera in a position that allow us to see it
+        self.zWorldPos = -1.2 * max(dx, dy, dz) / math.tan(math.pi / 4)
         self.update()
 
     """
