@@ -9,6 +9,7 @@ from qtpy.QtWidgets import QOpenGLWidget
 from qtpy.QtGui import QPainter
 from qtpy.QtGui import QMatrix4x4
 from qtpy.QtGui import QVector3D
+from qtpy.QtGui import QVector4D
 
 from ..Drawables.gldrawablecollection import GLDrawableCollection
 from ..Drawables.gldrawable import GLDrawable
@@ -19,6 +20,7 @@ from ..Drawables.pointgl import PointGL
 from ..Drawables.linegl import LineGL
 from ..Drawables.tubegl import TubeGL
 from ..Drawables.backgroundgl import BackgroundGL
+from ..Drawables.backgroundprogram import BackgroundProgram
 
 from ..fpscounter import FPSCounter
 
@@ -45,6 +47,7 @@ class IntegrableViewer(QOpenGLWidget):
 
         # Drawable elements
         self.background = BackgroundGL(self, True)
+        self.background_program = BackgroundProgram(self)
         self.drawable_collection = GLDrawableCollection(self)
 
         # Camera/World/Projection
@@ -190,7 +193,10 @@ class IntegrableViewer(QOpenGLWidget):
     """
     def initializeGL(self) -> None:
         glClearColor(0.0, 0.0, 0.0, 1.0)
-        self.background.initialize()
+        self.background_program.setup_program()
+        self.background_program.bind()
+        self.background_program.update_uniform('top_color', QVector4D(30, 47, 73, 255) / 255)
+        self.background_program.update_uniform('bot_color', QVector4D(109, 126, 146, 255) / 255)
 
     def paintGL(self) -> None:
         self.painter.begin(self)
@@ -218,6 +224,7 @@ class IntegrableViewer(QOpenGLWidget):
 
         # Draw gradient background
         glDisable(GL_DEPTH_TEST)
+        self.background_program.bind()
         self.background.draw()
         glEnable(GL_DEPTH_TEST)
 
