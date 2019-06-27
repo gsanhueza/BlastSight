@@ -37,7 +37,7 @@ class TestIntegrableViewer:
         widget = IntegrableViewer()
         assert widget.camera_position[0] == 0.0
         assert widget.camera_position[1] == 0.0
-        assert widget.camera_position[2] == 3.0
+        assert widget.camera_position[2] == 200.0
 
         assert widget.camera_rotation[0] == 0.0
         assert widget.camera_rotation[1] == 0.0

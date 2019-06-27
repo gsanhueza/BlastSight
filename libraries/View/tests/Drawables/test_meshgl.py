@@ -63,11 +63,11 @@ class TestMeshGL:
 
         drawable.hide()
         assert not drawable.is_visible
-        drawable.draw(None, None, None)
+        drawable.draw()
 
         drawable.show()
         assert drawable.is_visible
-        drawable.draw(QMatrix4x4(), QMatrix4x4(), QMatrix4x4())
+        drawable.draw()
 
         drawable.hide()
         assert not drawable.is_visible

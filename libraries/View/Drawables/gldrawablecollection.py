@@ -14,7 +14,7 @@ from .blockmodelprogram import BlockModelProgram
 
 
 class GLDrawableCollection(OrderedDict):
-    def __init__(self, widget):
+    def __init__(self, widget=None):
         super().__init__()
         self.mesh_program = MeshProgram(widget)
         self.wireframe_program = WireframeProgram(widget)

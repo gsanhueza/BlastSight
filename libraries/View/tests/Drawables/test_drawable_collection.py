@@ -63,10 +63,11 @@ class TestGLDrawableCollection:
         assert len(collection) == 0
 
     def test_draw(self):
-        collection = GLDrawableCollection()
-        drawable_1 = GLDrawable(widget=IntegrableViewer(), element=self.element)
-        drawable_2 = GLDrawable(widget=IntegrableViewer(), element=self.element)
+        widget = IntegrableViewer()
+        collection = GLDrawableCollection(widget)
+        drawable_1 = GLDrawable(widget, element=self.element)
+        drawable_2 = GLDrawable(widget, element=self.element)
         collection.add(0, drawable_1)
         drawable_2.initialize()
         collection.add(1, drawable_2)
-        collection.draw(None, None, None)
+        collection.draw(widget.proj, widget.camera, widget.world)

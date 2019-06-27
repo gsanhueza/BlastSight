@@ -68,7 +68,7 @@ class GLDrawable:
     def setup_uniforms(self) -> None:
         pass
 
-    def draw(self, proj_matrix=None, view_matrix=None, model_matrix=None) -> None:
+    def draw(self) -> None:
         if not self.is_initialized:
             self.initialize()
 
