@@ -10,7 +10,6 @@ class MeshElement(Element):
     def __init__(self, *args, **kwargs):
         self._indices: np.ndarray = np.array([], np.float32)
         self._values: np.ndarray = np.array([], np.float32)
-        self._alpha = 1.0
 
         super().__init__(*args, **kwargs)
 
@@ -35,11 +34,3 @@ class MeshElement(Element):
     @values.setter
     def values(self, values: list):
         self._values = np.array(values, np.float32)
-
-    @property
-    def alpha(self):
-        return self._alpha
-
-    @alpha.setter
-    def alpha(self, val):
-        self._alpha = val

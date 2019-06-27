@@ -11,6 +11,7 @@ class Element:
         self._name: str = None
         self._ext: str = None
         self._id: int = None
+        self._alpha = None
 
         self._init_fill(*args, **kwargs)
 
@@ -31,6 +32,7 @@ class Element:
 
         self.name = kwargs.get('name', None)
         self.ext = kwargs.get('ext', None)
+        self.alpha = kwargs.get('alpha', 1.0)
 
     @property
     def x(self) -> np.ndarray:
@@ -87,6 +89,14 @@ class Element:
     @vertices.setter
     def vertices(self, vertices: list) -> None:
         self._x, self._y, self._z = np.array(vertices, np.float32).T
+
+    @property
+    def alpha(self):
+        return self._alpha
+
+    @alpha.setter
+    def alpha(self, val):
+        self._alpha = val
 
     @property
     def centroid(self) -> np.ndarray:
