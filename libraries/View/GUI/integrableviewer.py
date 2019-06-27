@@ -200,7 +200,7 @@ class IntegrableViewer(QOpenGLWidget):
     """
     def initializeGL(self) -> None:
         glClearColor(0.0, 0.0, 0.0, 1.0)
-        self.background_program.setup_program()
+        self.background_program.setup()
         self.background_program.bind()
         self.background_program.update_uniform('top_color', QVector4D(30, 47, 73, 255) / 255)
         self.background_program.update_uniform('bot_color', QVector4D(109, 126, 146, 255) / 255)

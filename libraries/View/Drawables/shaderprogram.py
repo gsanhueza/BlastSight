@@ -12,7 +12,7 @@ class ShaderProgram:
         self.shader_program = None
         self.uniform_locs = {}
 
-    def setup_program(self) -> None:
+    def setup(self) -> None:
         if self.shader_program:
             return
 

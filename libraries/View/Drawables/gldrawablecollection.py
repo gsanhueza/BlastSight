@@ -35,7 +35,7 @@ class GLDrawableCollection(OrderedDict):
     def draw(self, proj_matrix, view_matrix, model_matrix) -> None:
         # FIXME Generalize to avoid code duplication
         # Meshes
-        self.mesh_program.setup_program()
+        self.mesh_program.setup()
         self.mesh_program.bind()
 
         self.mesh_program.update_uniform('proj_matrix', proj_matrix)
@@ -46,7 +46,7 @@ class GLDrawableCollection(OrderedDict):
             drawable.draw()
 
         # Wireframe meshes
-        self.wireframe_program.setup_program()
+        self.wireframe_program.setup()
         self.wireframe_program.bind()
 
         self.wireframe_program.update_uniform('proj_matrix', proj_matrix)
@@ -58,7 +58,7 @@ class GLDrawableCollection(OrderedDict):
             drawable.draw()
 
         # Block Models
-        self.blockmodel_program.setup_program()
+        self.blockmodel_program.setup()
         self.blockmodel_program.bind()
 
         self.blockmodel_program.update_uniform('proj_matrix', proj_matrix)
@@ -71,7 +71,7 @@ class GLDrawableCollection(OrderedDict):
             drawable.draw()
 
         # Lines
-        self.line_program.setup_program()
+        self.line_program.setup()
         self.line_program.bind()
 
         self.line_program.update_uniform('proj_matrix', proj_matrix)
@@ -81,7 +81,7 @@ class GLDrawableCollection(OrderedDict):
             drawable.draw()
 
         # Points
-        self.point_program.setup_program()
+        self.point_program.setup()
         self.point_program.bind()
 
         self.point_program.update_uniform('proj_matrix', proj_matrix)
@@ -94,7 +94,7 @@ class GLDrawableCollection(OrderedDict):
             drawable.draw()
 
         # Tubes
-        self.tube_program.setup_program()
+        self.tube_program.setup()
         self.tube_program.bind()
 
         self.tube_program.update_uniform('proj_matrix', proj_matrix)

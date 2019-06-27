@@ -10,8 +10,8 @@ class BackgroundProgram(ShaderProgram):
     def __init__(self, widget):
         super().__init__(widget)
 
-    def setup_program(self) -> None:
-        super().setup_program()
+    def setup(self) -> None:
+        super().setup()
         self.add_uniform_loc('top_color')
         self.add_uniform_loc('bot_color')
 
