@@ -223,6 +223,7 @@ class IntegrableViewer(QOpenGLWidget):
 
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
         glEnable(GL_BLEND)
+        glEnable(GL_VERTEX_PROGRAM_POINT_SIZE)
 
         # Draw every GLDrawable (meshes, block models, etc)
         self.drawable_collection.draw(self.proj, self.camera, self.world)

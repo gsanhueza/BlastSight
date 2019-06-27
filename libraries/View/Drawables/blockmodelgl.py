@@ -20,7 +20,7 @@ class BlockModelGL(GLDrawable):
         self.max_val = 1.0
 
         # Block size
-        self.block_size = 1.0
+        self.block_size = element.block_size
         self.vao = QOpenGLVertexArrayObject()
 
     def setup_attributes(self) -> None:
