@@ -10,11 +10,13 @@ class MeshElement(Element):
     def __init__(self, *args, **kwargs):
         self._indices: np.ndarray = np.array([], np.float32)
         self._values: np.ndarray = np.array([], np.float32)
+        self._alpha = 1.0
 
         super().__init__(*args, **kwargs)
 
         self.indices = kwargs.get('indices')
         self.values = kwargs.get('color', list(map(lambda x: random(), range(3))))
+        self.alpha = kwargs.get('alpha', 1.0)
 
         assert self.x.size == self.indices.max() + 1
 
@@ -36,4 +38,8 @@ class MeshElement(Element):
 
     @property
     def alpha(self):
-        return 0.7  # FIXME Get from loaded data
+        return self._alpha
+
+    @alpha.setter
+    def alpha(self, val):
+        self._alpha = val

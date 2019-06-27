@@ -12,6 +12,7 @@ if __name__ == '__main__':
                        z=[0, 0, 0],
                        color=[0.0, 0.0, 1.0],
                        indices=[[0, 1, 2]],
+                       alpha=0.4,
                        name='mesh_name')
 
     mesh_p = viewer.mesh_by_path(f'{TEST_FILES_FOLDER_PATH}/caseron.off', color=[1.0, 0.0, 0.0])
