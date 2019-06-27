@@ -2,8 +2,6 @@
 
 import pytest
 
-from qtpy.QtGui import QMatrix4x4
-
 from libraries.Model.Elements.lineelement import LineElement
 from libraries.View.GUI.integrableviewer import IntegrableViewer
 from libraries.View.Drawables.linegl import LineGL
@@ -40,7 +38,7 @@ class TestLineGL:
 
     def test_draw(self):
         drawable = LineGL(widget=IntegrableViewer(), element=self.element)
-        drawable.initialize()
+        drawable.setup_attributes()
 
         drawable.hide()
         assert not drawable.is_visible

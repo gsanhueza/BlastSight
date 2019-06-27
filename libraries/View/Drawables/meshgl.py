@@ -12,7 +12,7 @@ class MeshGL(GLDrawable):
 
         # Uniforms
         self.color = self.element.values
-        self.alpha = 0.5  # self.model_element.get_alpha()
+        self.alpha = self.element.alpha
 
         # Sizes
         self.vertices_size = 0

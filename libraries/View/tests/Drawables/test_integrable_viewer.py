@@ -1,13 +1,9 @@
 #!/usr/bin/env python
 
 import pytest
-import sys
-
-from qtpy.QtWidgets import QApplication
 
 from libraries.Model.Elements.element import Element
 from libraries.Model.model import Model
-from libraries.View.Drawables.gldrawable import GLDrawable
 from libraries.View.Drawables.meshgl import MeshGL
 from libraries.View.Drawables.blockmodelgl import BlockModelGL
 from libraries.View.GUI.integrableviewer import IntegrableViewer
