@@ -3,17 +3,21 @@
 import pathlib
 
 from qtpy.QtGui import QOpenGLShader
-from .shaderprogram import ShaderProgram
+from qtpy.QtGui import QOpenGLShaderProgram
 
 
-class BackgroundProgram(ShaderProgram):
+class ShaderProgram:
     def __init__(self, widget):
-        super().__init__(widget)
+        self.widget = widget
+        self.shader_program = None
+        self.uniform_locs = {}
 
     def setup_program(self) -> None:
-        super().setup_program()
-        self.add_uniform_loc('top_color')
-        self.add_uniform_loc('bot_color')
+        if self.shader_program:
+            return
+
+        self.shader_program = QOpenGLShaderProgram(self.widget.context())
+        self.setup_shaders()
 
     def setup_shaders(self) -> None:
         # Shaders
@@ -27,3 +31,12 @@ class BackgroundProgram(ShaderProgram):
         self.shader_program.addShader(vertex_shader)
         self.shader_program.addShader(fragment_shader)
         self.shader_program.link()
+
+    def add_uniform_loc(self, loc_str) -> None:
+        self.uniform_locs[loc_str] = self.shader_program.uniformLocation(loc_str)
+
+    def update_uniform(self, loc_str, *values) -> None:
+        self.shader_program.setUniformValue(self.uniform_locs[loc_str], *values)
+
+    def bind(self) -> None:
+        self.shader_program.bind()

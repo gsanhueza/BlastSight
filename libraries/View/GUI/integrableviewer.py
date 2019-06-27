@@ -141,25 +141,25 @@ class IntegrableViewer(QOpenGLWidget):
             traceback.print_exc()
             return None
 
-    def mesh(self, *args, **kwargs) -> GLDrawable:
+    def mesh(self, *args, **kwargs) -> MeshGL:
         return self.add_drawable(self.model.mesh, MeshGL, *args, **kwargs)
 
-    def block_model(self, *args, **kwargs) -> GLDrawable:
+    def block_model(self, *args, **kwargs) -> BlockModelGL:
         return self.add_drawable(self.model.block_model, BlockModelGL, *args, **kwargs)
 
-    def points(self, *args, **kwargs) -> GLDrawable:
+    def points(self, *args, **kwargs) -> PointGL:
         return self.add_drawable(self.model.points, PointGL, *args, **kwargs)
 
-    def lines(self, *args, **kwargs) -> GLDrawable:
+    def lines(self, *args, **kwargs) -> LineGL:
         return self.add_drawable(self.model.lines, LineGL, *args, **kwargs)
 
-    def tubes(self, *args, **kwargs) -> GLDrawable:
+    def tubes(self, *args, **kwargs) -> TubeGL:
         return self.add_drawable(self.model.tubes, TubeGL, *args, **kwargs)
 
-    def mesh_by_path(self, file_path: str, *args, **kwargs) -> GLDrawable:
+    def mesh_by_path(self, file_path: str, *args, **kwargs) -> MeshGL:
         return self.add_drawable(self.model.mesh_by_path, MeshGL, file_path, *args, **kwargs)
 
-    def block_model_by_path(self, file_path: str, *args, **kwargs) -> GLDrawable:
+    def block_model_by_path(self, file_path: str, *args, **kwargs) -> BlockModelGL:
         return self.add_drawable(self.model.block_model_by_path, BlockModelGL, file_path, *args, **kwargs)
 
     """
