@@ -106,9 +106,6 @@ class GLDrawableCollection(OrderedDict):
     def filter(self, drawable_type):
         return list(filter(lambda x: isinstance(x, drawable_type), self.values()))
 
-    def get_meshes(self):
-        return self.filter(MeshGL)
-
     @property
     def normal_meshes(self):
         return list(filter(lambda x: not x.wireframe_enabled, self.filter(MeshGL)))
