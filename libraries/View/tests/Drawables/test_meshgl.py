@@ -5,6 +5,7 @@ import pytest
 from libraries.Model.Elements.meshelement import MeshElement
 from libraries.View.GUI.integrableviewer import IntegrableViewer
 from libraries.View.Drawables.meshgl import MeshGL
+from libraries.View.Drawables.meshprogram import MeshProgram
 
 
 class TestMeshGL:
@@ -62,7 +63,12 @@ class TestMeshGL:
         assert drawable.wireframe_enabled
 
     def test_draw(self):
-        drawable = MeshGL(widget=IntegrableViewer(), element=self.element)
+        widget = IntegrableViewer()
+        program = MeshProgram(widget)
+        program.setup()
+        program.bind()
+
+        drawable = MeshGL(widget=widget, element=self.element)
         drawable.setup_attributes()
 
         drawable.hide()
