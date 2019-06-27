@@ -21,13 +21,13 @@ class BlockModelGL(GLDrawable):
 
         # Block size
         self.block_size = 1.0
+        self.vao = QOpenGLVertexArrayObject()
 
     def setup_attributes(self) -> None:
         _POSITION = 0
         _COLOR = 1
         _TEMPLATE = 2
 
-        self.vao = QOpenGLVertexArrayObject()
         if not self.vao.isCreated():
             self.vao.create()
 

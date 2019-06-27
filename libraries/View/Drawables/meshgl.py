@@ -20,6 +20,7 @@ class MeshGL(GLDrawable):
 
         # Wireframe
         self.wireframe_enabled = False
+        self.vao = QOpenGLVertexArrayObject()
 
     def toggle_wireframe(self) -> bool:
         self.wireframe_enabled = not self.wireframe_enabled
@@ -34,8 +35,8 @@ class MeshGL(GLDrawable):
     def setup_attributes(self) -> None:
         _POSITION = 0
 
-        self.vao = QOpenGLVertexArrayObject()
-        self.vao.create()
+        if not self.vao.isCreated():
+            self.vao.create()
 
         # VBO
         vertices_vbo = QOpenGLBuffer(QOpenGLBuffer.VertexBuffer)
