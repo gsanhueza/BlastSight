@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import math
 import numpy as np
 import traceback
 
@@ -9,6 +10,7 @@ from qtpy.QtWidgets import QOpenGLWidget
 from qtpy.QtGui import QPainter
 from qtpy.QtGui import QMatrix4x4
 from qtpy.QtGui import QVector3D
+from qtpy.QtGui import QVector4D
 
 from ..Drawables.gldrawablecollection import GLDrawableCollection
 from ..Drawables.gldrawable import GLDrawable
@@ -19,6 +21,7 @@ from ..Drawables.pointgl import PointGL
 from ..Drawables.linegl import LineGL
 from ..Drawables.tubegl import TubeGL
 from ..Drawables.backgroundgl import BackgroundGL
+from ..Drawables.backgroundprogram import BackgroundProgram
 
 from ..fpscounter import FPSCounter
 
@@ -45,7 +48,8 @@ class IntegrableViewer(QOpenGLWidget):
 
         # Drawable elements
         self.background = BackgroundGL(self, True)
-        self.drawable_collection = GLDrawableCollection()
+        self.background_program = BackgroundProgram(self)
+        self.drawable_collection = GLDrawableCollection(self)
 
         # Camera/World/Projection
         self._camera = QMatrix4x4()
@@ -137,25 +141,25 @@ class IntegrableViewer(QOpenGLWidget):
             traceback.print_exc()
             return None
 
-    def mesh(self, *args, **kwargs) -> GLDrawable:
+    def mesh(self, *args, **kwargs) -> MeshGL:
         return self.add_drawable(self.model.mesh, MeshGL, *args, **kwargs)
 
-    def block_model(self, *args, **kwargs) -> GLDrawable:
+    def block_model(self, *args, **kwargs) -> BlockModelGL:
         return self.add_drawable(self.model.block_model, BlockModelGL, *args, **kwargs)
 
-    def points(self, *args, **kwargs) -> GLDrawable:
+    def points(self, *args, **kwargs) -> PointGL:
         return self.add_drawable(self.model.points, PointGL, *args, **kwargs)
 
-    def lines(self, *args, **kwargs) -> GLDrawable:
+    def lines(self, *args, **kwargs) -> LineGL:
         return self.add_drawable(self.model.lines, LineGL, *args, **kwargs)
 
-    def tubes(self, *args, **kwargs) -> GLDrawable:
+    def tubes(self, *args, **kwargs) -> TubeGL:
         return self.add_drawable(self.model.tubes, TubeGL, *args, **kwargs)
 
-    def mesh_by_path(self, file_path: str, *args, **kwargs) -> GLDrawable:
+    def mesh_by_path(self, file_path: str, *args, **kwargs) -> MeshGL:
         return self.add_drawable(self.model.mesh_by_path, MeshGL, file_path, *args, **kwargs)
 
-    def block_model_by_path(self, file_path: str, *args, **kwargs) -> GLDrawable:
+    def block_model_by_path(self, file_path: str, *args, **kwargs) -> BlockModelGL:
         return self.add_drawable(self.model.block_model_by_path, BlockModelGL, file_path, *args, **kwargs)
 
     """
@@ -183,6 +187,12 @@ class IntegrableViewer(QOpenGLWidget):
         self.xWorldPos, self.yWorldPos, self.zWorldPos = self._initial_position
         self.xCentroid, self.yCentroid, self.zCentroid = drawable.element.centroid
 
+        dx = abs(drawable.element.x.max() - drawable.element.x.min())
+        dy = abs(drawable.element.y.max() - drawable.element.y.min())
+        dz = abs(drawable.element.z.max() - drawable.element.z.min())
+
+        # Put the camera in a position that allow us to see it
+        self.zWorldPos = -1.2 * max(dx, dy, dz) / math.tan(math.pi / 4)
         self.update()
 
     """
@@ -190,7 +200,10 @@ class IntegrableViewer(QOpenGLWidget):
     """
     def initializeGL(self) -> None:
         glClearColor(0.0, 0.0, 0.0, 1.0)
-        self.background.initialize()
+        self.background_program.setup()
+        self.background_program.bind()
+        self.background_program.update_uniform('top_color', QVector4D(30, 47, 73, 255) / 255)
+        self.background_program.update_uniform('bot_color', QVector4D(109, 126, 146, 255) / 255)
 
     def paintGL(self) -> None:
         self.painter.begin(self)
@@ -218,8 +231,13 @@ class IntegrableViewer(QOpenGLWidget):
 
         # Draw gradient background
         glDisable(GL_DEPTH_TEST)
+        self.background_program.bind()
         self.background.draw()
         glEnable(GL_DEPTH_TEST)
+
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
+        glEnable(GL_BLEND)
+        glEnable(GL_VERTEX_PROGRAM_POINT_SIZE)
 
         # Draw every GLDrawable (meshes, block models, etc)
         self.drawable_collection.draw(self.proj, self.camera, self.world)

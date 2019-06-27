@@ -33,3 +33,7 @@ class MeshElement(Element):
     @values.setter
     def values(self, values: list):
         self._values = np.array(values, np.float32)
+
+    @property
+    def alpha(self):
+        return 0.7  # FIXME Get from loaded data

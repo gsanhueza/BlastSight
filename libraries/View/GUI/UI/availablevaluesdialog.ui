@@ -11,16 +11,6 @@
    </rect>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="6" column="0" colspan="2">
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
-     </property>
-    </widget>
-   </item>
    <item row="0" column="0">
     <widget class="QLabel" name="label_x">
      <property name="text">
@@ -28,21 +18,12 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="1">
-    <widget class="QComboBox" name="comboBox_x"/>
-   </item>
    <item row="1" column="0">
     <widget class="QLabel" name="label_y">
      <property name="text">
       <string>Coordinate Y (Northing)</string>
      </property>
     </widget>
-   </item>
-   <item row="1" column="1">
-    <widget class="QComboBox" name="comboBox_y"/>
-   </item>
-   <item row="2" column="1">
-    <widget class="QComboBox" name="comboBox_z"/>
    </item>
    <item row="2" column="0">
     <widget class="QLabel" name="label_z">
@@ -58,8 +39,27 @@
      </property>
     </widget>
    </item>
+   <item row="0" column="1">
+    <widget class="QComboBox" name="comboBox_x"/>
+   </item>
+   <item row="1" column="1">
+    <widget class="QComboBox" name="comboBox_y"/>
+   </item>
+   <item row="2" column="1">
+    <widget class="QComboBox" name="comboBox_z"/>
+   </item>
    <item row="3" column="1">
     <widget class="QComboBox" name="comboBox_values"/>
+   </item>
+   <item row="6" column="0" colspan="2">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>

@@ -2,8 +2,6 @@
 
 import pytest
 
-from qtpy.QtGui import QMatrix4x4
-
 from libraries.Model.Elements.blockmodelelement import BlockModelElement
 from libraries.View.GUI.integrableviewer import IntegrableViewer
 from libraries.View.Drawables.blockmodelgl import BlockModelGL
@@ -40,15 +38,15 @@ class TestBlockModelGL:
 
     def test_draw(self):
         drawable = BlockModelGL(widget=IntegrableViewer(), element=self.element)
-        drawable.initialize()
+        drawable.setup_attributes()
 
         drawable.hide()
         assert not drawable.is_visible
-        drawable.draw(None, None, None)
+        drawable.draw()
 
         drawable.show()
         assert drawable.is_visible
-        drawable.draw(QMatrix4x4(), QMatrix4x4(), QMatrix4x4())
+        drawable.draw()
 
         drawable.hide()
         assert not drawable.is_visible

@@ -8,7 +8,6 @@ class NormalMode(Mode):
     def __init__(self, widget):
         super().__init__(widget)
         print("MODE: Normal Mode")
-
         self.lastPos = None
 
     def mousePressEvent(self, event):
@@ -32,4 +31,5 @@ class NormalMode(Mode):
         self.lastPos = QPoint(event.pos())
 
     def wheelEvent(self, event):
-        self.widget.zWorldPos += (event.angleDelta().y() / 120)
+        # self.widget.zWorldPos += (event.angleDelta().y() / 120)
+        self.widget.zWorldPos *= pow(1.2, -event.angleDelta().y() / 120)

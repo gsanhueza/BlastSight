@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 
 from qtpy.QtGui import QOpenGLBuffer
-from qtpy.QtGui import QOpenGLShader
-from qtpy.QtGui import QOpenGLShaderProgram
 from qtpy.QtGui import QOpenGLVertexArrayObject
 from .gldrawable import GLDrawable
 from OpenGL.GL import *
@@ -13,9 +11,8 @@ class MeshGL(GLDrawable):
         super().__init__(widget, element)
 
         # Uniforms
-        self.color_loc = None
-        self.color = None
-        self.alpha = None
+        self.color = self.element.values
+        self.alpha = self.element.alpha
 
         # Sizes
         self.vertices_size = 0
@@ -23,46 +20,23 @@ class MeshGL(GLDrawable):
 
         # Wireframe
         self.wireframe_enabled = False
-
-        # Programs
-        self.normal_program = None
-        self.wireframe_program = None
-
-    def initialize(self):
-        super().initialize()
-        self.update_wireframe()
-
-    def initialize_program(self) -> None:
-        self.normal_program = QOpenGLShaderProgram(self.widget.context())
-        self.wireframe_program = QOpenGLShaderProgram(self.widget.context())
-
         self.vao = QOpenGLVertexArrayObject()
-        self.vao.create()
 
-    def initialize_shaders(self) -> None:
-        vertex_shader = QOpenGLShader(QOpenGLShader.Vertex)
-        fragment_shader = QOpenGLShader(QOpenGLShader.Fragment)
-        fragment_wireframe_shader = QOpenGLShader(QOpenGLShader.Fragment)
-        geometry_shader = QOpenGLShader(QOpenGLShader.Geometry)
+    def toggle_wireframe(self) -> bool:
+        self.wireframe_enabled = not self.wireframe_enabled
+        return self.wireframe_enabled
 
-        vertex_shader.compileSourceFile(f'{self._shader_dir}/Mesh/vertex.glsl')
-        fragment_shader.compileSourceFile(f'{self._shader_dir}/Mesh/fragment.glsl')
-        fragment_wireframe_shader.compileSourceFile(f'{self._shader_dir}/Mesh/fragment_wireframe.glsl')
-        geometry_shader.compileSourceFile(f'{self._shader_dir}/Mesh/geometry.glsl')
+    def disable_wireframe(self) -> None:
+        self.wireframe_enabled = False
 
-        self.normal_program.addShader(vertex_shader)
-        self.normal_program.addShader(fragment_shader)
-        self.normal_program.link()
-
-        self.wireframe_program.addShader(vertex_shader)
-        self.wireframe_program.addShader(fragment_wireframe_shader)
-        self.wireframe_program.addShader(geometry_shader)
-        self.wireframe_program.link()
-
-        self.shader_program = self.normal_program
+    def enable_wireframe(self):
+        self.wireframe_enabled = True
 
     def setup_attributes(self) -> None:
         _POSITION = 0
+
+        if not self.vao.isCreated():
+            self.vao.create()
 
         # VBO
         vertices_vbo = QOpenGLBuffer(QOpenGLBuffer.VertexBuffer)
@@ -94,46 +68,10 @@ class MeshGL(GLDrawable):
 
         self.vao.release()
 
-    def setup_uniforms(self) -> None:
-        self.model_view_matrix_loc = self.shader_program.uniformLocation('model_view_matrix')
-        self.proj_matrix_loc = self.shader_program.uniformLocation('proj_matrix')
-        self.color_loc = self.shader_program.uniformLocation('u_color')
-
-        self.color = self.element.values
-        self.alpha = 1.0  # self.model_element.get_alpha()
-
-    def update_wireframe(self) -> None:
-        if self.shader_program:  # Will skip before viewer.show()
-            if self.wireframe_enabled:
-                self.enable_wireframe()
-            else:
-                self.disable_wireframe()
-
-    def toggle_wireframe(self) -> bool:
-        self.wireframe_enabled = not self.wireframe_enabled
-        self.update_wireframe()
-        return self.wireframe_enabled
-
-    def disable_wireframe(self) -> None:
-        self.shader_program = self.normal_program
-        self.wireframe_enabled = False
-
-    def enable_wireframe(self):
-        self.shader_program = self.wireframe_program
-        self.wireframe_enabled = True
-
-    def draw(self, proj_matrix=None, view_matrix=None, model_matrix=None):
+    def draw(self):
+        super().draw()
         if not self.is_visible:
             return
 
-        self.shader_program.bind()
-        self.shader_program.setUniformValue(self.proj_matrix_loc, proj_matrix)
-        self.shader_program.setUniformValue(self.model_view_matrix_loc, view_matrix * model_matrix)
-        self.shader_program.setUniformValue(self.color_loc,
-                                            float(self.color[0]),
-                                            float(self.color[1]),
-                                            float(self.color[2]),
-                                            self.alpha)
         self.vao.bind()
         glDrawElements(GL_TRIANGLES, self.indices_size, GL_UNSIGNED_INT, None)
-        self.vao.release()

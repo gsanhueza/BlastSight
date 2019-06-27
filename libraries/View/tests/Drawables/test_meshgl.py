@@ -2,11 +2,10 @@
 
 import pytest
 
-from qtpy.QtGui import QMatrix4x4
-
 from libraries.Model.Elements.meshelement import MeshElement
 from libraries.View.GUI.integrableviewer import IntegrableViewer
 from libraries.View.Drawables.meshgl import MeshGL
+from libraries.View.Drawables.meshprogram import MeshProgram
 
 
 class TestMeshGL:
@@ -57,17 +56,28 @@ class TestMeshGL:
         drawable.toggle_wireframe()
         assert not drawable.wireframe_enabled
 
+        drawable.disable_wireframe()
+        assert not drawable.wireframe_enabled
+
+        drawable.enable_wireframe()
+        assert drawable.wireframe_enabled
+
     def test_draw(self):
-        drawable = MeshGL(widget=IntegrableViewer(), element=self.element)
-        drawable.initialize()
+        widget = IntegrableViewer()
+        program = MeshProgram(widget)
+        program.setup()
+        program.bind()
+
+        drawable = MeshGL(widget=widget, element=self.element)
+        drawable.setup_attributes()
 
         drawable.hide()
         assert not drawable.is_visible
-        drawable.draw(None, None, None)
+        drawable.draw()
 
         drawable.show()
         assert drawable.is_visible
-        drawable.draw(QMatrix4x4(), QMatrix4x4(), QMatrix4x4())
+        drawable.draw()
 
         drawable.hide()
         assert not drawable.is_visible
