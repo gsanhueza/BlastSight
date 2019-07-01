@@ -167,9 +167,11 @@ class IntegrableViewer(QOpenGLWidget):
     """
     def show_drawable(self, id_: int) -> None:
         self.drawable_collection[id_].show()
+        self.update()
 
     def hide_drawable(self, id_: int) -> None:
         self.drawable_collection[id_].hide()
+        self.update()
 
     def get_drawable(self, id_: int) -> GLDrawable:
         return self.drawable_collection[id_]
@@ -177,10 +179,12 @@ class IntegrableViewer(QOpenGLWidget):
     def update_drawable(self, id_: int) -> None:
         self.xCentroid, self.yCentroid, self.zCentroid = self.model.get(id_).centroid
         self.get_drawable(id_).setup_attributes()
+        self.update()
 
     def delete(self, id_: int) -> None:
         self.model.delete(id_)
         del self.drawable_collection[id_]
+        self.update()
 
     def camera_at(self, id_: int) -> None:
         drawable = self.get_drawable(id_)
