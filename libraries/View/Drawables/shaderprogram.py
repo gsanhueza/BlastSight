@@ -38,5 +38,12 @@ class ShaderProgram:
     def update_uniform(self, loc_str, *values) -> None:
         self.shader_program.setUniformValue(self.uniform_locs[loc_str], *values)
 
+    def set_drawables(self, drawables):
+        self.drawables = drawables
+
+    def draw(self):
+        for drawable in self.drawables:
+            drawable.draw()
+
     def bind(self) -> None:
         self.shader_program.bind()

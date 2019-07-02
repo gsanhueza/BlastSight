@@ -2,6 +2,7 @@
 
 import pathlib
 
+from qtpy.QtGui import QVector2D
 from qtpy.QtGui import QOpenGLShader
 from .shaderprogram import ShaderProgram
 
@@ -29,3 +30,9 @@ class BlockModelProgram(ShaderProgram):
         self.shader_program.addShader(vertex_shader)
         self.shader_program.addShader(fragment_shader)
         self.shader_program.link()
+
+    def draw(self):
+        for drawable in self.drawables:
+            self.update_uniform('block_size', QVector2D(drawable.block_size[0], 0.0)),
+            self.update_uniform('min_max', QVector2D(drawable.min_val, drawable.max_val)),
+            drawable.draw()

@@ -31,3 +31,8 @@ class WireframeProgram(ShaderProgram):
         self.shader_program.addShader(fragment_shader)
         self.shader_program.addShader(geometry_shader)
         self.shader_program.link()
+
+    def draw(self):
+        for drawable in self.drawables:
+            self.update_uniform('u_color', float(drawable.color[0]), float(drawable.color[1]), float(drawable.color[2]), drawable.alpha)
+            drawable.draw()
