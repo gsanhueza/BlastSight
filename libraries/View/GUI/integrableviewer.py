@@ -47,8 +47,8 @@ class IntegrableViewer(QOpenGLWidget):
         self.set_normal_mode()
 
         # Drawable elements
-        self.background = BackgroundGL(self, True)
-        self.background_program = BackgroundProgram(self)
+        self.background = None
+        self.background_program = None
         self.drawable_collection = GLDrawableCollection(self)
 
         # Camera/World/Projection
@@ -204,6 +204,10 @@ class IntegrableViewer(QOpenGLWidget):
     """
     def initializeGL(self) -> None:
         glClearColor(0.0, 0.0, 0.0, 1.0)
+        self.background = BackgroundGL(self, True)
+        self.background_program = BackgroundProgram(self)
+        self.background.initialize()
+
         self.background_program.setup()
         self.background_program.bind()
         self.background_program.update_uniform('top_color', QVector4D(30, 47, 73, 255) / 255)
