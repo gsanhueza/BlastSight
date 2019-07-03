@@ -17,10 +17,6 @@ class MeshGL(GLDrawable):
         # Sizes
         self.vertices_size = 0
         self.indices_size = 0
-
-        self.vertices_vbo = None
-        self.indices_ebo = None
-        self.colors_vbo = None
         self.vao = None
 
         # Wireframe
@@ -50,10 +46,12 @@ class MeshGL(GLDrawable):
         # Data
         vertices = self.element.vertices
         indices = self.element.indices
-        colors = self.element.values
 
         self.vertices_size = vertices.size
         self.indices_size = indices.size
+
+        colors = np.tile(self.element.values, self.vertices_size // 3)
+        # FIXME colors = np.tile(np.append(self.element.values, self.alpha), self.vertices_size // 3)
 
         glBindVertexArray(self.vao)
 
@@ -62,9 +60,9 @@ class MeshGL(GLDrawable):
         glVertexAttribPointer(_POSITION, 3, GL_FLOAT, False, 0, None)
 
         glBindBuffer(GL_ARRAY_BUFFER, colors_vbo)
-        glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * self.vertices_size,
-                     np.tile(colors, self.vertices_size // 3), GL_STATIC_DRAW)
+        glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * self.vertices_size, colors, GL_STATIC_DRAW)
         glVertexAttribPointer(_COLOR, 3, GL_FLOAT, False, 0, None)
+        # FIXME glVertexAttribPointer(_COLOR, 4, GL_FLOAT, False, 0, None)
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indices_ebo)
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices, GL_STATIC_DRAW)
@@ -73,6 +71,10 @@ class MeshGL(GLDrawable):
         glEnableVertexAttribArray(_COLOR)
 
         glBindVertexArray(0)
+
+        del vertices
+        del indices
+        del colors
 
     def draw(self):
         super().draw()
