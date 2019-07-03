@@ -1,9 +1,9 @@
 #version 150
 
-uniform vec4 u_color;
+in vec4 g_color;
 out vec4 out_color;
 
 void main()
 {
-    out_color = vec4(u_color.xyz, 1.0);
+    out_color = vec4(g_color.xyz, 1.0);
 }
