@@ -13,7 +13,7 @@ class PointElement(Element):
         self._z_str: str = None
         self._value_str: str = None
         self._values: np.ndarray = None
-        self._point_size: float = None
+        self._point_size: float = 10.0
 
         super().__init__(*args, **kwargs)
 
