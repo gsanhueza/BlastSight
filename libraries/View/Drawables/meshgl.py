@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-from qtpy.QtGui import QOpenGLBuffer
-from qtpy.QtGui import QOpenGLVertexArrayObject
+import numpy as np
+
 from .gldrawable import GLDrawable
 from OpenGL.GL import *
 
@@ -17,10 +17,10 @@ class MeshGL(GLDrawable):
         # Sizes
         self.vertices_size = 0
         self.indices_size = 0
+        self.vao = None
 
         # Wireframe
         self.wireframe_enabled = False
-        self.vao = QOpenGLVertexArrayObject()
 
     def toggle_wireframe(self) -> bool:
         self.wireframe_enabled = not self.wireframe_enabled
@@ -34,18 +34,14 @@ class MeshGL(GLDrawable):
 
     def setup_attributes(self) -> None:
         _POSITION = 0
+        _COLOR = 1
 
-        if not self.vao.isCreated():
-            self.vao.create()
+        self.vao = glGenVertexArrays(1)
 
         # VBO
-        vertices_vbo = QOpenGLBuffer(QOpenGLBuffer.VertexBuffer)
-        indices_ibo = QOpenGLBuffer(QOpenGLBuffer.IndexBuffer)
-        values_vbo = QOpenGLBuffer(QOpenGLBuffer.VertexBuffer)
-
-        vertices_vbo.create()
-        indices_ibo.create()
-        values_vbo.create()
+        vertices_vbo = glGenBuffers(1)
+        indices_ebo = glGenBuffers(1)
+        colors_vbo = glGenBuffers(1)
 
         # Data
         vertices = self.element.vertices
@@ -54,24 +50,36 @@ class MeshGL(GLDrawable):
         self.vertices_size = vertices.size
         self.indices_size = indices.size
 
-        self.widget.makeCurrent()
-        self.vao.bind()
+        colors = np.tile(self.element.values, self.vertices_size // 3)
+        # FIXME colors = np.tile(np.append(self.element.values, self.alpha), self.vertices_size // 3)
 
-        vertices_vbo.bind()
+        glBindVertexArray(self.vao)
+
+        glBindBuffer(GL_ARRAY_BUFFER, vertices_vbo)
         glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * self.vertices_size, vertices, GL_STATIC_DRAW)
         glVertexAttribPointer(_POSITION, 3, GL_FLOAT, False, 0, None)
 
-        indices_ibo.bind()
+        glBindBuffer(GL_ARRAY_BUFFER, colors_vbo)
+        glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * self.vertices_size, colors, GL_STATIC_DRAW)
+        glVertexAttribPointer(_COLOR, 3, GL_FLOAT, False, 0, None)
+        # FIXME glVertexAttribPointer(_COLOR, 4, GL_FLOAT, False, 0, None)
+
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indices_ebo)
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices, GL_STATIC_DRAW)
 
         glEnableVertexAttribArray(_POSITION)
+        glEnableVertexAttribArray(_COLOR)
 
-        self.vao.release()
+        glBindVertexArray(0)
+
+        del vertices
+        del indices
+        del colors
 
     def draw(self):
         super().draw()
         if not self.is_visible:
             return
 
-        self.vao.bind()
+        glBindVertexArray(self.vao)
         glDrawElements(GL_TRIANGLES, self.indices_size, GL_UNSIGNED_INT, None)

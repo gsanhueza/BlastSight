@@ -14,7 +14,6 @@ class MeshProgram(ShaderProgram):
         super().setup()
         self.add_uniform_loc('model_view_matrix')
         self.add_uniform_loc('proj_matrix')
-        self.add_uniform_loc('u_color')
 
     def setup_shaders(self):
         # Shaders
@@ -31,5 +30,4 @@ class MeshProgram(ShaderProgram):
 
     def draw(self):
         for drawable in self.drawables:
-            self.update_uniform('u_color', float(drawable.color[0]), float(drawable.color[1]), float(drawable.color[2]), drawable.alpha)
             drawable.draw()
