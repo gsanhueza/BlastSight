@@ -16,23 +16,38 @@ class Element:
         self._init_fill(*args, **kwargs)
 
     def _init_fill(self, *args, **kwargs):
+        msg = f'Must pass ["x", "y", "z"] or "vertices" as kwargs, got {list(kwargs.keys())}.'
+
         if 'vertices' in kwargs.keys():
-            self.vertices = kwargs.get('vertices')
-
-        elif all(elem in list(kwargs.keys()) for elem in ['x', 'y', 'z']):
-            self.x = kwargs.get('x')
-            self.y = kwargs.get('y')
-            self.z = kwargs.get('z')
-
+            self._fill_as_vertices(msg, *args, **kwargs)
+        elif 'x' in kwargs.keys():
+            self._fill_as_xyz(msg, *args, **kwargs)
         else:
-            raise KeyError(f'Must pass ["x", "y", "z"] or "vertices" as kwargs, got {list(kwargs.keys())}.')
+            raise KeyError(msg)
 
-        assert self.x.size == self.y.size == self.z.size, \
-            f'Coordinates have different lengths: ({self.x.size}, {self.y.size}, {self.z.size})'
+        self._check_integrity()
 
         self.name = kwargs.get('name', None)
         self.ext = kwargs.get('ext', None)
         self.alpha = kwargs.get('alpha', 1.0)
+
+    def _fill_as_vertices(self, msg, *args, **kwargs):
+        assert 'vertices' in kwargs.keys(), msg
+
+        self.vertices = kwargs.get('vertices')
+
+    def _fill_as_xyz(self, msg, *args, **kwargs):
+        assert 'x' in kwargs.keys(), msg
+        assert 'y' in kwargs.keys(), msg
+        assert 'z' in kwargs.keys(), msg
+
+        self.x = kwargs.get('x')
+        self.y = kwargs.get('y')
+        self.z = kwargs.get('z')
+
+    def _check_integrity(self):
+        msg = f'Coordinates have different lengths: ({self.x.size}, {self.y.size}, {self.z.size})'
+        assert self.x.size == self.y.size == self.z.size, msg
 
     @property
     def x(self) -> np.ndarray:

@@ -13,49 +13,47 @@ class PointElement(Element):
         self._z_str: str = None
         self._value_str: str = None
         self._values: np.ndarray = None
-        self._point_size: np.ndarray = None
+        self._point_size: float = None
 
         super().__init__(*args, **kwargs)
 
     def _init_fill(self, *args, **kwargs):
-        self.point_size = kwargs.get('point_size', [1.0, 1.0, 1.0])
+        msg = f'Must pass ["x", "y", "z", "values"], ["vertices", "values"] or ["data"] ' \
+            f'as kwargs, got {list(kwargs.keys())}.'
 
-        if all(elem in list(kwargs.keys()) for elem in ['vertices', 'values']):
-            assert len(kwargs.keys()) >= 2
-
-            self.x, self.y, self.z = zip(*kwargs.get('vertices'))
-            self.values = kwargs.get('values')
-
-            assert len(self.x) == len(self.y) == len(self.z) == len(self.values), \
-                f'Coordinates have different lengths: ({len(self.x)}, {len(self.y)}, {len(self.z)}, {len(self.values)})'
-
-            self.x_str, self.y_str, self.z_str, self.value_str = ['x', 'y', 'z', 'values']
-
-        elif all(elem in list(kwargs.keys()) for elem in ['x', 'y', 'z', 'values']):
-            assert len(kwargs.keys()) >= 4
-
-            self.x = kwargs.get('x')
-            self.y = kwargs.get('y')
-            self.z = kwargs.get('z')
-            self.values = kwargs.get('values')
-
-            assert len(self.x) == len(self.y) == len(self.z) == len(self.values), \
-                f'Coordinates have different lengths: ({len(self.x)}, {len(self.y)}, {len(self.z)}, {len(self.values)})'
-
-            self.x_str, self.y_str, self.z_str, self.value_str = ['x', 'y', 'z', 'values']
-
-        elif all(elem in list(kwargs.keys()) for elem in ['data']):
-            self.data = kwargs.get('data')
-            self.values = []
-
-            assert len(self.data) > 0
-
+        if 'values' in kwargs.keys():
+            self._fill_as_values(msg, *args, **kwargs)
+        elif 'data' in kwargs.keys():
+            self._fill_as_data(msg, *args, **kwargs)
         else:
-            raise KeyError(f'Must pass ["x", "y", "z", "values"], ["vertices", "values"] or ["data"] '
-                           f'as kwargs, got {list(kwargs.keys())}.')
+            raise KeyError(msg)
 
         self.name = kwargs.get('name', None)
         self.ext = kwargs.get('ext', None)
+        self.alpha = kwargs.get('alpha', 1.0)
+        self.block_size = kwargs.get('point_size', 1.0)
+
+    def _fill_as_values(self, msg, *args, **kwargs):
+        assert len(kwargs.keys()) >= 2
+
+        if 'vertices' in kwargs.keys():
+            super()._fill_as_vertices(msg, *args, **kwargs)
+        else:
+            super()._fill_as_xyz(msg, *args, **kwargs)
+
+        self.values = kwargs.get('values')
+        self.x_str, self.y_str, self.z_str, self.value_str = 'x', 'y', 'z', 'values'
+
+        self._check_integrity()
+
+    def _fill_as_data(self, msg, *args, **kwargs):
+        self.data = kwargs.get('data')
+
+        assert len(self.data) > 0, msg
+
+    def _check_integrity(self):
+        super()._check_integrity()
+        assert len(self.x) == len(self.values)
 
     @property
     def data(self) -> dict:
@@ -114,12 +112,12 @@ class PointElement(Element):
         self.x_str, self.y_str, self.z_str, self.value_str = values
 
     @property
-    def point_size(self) -> np.ndarray:
+    def point_size(self) -> float:
         return self._point_size
 
     @point_size.setter
-    def point_size(self, size: list) -> None:
-        self._point_size = np.array(size, np.float32)
+    def point_size(self, size: float) -> None:
+        self._point_size = size
 
     def update_values(self):
         with Pool(processes=4) as pool:

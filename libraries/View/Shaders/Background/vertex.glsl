@@ -1,6 +1,6 @@
 #version 150
 
-out vec2 v_uv;
+varying vec2 v_uv;
 
 void main()
 {
