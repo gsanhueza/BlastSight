@@ -2,7 +2,6 @@
 
 import pathlib
 
-from qtpy.QtGui import QVector2D
 from qtpy.QtGui import QOpenGLShader
 from .shaderprogram import ShaderProgram
 
@@ -15,7 +14,6 @@ class BlockModelProgram(ShaderProgram):
         super().setup()
         self.add_uniform_loc('model_view_matrix')
         self.add_uniform_loc('proj_matrix')
-        self.add_uniform_loc('block_size')
         self.add_uniform_loc('min_max')
 
     def setup_shaders(self):
@@ -33,6 +31,5 @@ class BlockModelProgram(ShaderProgram):
 
     def draw(self):
         for drawable in self.drawables:
-            self.update_uniform('block_size', QVector2D(drawable.block_size[0], 0.0)),
-            self.update_uniform('min_max', QVector2D(drawable.min_val, drawable.max_val)),
+            self.update_uniform('min_max', drawable.min_val, drawable.max_val)
             drawable.draw()

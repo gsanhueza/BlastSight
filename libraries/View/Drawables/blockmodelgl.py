@@ -90,8 +90,7 @@ class BlockModelGL(GLDrawable):
             return
 
         self.vao.bind()
-        # np.array([[0, 1, 2]], type) has size 3, despite having only 1 list there
-        glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 14, self.vertices_size // 3)
+        glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 14, self.values_size)
 
     # Taken from https://stackoverflow.com/questions/28375338/cube-using-single-gl-triangle-strip
     @staticmethod
