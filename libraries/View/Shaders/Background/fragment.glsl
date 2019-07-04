@@ -3,8 +3,7 @@
 uniform vec4 top_color;
 uniform vec4 bot_color;
 
-in vec2 v_uv;
-out vec4 frag_color;
+varying vec2 v_uv;
 
 // Taken from http://lolengine.net/blog/2013/07/27/rgb-to-hsv-in-glsl
 vec3 rgb2hsv(vec3 c)
@@ -27,6 +26,5 @@ vec3 hsv2rgb(vec3 c)
 
 void main()
 {
-    frag_color = bot_color * (1 - v_uv.y) + top_color * v_uv.y;
-//    frag_color = vec4(hsv2rgb(vec3(v_uv.y * 0.67, 1.0, 1.0)), 1.0);
+    gl_FragColor = bot_color * (1 - v_uv.y) + top_color * v_uv.y;
 }

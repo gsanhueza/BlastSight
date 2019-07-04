@@ -1,10 +1,7 @@
 #!/usr/bin/env python
 
-from qtpy.QtGui import QOpenGLShaderProgram
 from qtpy.QtGui import QOpenGLVertexArrayObject
-from qtpy.QtGui import QVector2D
 from qtpy.QtGui import QOpenGLBuffer
-from qtpy.QtGui import QOpenGLShader
 
 from .gldrawable import GLDrawable
 from OpenGL.GL import *

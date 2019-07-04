@@ -10,7 +10,6 @@ from qtpy.QtWidgets import QOpenGLWidget
 from qtpy.QtGui import QPainter
 from qtpy.QtGui import QMatrix4x4
 from qtpy.QtGui import QVector3D
-from qtpy.QtGui import QVector4D
 
 from ..Drawables.gldrawablecollection import GLDrawableCollection
 from ..Drawables.gldrawable import GLDrawable
@@ -210,8 +209,8 @@ class IntegrableViewer(QOpenGLWidget):
 
         self.background_program.setup()
         self.background_program.bind()
-        self.background_program.update_uniform('top_color', QVector4D(30, 47, 73, 255) / 255)
-        self.background_program.update_uniform('bot_color', QVector4D(109, 126, 146, 255) / 255)
+        self.background_program.update_uniform('top_color', 0.12, 0.18, 0.29, 1.0)
+        self.background_program.update_uniform('bot_color', 0.43, 0.49, 0.57, 1.0)
 
     def paintGL(self) -> None:
         self.painter.begin(self)
@@ -323,6 +322,5 @@ class IntegrableViewer(QOpenGLWidget):
         for url in event.mimeData().urls():
             file_path = url.toLocalFile()
 
-            # Brute-force trying to load
+            # Only meshes authorized
             self.mesh_by_path(file_path)
-            self.block_model_by_path(file_path)
