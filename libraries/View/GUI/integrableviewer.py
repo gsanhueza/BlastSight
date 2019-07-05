@@ -209,8 +209,11 @@ class IntegrableViewer(QOpenGLWidget):
 
         self.background_program.setup()
         self.background_program.bind()
-        self.background_program.update_uniform('top_color', 0.12, 0.18, 0.29, 1.0)
-        self.background_program.update_uniform('bot_color', 0.43, 0.49, 0.57, 1.0)
+        self.background_program.update_uniform('top_color', 0.1, 0.2, 0.3, 1.0)
+        self.background_program.update_uniform('bot_color', 0.4, 0.5, 0.6, 1.0)
+
+        glEnable(GL_VERTEX_PROGRAM_POINT_SIZE)
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
 
     def paintGL(self) -> None:
         self.painter.begin(self)
@@ -242,10 +245,7 @@ class IntegrableViewer(QOpenGLWidget):
         self.background.draw()
         glEnable(GL_DEPTH_TEST)
 
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
         glEnable(GL_BLEND)
-        glEnable(GL_VERTEX_PROGRAM_POINT_SIZE)
-
         # Draw every GLDrawable (meshes, block models, etc)
         self.drawable_collection.draw(self.proj, self.camera, self.world)
 
