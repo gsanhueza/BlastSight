@@ -8,20 +8,22 @@ from .element import Element
 class PointElement(Element):
     def __init__(self, *args, **kwargs):
         self._data: dict = None
+        self._values: np.ndarray = np.array([], np.float32)
+        self._block_size: np.ndarray = None
+
         self._x_str: str = None
         self._y_str: str = None
         self._z_str: str = None
         self._value_str: str = None
-        self._values: np.ndarray = None
-        self._point_size: float = 10.0
 
         super().__init__(*args, **kwargs)
 
-    def _init_fill(self, *args, **kwargs):
+    def _fill_element(self, *args, **kwargs):
         msg = f'Must pass ["x", "y", "z", "values"], ["vertices", "values"] or ["data"] ' \
             f'as kwargs, got {list(kwargs.keys())}.'
 
         if 'values' in kwargs.keys():
+            super()._fill_element(msg, *args, **kwargs)
             self._fill_as_values(msg, *args, **kwargs)
         elif 'data' in kwargs.keys():
             self._fill_as_data(msg, *args, **kwargs)
@@ -31,16 +33,9 @@ class PointElement(Element):
         self.name = kwargs.get('name', None)
         self.ext = kwargs.get('ext', None)
         self.alpha = kwargs.get('alpha', 1.0)
-        self.block_size = kwargs.get('point_size', 1.0)
+        self.point_size = kwargs.get('point_size', 1.0)
 
     def _fill_as_values(self, msg, *args, **kwargs):
-        assert len(kwargs.keys()) >= 2
-
-        if 'vertices' in kwargs.keys():
-            super()._fill_as_vertices(msg, *args, **kwargs)
-        else:
-            super()._fill_as_xyz(msg, *args, **kwargs)
-
         self.values = kwargs.get('values')
         self.x_str, self.y_str, self.z_str, self.value_str = 'x', 'y', 'z', 'values'
 
@@ -50,10 +45,6 @@ class PointElement(Element):
         self.data = kwargs.get('data')
 
         assert len(self.data) > 0, msg
-
-    def _check_integrity(self):
-        super()._check_integrity()
-        assert len(self.x) == len(self.values)
 
     @property
     def data(self) -> dict:

@@ -5,18 +5,23 @@ import numpy as np
 
 class Element:
     def __init__(self, *args, **kwargs):
-        self._x: np.ndarray = np.array([], np.float32)
-        self._y: np.ndarray = np.array([], np.float32)
-        self._z: np.ndarray = np.array([], np.float32)
+        # Base data
+        self._x: np.ndarray = np.empty(0, np.float32)
+        self._y: np.ndarray = np.empty(0, np.float32)
+        self._z: np.ndarray = np.empty(0, np.float32)
+
+        # Metadata
         self._name: str = None
         self._ext: str = None
         self._id: int = None
-        self._alpha = None
+        self._alpha: float = None
 
-        self._init_fill(*args, **kwargs)
+        self._fill_element(*args, **kwargs)
+        self._fill_metadata(*args, **kwargs)
 
-    def _init_fill(self, *args, **kwargs):
-        msg = f'Must pass ["x", "y", "z"] or "vertices" as kwargs, got {list(kwargs.keys())}.'
+    def _fill_element(self, msg=None, *args, **kwargs):
+        if msg is None:
+            msg = f'Must pass ["x", "y", "z"] or "vertices" as kwargs, got {list(kwargs.keys())}.'
 
         if 'vertices' in kwargs.keys():
             self._fill_as_vertices(msg, *args, **kwargs)
@@ -27,6 +32,7 @@ class Element:
 
         self._check_integrity()
 
+    def _fill_metadata(self, *args, **kwargs):
         self.name = kwargs.get('name', None)
         self.ext = kwargs.get('ext', None)
         self.alpha = kwargs.get('alpha', 1.0)
