@@ -10,12 +10,7 @@ class MeshGL(GLDrawable):
     def __init__(self, widget=None, element=None):
         super().__init__(widget, element)
 
-        # Uniforms
-        self.color = self.element.values
-        self.alpha = self.element.alpha
-
-        # Sizes
-        self.vertices_size = 0
+        # Size
         self.indices_size = 0
         self.vao = None
 
@@ -46,23 +41,20 @@ class MeshGL(GLDrawable):
         # Data
         vertices = self.element.vertices
         indices = self.element.indices
+        colors = np.array(np.tile(np.append(self.element.values, self.element.alpha),
+                                  vertices.size // 3), np.float32)
 
-        self.vertices_size = vertices.size
         self.indices_size = indices.size
-
-        colors = np.tile(self.element.values, self.vertices_size // 3)
-        # FIXME colors = np.tile(np.append(self.element.values, self.alpha), self.vertices_size // 3)
 
         glBindVertexArray(self.vao)
 
         glBindBuffer(GL_ARRAY_BUFFER, vertices_vbo)
-        glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * self.vertices_size, vertices, GL_STATIC_DRAW)
+        glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * vertices.size, vertices, GL_STATIC_DRAW)
         glVertexAttribPointer(_POSITION, 3, GL_FLOAT, False, 0, None)
 
         glBindBuffer(GL_ARRAY_BUFFER, colors_vbo)
-        glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * self.vertices_size, colors, GL_STATIC_DRAW)
-        glVertexAttribPointer(_COLOR, 3, GL_FLOAT, False, 0, None)
-        # FIXME glVertexAttribPointer(_COLOR, 4, GL_FLOAT, False, 0, None)
+        glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * colors.size, colors, GL_STATIC_DRAW)
+        glVertexAttribPointer(_COLOR, 4, GL_FLOAT, False, 0, None)
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indices_ebo)
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices, GL_STATIC_DRAW)
