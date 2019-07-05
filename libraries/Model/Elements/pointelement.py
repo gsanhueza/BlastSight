@@ -24,9 +24,9 @@ class PointElement(Element):
 
         if 'values' in kwargs.keys():
             super()._fill_element(msg, *args, **kwargs)
-            self._fill_as_values(msg, *args, **kwargs)
+            self._fill_as_values(*args, **kwargs)
         elif 'data' in kwargs.keys():
-            self._fill_as_data(msg, *args, **kwargs)
+            self._fill_as_data(*args, **kwargs)
         else:
             raise KeyError(msg)
 
@@ -35,13 +35,14 @@ class PointElement(Element):
         self.alpha = kwargs.get('alpha', 1.0)
         self.point_size = kwargs.get('point_size', 1.0)
 
-    def _fill_as_values(self, msg, *args, **kwargs):
+    def _fill_as_values(self, *args, **kwargs):
         self.values = kwargs.get('values')
         self.x_str, self.y_str, self.z_str, self.value_str = 'x', 'y', 'z', 'values'
 
         self._check_integrity()
 
-    def _fill_as_data(self, msg, *args, **kwargs):
+    def _fill_as_data(self, *args, **kwargs):
+        msg = '"data" cannot be empty.'
         self.data = kwargs.get('data')
 
         assert len(self.data) > 0, msg
