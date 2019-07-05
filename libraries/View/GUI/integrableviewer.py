@@ -260,7 +260,7 @@ class IntegrableViewer(QOpenGLWidget):
         self.proj.setToIdentity()
         self.proj.perspective(45.0, (w / h), 0.01, 10000.0)
 
-        ## ortho(float left, float right, float bottom, float top, float nearPlane, float farPlane)
+        # ortho(float left, float right, float bottom, float top, float nearPlane, float farPlane)
         # scale_factor = self.zWorldPos * 200
         # self.proj.ortho(-w/scale_factor, w/scale_factor, -h/scale_factor, h/scale_factor, 0.01, 10000)
 

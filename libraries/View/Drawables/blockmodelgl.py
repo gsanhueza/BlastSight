@@ -2,8 +2,6 @@
 
 import numpy as np
 
-from qtpy.QtGui import QOpenGLBuffer
-from qtpy.QtGui import QOpenGLVertexArrayObject
 from .gldrawable import GLDrawable
 from OpenGL.GL import *
 
@@ -13,38 +11,31 @@ class BlockModelGL(GLDrawable):
         super().__init__(widget, element)
 
         # Sizes
-        self.vertices_size = 0
         self.values_size = 0
 
         self.min_val = 0.0
         self.max_val = 1.0
 
-        # Block size
-        self.block_size = element.block_size
-        self.vao = QOpenGLVertexArrayObject()
+        self.vao = None
 
     def setup_attributes(self) -> None:
         _POSITION = 0
         _COLOR = 1
         _TEMPLATE = 2
 
-        if not self.vao.isCreated():
-            self.vao.create()
+        self.vao = glGenVertexArrays(1)
 
         # VBO
-        vertices_vbo = QOpenGLBuffer(QOpenGLBuffer.VertexBuffer)
-        values_vbo = QOpenGLBuffer(QOpenGLBuffer.VertexBuffer)
-        template_vbo = QOpenGLBuffer(QOpenGLBuffer.VertexBuffer)
-
-        vertices_vbo.create()
-        values_vbo.create()
-        template_vbo.create()
+        vertices_vbo = glGenBuffers(1)
+        values_vbo = glGenBuffers(1)
+        template_vbo = glGenBuffers(1)
 
         # Data
         template = self.generate_cube(self.element.block_size)
         vertices = self.element.vertices
         values = self.element.values
 
+        self.values_size = values.size
         self.min_val = values.min() if values.size > 0 else 0.0
         self.max_val = values.max() if values.size > 0 else 1.0
 
@@ -56,21 +47,17 @@ class BlockModelGL(GLDrawable):
         # values = np.array(list(map(lambda hue: colorsys.hsv_to_rgb(2 * hue / 3, 1.0, 1.0),
         #                            normalized_values)), np.float32)
 
-        self.vertices_size = vertices.size
-        self.values_size = values.size
+        glBindVertexArray(self.vao)
 
-        self.widget.makeCurrent()
-        self.vao.bind()
-
-        vertices_vbo.bind()
-        glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * self.vertices_size, vertices, GL_STATIC_DRAW)
+        glBindBuffer(GL_ARRAY_BUFFER, vertices_vbo)
+        glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * vertices.size, vertices, GL_STATIC_DRAW)
         glVertexAttribPointer(_POSITION, 3, GL_FLOAT, False, 0, None)
 
-        values_vbo.bind()
-        glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * self.values_size, values, GL_STATIC_DRAW)
+        glBindBuffer(GL_ARRAY_BUFFER, values_vbo)
+        glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * values.size, values, GL_STATIC_DRAW)
         glVertexAttribPointer(_COLOR, 1, GL_FLOAT, False, 0, None)
 
-        template_vbo.bind()
+        glBindBuffer(GL_ARRAY_BUFFER, template_vbo)
         glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * template.size, template, GL_STATIC_DRAW)
         glVertexAttribPointer(_TEMPLATE, 3, GL_FLOAT, False, 0, None)
 
@@ -82,14 +69,14 @@ class BlockModelGL(GLDrawable):
         glEnableVertexAttribArray(_COLOR)
         glEnableVertexAttribArray(_TEMPLATE)
 
-        self.vao.release()
+        glBindVertexArray(0)
 
     def draw(self):
         super().draw()
         if not self.is_visible:
             return
 
-        self.vao.bind()
+        glBindVertexArray(self.vao)
         glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 14, self.values_size)
 
     # Taken from https://stackoverflow.com/questions/28375338/cube-using-single-gl-triangle-strip

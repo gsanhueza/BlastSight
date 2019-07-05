@@ -30,9 +30,6 @@ class BlockModelElement(Element):
         else:
             raise KeyError(msg)
 
-        self.name = kwargs.get('name', None)
-        self.ext = kwargs.get('ext', None)
-        self.alpha = kwargs.get('alpha', 1.0)
         self.block_size = kwargs.get('block_size', [1.0, 1.0, 1.0])
 
     def _fill_as_values(self, *args, **kwargs):

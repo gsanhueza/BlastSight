@@ -2,6 +2,7 @@
 
 varying vec2 v_uv;
 
+// Taken from http://www.cs.princeton.edu/~mhalber/blog/ogl_gradient/
 void main()
 {
     int idx = gl_VertexID;
