@@ -23,7 +23,8 @@ class BlockModelGL(GLDrawable):
         _COLOR = 1
         _TEMPLATE = 2
 
-        self.vao = glGenVertexArrays(1)
+        if self.vao is None:
+            self.vao = glGenVertexArrays(1)
 
         # VBO
         vertices_vbo = glGenBuffers(1)
@@ -36,8 +37,9 @@ class BlockModelGL(GLDrawable):
         values = self.element.values
 
         self.values_size = values.size
-        self.min_val = values.min() if values.size > 0 else 0.0
-        self.max_val = values.max() if values.size > 0 else 1.0
+        if values.size > 0:
+            self.min_val = values.min()
+            self.max_val = values.max()
 
         # norm_func = partial(partial(normalize, min_val), max_val)
         # normalized_values = np.vectorize(norm_func, otypes=[np.float32])(values)
@@ -46,7 +48,7 @@ class BlockModelGL(GLDrawable):
         # hue[0/3, 1/3, 2/3, 3/3] == [red, green, blue, red]
         # values = np.array(list(map(lambda hue: colorsys.hsv_to_rgb(2 * hue / 3, 1.0, 1.0),
         #                            normalized_values)), np.float32)
-
+        self.widget.makeCurrent()
         glBindVertexArray(self.vao)
 
         glBindBuffer(GL_ARRAY_BUFFER, vertices_vbo)
