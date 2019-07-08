@@ -12,6 +12,8 @@ from .Elements.tubeelement import TubeElement
 
 from .Parsers.dxfparser import DXFParser
 from .Parsers.offparser import OFFParser
+from .Parsers.npzparser import NPZParser
+from .Parsers.h5parser import H5Parser
 from .Parsers.csvparser import CSVParser
 
 
@@ -22,6 +24,8 @@ class Model:
 
         self.add_parser('dxf', DXFParser, MeshElement)
         self.add_parser('off', OFFParser, MeshElement)
+        self.add_parser('npz', NPZParser, MeshElement)
+        self.add_parser('h5', H5Parser, MeshElement)
         self.add_parser('csv', CSVParser, BlockModelElement)
 
     def add_parser(self, extension: str, handler, element_type) -> None:
