@@ -21,7 +21,8 @@ class PointGL(GLDrawable):
         _POSITION = 0
         _COLOR = 1
 
-        self.vao = glGenVertexArrays(1)
+        if self.vao is None:
+            self.vao = glGenVertexArrays(1)
 
         # VBO
         vertices_vbo = glGenBuffers(1)
@@ -35,6 +36,7 @@ class PointGL(GLDrawable):
         self.min_val = values.min() if values.size > 0 else 0.0
         self.max_val = values.max() if values.size > 0 else 1.0
 
+        self.widget.makeCurrent()
         glBindVertexArray(self.vao)
 
         glBindBuffer(GL_ARRAY_BUFFER, vertices_vbo)

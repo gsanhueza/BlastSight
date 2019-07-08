@@ -33,8 +33,9 @@
     <property name="title">
      <string>&amp;File</string>
     </property>
-    <addaction name="action_Load_Mesh"/>
+    <addaction name="action_Load_mesh"/>
     <addaction name="action_Load_block_model"/>
+    <addaction name="action_Load_points"/>
     <addaction name="separator"/>
     <addaction name="action_Quit"/>
    </widget>
@@ -92,7 +93,7 @@
     </layout>
    </widget>
   </widget>
-  <action name="action_Load_Mesh">
+  <action name="action_Load_mesh">
    <property name="icon">
     <iconset theme="fileopen">
      <normaloff>.</normaloff>.</iconset>
@@ -212,6 +213,17 @@
     <string>Ctrl+C</string>
    </property>
   </action>
+  <action name="action_Load_points">
+   <property name="icon">
+    <iconset theme="content-loading-symbolic"/>
+   </property>
+   <property name="text">
+    <string>Load &amp;points</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+P</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
@@ -280,10 +292,26 @@
    </hints>
   </connection>
   <connection>
-   <sender>action_Load_Mesh</sender>
+   <sender>action_Load_mesh</sender>
    <signal>triggered()</signal>
    <receiver>MineVis</receiver>
    <slot>load_mesh_slot()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>399</x>
+     <y>299</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>action_Load_points</sender>
+   <signal>triggered()</signal>
+   <receiver>MineVis</receiver>
+   <slot>load_points_slot()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>-1</x>

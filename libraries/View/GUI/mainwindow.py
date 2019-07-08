@@ -71,6 +71,15 @@ class MineVis(QMainWindow):
             self.dialog_available_values(self.viewer.last_id)  # Dialog auto-trigger
         return status
 
+    def load_points(self, file_path: str) -> bool:
+        status = self._load_element(method=self.viewer.points_by_path,
+                                    path=file_path,
+                                    name='Points')
+
+        if status:
+            self.dialog_available_values(self.viewer.last_id)  # Dialog auto-trigger
+        return status
+
     # Unless explicitly otherwise, slots are connected via Qt Designer
     def _load_element_slot(self, method: classmethod, filters: str, name: str) -> None:
         (file_paths, selected_filter) = QFileDialog.getOpenFileNames(
@@ -89,6 +98,7 @@ class MineVis(QMainWindow):
             self.statusBar.showMessage(f'{accum} of {len(file_paths)} {name} loaded.')
 
     def load_mesh_slot(self) -> None:
+        print('AAA')
         self._load_element_slot(method=self.load_mesh,
                                 filters='Mesh Files (*.dxf *.off);;DXF Files (*.dxf);;OFF Files (*.off)',
                                 name='meshes')
@@ -97,6 +107,11 @@ class MineVis(QMainWindow):
         self._load_element_slot(method=self.load_block_model,
                                 filters='CSV Files (*.csv);;All Files (*.*)',
                                 name='block models')
+
+    def load_points_slot(self) -> None:
+        self._load_element_slot(method=self.load_points,
+                                filters='CSV Files (*.csv);;All Files (*.*)',
+                                name='points')
 
     def dialog_available_values(self, id_):
         drawable = self.viewer.get_drawable(id_)

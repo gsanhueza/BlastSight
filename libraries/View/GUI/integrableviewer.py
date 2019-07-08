@@ -161,6 +161,9 @@ class IntegrableViewer(QOpenGLWidget):
     def block_model_by_path(self, file_path: str, *args, **kwargs) -> BlockModelGL:
         return self.add_drawable(self.model.block_model_by_path, BlockModelGL, file_path, *args, **kwargs)
 
+    def points_by_path(self, file_path: str, *args, **kwargs) -> PointGL:
+        return self.add_drawable(self.model.points_by_path, PointGL, file_path, *args, **kwargs)
+
     """
     Individual drawable manipulation
     """

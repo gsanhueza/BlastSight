@@ -24,9 +24,9 @@ class PointElement(Element):
 
         if 'values' in kwargs.keys():
             super()._fill_element(msg, *args, **kwargs)
-            self._fill_as_values(*args, **kwargs)
+            self._fill_as_values(msg, *args, **kwargs)
         elif 'data' in kwargs.keys():
-            self._fill_as_data(*args, **kwargs)
+            self._fill_as_data(msg, *args, **kwargs)
         else:
             raise KeyError(msg)
 

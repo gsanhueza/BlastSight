@@ -7,6 +7,7 @@ from qtpy.QtWidgets import QMenu
 from qtpy.QtWidgets import QTreeWidget
 from ..Drawables.meshgl import MeshGL
 from ..Drawables.blockmodelgl import BlockModelGL
+from ..Drawables.pointgl import PointGL
 
 
 class TreeWidget(QTreeWidget):
@@ -75,7 +76,7 @@ class TreeWidget(QTreeWidget):
 
         if item.type == MeshGL:
             menu.addAction(action_wireframe)
-        elif item.type == BlockModelGL:
+        elif item.type == BlockModelGL or item.type == PointGL:
             menu.addAction(action_available_values)
 
         menu.addSeparator()
