@@ -1,9 +1,9 @@
-#version 150
+#version 140
 
-in vec4 g_color;
+in vec4 v_color;
 out vec4 out_color;
 
 void main()
 {
-    out_color = vec4(g_color.xyz, 1.0);
+    out_color = vec4(v_color.xyz, 1.0);
 }

@@ -1,4 +1,4 @@
-#version 120
+#version 140
 
 varying float v_color;
 varying vec3 pos_mv;

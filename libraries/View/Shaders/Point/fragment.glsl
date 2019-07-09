@@ -1,4 +1,4 @@
-#version 120
+#version 140
 
 uniform vec2 min_max;
 varying float v_color;

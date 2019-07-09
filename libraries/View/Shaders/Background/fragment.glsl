@@ -1,4 +1,4 @@
-#version 150
+#version 140
 
 uniform vec4 top_color;
 uniform vec4 bot_color;
