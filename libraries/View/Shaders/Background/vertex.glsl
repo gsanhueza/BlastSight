@@ -1,4 +1,4 @@
-#version 150
+#version 140
 
 varying vec2 v_uv;
 
