@@ -90,6 +90,9 @@ class TreeWidget(QTreeWidget):
     def double_click(self, item):
         item.toggle_visibility()
 
+    def select_item(self, row, col):
+        self.setCurrentItem(self.topLevelItem(max(min(row, self.topLevelItemCount() - 1), 0)), col)
+
     def keyPressEvent(self, event):
         if self.topLevelItemCount() == 0:
             return
@@ -98,9 +101,9 @@ class TreeWidget(QTreeWidget):
 
         if event.key() == Qt.Key_Delete:
             self.currentItem().delete()
-            self.setCurrentItem(self.topLevelItem(min(last_pos, self.topLevelItemCount() - 1)), 0)
+            self.select_item(last_pos, 0)
 
         elif event.key() == Qt.Key_Up:
-            self.setCurrentItem(self.topLevelItem(max(last_pos - 1, 0)), 0)
+            self.select_item(last_pos - 1, 0)
         elif event.key() == Qt.Key_Down:
-            self.setCurrentItem(self.topLevelItem(min(last_pos + 1, self.topLevelItemCount() - 1)), 0)
+            self.select_item(last_pos + 1, 0)

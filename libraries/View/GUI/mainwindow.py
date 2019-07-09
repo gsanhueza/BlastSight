@@ -45,6 +45,7 @@ class MineVis(QMainWindow):
         for drawable in self.viewer.drawable_collection.values():
             item = TreeWidgetItem(self.treeWidget, self, drawable)
             self.treeWidget.addTopLevelItem(item)
+        self.treeWidget.select_item(self.treeWidget.topLevelItemCount(), 0)
 
     def _load_element(self, method: classmethod, path: str, name: str) -> bool:
         drawable = method(path)
