@@ -49,6 +49,10 @@ class TreeWidgetItem(QTreeWidgetItem):
         self.drawable.toggle_wireframe()
         self.mainwindow.viewer.update()
 
+    def toggle_visibility(self) -> None:
+        self.drawable.toggle_visibility()
+        self.mainwindow.viewer.update()
+
     def center_camera(self) -> None:
         self.mainwindow.viewer.camera_at(self.drawable.id)
 

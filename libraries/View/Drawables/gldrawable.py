@@ -46,3 +46,6 @@ class GLDrawable:
 
     def hide(self) -> None:
         self.is_visible = False
+
+    def toggle_visibility(self) -> None:
+        self.is_visible = not self.is_visible
