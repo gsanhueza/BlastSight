@@ -1,7 +1,9 @@
 #version 140
 
-varying float v_color;
-varying vec3 pos_mv;
+in float v_color;
+in vec3 pos_mv;
+
+out vec4 out_color;
 
 uniform vec2 min_max;
 
@@ -47,5 +49,5 @@ void main()
     vec3 color_front = lambert(v_normal, light_position_front, light_color);
     vec3 color_up = lambert(v_normal, light_position_up, light_color);
 
-    gl_FragColor = vec4(0.05 + (front_light_bias * color_front) + ((1 - front_light_bias) * color_up), 1.0);
+    out_color = vec4(0.05 + (front_light_bias * color_front) + ((1 - front_light_bias) * color_up), 1.0);
 }

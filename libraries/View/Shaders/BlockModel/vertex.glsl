@@ -1,11 +1,11 @@
 #version 140
 
-attribute vec3 a_position;
-attribute float a_color;
-attribute vec3 a_template;
+in vec3 a_position;
+in float a_color;
+in vec3 a_template;
 
-varying vec3 pos_mv;
-varying float v_color;
+out vec3 pos_mv;
+out float v_color;
 
 uniform mat4 proj_matrix;
 uniform mat4 model_view_matrix;

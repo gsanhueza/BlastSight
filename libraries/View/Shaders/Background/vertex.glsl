@@ -1,6 +1,6 @@
 #version 140
 
-varying vec2 v_uv;
+out vec2 v_uv;
 
 // Taken from http://www.cs.princeton.edu/~mhalber/blog/ogl_gradient/
 void main()
