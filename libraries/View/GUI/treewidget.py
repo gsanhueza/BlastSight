@@ -85,10 +85,11 @@ class TreeWidget(QTreeWidget):
         menu.exec_(global_pos)
 
     def single_click(self, item, col):
-        print('single_click')
+        pass
 
     def double_click(self, item):
-        item.toggle_visibility()
+        item.show()
+        item.center_camera()
 
     def select_item(self, row, col):
         self.setCurrentItem(self.topLevelItem(max(min(row, self.topLevelItemCount() - 1), 0)), col)

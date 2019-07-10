@@ -6,6 +6,7 @@ import traceback
 
 from OpenGL.GL import *
 from qtpy.QtCore import QRect, Signal
+from qtpy.QtCore import QFileInfo, QDirIterator
 from qtpy.QtWidgets import QOpenGLWidget
 from qtpy.QtGui import QPainter
 from qtpy.QtGui import QMatrix4x4
@@ -323,7 +324,14 @@ class IntegrableViewer(QOpenGLWidget):
 
     def dropEvent(self, event, *args, **kwargs) -> None:
         for url in event.mimeData().urls():
-            file_path = url.toLocalFile()
+            path = url.toLocalFile()
 
-            # Only meshes authorized
-            self.mesh_by_path(file_path)
+            if QFileInfo(path).isDir():
+                self._load_as_dir(path)
+            else:
+                self.mesh_by_path(path)
+
+    def _load_as_dir(self, path):
+        it = QDirIterator(path, QDirIterator.Subdirectories)
+        while it.hasNext():
+            self.mesh_by_path(it.next())
