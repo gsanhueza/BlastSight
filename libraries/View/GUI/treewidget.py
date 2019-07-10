@@ -102,8 +102,19 @@ class TreeWidget(QTreeWidget):
         if event.key() == Qt.Key_Delete:
             self.currentItem().delete()
             self.select_item(last_pos, 0)
-
+        elif event.key() == Qt.Key_Enter or event.key() == Qt.Key_Return:
+            self.currentItem().center_camera()
+        elif event.key() == Qt.Key_H:
+            self.currentItem().hide()
+        elif event.key() == Qt.Key_S:
+            self.currentItem().show()
+        elif event.key() == Qt.Key_T:
+            self.currentItem().toggle_visibility()
         elif event.key() == Qt.Key_Up:
             self.select_item(last_pos - 1, 0)
         elif event.key() == Qt.Key_Down:
             self.select_item(last_pos + 1, 0)
+        elif event.key() == Qt.Key_Home:
+            self.select_item(0, 0)
+        elif event.key() == Qt.Key_End:
+            self.select_item(self.topLevelItemCount() - 1, 0)
