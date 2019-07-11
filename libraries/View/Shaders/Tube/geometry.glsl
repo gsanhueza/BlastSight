@@ -6,7 +6,7 @@
 //uniform float radius;
 //uniform int resolution;
 
-const float radius = 0.02;  // FIXME This should come as uniform
+const float radius = 0.15;  // FIXME This should come as uniform
 const int resolution = 15;  // FIXME This should come as uniform too
 
 layout (lines) in;

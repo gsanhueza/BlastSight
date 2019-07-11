@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import numpy as np
+from random import random
 
 from .element import Element
 
@@ -10,9 +11,7 @@ class TubeElement(Element):
         super().__init__(*args, **kwargs)
 
         assert len(self.vertices) >= 2
-        assert 'color' in kwargs.keys()
-
-        self.color = kwargs.get('color')
+        self.color = kwargs.get('color', [random() for _ in range(3)])
 
     @property
     def color(self) -> np.ndarray:
