@@ -32,7 +32,7 @@ class Model:
         self.parser_dict[extension] = handler
 
     def get_parser(self, ext: str) -> type:
-        return self.parser_dict[ext]
+        return self.parser_dict[ext.lower()]
 
     def _element(self, element_type: type, *args, **kwargs):
         element = element_type(*args, **kwargs)

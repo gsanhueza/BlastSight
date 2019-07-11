@@ -81,7 +81,19 @@ class MineVis(QMainWindow):
             self.dialog_available_values(self.viewer.last_id)  # Dialog auto-trigger
         return status
 
-    # Unless explicitly otherwise, slots are connected via Qt Designer
+    def dialog_available_values(self, id_):
+        drawable = self.viewer.get_drawable(id_)
+        dialog = AvailableValuesDialog(self, drawable)
+
+        dialog.show()
+
+    def dialog_camera_position(self):
+        dialog = CameraPositionDialog(self)
+        dialog.show()
+
+    """
+    Slots. Unless explicitly otherwise, slots are connected via Qt Designer
+    """
     def _load_element_slot(self, method: classmethod, filters: str, name: str) -> None:
         (file_paths, selected_filter) = QFileDialog.getOpenFileNames(
             parent=self,
@@ -99,7 +111,6 @@ class MineVis(QMainWindow):
             self.statusBar.showMessage(f'{accum} of {len(file_paths)} {name} loaded.')
 
     def load_mesh_slot(self) -> None:
-        print('AAA')
         self._load_element_slot(method=self.load_mesh,
                                 filters='Mesh Files (*.dxf *.off);;DXF Files (*.dxf);;OFF Files (*.off)',
                                 name='meshes')
@@ -114,19 +125,6 @@ class MineVis(QMainWindow):
                                 filters='CSV Files (*.csv);;All Files (*.*)',
                                 name='points')
 
-    def dialog_available_values(self, id_):
-        drawable = self.viewer.get_drawable(id_)
-        dialog = AvailableValuesDialog(self, drawable)
-
-        dialog.show()
-
-    def dialog_camera_position(self):
-        dialog = CameraPositionDialog(self)
-        dialog.show()
-
-    """
-    Controller slots
-    """
     def normal_mode_slot(self) -> None:
         self.viewer.set_normal_mode()
 

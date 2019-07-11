@@ -55,6 +55,11 @@
     <addaction name="action_Selection_mode"/>
     <addaction name="separator"/>
     <addaction name="action_Camera_position"/>
+    <addaction name="action_Plan_view"/>
+    <addaction name="action_North_view"/>
+    <addaction name="action_East_view"/>
+    <addaction name="separator"/>
+    <addaction name="action_Take_screenshot"/>
    </widget>
    <addaction name="menu_File"/>
    <addaction name="menu_View"/>
@@ -215,13 +220,46 @@
   </action>
   <action name="action_Load_points">
    <property name="icon">
-    <iconset theme="content-loading-symbolic"/>
+    <iconset theme="content-loading-symbolic">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>Load &amp;points</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+P</string>
+   </property>
+  </action>
+  <action name="action_Plan_view">
+   <property name="icon">
+    <iconset theme="draw-rectangle"/>
+   </property>
+   <property name="text">
+    <string>&amp;Plan view</string>
+   </property>
+  </action>
+  <action name="action_North_view">
+   <property name="icon">
+    <iconset theme="arrow-up"/>
+   </property>
+   <property name="text">
+    <string>N&amp;orth view</string>
+   </property>
+  </action>
+  <action name="action_East_view">
+   <property name="icon">
+    <iconset theme="arrow-right"/>
+   </property>
+   <property name="text">
+    <string>&amp;East view</string>
+   </property>
+  </action>
+  <action name="action_Take_screenshot">
+   <property name="icon">
+    <iconset theme="snap"/>
+   </property>
+   <property name="text">
+    <string>Take screenshot</string>
    </property>
   </action>
  </widget>
@@ -233,6 +271,10 @@
    <header>libraries/View/GUI/integrableviewer.h</header>
    <slots>
     <signal>file_dropped_signal()</signal>
+    <slot>plan_view()</slot>
+    <slot>take_screenshot()</slot>
+    <slot>north_view()</slot>
+    <slot>east_view()</slot>
    </slots>
   </customwidget>
   <customwidget>
@@ -400,6 +442,70 @@
     <hint type="destinationlabel">
      <x>449</x>
      <y>249</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>action_Take_screenshot</sender>
+   <signal>triggered()</signal>
+   <receiver>openglwidget</receiver>
+   <slot>take_screenshot()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>586</x>
+     <y>260</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>action_Plan_view</sender>
+   <signal>triggered()</signal>
+   <receiver>openglwidget</receiver>
+   <slot>plan_view()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>586</x>
+     <y>260</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>action_North_view</sender>
+   <signal>triggered()</signal>
+   <receiver>openglwidget</receiver>
+   <slot>north_view()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>586</x>
+     <y>260</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>action_East_view</sender>
+   <signal>triggered()</signal>
+   <receiver>openglwidget</receiver>
+   <slot>east_view()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>586</x>
+     <y>260</y>
     </hint>
    </hints>
   </connection>

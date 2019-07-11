@@ -5,9 +5,10 @@ import numpy as np
 import traceback
 
 from OpenGL.GL import *
-from qtpy.QtCore import QRect, Signal
+from qtpy.QtCore import QRect, Signal, QPoint
 from qtpy.QtCore import QFileInfo, QDirIterator
 from qtpy.QtWidgets import QOpenGLWidget
+from qtpy.QtGui import QRegion, QPixmap
 from qtpy.QtGui import QPainter
 from qtpy.QtGui import QMatrix4x4
 from qtpy.QtGui import QVector3D
@@ -202,6 +203,18 @@ class IntegrableViewer(QOpenGLWidget):
         self.zWorldPos = -1.2 * max(dx, dy, dz) / math.tan(math.pi / 4)
         self.update()
 
+    def plan_view(self):
+        self.xWorldRot, self.yWorldRot, self.zWorldRot = [0.0, 0.0, 0.0]
+        self.update()
+
+    def north_view(self):
+        self.xWorldRot, self.yWorldRot, self.zWorldRot = [270.0, 0.0, 270.0]
+        self.update()
+
+    def east_view(self):
+        self.xWorldRot, self.yWorldRot, self.zWorldRot = [270.0, 0.0, 0.0]
+        self.update()
+
     """
     Internal methods
     """
@@ -296,10 +309,20 @@ class IntegrableViewer(QOpenGLWidget):
         self.current_mode = NormalMode(self)
 
     def set_draw_mode(self) -> None:
+        self.take_screenshot()
         self.current_mode = DrawMode(self)
 
     def set_selection_mode(self) -> None:
         self.current_mode = SelectionMode(self)
+
+    def take_screenshot(self):
+        save_path = 'minevis_screenshot.png'
+
+        pixmap = QPixmap(self.size())
+        self.render(pixmap, QPoint(), QRegion(self.rect()))
+        pixmap.save(save_path)
+
+        del pixmap
 
     # Movement/actions dependent on current mode
     def mouseMoveEvent(self, event, *args, **kwargs) -> None:
