@@ -9,7 +9,7 @@ class BlockModelElement(Element):
     def __init__(self, *args, **kwargs):
         self._data: dict = None
         self._values: np.ndarray = np.array([], np.float32)
-        self._block_size: np.ndarray = None
+        self._size = None
 
         self._x_str: str = None
         self._y_str: str = None
@@ -30,6 +30,9 @@ class BlockModelElement(Element):
         else:
             raise KeyError(msg)
 
+        self._fill_size(*args, **kwargs)
+
+    def _fill_size(self, *args, **kwargs):
         self.block_size = kwargs.get('block_size', [1.0, 1.0, 1.0])
 
     def _fill_as_values(self, *args, **kwargs):
@@ -101,12 +104,12 @@ class BlockModelElement(Element):
         self.x_str, self.y_str, self.z_str, self.value_str = values
 
     @property
-    def block_size(self) -> np.ndarray:
-        return self._block_size
+    def block_size(self):
+        return self._size
 
     @block_size.setter
-    def block_size(self, size: list) -> None:
-        self._block_size = np.array(size, np.float32)
+    def block_size(self, size) -> None:
+        self._size = np.array(size, np.float32)
 
     def update_values(self):
         with Pool(processes=4) as pool:
