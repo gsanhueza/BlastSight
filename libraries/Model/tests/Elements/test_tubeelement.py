@@ -6,11 +6,11 @@ from libraries.Model.Elements.tubeelement import TubeElement
 
 
 class TestTubeElement:
-    def test_empty_line(self):
+    def test_empty_tube(self):
         with pytest.raises(Exception):
             TubeElement()
 
-    def test_single_line(self):
+    def test_single_tube(self):
         element = TubeElement(x=[-1, 1], y=[0, 0], z=[0, 0], color=[0.0, 1.0, 0.0])
 
         assert len(element.vertices) == 2
@@ -30,7 +30,7 @@ class TestTubeElement:
         for i in range(len(expected)):
             assert element.color[i] == expected[i]
 
-    def test_multiple_lines(self):
+    def test_multiple_tubes(self):
         element = TubeElement(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], color=[1.0, 1.0, 0.0])
 
         assert len(element.vertices) == 3
@@ -51,7 +51,7 @@ class TestTubeElement:
         for i in range(len(expected)):
             assert element.color[i] == expected[i]
 
-    def test_wrong_lines(self):
+    def test_wrong_tubes(self):
         with pytest.raises(Exception):
             TubeElement(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0], color=[0.0, 1.0, 0.0])
 
@@ -62,4 +62,4 @@ class TestTubeElement:
             TubeElement(x=[-1], y=[0], z=[0], color=[0.0, 1.0, 0.2])
 
         with pytest.raises(Exception):
-            TubeElement(x=[-1, 1, 0], y=[0, 1, 0], z=[0, 0, 0], values=[[0.0, 1.0, 0.0]])
+            TubeElement(x=[-1, 1], y=[0, 1, 0], z=[0, 0, 0], values=[[0.0, 1.0, 0.0]])

@@ -5,6 +5,7 @@ import pytest
 from libraries.Model.Elements.blockmodelelement import BlockModelElement
 from libraries.View.GUI.integrableviewer import IntegrableViewer
 from libraries.View.Drawables.blockmodelgl import BlockModelGL
+from libraries.View.Drawables.blockmodelprogram import BlockModelProgram
 
 
 class TestBlockModelGL:
@@ -37,6 +38,11 @@ class TestBlockModelGL:
         assert drawable.is_initialized
 
     def test_draw(self):
+        widget = IntegrableViewer()
+        program = BlockModelProgram(widget)
+        program.setup()
+        program.bind()
+
         drawable = BlockModelGL(widget=IntegrableViewer(), element=self.element)
         drawable.setup_attributes()
 

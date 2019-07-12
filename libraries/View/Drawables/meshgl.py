@@ -75,3 +75,4 @@ class MeshGL(GLDrawable):
 
         glBindVertexArray(self.vao)
         glDrawElements(GL_TRIANGLES, self.indices_size, GL_UNSIGNED_INT, None)
+        glBindVertexArray(0)

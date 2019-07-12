@@ -52,3 +52,4 @@ class TubeGL(GLDrawable):
         glBindVertexArray(self.vao)
         # np.array([[0, 1, 2]], type) has size 3, despite having only 1 list there
         glDrawArrays(GL_LINE_STRIP, 0, self.vertices_size // 3)
+        glBindVertexArray(0)

@@ -62,4 +62,4 @@ class TestLineElement:
             LineElement(x=[-1], y=[0], z=[0], color=[0.0, 1.0, 0.2])
 
         with pytest.raises(Exception):
-            LineElement(x=[-1, 1, 0], y=[0, 1, 0], z=[0, 0, 0], values=[[0.0, 1.0, 0.0]])
+            LineElement(x=[-1, 1], y=[0, 1, 0], z=[0, 0, 0], values=[0.0, 1.0, 0.0])

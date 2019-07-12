@@ -80,6 +80,7 @@ class BlockModelGL(GLDrawable):
 
         glBindVertexArray(self.vao)
         glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 14, self.values_size)
+        glBindVertexArray(0)
 
     # Taken from https://stackoverflow.com/questions/28375338/cube-using-single-gl-triangle-strip
     @staticmethod

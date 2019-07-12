@@ -68,9 +68,6 @@ class IntegrableViewer(QOpenGLWidget):
         self._initial_centroid = [0.0, 0.0, 0.0]
         self.xCentroid, self.yCentroid, self.zCentroid = self._initial_centroid
 
-        # QPainter (after OpenGL)
-        self.painter = QPainter()
-
         # FPS Counter
         self.fps_counter = FPSCounter()
 
@@ -233,8 +230,6 @@ class IntegrableViewer(QOpenGLWidget):
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
 
     def paintGL(self) -> None:
-        self.painter.begin(self)
-
         # Clear screen
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
         glDisable(GL_CULL_FACE)
@@ -267,8 +262,7 @@ class IntegrableViewer(QOpenGLWidget):
         self.drawable_collection.draw(self.proj, self.camera, self.world)
 
         # QPainter can draw *after* OpenGL finishes
-        self.painter.end()
-        self.current_mode.overpaint()
+        self.current_mode.overpaint(self)
 
         self.fps_counter.tick()
 
@@ -306,14 +300,16 @@ class IntegrableViewer(QOpenGLWidget):
     Controller
     """
     def set_normal_mode(self) -> None:
-        self.current_mode = NormalMode(self)
+        self.current_mode = NormalMode()
+        self.update()
 
     def set_draw_mode(self) -> None:
-        self.take_screenshot()
-        self.current_mode = DrawMode(self)
+        self.current_mode = DrawMode()
+        self.update()
 
     def set_selection_mode(self) -> None:
-        self.current_mode = SelectionMode(self)
+        self.current_mode = SelectionMode()
+        self.update()
 
     def take_screenshot(self):
         save_path = 'minevis_screenshot.png'
@@ -326,19 +322,19 @@ class IntegrableViewer(QOpenGLWidget):
 
     # Movement/actions dependent on current mode
     def mouseMoveEvent(self, event, *args, **kwargs) -> None:
-        self.current_mode.mouseMoveEvent(event)
+        self.current_mode.mouseMoveEvent(event, self)
         self.update()
 
     def mousePressEvent(self, event, *args, **kwargs) -> None:
-        self.current_mode.mousePressEvent(event)
+        self.current_mode.mousePressEvent(event, self)
         self.update()
 
     def mouseReleaseEvent(self, event, *args, **kwargs) -> None:
-        self.current_mode.mouseReleaseEvent(event)
+        self.current_mode.mouseReleaseEvent(event, self)
         self.update()
 
     def wheelEvent(self, event, *args, **kwargs) -> None:
-        self.current_mode.wheelEvent(event)
+        self.current_mode.wheelEvent(event, self)
         self.update()
 
     def dragEnterEvent(self, event, *args, **kwargs) -> None:

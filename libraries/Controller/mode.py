@@ -2,47 +2,49 @@
 
 
 class Mode:
-    def __init__(self, widget):
-        self.widget = widget
-        self.widget.update()
-
-    def mousePressEvent(self, event):
+    def mousePressEvent(self, event, widget):
         pass
 
-    def mouseMoveEvent(self, event):
+    def mouseMoveEvent(self, event, widget):
         pass
 
-    def mouseReleaseEvent(self, event):
+    def mouseReleaseEvent(self, event, widget):
         pass
 
-    def wheelEvent(self, event):
+    def wheelEvent(self, event, widget):
         pass
 
-    def overpaint(self):
+    def overpaint(self, widget):
         pass
 
-    def normalize_angle(self, angle):
+    @staticmethod
+    def normalize_angle(angle):
         return angle % 360
 
-    def set_x_rotation(self, angle):
-        angle = self.normalize_angle(angle)
-        if angle != self.widget.xWorldRot:
-            self.widget.xWorldRot = angle
+    @staticmethod
+    def set_x_rotation(widget, angle):
+        angle = Mode.normalize_angle(angle)
+        if angle != widget.xWorldRot:
+            widget.xWorldRot = angle
 
-    def set_y_rotation(self, angle):
-        angle = self.normalize_angle(angle)
-        if angle != self.widget.yWorldRot:
-            self.widget.yWorldRot = angle
+    @staticmethod
+    def set_y_rotation(widget, angle):
+        angle = Mode.normalize_angle(angle)
+        if angle != widget.yWorldRot:
+            widget.yWorldRot = angle
 
-    def set_z_rotation(self, angle):
-        angle = self.normalize_angle(angle)
-        if angle != self.widget.zWorldRot:
-            self.widget.zWorldRot = angle
+    @staticmethod
+    def set_z_rotation(widget, angle):
+        angle = Mode.normalize_angle(angle)
+        if angle != widget.zWorldRot:
+            widget.zWorldRot = angle
 
-    def set_x_movement(self, position):
-        if abs(position - self.widget.xWorldPos) > 0.01:
-            self.widget.xWorldPos = position
+    @staticmethod
+    def set_x_movement(widget, position):
+        if abs(position - widget.xWorldPos) > 0.01:
+            widget.xWorldPos = position
 
-    def set_y_movement(self, position):
-        if abs(position - self.widget.yWorldPos) > 0.01:
-            self.widget.yWorldPos = position
+    @staticmethod
+    def set_y_movement(widget, position):
+        if abs(position - widget.yWorldPos) > 0.01:
+            widget.yWorldPos = position
