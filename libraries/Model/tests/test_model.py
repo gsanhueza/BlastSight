@@ -195,6 +195,55 @@ class TestModel:
         with pytest.raises(Exception):
             model.get(id_)
 
+    # Points
+    def test_add_points(self):
+        model = Model()
+        path = f'{TEST_FILES_FOLDER_PATH}/mini.csv'
+        data = CSVParser.load_file(path)
+
+        bm_1 = model.points(data=data)
+        bm_2 = model.points(data=data)
+
+        assert bm_1.id != bm_2.id
+
+    def test_add_points_by_path(self):
+        model = Model()
+        path = f'{TEST_FILES_FOLDER_PATH}/mini.csv'
+
+        bm_1 = model.points_by_path(path=path)
+        bm_2 = model.points_by_path(path=path)
+
+        assert bm_1.id != bm_2.id
+
+    def test_wrong_points(self):
+        model = Model()
+        with pytest.raises(Exception):
+            model.points_by_path(f'{TEST_FILES_FOLDER_PATH}/nonexistent.csv')
+
+    def test_get_points(self):
+        model = Model()
+        path = f'{TEST_FILES_FOLDER_PATH}/mini.csv'
+        data = CSVParser.load_file(path)
+
+        bm = model.points(data=data)
+        bm_get = model.get(bm.id)
+
+        assert bm is not None
+        assert bm_get is not None
+        assert bm.id == bm_get.id
+
+    def test_delete_points(self):
+        model = Model()
+        path = f'{TEST_FILES_FOLDER_PATH}/mini.csv'
+        data = CSVParser.load_file(path)
+
+        bm = model.points(data=data)
+        id_ = bm.id
+        model.delete(id_)
+
+        with pytest.raises(Exception):
+            model.get(id_)
+
     # Multiple
     def test_add_multiple(self):
         model = Model()

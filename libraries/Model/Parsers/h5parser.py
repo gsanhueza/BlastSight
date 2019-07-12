@@ -17,8 +17,9 @@ class H5Parser:
         return vertices, indices
 
     @staticmethod
-    def save_file(vertices, indices, file_path: str) -> None:
-        hf = h5py.File(f'{file_path}.h5', "w")
+    def save_file(file_path: str, vertices, indices) -> None:
+        path = file_path if file_path.endswith('.h5') else f'{file_path}.h5'
+        hf = h5py.File(path, 'w')
         hf.create_dataset("vertices", data=vertices, dtype='float32')
         hf.create_dataset("indices", data=indices, dtype='uint32')
         hf.close()
