@@ -41,7 +41,15 @@ mat4 rotationMatrix(vec3 axis, float angle)
 void main()
 {
     vec4 normal = normalize(v_position[1] - v_position[0]);
-    vec4 tangent = vec4(normal.y, -normal.x, normal.zw);
+    vec4 tangent = vec4(normal.y, -normal.x, normal.z, normal.w);
+
+    if (dot(normal, tangent) > 0.0001) {
+        tangent = vec4(normal.z, normal.y, -normal.x, normal.w);
+    }
+
+    if (dot(normal, tangent) > 0.0001) {
+        tangent = vec4(normal.x, normal.z, -normal.y, normal.w);
+    }
 
     mat4 MVP = proj_matrix * model_view_matrix;
 
