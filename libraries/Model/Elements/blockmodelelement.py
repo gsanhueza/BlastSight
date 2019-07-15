@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 import numpy as np
-from multiprocess import Pool
 from .element import Element
 
 
@@ -112,10 +111,7 @@ class BlockModelElement(Element):
         self._size = np.array(size, np.float32)
 
     def update_values(self):
-        with Pool(processes=4) as pool:
-            self.x, self.y, self.z, self.values = pool.map(np.float32, [
-                self.data[self.x_str],
-                self.data[self.y_str],
-                self.data[self.z_str],
-                self.data[self.value_str],
-            ])
+        self.x = self.data[self.x_str]
+        self.y = self.data[self.y_str]
+        self.z = self.data[self.z_str]
+        self.values = self.data[self.value_str]

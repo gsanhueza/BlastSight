@@ -2,7 +2,6 @@
 
 import numpy as np
 import operator
-from multiprocess import Pool
 from functools import reduce, partial
 
 from .Elements.meshelement import MeshElement
@@ -14,9 +13,8 @@ def mesh_intersection(origin: np.ndarray, ray: np.ndarray, mesh: MeshElement) ->
     def triangle_generator(it):
         return list(map(lambda x: mesh.vertices[it[x]], range(3)))
 
-    with Pool() as pool:
-        triangles = pool.map(triangle_generator, mesh.indices)
-        results = pool.map(curry_triangle, triangles)
+    triangles = map(triangle_generator, mesh.indices)
+    results = map(curry_triangle, triangles)
 
     return reduce(operator.__or__, results)
 
