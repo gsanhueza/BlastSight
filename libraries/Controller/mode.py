@@ -41,10 +41,10 @@ class Mode:
 
     @staticmethod
     def set_x_movement(widget, position):
-        if abs(position - widget.xWorldPos) > 0.01:
-            widget.xWorldPos = position
+        if abs(position - widget.xCameraPos) > 0.01:
+            widget.xCameraPos = position
 
     @staticmethod
     def set_y_movement(widget, position):
-        if abs(position - widget.yWorldPos) > 0.01:
-            widget.yWorldPos = position
+        if abs(position - widget.yCameraPos) > 0.01:
+            widget.yCameraPos = position

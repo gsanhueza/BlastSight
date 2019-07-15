@@ -57,16 +57,14 @@ class IntegrableViewer(QOpenGLWidget):
         self._world = QMatrix4x4()
         self._proj = QMatrix4x4()
 
-        # World (we don't move the camera)
+        # Positions and rotations
+        self._initial_centroid = [0.0, 0.0, 0.0]
         self._initial_position = [0.0, 0.0, -200.0]
         self._initial_rotation = [0.0, 0.0, 0.0]
 
-        self.xWorldPos, self.yWorldPos, self.zWorldPos = self._initial_position
+        self.xWorldPos, self.yWorldPos, self.zWorldPos = self._initial_centroid
         self.xWorldRot, self.yWorldRot, self.zWorldRot = self._initial_rotation
-
-        # Centroid (objects will rotate around this)
-        self._initial_centroid = [0.0, 0.0, 0.0]
-        self.xCentroid, self.yCentroid, self.zCentroid = self._initial_centroid
+        self.xCameraPos, self.yCameraPos, self.zCameraPos = self._initial_position
 
         # FPS Counter
         self.fps_counter = FPSCounter()
@@ -93,11 +91,11 @@ class IntegrableViewer(QOpenGLWidget):
 
     @property
     def camera_position(self) -> list:
-        return [-self.xWorldPos, -self.yWorldPos, -self.zWorldPos]
+        return [-self.xCameraPos, -self.yCameraPos, -self.zCameraPos]
 
     @camera_position.setter
     def camera_position(self, pos: list) -> None:
-        self.xWorldPos, self.yWorldPos, self.zWorldPos = [-pos[0], -pos[1], -pos[2]]
+        self.xCameraPos, self.yCameraPos, self.zCameraPos = [-pos[0], -pos[1], -pos[2]]
 
     @property
     def camera_rotation(self) -> list:
@@ -109,11 +107,11 @@ class IntegrableViewer(QOpenGLWidget):
 
     @property
     def centroid(self) -> list:
-        return [self.xCentroid, self.yCentroid, self.zCentroid]
+        return [self.xWorldPos, self.yWorldPos, self.zWorldPos]
 
     @centroid.setter
     def centroid(self, _centroid: list) -> None:
-        self.xCentroid, self.yCentroid, self.zCentroid = _centroid
+        self.xWorldPos, self.yWorldPos, self.zWorldPos = _centroid
 
     @property
     def last_id(self) -> int:
@@ -189,15 +187,15 @@ class IntegrableViewer(QOpenGLWidget):
 
     def camera_at(self, id_: int) -> None:
         drawable = self.get_drawable(id_)
-        self.xWorldPos, self.yWorldPos, self.zWorldPos = self._initial_position
-        self.xCentroid, self.yCentroid, self.zCentroid = drawable.element.centroid
+        self.xCameraPos, self.yCameraPos, self.zCameraPos = self._initial_position
+        self.xWorldPos, self.yWorldPos, self.zWorldPos = drawable.element.centroid
 
         dx = abs(drawable.element.x.max() - drawable.element.x.min())
         dy = abs(drawable.element.y.max() - drawable.element.y.min())
         dz = abs(drawable.element.z.max() - drawable.element.z.min())
 
         # Put the camera in a position that allow us to see it
-        self.zWorldPos = -1.2 * max(dx, dy, dz) / math.tan(math.pi / 4)
+        self.zCameraPos = 1.2 * max(dx, dy, dz) / math.tan(math.pi / 4)
         self.update()
 
     def plan_view(self):
@@ -235,21 +233,18 @@ class IntegrableViewer(QOpenGLWidget):
         glDisable(GL_CULL_FACE)
 
         self.world.setToIdentity()
+        self.camera.setToIdentity()
 
-        # Allow translation of the world
-        self.world.translate(self.xWorldPos,
-                             self.yWorldPos,
-                             self.zWorldPos)
+        # Translate by centroid (world position)
+        self.world.translate(self.xWorldPos, self.yWorldPos, self.zWorldPos)
 
         # Allow rotation of the world
         self.world.rotate(self.xWorldRot, 1.0, 0.0, 0.0)
         self.world.rotate(self.yWorldRot, 0.0, 1.0, 0.0)
         self.world.rotate(self.zWorldRot, 0.0, 0.0, 1.0)
 
-        # Translate by centroid
-        self.world.translate(-self.xCentroid,
-                             -self.yCentroid,
-                             -self.zCentroid)
+        # Allow translation of the camera
+        self.camera.translate(self.xCameraPos, self.yCameraPos, self.zCameraPos)
 
         # Draw gradient background
         glDisable(GL_DEPTH_TEST)
@@ -285,8 +280,7 @@ class IntegrableViewer(QOpenGLWidget):
         ray = QVector3D(x, y, z).unproject((self.camera * self.world), self.proj,
                                            QRect(0, 0, self.width(), self.height())).normalized()
 
-        camera_pos = self.camera.column(3)
-        ray_origin = ((self.camera * self.world).inverted()[0] * camera_pos).toVector3D()
+        ray_origin = (self.camera * self.world).inverted()[0].column(3).toVector3D()
 
         # To Numpy array
         ray = np.array([ray.x(), ray.y(), ray.z()])

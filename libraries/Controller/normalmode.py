@@ -22,10 +22,10 @@ class NormalMode(Mode):
             self.set_y_rotation(widget, widget.yWorldRot + dx)
         elif event.buttons() == Qt.MiddleButton:
             # FIXME Dependent on aspect ratio
-            distance_x = 200 * abs(widget.zWorldPos + widget.centroid[2]) / widget.width()
-            distance_y = 200 * abs(widget.zWorldPos + widget.centroid[2]) / widget.height()
-            self.set_x_movement(widget, widget.xWorldPos + (distance_x * dx / 200.0))
-            self.set_y_movement(widget, widget.yWorldPos - (distance_y * dy / 200.0))
+            distance_x = 200 * abs(widget.zCameraPos + widget.centroid[2]) / widget.width()
+            distance_y = 200 * abs(widget.zCameraPos + widget.centroid[2]) / widget.height()
+            self.set_x_movement(widget, widget.xCameraPos + (distance_x * dx / 200.0))
+            self.set_y_movement(widget, widget.yCameraPos - (distance_y * dy / 200.0))
         elif event.buttons() == Qt.RightButton:
             self.set_x_rotation(widget, widget.xWorldRot + dy)
             self.set_z_rotation(widget, widget.zWorldRot - dx)
@@ -34,4 +34,4 @@ class NormalMode(Mode):
 
     def wheelEvent(self, event, widget):
         # self.widget.zWorldPos += (event.angleDelta().y() / 120)
-        widget.zWorldPos *= pow(1.2, -event.angleDelta().y() / 120)
+        widget.zCameraPos *= pow(1.2, -event.angleDelta().y() / 120)
