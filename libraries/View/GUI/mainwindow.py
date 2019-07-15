@@ -26,6 +26,14 @@ class MineVis(QMainWindow):
         self.setAcceptDrops(True)
         self.statusBar.showMessage('Ready.')
 
+        self.generate_toolbar()
+
+    def generate_toolbar(self):
+        self.mainToolBar.addAction(self.action_Plan_view)
+        self.mainToolBar.addAction(self.action_North_view)
+        self.mainToolBar.addAction(self.action_East_view)
+        self.mainToolBar.addAction(self.action_Take_screenshot)
+
     @property
     def viewer(self):
         return self.openglwidget

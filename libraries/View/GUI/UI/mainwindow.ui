@@ -232,7 +232,8 @@
   </action>
   <action name="action_Plan_view">
    <property name="icon">
-    <iconset theme="draw-rectangle"/>
+    <iconset theme="draw-rectangle">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>&amp;Plan view</string>
@@ -240,7 +241,8 @@
   </action>
   <action name="action_North_view">
    <property name="icon">
-    <iconset theme="arrow-up"/>
+    <iconset theme="arrow-up">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>N&amp;orth view</string>
@@ -248,7 +250,8 @@
   </action>
   <action name="action_East_view">
    <property name="icon">
-    <iconset theme="arrow-right"/>
+    <iconset theme="arrow-right">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>&amp;East view</string>
@@ -256,10 +259,14 @@
   </action>
   <action name="action_Take_screenshot">
    <property name="icon">
-    <iconset theme="snap"/>
+    <iconset theme="snap">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>Take screenshot</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+T</string>
    </property>
   </action>
  </widget>

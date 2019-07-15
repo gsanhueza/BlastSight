@@ -95,7 +95,7 @@ class IntegrableViewer(QOpenGLWidget):
 
     @camera_position.setter
     def camera_position(self, pos: list) -> None:
-        self.xCameraPos, self.yCameraPos, self.zCameraPos = [-pos[0], -pos[1], -pos[2]]
+        self.xCameraPos, self.yCameraPos, self.zCameraPos = -pos[0], -pos[1], -pos[2]
 
     @property
     def camera_rotation(self) -> list:
@@ -176,7 +176,7 @@ class IntegrableViewer(QOpenGLWidget):
         return self.drawable_collection[id_]
 
     def update_drawable(self, id_: int) -> None:
-        self.xCentroid, self.yCentroid, self.zCentroid = self.model.get(id_).centroid
+        self.xWorldPos, self.yWorldPos, self.zWorldPos = self.model.get(id_).centroid
         self.get_drawable(id_).setup_attributes()
         self.update()
 
@@ -187,15 +187,15 @@ class IntegrableViewer(QOpenGLWidget):
 
     def camera_at(self, id_: int) -> None:
         drawable = self.get_drawable(id_)
-        self.xCameraPos, self.yCameraPos, self.zCameraPos = self._initial_position
-        self.xWorldPos, self.yWorldPos, self.zWorldPos = drawable.element.centroid
+        self.centroid = drawable.element.centroid
+        self.camera_position = drawable.element.centroid
 
         dx = abs(drawable.element.x.max() - drawable.element.x.min())
         dy = abs(drawable.element.y.max() - drawable.element.y.min())
         dz = abs(drawable.element.z.max() - drawable.element.z.min())
 
-        # Put the camera in a position that allow us to see it
-        self.zCameraPos = 1.2 * max(dx, dy, dz) / math.tan(math.pi / 4)
+        # Put the camera in a position that allow us to see the element
+        self.zCameraPos -= 1.2 * max(dx, dy, dz) / math.tan(math.pi / 4)
         self.update()
 
     def plan_view(self):
@@ -243,7 +243,10 @@ class IntegrableViewer(QOpenGLWidget):
         self.world.rotate(self.yWorldRot, 0.0, 1.0, 0.0)
         self.world.rotate(self.zWorldRot, 0.0, 0.0, 1.0)
 
-        # Allow translation of the camera
+        # Restore world
+        self.world.translate(-self.xWorldPos, -self.yWorldPos, -self.zWorldPos)
+
+        # Translate the camera
         self.camera.translate(self.xCameraPos, self.yCameraPos, self.zCameraPos)
 
         # Draw gradient background
