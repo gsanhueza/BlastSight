@@ -137,7 +137,7 @@ class IntegrableViewer(QOpenGLWidget):
             self.file_dropped_signal.emit()
             self.update()
 
-            return drawable
+            return self.get_drawable(drawable.id)
         except Exception:
             traceback.print_exc()
             return None
@@ -177,7 +177,7 @@ class IntegrableViewer(QOpenGLWidget):
         self.drawable_collection[id_].hide()
         self.update()
 
-    def get_drawable(self, id_: int) -> GLDrawable:
+    def get_drawable(self, id_: int):
         return self.drawable_collection[id_]
 
     def update_drawable(self, id_: int) -> None:
@@ -187,7 +187,7 @@ class IntegrableViewer(QOpenGLWidget):
 
     def delete(self, id_: int) -> None:
         self.model.delete(id_)
-        del self.drawable_collection[id_]
+        self.drawable_collection.delete(id_)
         self.update()
 
     def camera_at(self, id_: int) -> None:

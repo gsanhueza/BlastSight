@@ -32,12 +32,22 @@ class MineVis(QMainWindow):
         self.generate_toolbar()
 
     def generate_toolbar(self):
-        self.mainToolBar.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
+        self.mainToolBar.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
+
+        self.mainToolBar.addAction(self.action_Load_mesh)
+        self.mainToolBar.addAction(self.action_Load_block_model)
+        self.mainToolBar.addAction(self.action_Load_points)
+
+        self.mainToolBar.addSeparator()
 
         self.mainToolBar.addAction(self.action_Plan_view)
         self.mainToolBar.addAction(self.action_North_view)
         self.mainToolBar.addAction(self.action_East_view)
         self.mainToolBar.addAction(self.action_Take_screenshot)
+
+        self.mainToolBar.addSeparator()
+
+        self.mainToolBar.addAction(self.action_Quit)
 
     @property
     def viewer(self):

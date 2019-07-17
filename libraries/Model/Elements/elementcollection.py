@@ -19,5 +19,8 @@ class ElementCollection(OrderedDict):
 
     def add(self, element: Element) -> None:
         self.last_id += 1
-        self.__setitem__(self.last_id, element)
+        self[self.last_id] = element
         element.id = self.last_id  # Auto-update on element add
+
+    def delete(self, _id):
+        del self[_id]

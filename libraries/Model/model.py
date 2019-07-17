@@ -82,7 +82,7 @@ class Model:
         return self.element_collection[id_]
 
     def delete(self, id_: int) -> None:
-        self.element_collection.__delitem__(id_)
+        self.element_collection.delete(id_)
 
     @property
     def element_collection(self) -> ElementCollection:

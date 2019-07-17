@@ -30,7 +30,10 @@ class GLDrawableCollection(OrderedDict):
         }
 
     def add(self, id_: int, drawable: GLDrawable) -> None:
-        self.__setitem__(id_, drawable)
+        self[id_] = drawable
+
+    def delete(self, id_: int) -> None:
+        del self[id_]
 
     def draw(self, proj_matrix, view_matrix, model_matrix) -> None:
         types = {
