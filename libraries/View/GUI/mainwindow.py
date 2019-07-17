@@ -29,6 +29,8 @@ class MineVis(QMainWindow):
         self.generate_toolbar()
 
     def generate_toolbar(self):
+        self.mainToolBar.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
+
         self.mainToolBar.addAction(self.action_Plan_view)
         self.mainToolBar.addAction(self.action_North_view)
         self.mainToolBar.addAction(self.action_East_view)
@@ -54,6 +56,16 @@ class MineVis(QMainWindow):
             item = TreeWidgetItem(self.treeWidget, self, drawable)
             self.treeWidget.addTopLevelItem(item)
         self.treeWidget.select_item(self.treeWidget.topLevelItemCount(), 0)
+
+    def dialog_available_values(self, id_):
+        drawable = self.viewer.get_drawable(id_)
+        dialog = AvailableValuesDialog(self, drawable)
+
+        dialog.show()
+
+    def dialog_camera_position(self):
+        dialog = CameraPositionDialog(self)
+        dialog.show()
 
     def _load_element(self, method: classmethod, path: str, name: str) -> bool:
         drawable = method(path)
@@ -88,16 +100,6 @@ class MineVis(QMainWindow):
         if status:
             self.dialog_available_values(self.viewer.last_id)  # Dialog auto-trigger
         return status
-
-    def dialog_available_values(self, id_):
-        drawable = self.viewer.get_drawable(id_)
-        dialog = AvailableValuesDialog(self, drawable)
-
-        dialog.show()
-
-    def dialog_camera_position(self):
-        dialog = CameraPositionDialog(self)
-        dialog.show()
 
     """
     Slots. Unless explicitly otherwise, slots are connected via Qt Designer
