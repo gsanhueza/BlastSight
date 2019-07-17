@@ -13,19 +13,21 @@ from .Elements.tubeelement import TubeElement
 from .Parsers.dxfparser import DXFParser
 from .Parsers.offparser import OFFParser
 from .Parsers.npzparser import NPZParser
-from .Parsers.h5parser import H5Parser
+from .Parsers.h5mparser import H5MParser
+from .Parsers.h5pparser import H5PParser
 from .Parsers.csvparser import CSVParser
 
 
 class Model:
     def __init__(self):
         self._element_collection = ElementCollection()
-        self.parser_dict = {}  # Example: {"dxf": (DXFParser, MeshElement)}
+        self.parser_dict = {}  # Example: {"dxf": DXFParser}
 
         self.add_parser('dxf', DXFParser)
         self.add_parser('off', OFFParser)
         self.add_parser('npz', NPZParser)
-        self.add_parser('h5', H5Parser)
+        self.add_parser('h5m', H5MParser)
+        self.add_parser('h5p', H5PParser)
         self.add_parser('csv', CSVParser)
 
     def add_parser(self, extension: str, handler: type) -> None:

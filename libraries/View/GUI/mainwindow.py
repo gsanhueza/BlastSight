@@ -111,21 +111,25 @@ class MineVis(QMainWindow):
 
     def load_mesh_slot(self) -> None:
         self._load_element_slot(method=self.load_mesh,
-                                filters='Mesh Files (*.dxf *.off);;'
+                                filters='Mesh Files (*.dxf *.off *.npz *.h5m);;'
                                         'DXF Files (*.dxf);;'
                                         'OFF Files (*.off);;'
                                         'NPZ Files (*.npz);;'
-                                        'H5 Files (*.h5);;'
+                                        'H5M Files (*.h5m);;'
                                         'All Files (*.*)')
 
     def load_block_model_slot(self) -> None:
         self._load_element_slot(method=self.load_block_model,
-                                filters='CSV Files (*.csv);;'
+                                filters='Data Files (*.csv *.h5p);;'
+                                        'CSV Files (*.csv);;'
+                                        'H5P Files (*.h5p);;'
                                         'All Files (*.*)')
 
     def load_points_slot(self) -> None:
         self._load_element_slot(method=self.load_points,
-                                filters='CSV Files (*.csv);;'
+                                filters='Data Files (*.csv *.h5p);;'
+                                        'CSV Files (*.csv);;'
+                                        'H5P Files (*.h5p);;'
                                         'All Files (*.*)')
 
     def normal_mode_slot(self) -> None:

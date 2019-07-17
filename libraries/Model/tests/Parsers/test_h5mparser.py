@@ -2,20 +2,20 @@
 
 import pytest
 import os
-from libraries.Model.Parsers.h5parser import H5Parser as Parser
+from libraries.Model.Parsers.h5mparser import H5MParser as Parser
 from libraries.Model.tests.globals import *
 
 
-class TestH5Parser:
+class TestH5MParser:
     def test_load_file(self):
-        [vertices, indices] = Parser.load_file(f'{TEST_FILES_FOLDER_PATH}/caseron.h5')
+        [vertices, indices] = Parser.load_file(f'{TEST_FILES_FOLDER_PATH}/caseron.h5m')
         assert len(vertices) == 12
         assert len(indices) == 20
 
     def test_save_file(self):
-        [vertices, indices] = Parser.load_file(f'{TEST_FILES_FOLDER_PATH}/caseron.h5')
-        Parser.save_file(f'{TEST_FILES_FOLDER_PATH}/caseron_save.h5', vertices, indices)
-        [vertices_s, indices_s] = Parser.load_file(f'{TEST_FILES_FOLDER_PATH}/caseron_save.h5')
+        [vertices, indices] = Parser.load_file(f'{TEST_FILES_FOLDER_PATH}/caseron.h5m')
+        Parser.save_file(f'{TEST_FILES_FOLDER_PATH}/caseron_save.h5m', vertices, indices)
+        [vertices_s, indices_s] = Parser.load_file(f'{TEST_FILES_FOLDER_PATH}/caseron_save.h5m')
 
         for v, v_s in zip(vertices, vertices_s):
             for e, e_s in zip(v, v_s):
@@ -26,11 +26,11 @@ class TestH5Parser:
                 assert e == e_s
 
         # Cleanup
-        os.remove(f'{TEST_FILES_FOLDER_PATH}/caseron_save.h5')
+        os.remove(f'{TEST_FILES_FOLDER_PATH}/caseron_save.h5m')
 
     def test_load_inexistent(self):
         with pytest.raises(Exception):
-            Parser.load_file(f'{TEST_FILES_FOLDER_PATH}/nonexistent.h5')
+            Parser.load_file(f'{TEST_FILES_FOLDER_PATH}/nonexistent.h5m')
 
     def test_load_wrong_extension(self):
         with pytest.raises(Exception):
@@ -38,4 +38,4 @@ class TestH5Parser:
 
     def test_load_damaged(self):
         with pytest.raises(Exception):
-            Parser.load_file(f'{TEST_FILES_FOLDER_PATH}/bad.h5')
+            Parser.load_file(f'{TEST_FILES_FOLDER_PATH}/bad.h5m')
