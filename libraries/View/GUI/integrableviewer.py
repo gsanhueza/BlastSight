@@ -13,10 +13,7 @@ from qtpy.QtGui import QRegion, QPixmap
 from qtpy.QtGui import QMatrix4x4
 from qtpy.QtGui import QVector3D
 
-from .loadworker import LoadWorker
-
 from ..Drawables.gldrawablecollection import GLDrawableCollection
-from ..Drawables.gldrawable import GLDrawable
 
 from ..Drawables.blockmodelgl import BlockModelGL
 from ..Drawables.meshgl import MeshGL
@@ -128,16 +125,16 @@ class IntegrableViewer(QOpenGLWidget):
     """
     Load methods
     """
-    def add_drawable(self, method: classmethod, drawable: type, *args, **kwargs):
+    def add_drawable(self, method: classmethod, drawable_type: type, *args, **kwargs):
         try:
             element = method(*args, **kwargs)
-            drawable = drawable(self, element)
-            self.drawable_collection.add(drawable.id, drawable)
+            drawable = drawable_type(self, element)
+            self.drawable_collection.add(drawable)
 
             self.file_dropped_signal.emit()
             self.update()
 
-            return self.get_drawable(drawable.id)
+            return drawable
         except Exception:
             traceback.print_exc()
             return None
@@ -350,11 +347,9 @@ class IntegrableViewer(QOpenGLWidget):
             if QFileInfo(path).isDir():
                 self._load_as_dir(path)
             else:
-                worker = LoadWorker(self.mesh_by_path, path)
-                self.thread_pool.start(worker)
+                self.mesh_by_path(path)
 
     def _load_as_dir(self, path):
         it = QDirIterator(path, QDirIterator.Subdirectories)
         while it.hasNext():
-            worker = LoadWorker(self.mesh_by_path, it.next())
-            self.thread_pool.start(worker)
+            self.mesh_by_path(it.next())

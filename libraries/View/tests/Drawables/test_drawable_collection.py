@@ -18,7 +18,7 @@ class TestGLDrawableCollection:
 
     def test_add(self):
         collection = GLDrawableCollection()
-        collection.add(0, self.drawable)
+        collection.add(self.drawable)
         assert len(collection) == 1
         assert collection[0] == self.drawable
 
@@ -29,7 +29,7 @@ class TestGLDrawableCollection:
 
     def test_set(self):
         collection = GLDrawableCollection()
-        collection.add(0, self.drawable)
+        collection.add(self.drawable)
         drawable = collection[0]
         collection[0] = drawable
 
@@ -38,14 +38,14 @@ class TestGLDrawableCollection:
 
     def test_delete(self):
         collection = GLDrawableCollection()
-        collection.add(0, self.drawable)
+        collection.add(self.drawable)
         assert len(collection) == 1
         del collection[0]
         assert len(collection) == 0
 
     def test_items(self):
         collection = GLDrawableCollection()
-        collection.add(0, self.drawable)
+        collection.add(self.drawable)
         drawable = collection[0]
 
         items = collection.items()
@@ -54,11 +54,11 @@ class TestGLDrawableCollection:
 
     def test_clear(self):
         collection = GLDrawableCollection()
-        collection.add(0, self.drawable)
-        collection.add(1, self.drawable)
-        collection.add(2, self.drawable)
+        collection.add(self.drawable)
+        collection.add(self.drawable)
+        collection.add(self.drawable)
 
-        assert len(collection) == 3
+        assert len(collection) == 1
         collection.clear()
         assert len(collection) == 0
 
@@ -67,7 +67,7 @@ class TestGLDrawableCollection:
         collection = GLDrawableCollection(widget)
         drawable_1 = GLDrawable(widget, element=self.element)
         drawable_2 = GLDrawable(widget, element=self.element)
-        collection.add(0, drawable_1)
+        collection.add(drawable_1)
         drawable_2.initialize()
-        collection.add(1, drawable_2)
+        collection.add(drawable_2)
         collection.draw(widget.proj, widget.camera, widget.world)
