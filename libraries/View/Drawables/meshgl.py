@@ -12,8 +12,6 @@ class MeshGL(GLDrawable):
 
         # Size
         self.indices_size = 0
-        self.vao = None
-        self.buffers = []
 
         # Wireframe
         self.wireframe_enabled = False
@@ -33,9 +31,7 @@ class MeshGL(GLDrawable):
         _COLOR = 1
 
         self.vao = glGenVertexArrays(1)
-
-        # VBO
-        self.buffers = glGenBuffers(3)
+        self.vbos = glGenBuffers(3)
 
         # Data
         vertices = self.element.vertices
@@ -47,15 +43,15 @@ class MeshGL(GLDrawable):
 
         glBindVertexArray(self.vao)
 
-        glBindBuffer(GL_ARRAY_BUFFER, self.buffers[0])
+        glBindBuffer(GL_ARRAY_BUFFER, self.vbos[0])
         glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * vertices.size, vertices, GL_STATIC_DRAW)
         glVertexAttribPointer(_POSITION, 3, GL_FLOAT, False, 0, None)
 
-        glBindBuffer(GL_ARRAY_BUFFER, self.buffers[1])
+        glBindBuffer(GL_ARRAY_BUFFER, self.vbos[1])
         glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * colors.size, colors, GL_STATIC_DRAW)
         glVertexAttribPointer(_COLOR, 4, GL_FLOAT, False, 0, None)
 
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, self.buffers[2])
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, self.vbos[2])
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices, GL_STATIC_DRAW)
 
         glEnableVertexAttribArray(_POSITION)
@@ -70,9 +66,4 @@ class MeshGL(GLDrawable):
 
         glBindVertexArray(self.vao)
         glDrawElements(GL_TRIANGLES, self.indices_size, GL_UNSIGNED_INT, None)
-        glBindVertexArray(0)
-
-    def __del__(self):
-        glBindVertexArray(self.vao)
-        glDeleteBuffers(len(self.buffers), self.buffers)
         glBindVertexArray(0)

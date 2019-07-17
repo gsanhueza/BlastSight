@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+from OpenGL.GL import *
+
 
 class GLDrawable:
     def __init__(self, widget, element):
@@ -7,6 +9,9 @@ class GLDrawable:
         assert element
         self._widget = widget
         self._element = element
+
+        self.vao = None
+        self.vbos = []
 
         self.is_initialized = False
         self.is_visible = True
@@ -37,6 +42,15 @@ class GLDrawable:
     def draw(self) -> None:
         if not self.is_initialized:
             self.initialize()
+
+    def __del__(self):
+        if self.vao:
+            glBindVertexArray(self.vao)
+            glDeleteBuffers(len(self.vbos), self.vbos)
+            glBindVertexArray(0)
+            del self.vao
+
+        del self.vbos
 
     """
     API for QTreeWidgetItem

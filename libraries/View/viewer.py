@@ -2,6 +2,7 @@
 
 import sys
 
+from qtpy.QtCore import Qt
 from qtpy.QtWidgets import QApplication
 from .GUI.integrableviewer import IntegrableViewer
 
@@ -24,10 +25,5 @@ class Viewer(IntegrableViewer):
         self.camera_at(self.last_id)
 
     def keyPressEvent(self, event):
-        import gc
-        from qtpy.QtCore import Qt
-
-        if event.key() == Qt.Key_Delete:
+        if event.key() == Qt.Key_Delete and self.last_id >= 0:
             self.delete(self.last_id)
-        if event.key() == Qt.Key_End:
-            gc.collect()

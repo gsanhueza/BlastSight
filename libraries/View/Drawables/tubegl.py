@@ -18,10 +18,7 @@ class TubeGL(GLDrawable):
         _COLOR = 1
 
         self.vao = glGenVertexArrays(1)
-
-        # VBO
-        vertices_vbo = glGenBuffers(1)
-        color_vbo = glGenBuffers(1)
+        self.vbos = glGenBuffers(2)
 
         # Data
         vertices = self.element.vertices
@@ -31,11 +28,11 @@ class TubeGL(GLDrawable):
 
         glBindVertexArray(self.vao)
 
-        glBindBuffer(GL_ARRAY_BUFFER, vertices_vbo)
+        glBindBuffer(GL_ARRAY_BUFFER, self.vbos[0])
         glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * vertices.size, vertices, GL_STATIC_DRAW)
         glVertexAttribPointer(_POSITION, 3, GL_FLOAT, False, 0, None)
 
-        glBindBuffer(GL_ARRAY_BUFFER, color_vbo)
+        glBindBuffer(GL_ARRAY_BUFFER, self.vbos[1])
         glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * colors.size, colors, GL_STATIC_DRAW)
         glVertexAttribPointer(_COLOR, 4, GL_FLOAT, False, 0, None)
 
