@@ -29,8 +29,8 @@ class GLDrawableCollection(OrderedDict):
             'tube': TubeProgram(widget),
         }
 
-    def add(self, id_: int, drawable: GLDrawable) -> None:
-        self[id_] = drawable
+    def add(self, drawable: GLDrawable) -> None:
+        self[drawable.id] = drawable
 
     def delete(self, id_: int) -> None:
         del self[id_]

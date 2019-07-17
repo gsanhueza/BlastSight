@@ -15,8 +15,6 @@ class PointGL(GLDrawable):
         self.max_val = 1.0
         self.point_size = self.element.point_size
 
-        self.vao = None
-
     def setup_attributes(self) -> None:
         _POSITION = 0
         _COLOR = 1
@@ -24,9 +22,7 @@ class PointGL(GLDrawable):
         if self.vao is None:
             self.vao = glGenVertexArrays(1)
 
-        # VBO
-        vertices_vbo = glGenBuffers(1)
-        values_vbo = glGenBuffers(1)
+        self.vbos = glGenBuffers(2)
 
         # Data
         vertices = self.element.vertices
@@ -39,11 +35,11 @@ class PointGL(GLDrawable):
         self.widget.makeCurrent()
         glBindVertexArray(self.vao)
 
-        glBindBuffer(GL_ARRAY_BUFFER, vertices_vbo)
+        glBindBuffer(GL_ARRAY_BUFFER, self.vbos[0])
         glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * vertices.size, vertices, GL_STATIC_DRAW)
         glVertexAttribPointer(_POSITION, 3, GL_FLOAT, False, 0, None)
 
-        glBindBuffer(GL_ARRAY_BUFFER, values_vbo)
+        glBindBuffer(GL_ARRAY_BUFFER, self.vbos[1])
         glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * values.size, values, GL_STATIC_DRAW)
         glVertexAttribPointer(_COLOR, 1, GL_FLOAT, False, 0, None)
 
