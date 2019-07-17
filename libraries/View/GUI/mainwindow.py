@@ -6,6 +6,7 @@ from qtpy import uic
 from qtpy.QtCore import Qt
 from qtpy.QtCore import QFileInfo
 from qtpy.QtCore import QSettings
+from qtpy.QtCore import QThreadPool
 from qtpy.QtWidgets import QFileDialog
 from qtpy.QtWidgets import QMainWindow
 from qtpy.QtWidgets import QMessageBox
@@ -13,6 +14,7 @@ from qtpy.QtWidgets import QMessageBox
 from .availablevaluesdialog import AvailableValuesDialog
 from .camerapositiondialog import CameraPositionDialog
 from .treewidgetitem import TreeWidgetItem
+from .loadworker import LoadWorker
 
 
 class MineVis(QMainWindow):
@@ -24,7 +26,8 @@ class MineVis(QMainWindow):
 
         self.setFocusPolicy(Qt.StrongFocus)
         self.setAcceptDrops(True)
-        self.statusBar.showMessage('Ready.')
+        self.statusBar.showMessage('Ready')
+        self.threadPool = QThreadPool()
 
         self.generate_toolbar()
 
@@ -67,73 +70,63 @@ class MineVis(QMainWindow):
         dialog = CameraPositionDialog(self)
         dialog.show()
 
-    def _load_element(self, method: classmethod, path: str, name: str) -> bool:
-        drawable = method(path)
-        loaded = bool(drawable)
+    def _load_element(self, method: classmethod, path: str, auto_load=False) -> None:
+        worker = LoadWorker(method, path)
+        if auto_load:
+            worker.signals.loaded.connect(self.dialog_available_values)
 
-        if loaded:
-            self.statusBar.showMessage(f'{name} loaded.')
-        else:
-            self.statusBar.showMessage(f'{name} couldn\'t be loaded.')
+        self.threadPool.start(worker)
+        self.last_dir = QFileInfo(path).absoluteDir().absolutePath()
 
-        return loaded
+    def load_mesh(self, file_path: str) -> None:
+        self._load_element(method=self.viewer.mesh_by_path,
+                           path=file_path)
 
-    def load_mesh(self, file_path: str) -> bool:
-        return self._load_element(method=self.viewer.mesh_by_path,
-                                  path=file_path,
-                                  name='Mesh')
+    def load_block_model(self, file_path: str) -> None:
+        self._load_element(method=self.viewer.block_model_by_path,
+                           path=file_path,
+                           auto_load=True)
 
-    def load_block_model(self, file_path: str) -> bool:
-        status = self._load_element(method=self.viewer.block_model_by_path,
-                                    path=file_path,
-                                    name='Block model')
-
-        if status:
-            self.dialog_available_values(self.viewer.last_id)  # Dialog auto-trigger
-        return status
-
-    def load_points(self, file_path: str) -> bool:
-        status = self._load_element(method=self.viewer.points_by_path,
-                                    path=file_path,
-                                    name='Points')
-
-        if status:
-            self.dialog_available_values(self.viewer.last_id)  # Dialog auto-trigger
-        return status
+    def load_points(self, file_path: str) -> None:
+        self._load_element(method=self.viewer.points_by_path,
+                           path=file_path,
+                           auto_load=True)
 
     """
     Slots. Unless explicitly otherwise, slots are connected via Qt Designer
     """
-    def _load_element_slot(self, method: classmethod, filters: str, name: str) -> None:
+    def _load_element_slot(self, method: classmethod, filters: str, auto_load=False) -> None:
         (file_paths, selected_filter) = QFileDialog.getOpenFileNames(
             parent=self,
             directory=self.last_dir,
             filter=filters)
 
-        accum = 0
+        for path in file_paths:
+            if path != '':
+                worker = LoadWorker(method, path)
+                if auto_load:
+                    worker.signals.loaded.connect(self.dialog_available_values)
 
-        for file_path in file_paths:
-            if file_path != '':
-                accum += int(method(file_path))
-                self.last_dir = QFileInfo(file_path).absoluteDir().absolutePath()
-
-        if len(file_paths) > 1:
-            self.statusBar.showMessage(f'{accum} of {len(file_paths)} {name} loaded.')
+                self.threadPool.start(worker)
 
     def load_mesh_slot(self) -> None:
         self._load_element_slot(method=self.load_mesh,
-                                filters='Mesh Files (*.dxf *.off);;DXF Files (*.dxf);;OFF Files (*.off)',
-                                name='meshes')
+                                filters='Mesh Files (*.dxf *.off);;'
+                                        'DXF Files (*.dxf);;'
+                                        'OFF Files (*.off);;'
+                                        'NPZ Files (*.npz);;'
+                                        'H5 Files (*.h5);;'
+                                        'All Files (*.*)')
 
     def load_block_model_slot(self) -> None:
         self._load_element_slot(method=self.load_block_model,
-                                filters='CSV Files (*.csv);;All Files (*.*)',
-                                name='block models')
+                                filters='CSV Files (*.csv);;'
+                                        'All Files (*.*)')
 
     def load_points_slot(self) -> None:
         self._load_element_slot(method=self.load_points,
-                                filters='CSV Files (*.csv);;All Files (*.*)',
-                                name='points')
+                                filters='CSV Files (*.csv);;'
+                                        'All Files (*.*)')
 
     def normal_mode_slot(self) -> None:
         self.viewer.set_normal_mode()

@@ -7,11 +7,13 @@ import traceback
 from OpenGL.GL import *
 from qtpy.QtCore import QRect, Signal, QPoint
 from qtpy.QtCore import QFileInfo, QDirIterator
+from qtpy.QtCore import QThreadPool
 from qtpy.QtWidgets import QOpenGLWidget
 from qtpy.QtGui import QRegion, QPixmap
-from qtpy.QtGui import QPainter
 from qtpy.QtGui import QMatrix4x4
 from qtpy.QtGui import QVector3D
+
+from .loadworker import LoadWorker
 
 from ..Drawables.gldrawablecollection import GLDrawableCollection
 from ..Drawables.gldrawable import GLDrawable
@@ -68,6 +70,9 @@ class IntegrableViewer(QOpenGLWidget):
 
         # FPS Counter
         self.fps_counter = FPSCounter()
+
+        # Thread Pool
+        self.thread_pool = QThreadPool()
 
     @property
     def model(self):
@@ -345,9 +350,11 @@ class IntegrableViewer(QOpenGLWidget):
             if QFileInfo(path).isDir():
                 self._load_as_dir(path)
             else:
-                self.mesh_by_path(path)
+                worker = LoadWorker(self.mesh_by_path, path)
+                self.thread_pool.start(worker)
 
     def _load_as_dir(self, path):
         it = QDirIterator(path, QDirIterator.Subdirectories)
         while it.hasNext():
-            self.mesh_by_path(it.next())
+            worker = LoadWorker(self.mesh_by_path, it.next())
+            self.thread_pool.start(worker)
