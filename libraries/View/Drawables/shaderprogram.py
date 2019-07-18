@@ -10,7 +10,7 @@ class ShaderProgram:
     def __init__(self, widget):
         self.widget = widget
         self.shader_program = None
-        self.shader_dir = f'{pathlib.Path(__file__).parent}/../Shaders'
+        self.shader_dir = f'{pathlib.Path(__file__).parent.parent}/Shaders'
         self.uniform_locs = {}
 
     def setup(self) -> None:
