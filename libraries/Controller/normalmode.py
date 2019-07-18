@@ -22,7 +22,7 @@ class NormalMode(Mode):
             self.set_z_rotation(widget, widget.zWorldRot + dx)
         elif event.buttons() == Qt.RightButton:
             self.set_x_rotation(widget, widget.xWorldRot + dy)
-            self.set_y_rotation(widget, widget.yWorldRot - dx)
+            self.set_y_rotation(widget, widget.yWorldRot + dx)
         elif event.buttons() == Qt.MiddleButton:
             # FIXME Dependent on aspect ratio
             distance_x = 200 * abs(widget.zCameraPos + widget.centroid[2]) / widget.width()

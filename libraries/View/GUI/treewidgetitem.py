@@ -54,7 +54,10 @@ class TreeWidgetItem(QTreeWidgetItem):
         self.mainwindow.viewer.update()
 
     def center_camera(self) -> None:
-        self.mainwindow.viewer.camera_at(self.drawable.id)
+        try:
+            self.mainwindow.viewer.camera_at(self.drawable.id)
+        except ValueError:
+            self.mainwindow.dialog_available_values(self.drawable.id)
 
     def available_value_names(self) -> None:
         self.mainwindow.dialog_available_values(self.drawable.id)
