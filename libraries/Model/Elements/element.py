@@ -11,10 +11,8 @@ class Element:
         self._z: np.ndarray = np.empty(0, np.float32)
 
         # Metadata
-        self._name: str = None
-        self._ext: str = None
         self._id: int = None
-        self._alpha: float = None
+        self._properties: dict = None
 
         self._fill_element(*args, **kwargs)
         self._fill_metadata(*args, **kwargs)
@@ -25,7 +23,7 @@ class Element:
 
         if 'vertices' in kwargs.keys():
             self._fill_as_vertices(msg, *args, **kwargs)
-        elif 'x' in kwargs.keys():
+        elif 'x' in kwargs.keys() and 'y' in kwargs.keys() and 'z' in kwargs.keys():
             self._fill_as_xyz(msg, *args, **kwargs)
         else:
             raise KeyError(msg)
@@ -33,9 +31,11 @@ class Element:
         self._check_integrity()
 
     def _fill_metadata(self, *args, **kwargs):
-        self.name = kwargs.get('name', None)
-        self.ext = kwargs.get('ext', None)
-        self.alpha = kwargs.get('alpha', 1.0)
+        for k in ['x', 'y', 'z', 'vertices', 'indices']:
+            if k in kwargs.keys():
+                del kwargs[k]
+
+        self._properties = kwargs
 
     def _fill_as_vertices(self, msg, *args, **kwargs):
         assert 'vertices' in kwargs.keys(), msg
@@ -55,6 +55,9 @@ class Element:
         msg = f'Coordinates have different lengths: ({self.x.size}, {self.y.size}, {self.z.size})'
         assert self.x.size == self.y.size == self.z.size, msg
 
+    """
+    Attributes
+    """
     @property
     def x(self) -> np.ndarray:
         return self._x
@@ -80,22 +83,6 @@ class Element:
         self._z = np.array(z, np.float32)
 
     @property
-    def name(self) -> str:
-        return self._name
-
-    @name.setter
-    def name(self, name: str) -> None:
-        self._name = name
-
-    @property
-    def ext(self) -> str:
-        return self._ext
-
-    @ext.setter
-    def ext(self, ext: str) -> None:
-        self._ext = ext
-
-    @property
     def id(self) -> int:
         return self._id
 
@@ -112,21 +99,32 @@ class Element:
         self._x, self._y, self._z = np.array(vertices, np.float32).T
 
     @property
+    def centroid(self) -> np.ndarray:
+        return np.array([self._x.mean(), self._y.mean(), self._z.mean()])
+
+    """
+    Metadata
+    """
+    @property
+    def name(self) -> str:
+        return self._properties.get('name', None)
+
+    @name.setter
+    def name(self, name: str) -> None:
+        self._properties['name'] = name
+
+    @property
+    def ext(self) -> str:
+        return self._properties.get('ext', None)
+
+    @ext.setter
+    def ext(self, ext: str) -> None:
+        self._properties['ext'] = ext
+
+    @property
     def alpha(self):
-        return self._alpha
+        return self._properties.get('alpha', 1.0)
 
     @alpha.setter
     def alpha(self, val):
-        self._alpha = val
-
-    @property
-    def centroid(self) -> np.ndarray:
-        return np.array(Element.average_by_coord(self._x, self._y, self._z))
-
-    @staticmethod
-    def flatten(l: list) -> list:
-        return [item for sublist in l for item in sublist]
-
-    @staticmethod
-    def average_by_coord(x: np.array, y: np.array, z: np.array) -> np.array:
-        return np.array([x.mean(), y.mean(), z.mean()], np.float32)
+        self._properties['alpha'] = val

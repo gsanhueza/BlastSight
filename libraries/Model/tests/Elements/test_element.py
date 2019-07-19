@@ -34,24 +34,6 @@ class TestElement:
             for j in range(3):
                 assert element.vertices[i][j] == expected[i][j]
 
-    def test_average_coords(self):
-        element = Element(x=[-1, 1, 0], y=[0, 0, 3], z=[0, 0, 0])
-        average = element.average_by_coord(element.x, element.y, element.z)
-
-        expected = [0.0, 1.0, 0.0]
-
-        for i in range(len(expected)):
-            assert average[i] == expected[i]
-
-    def test_flatten(self):
-        element = Element(x=[-1, 1, 0], y=[0, 0, 3], z=[0, 0, 0])
-        flattened = Element.flatten(list(element.vertices.tolist()))
-
-        expected = [-1, 0, 0, 1, 0, 0, 0, 3, 0]
-
-        for i in range(len(expected)):
-            assert flattened[i] == expected[i]
-
     def test_named_element(self):
         name = "NAME"
         extension = "EXT"
