@@ -12,7 +12,6 @@ from .Elements.tubeelement import TubeElement
 
 from .Parsers.dxfparser import DXFParser
 from .Parsers.offparser import OFFParser
-from .Parsers.npzparser import NPZParser
 from .Parsers.h5mparser import H5MParser
 from .Parsers.h5pparser import H5PParser
 from .Parsers.csvparser import CSVParser
@@ -25,7 +24,6 @@ class Model:
 
         self.add_parser('dxf', DXFParser)
         self.add_parser('off', OFFParser)
-        self.add_parser('npz', NPZParser)
         self.add_parser('h5m', H5MParser)
         self.add_parser('h5p', H5PParser)
         self.add_parser('csv', CSVParser)
