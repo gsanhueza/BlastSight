@@ -31,7 +31,7 @@ class Element:
         self._check_integrity()
 
     def _fill_metadata(self, *args, **kwargs):
-        for k in ['x', 'y', 'z', 'vertices', 'indices']:
+        for k in ['x', 'y', 'z', 'vertices', 'indices', 'data']:
             if k in kwargs.keys():
                 del kwargs[k]
 
