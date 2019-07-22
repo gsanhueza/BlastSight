@@ -3,12 +3,6 @@
 
 #define M_PI 3.1415926535897932384626433832795
 
-//uniform float radius;
-//uniform int resolution;
-
-const float radius = 0.15;  // FIXME This should come as uniform
-const int resolution = 15;  // FIXME This should come as uniform too
-
 layout (lines) in;
 layout (triangle_strip, max_vertices = 90) out;
 
@@ -17,6 +11,8 @@ layout (triangle_strip, max_vertices = 90) out;
 
 uniform mat4 proj_matrix;
 uniform mat4 model_view_matrix;
+
+in vec2 v_properties[2];  // [radius, resolution]
 
 in vec3 v_color[2];
 out vec3 f_color;
@@ -52,6 +48,9 @@ void main()
     }
 
     mat4 MVP = proj_matrix * model_view_matrix;
+
+    float radius = v_properties[0].x;
+    int resolution = clamp(int(v_properties[0].y), 3, 15);
 
     for (int res = 0; res < resolution; res++)
     {
