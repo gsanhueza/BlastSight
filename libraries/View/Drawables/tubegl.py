@@ -16,15 +16,18 @@ class TubeGL(GLDrawable):
     def setup_attributes(self) -> None:
         _POSITION = 0
         _COLOR = 1
+        _PROPERTIES = 2  # [radius, resolution]
 
         self.vao = glGenVertexArrays(1)
-        self.vbos = glGenBuffers(2)
+        self.vbos = glGenBuffers(3)
 
         # Data
         vertices = self.element.vertices
         self.vertices_size = vertices.size
         colors = np.array(np.tile(np.append(self.element.color, self.element.alpha),
                                   vertices.size // 3), np.float32)
+
+        properties = np.array(np.tile([0.15, 15], vertices.size // 3), np.float32)
 
         glBindVertexArray(self.vao)
 
@@ -36,8 +39,13 @@ class TubeGL(GLDrawable):
         glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * colors.size, colors, GL_STATIC_DRAW)
         glVertexAttribPointer(_COLOR, 4, GL_FLOAT, False, 0, None)
 
+        glBindBuffer(GL_ARRAY_BUFFER, self.vbos[2])
+        glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * properties.size, properties, GL_STATIC_DRAW)
+        glVertexAttribPointer(_PROPERTIES, 2, GL_FLOAT, False, 0, None)
+
         glEnableVertexAttribArray(_POSITION)
         glEnableVertexAttribArray(_COLOR)
+        glEnableVertexAttribArray(_PROPERTIES)
 
         glBindVertexArray(0)
 
