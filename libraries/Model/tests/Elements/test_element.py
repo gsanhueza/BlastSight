@@ -65,3 +65,13 @@ class TestElement:
         for i in range(len(expected)):
             for j in range(3):
                 assert element.vertices[i][j] == expected[i][j]
+
+    def test_setters(self):
+        element = Element(vertices=[[0, 1, 2]])
+        element.name = 'name123'
+        element.ext = 'off'
+        element.alpha = 0.8
+
+        assert element.name == 'name123'
+        assert element.ext == 'off'
+        assert element.alpha == 0.8

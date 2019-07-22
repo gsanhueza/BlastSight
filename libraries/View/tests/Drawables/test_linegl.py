@@ -5,6 +5,7 @@ import pytest
 from libraries.Model.Elements.lineelement import LineElement
 from libraries.View.GUI.integrableviewer import IntegrableViewer
 from libraries.View.Drawables.linegl import LineGL
+from libraries.View.Drawables.lineprogram import LineProgram
 
 
 class TestLineGL:
@@ -37,6 +38,11 @@ class TestLineGL:
         assert drawable.is_initialized
 
     def test_draw(self):
+        widget = IntegrableViewer()
+        program = LineProgram(widget)
+        program.setup()
+        program.bind()
+
         drawable = LineGL(widget=IntegrableViewer(), element=self.element)
         drawable.setup_attributes()
 

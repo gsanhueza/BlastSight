@@ -23,12 +23,12 @@ class TestFPSCounter:
 
     def test_print(self):
         counter = FPSCounter()
-        assert counter.__str__() == ' FPS: 0.0'
+        assert counter.__str__() == 'FPS: 0.0'
 
     def test_resolution(self):
         counter = FPSCounter()
         counter.seconds_resolution = 0
-        assert counter.__str__() == ' FPS: 0.0'
+        assert counter.__str__() == 'FPS: 0.0'
 
         counter.tick()
-        assert counter.__str__() == ' FPS: 0.0'
+        assert counter.__str__() == 'FPS: 0.0'
