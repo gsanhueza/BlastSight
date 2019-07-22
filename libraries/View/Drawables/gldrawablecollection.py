@@ -20,14 +20,14 @@ from .tubeprogram import TubeProgram
 class GLDrawableCollection(OrderedDict):
     def __init__(self, widget=None):
         super().__init__()
-        self.programs = {
-            'mesh': MeshProgram(widget),
-            'wireframe': WireframeProgram(widget),
-            'blockmodel': BlockModelProgram(widget),
-            'line': LineProgram(widget),
-            'point': PointProgram(widget),
-            'tube': TubeProgram(widget),
-        }
+        self.programs = OrderedDict()
+
+        self.programs['mesh'] = MeshProgram(widget)
+        self.programs['wireframe'] = WireframeProgram(widget)
+        self.programs['blockmodel'] = BlockModelProgram(widget)
+        self.programs['line'] = LineProgram(widget)
+        self.programs['point'] = PointProgram(widget)
+        self.programs['tube'] = TubeProgram(widget)
 
     def add(self, drawable: GLDrawable) -> None:
         self[drawable.id] = drawable
@@ -36,14 +36,14 @@ class GLDrawableCollection(OrderedDict):
         del self[id_]
 
     def draw(self, proj_matrix, view_matrix, model_matrix) -> None:
-        types = {
-            'mesh': self.normal_meshes,
-            'wireframe': self.wireframe_meshes,
-            'blockmodel': self.block_models,
-            'line': self.lines,
-            'point': self.points,
-            'tube': self.tubes,
-        }
+        types = OrderedDict()
+
+        types['tube'] = self.tubes
+        types['wireframe'] = self.wireframe_meshes
+        types['line'] = self.lines
+        types['point'] = self.points
+        types['mesh'] = self.normal_meshes
+        types['blockmodel'] = self.block_models
 
         for k, v in types.items():
             self.programs[k].setup()

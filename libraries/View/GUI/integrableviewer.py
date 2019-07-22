@@ -269,7 +269,7 @@ class IntegrableViewer(QOpenGLWidget):
     def resizeGL(self, w: float, h: float) -> None:
         # TODO Allow perspective/orthogonal in the controller (mode)
         self.proj.setToIdentity()
-        self.proj.perspective(45.0, (w / h), 0.01, 10000.0)
+        self.proj.perspective(45.0, (w / h), 1.0, 10000.0)
 
         # ortho(float left, float right, float bottom, float top, float nearPlane, float farPlane)
         # scale_factor = self.zWorldPos * 200
