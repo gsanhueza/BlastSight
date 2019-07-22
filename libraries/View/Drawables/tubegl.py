@@ -27,7 +27,8 @@ class TubeGL(GLDrawable):
         colors = np.array(np.tile(np.append(self.element.color, self.element.alpha),
                                   vertices.size // 3), np.float32)
 
-        properties = np.array(np.tile([0.15, 15], vertices.size // 3), np.float32)
+        properties = np.array(np.tile(np.append(self.element.radius, self.element.resolution),
+                                      vertices.size // 3), np.float32)
 
         glBindVertexArray(self.vao)
 

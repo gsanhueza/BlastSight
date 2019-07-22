@@ -24,9 +24,9 @@ if __name__ == '__main__':
                                 block_size=[1.0, 1.0, 1.0],
                                 values=[0.5, 1.0, 1.5])
 
-    points = viewer.points(x=[-3, 0, 3],
-                           y=[2, 2, 2],
-                           z=[0, 1, 2],
+    points = viewer.points(vertices=[[-3, 2, 0],
+                                     [0, 2, 1],
+                                     [3, 2, 2]],
                            point_size=10.0,
                            values=[1.5, 1.0, 0.5])
 
@@ -38,7 +38,9 @@ if __name__ == '__main__':
     tubes = viewer.tubes(x=[0.5, -0.5, 1.5, 1.5],
                          y=[-2.0, 1.8, 1.8, 0.0],
                          z=[0.0, 0.0, 0.0, 0.0],
-                         color=[0.9, 0.2, 0.2])
+                         color=[0.9, 0.2, 0.2],
+                         radius=0.2,
+                         resolution=15)
 
     viewer.camera_position = [0.0, 2.0, 15.0]
 
