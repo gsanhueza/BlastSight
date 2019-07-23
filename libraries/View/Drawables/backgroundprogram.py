@@ -7,6 +7,7 @@ from .shaderprogram import ShaderProgram
 class BackgroundProgram(ShaderProgram):
     def __init__(self, widget):
         super().__init__(widget)
+        self.color_set = False
 
     def setup(self) -> None:
         super().setup()
@@ -23,3 +24,9 @@ class BackgroundProgram(ShaderProgram):
         self.shader_program.addShader(vertex_shader)
         self.shader_program.addShader(fragment_shader)
         self.shader_program.link()
+
+    def draw(self):
+        if not self.color_set:
+            self.update_uniform('top_color', 0.1, 0.2, 0.3, 1.0)
+            self.update_uniform('bot_color', 0.4, 0.5, 0.6, 1.0)
+        super().draw()

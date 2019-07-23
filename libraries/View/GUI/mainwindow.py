@@ -66,8 +66,9 @@ class MineVis(QMainWindow):
         self.treeWidget.clear()
 
         for drawable in self.viewer.drawable_collection.values():
-            item = TreeWidgetItem(self.treeWidget, self, drawable)
-            self.treeWidget.addTopLevelItem(item)
+            if type(drawable.id) is int:
+                item = TreeWidgetItem(self.treeWidget, self, drawable)
+                self.treeWidget.addTopLevelItem(item)
         self.treeWidget.select_item(self.treeWidget.topLevelItemCount(), 0)
 
     def dialog_available_values(self, id_):

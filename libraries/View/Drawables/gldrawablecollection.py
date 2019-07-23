@@ -8,6 +8,8 @@ from .blockmodelgl import BlockModelGL
 from .linegl import LineGL
 from .pointgl import PointGL
 from .tubegl import TubeGL
+from .backgroundgl import BackgroundGL
+from .axisgl import AxisGL
 
 from .meshprogram import MeshProgram
 from .wireframeprogram import WireframeProgram
@@ -15,6 +17,8 @@ from .blockmodelprogram import BlockModelProgram
 from .lineprogram import LineProgram
 from .pointprogram import PointProgram
 from .tubeprogram import TubeProgram
+from .backgroundprogram import BackgroundProgram
+from .axisprogram import AxisProgram
 
 
 class GLDrawableCollection(OrderedDict):
@@ -28,6 +32,8 @@ class GLDrawableCollection(OrderedDict):
         self.programs['line'] = LineProgram(widget)
         self.programs['point'] = PointProgram(widget)
         self.programs['tube'] = TubeProgram(widget)
+        self.programs['bg'] = BackgroundProgram(widget)
+        self.programs['axis'] = AxisProgram(widget)
 
     def add(self, drawable: GLDrawable) -> None:
         self[drawable.id] = drawable
@@ -38,6 +44,8 @@ class GLDrawableCollection(OrderedDict):
     def draw(self, proj_matrix, view_matrix, model_matrix) -> None:
         types = OrderedDict()
 
+        types['bg'] = self.background
+        types['axis'] = self.axis
         types['tube'] = self.tubes
         types['wireframe'] = self.wireframe_meshes
         types['line'] = self.lines
@@ -56,6 +64,20 @@ class GLDrawableCollection(OrderedDict):
 
     def filter(self, drawable_type):
         return list(filter(lambda x: isinstance(x, drawable_type), self.values()))
+
+    def items(self):
+        return filter(lambda x: isinstance(x[0], int), super().items())
+
+    def __len__(self):
+        return list(self.items()).__len__()
+
+    @property
+    def background(self):
+        return self.filter(BackgroundGL)
+
+    @property
+    def axis(self):
+        return self.filter(AxisGL)
 
     @property
     def meshes(self):

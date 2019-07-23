@@ -8,11 +8,6 @@ class MeshProgram(ShaderProgram):
     def __init__(self, widget):
         super().__init__(widget)
 
-    def setup(self) -> None:
-        super().setup()
-        self.add_uniform_loc('model_view_matrix')
-        self.add_uniform_loc('proj_matrix')
-
     def setup_shaders(self):
         vertex_shader = QOpenGLShader(QOpenGLShader.Vertex)
         fragment_shader = QOpenGLShader(QOpenGLShader.Fragment)

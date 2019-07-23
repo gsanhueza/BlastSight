@@ -20,6 +20,9 @@ class ShaderProgram:
         self.shader_program = QOpenGLShaderProgram(self.widget.context())
         self.setup_shaders()
 
+        self.add_uniform_loc('model_view_matrix')
+        self.add_uniform_loc('proj_matrix')
+
     def setup_shaders(self) -> None:
         # Shaders
         vertex_shader = QOpenGLShader(QOpenGLShader.Vertex)

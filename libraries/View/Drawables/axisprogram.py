@@ -4,7 +4,7 @@ from qtpy.QtGui import QOpenGLShader
 from .shaderprogram import ShaderProgram
 
 
-class LineProgram(ShaderProgram):
+class AxisProgram(ShaderProgram):
     def __init__(self, widget):
         super().__init__(widget)
 
@@ -12,10 +12,9 @@ class LineProgram(ShaderProgram):
         vertex_shader = QOpenGLShader(QOpenGLShader.Vertex)
         fragment_shader = QOpenGLShader(QOpenGLShader.Fragment)
 
-        vertex_shader.compileSourceFile(f'{self.shader_dir}/Line/vertex.glsl')
-        fragment_shader.compileSourceFile(f'{self.shader_dir}/Line/fragment.glsl')
+        vertex_shader.compileSourceFile(f'{self.shader_dir}/Axis/vertex.glsl')
+        fragment_shader.compileSourceFile(f'{self.shader_dir}/Axis/fragment.glsl')
 
         self.shader_program.addShader(vertex_shader)
         self.shader_program.addShader(fragment_shader)
         self.shader_program.link()
-
