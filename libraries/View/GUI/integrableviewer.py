@@ -246,6 +246,11 @@ class IntegrableViewer(QOpenGLWidget):
         self.world.setToIdentity()
         self.camera.setToIdentity()
 
+        # self.proj.setToIdentity()
+        # w = self.width() * (abs(self.zWorldPos) - abs(self.zCameraPos)) * -0.005
+        # h = self.height() * (abs(self.zWorldPos) - abs(self.zCameraPos)) * -0.005
+        # self.proj.ortho(-w, w, -h, h, 1.0, 100000.0)
+
         # Translate by centroid (world position)
         self.world.translate(self.xWorldPos, self.yWorldPos, self.zWorldPos)
 
