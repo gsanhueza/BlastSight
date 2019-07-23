@@ -51,6 +51,9 @@ class IntegrableViewer(QOpenGLWidget):
         # Drawable elements
         self.drawable_collection = GLDrawableCollection(self)
 
+        self.drawable_collection.add(BackgroundGL(self, type('NullElement', (), {'id': 'BG'})))
+        self.drawable_collection.add(AxisGL(self, type('NullElement', (), {'id': 'AXIS'})))
+
         # Camera/World/Projection
         self._camera = QMatrix4x4()
         self._world = QMatrix4x4()
@@ -219,9 +222,6 @@ class IntegrableViewer(QOpenGLWidget):
         glClearColor(0.0, 0.0, 0.0, 1.0)
         glEnable(GL_VERTEX_PROGRAM_POINT_SIZE)
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
-
-        self.drawable_collection.add(BackgroundGL(self, type('NullElement', (), {'id': 'BG'})))
-        self.drawable_collection.add(AxisGL(self, type('NullElement', (), {'id': 'AXIS'})))
 
     def paintGL(self) -> None:
         # Clear screen
