@@ -22,6 +22,8 @@ from ..Drawables.linegl import LineGL
 from ..Drawables.tubegl import TubeGL
 from ..Drawables.backgroundgl import BackgroundGL
 from ..Drawables.backgroundprogram import BackgroundProgram
+from ..Drawables.axisgl import AxisGL
+from ..Drawables.axisprogram import AxisProgram
 
 from ..fpscounter import FPSCounter
 
@@ -49,6 +51,8 @@ class IntegrableViewer(QOpenGLWidget):
         # Drawable elements
         self.background = None
         self.background_program = None
+        self.axis = None
+        self.axis_program = None
         self.drawable_collection = GLDrawableCollection(self)
 
         # Camera/World/Projection
@@ -226,6 +230,11 @@ class IntegrableViewer(QOpenGLWidget):
         self.background_program.update_uniform('top_color', 0.1, 0.2, 0.3, 1.0)
         self.background_program.update_uniform('bot_color', 0.4, 0.5, 0.6, 1.0)
 
+        self.axis = AxisGL(self, True)
+        self.axis_program = AxisProgram(self)
+        self.axis.initialize()
+        self.axis_program.setup()
+
         glEnable(GL_VERTEX_PROGRAM_POINT_SIZE)
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
 
@@ -256,6 +265,12 @@ class IntegrableViewer(QOpenGLWidget):
         self.background_program.bind()
         self.background.draw()
         glEnable(GL_DEPTH_TEST)
+
+        # Axis
+        self.axis_program.bind()
+        self.axis_program.update_uniform('proj_matrix', self.proj)
+        self.axis_program.update_uniform('model_view_matrix', self.camera * self.world)
+        self.axis.draw()
 
         glEnable(GL_BLEND)
         # Draw every GLDrawable (meshes, block models, etc)
