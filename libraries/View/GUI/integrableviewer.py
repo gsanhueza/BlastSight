@@ -49,10 +49,6 @@ class IntegrableViewer(QOpenGLWidget):
         self.set_normal_mode()
 
         # Drawable elements
-        self.background = None
-        self.background_program = None
-        self.axis = None
-        self.axis_program = None
         self.drawable_collection = GLDrawableCollection(self)
 
         # Camera/World/Projection
@@ -221,22 +217,11 @@ class IntegrableViewer(QOpenGLWidget):
     """
     def initializeGL(self) -> None:
         glClearColor(0.0, 0.0, 0.0, 1.0)
-        self.background = BackgroundGL(self, True)
-        self.background_program = BackgroundProgram(self)
-        self.background.initialize()
-
-        self.background_program.setup()
-        self.background_program.bind()
-        self.background_program.update_uniform('top_color', 0.1, 0.2, 0.3, 1.0)
-        self.background_program.update_uniform('bot_color', 0.4, 0.5, 0.6, 1.0)
-
-        self.axis = AxisGL(self, True)
-        self.axis_program = AxisProgram(self)
-        self.axis.initialize()
-        self.axis_program.setup()
-
         glEnable(GL_VERTEX_PROGRAM_POINT_SIZE)
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
+
+        self.drawable_collection.add(BackgroundGL(self, type('NullElement', (), {'id': 'BG'})))
+        self.drawable_collection.add(AxisGL(self, type('NullElement', (), {'id': 'AXIS'})))
 
     def paintGL(self) -> None:
         # Clear screen
@@ -245,11 +230,6 @@ class IntegrableViewer(QOpenGLWidget):
 
         self.world.setToIdentity()
         self.camera.setToIdentity()
-
-        # self.proj.setToIdentity()
-        # w = self.width() * (abs(self.zWorldPos) - abs(self.zCameraPos)) * -0.005
-        # h = self.height() * (abs(self.zWorldPos) - abs(self.zCameraPos)) * -0.005
-        # self.proj.ortho(-w, w, -h, h, 1.0, 100000.0)
 
         # Translate by centroid (world position)
         self.world.translate(self.xWorldPos, self.yWorldPos, self.zWorldPos)
@@ -265,20 +245,8 @@ class IntegrableViewer(QOpenGLWidget):
         # Translate the camera
         self.camera.translate(self.xCameraPos, self.yCameraPos, self.zCameraPos)
 
-        # Draw gradient background
-        glDisable(GL_DEPTH_TEST)
-        self.background_program.bind()
-        self.background.draw()
-        glEnable(GL_DEPTH_TEST)
-
-        # Axis
-        self.axis_program.bind()
-        self.axis_program.update_uniform('proj_matrix', self.proj)
-        self.axis_program.update_uniform('model_view_matrix', self.camera * self.world)
-        self.axis.draw()
-
-        glEnable(GL_BLEND)
         # Draw every GLDrawable (meshes, block models, etc)
+        glEnable(GL_BLEND)
         self.drawable_collection.draw(self.proj, self.camera, self.world)
 
         # QPainter can draw *after* OpenGL finishes
@@ -291,9 +259,10 @@ class IntegrableViewer(QOpenGLWidget):
         self.proj.setToIdentity()
         self.proj.perspective(45.0, (w / h), 1.0, 10000.0)
 
-        # ortho(float left, float right, float bottom, float top, float nearPlane, float farPlane)
-        # scale_factor = self.zWorldPos * 200
-        # self.proj.ortho(-w/scale_factor, w/scale_factor, -h/scale_factor, h/scale_factor, 0.01, 10000)
+        # self.proj.setToIdentity()
+        # w = self.width() * (abs(self.zWorldPos) - abs(self.zCameraPos)) * -0.005
+        # h = self.height() * (abs(self.zWorldPos) - abs(self.zCameraPos)) * -0.005
+        # self.proj.ortho(-w, w, -h, h, 1.0, 10000.0)
 
     """
     Utilities

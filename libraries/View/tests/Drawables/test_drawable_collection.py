@@ -48,9 +48,9 @@ class TestGLDrawableCollection:
         collection.add(self.drawable)
         drawable = collection[0]
 
-        items = collection.items()
-        assert list(items)[0][0] == 0
-        assert list(items)[0][1] is drawable
+        items = list(collection.items())
+        assert items[0][0] == 0
+        assert items[0][1] is drawable
 
     def test_clear(self):
         collection = GLDrawableCollection()

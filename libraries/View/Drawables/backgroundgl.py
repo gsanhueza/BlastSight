@@ -10,4 +10,6 @@ class BackgroundGL(GLDrawable):
         super().__init__(widget, element)
 
     def draw(self):
+        glDisable(GL_DEPTH_TEST)
         glDrawArrays(GL_TRIANGLES, 0, 3)
+        glEnable(GL_DEPTH_TEST)

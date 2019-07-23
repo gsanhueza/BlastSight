@@ -10,8 +10,6 @@ class BlockModelProgram(ShaderProgram):
 
     def setup(self) -> None:
         super().setup()
-        self.add_uniform_loc('model_view_matrix')
-        self.add_uniform_loc('proj_matrix')
         self.add_uniform_loc('min_max')
 
     def setup_shaders(self):
