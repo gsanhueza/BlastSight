@@ -68,6 +68,9 @@ class GLDrawableCollection(OrderedDict):
     def items(self):
         return filter(lambda x: isinstance(x[0], int), super().items())
 
+    def __len__(self):
+        return list(self.items()).__len__()
+
     @property
     def background(self):
         return self.filter(BackgroundGL)
