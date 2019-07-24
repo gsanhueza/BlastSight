@@ -21,9 +21,7 @@ from ..Drawables.pointgl import PointGL
 from ..Drawables.linegl import LineGL
 from ..Drawables.tubegl import TubeGL
 from ..Drawables.backgroundgl import BackgroundGL
-from ..Drawables.backgroundprogram import BackgroundProgram
 from ..Drawables.axisgl import AxisGL
-from ..Drawables.axisprogram import AxisProgram
 
 from ..fpscounter import FPSCounter
 
@@ -255,14 +253,15 @@ class IntegrableViewer(QOpenGLWidget):
         self.fps_counter.tick()
 
     def resizeGL(self, w: float, h: float) -> None:
-        # TODO Allow perspective/orthogonal in the controller (mode)
         self.proj.setToIdentity()
-        self.proj.perspective(45.0, (w / h), 1.0, 10000.0)
+        perspective = True  # TODO Switch perspective/orthogonal in application
 
-        # self.proj.setToIdentity()
-        # w = self.width() * (abs(self.zWorldPos) - abs(self.zCameraPos)) * -0.005
-        # h = self.height() * (abs(self.zWorldPos) - abs(self.zCameraPos)) * -0.005
-        # self.proj.ortho(-w, w, -h, h, 1.0, 10000.0)
+        if perspective:
+            self.proj.perspective(45.0, (w / h), 1.0, 10000.0)
+        else:
+            w = w * (abs(self.zWorldPos) - abs(self.zCameraPos)) * -0.001
+            h = h * (abs(self.zWorldPos) - abs(self.zCameraPos)) * -0.001
+            self.proj.ortho(-w, w, -h, h, 1.0, 10000.0)
 
     """
     Utilities
