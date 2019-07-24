@@ -6,6 +6,7 @@ from libraries.Model.Elements.element import Element
 from libraries.Model.model import Model
 from libraries.View.Drawables.meshgl import MeshGL
 from libraries.View.Drawables.blockmodelgl import BlockModelGL
+from libraries.View.Drawables.pointgl import PointGL
 from libraries.View.GUI.integrableviewer import IntegrableViewer
 from libraries.Model.tests.globals import *
 
@@ -96,6 +97,26 @@ class TestIntegrableViewer:
         assert added is None
         assert widget.drawable_collection.__len__() == 0
 
+    def test_integrable_viewer_add_points(self):
+        widget = IntegrableViewer()
+        widget.points(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], values=[0, 1, 2])
+        widget.points_by_path(f'{TEST_FILES_FOLDER_PATH}/mini.csv')
+
+        assert widget.drawable_collection.__len__() == 2
+        assert isinstance(widget.get_drawable(0), PointGL)
+        assert isinstance(widget.get_drawable(1), PointGL)
+
+    def test_integrable_viewer_add_wrong_points(self):
+        widget = IntegrableViewer()
+
+        added = widget.points()
+        assert added is None
+        assert widget.drawable_collection.__len__() == 0
+
+        added = widget.points_by_path('')
+        assert added is None
+        assert widget.drawable_collection.__len__() == 0
+
     def test_integrable_viewer_drawable_visibility(self):
         widget = IntegrableViewer()
         widget.mesh(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], indices=[[0, 1, 2]])
@@ -136,3 +157,57 @@ class TestIntegrableViewer:
 
         widget.delete(1)
         assert widget.drawable_collection.__len__() == 0
+
+    def test_load_elements(self):
+        viewer = IntegrableViewer()
+
+        mesh = viewer.mesh(x=[-1, 1, 0],
+                           y=[0, 0, 1],
+                           z=[-3, -3, -3],
+                           color=[0.0, 0.0, 1.0],
+                           indices=[[0, 1, 2]],
+                           alpha=0.4,
+                           name='mesh_name',
+                           ext='dxf')
+
+        assert viewer.last_id == 0
+
+        blocks = viewer.block_model(x=[-3, 3, 0],
+                                    y=[0, 0, 5],
+                                    z=[0, 0, 0],
+                                    block_size=[1.0, 1.0, 1.0],
+                                    values=[0.5, 1.0, 1.5])
+
+        assert viewer.last_id == 1
+
+        points = viewer.points(vertices=[[-3, 2, 0],
+                                         [0, 2, 1],
+                                         [3, 2, 2]],
+                               point_size=10.0,
+                               values=[1.5, 1.0, 0.5])
+
+        assert viewer.last_id == 2
+
+        lines = viewer.lines(x=[-0.5, 0.5],
+                             y=[-2.0, 1.5],
+                             z=[-2.0, -2.0],
+                             color=[0.2, 0.8, 0.8])
+
+        assert viewer.last_id == 3
+
+        tubes = viewer.tubes(x=[0.5, -0.5, 1.5, 1.5],
+                             y=[-2.0, 1.8, 1.8, 0.0],
+                             z=[-1.5, -1.5, -1.5, -1.5],
+                             color=[0.9, 0.2, 0.2],
+                             radius=0.2,
+                             resolution=15)
+
+        assert viewer.last_id == 4
+
+        assert len(viewer.drawable_collection) == 5
+
+        assert viewer.get_drawable(0) is mesh
+        assert viewer.get_drawable(1) is blocks
+        assert viewer.get_drawable(2) is points
+        assert viewer.get_drawable(3) is lines
+        assert viewer.get_drawable(4) is tubes

@@ -63,3 +63,21 @@ class TestTubeElement:
 
         with pytest.raises(Exception):
             TubeElement(x=[-1, 1], y=[0, 1, 0], z=[0, 0, 0], values=[[0.0, 1.0, 0.0]])
+
+    def test_radius_resolution(self):
+        element = TubeElement(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], color=[1.0, 1.0, 0.0])
+
+        assert element.radius == 0.15
+        assert element.resolution == 15
+
+        element = TubeElement(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], color=[1.0, 1.0, 0.0],
+                              radius=0.2, resolution=12)
+
+        assert element.radius == 0.2
+        assert element.resolution == 12
+
+        element.radius = 0.3
+        element.resolution = 9
+
+        assert element.radius == 0.3
+        assert element.resolution == 9
