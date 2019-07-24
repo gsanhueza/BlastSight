@@ -12,6 +12,7 @@ out vec3 v_normal;
 
 uniform mat4 proj_matrix;
 uniform mat4 model_view_matrix;
+uniform vec3 block_size;
 
 mat4 mvp = proj_matrix * model_view_matrix;
 
@@ -60,16 +61,13 @@ void main()
     // FIXME This can be made with half the vertices (Hint: Visibility)
     vec4 center = gl_in[0].gl_Position;
 
-    vec2 block_size = vec2(1.0, 0.0);
-
     vec4 dx = mvp[0] / 2.0f * block_size.x;
-    vec4 dy = mvp[1] / 2.0f * block_size.x;
-    vec4 dz = mvp[2] / 2.0f * block_size.x;
-
-    AddQuad(center + dx, dy, dz);  // Right
-    AddQuad(center - dx, dz, dy);  // Left
-    AddQuad(center + dy, dz, dx);  // Top
-    AddQuad(center - dy, dx, dz);  // Bottom
-    AddQuad(center + dz, dx, dy);  // Front
-    AddQuad(center - dz, dy, dx);  // Back
+    vec4 dy = mvp[1] / 2.0f * block_size.y;
+    vec4 dz = mvp[2] / 2.0f * block_size.z;
+    AddQuad(center + dx, dy, dz); // Right
+    AddQuad(center - dx, dz, dy); // Left
+    AddQuad(center + dy, dz, dx); // Top
+    AddQuad(center - dy, dx, dz); // Bottom
+    AddQuad(center + dz, dx, dy); // Front
+    AddQuad(center - dz, dy, dx); // Back
 }

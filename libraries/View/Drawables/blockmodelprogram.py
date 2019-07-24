@@ -11,6 +11,7 @@ class BlockModelProgram(ShaderProgram):
     def setup(self) -> None:
         super().setup()
         self.add_uniform_loc('min_max')
+        self.add_uniform_loc('block_size')
 
     def setup_shaders(self):
         vertex_shader = QOpenGLShader(QOpenGLShader.Vertex)
@@ -29,4 +30,5 @@ class BlockModelProgram(ShaderProgram):
     def draw(self):
         for drawable in self.drawables:
             self.update_uniform('min_max', drawable.min_val, drawable.max_val)
+            self.update_uniform('block_size', *drawable.block_size)
             drawable.draw()
