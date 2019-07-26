@@ -20,4 +20,3 @@ class ToolBar(QToolBar):
         self.action_north_view.triggered.connect(widget.north_view)
         self.action_east_view.triggered.connect(widget.east_view)
         self.action_take_screenshot.triggered.connect(widget.take_screenshot)
-        self.action_take_screenshot.triggered.connect(widget.take_screenshot)

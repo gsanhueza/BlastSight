@@ -27,8 +27,9 @@ class Container(QWidget):
         self.setWindowTitle('MineVis (Container)')
         self.setMinimumSize(400, 300)
 
-        # self.connect_actions()
         self.toolbar.autoconnect_to(self.viewer)
+        self.toolbar.addAction(self.toolbar.action_quit)
+        self.connect_actions()
 
     @property
     def viewer(self):

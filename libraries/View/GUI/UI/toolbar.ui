@@ -189,7 +189,7 @@
   <addaction name="action_east_view"/>
   <addaction name="separator"/>
   <addaction name="action_take_screenshot"/>
-  <addaction name="action_quit"/>
+<!--   <addaction name="action_quit"/> -->
  </widget>
  <resources/>
  <connections/>
