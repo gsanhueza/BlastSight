@@ -69,6 +69,7 @@ class MineVis(QMainWindow):
         self.mainToolBar.action_east_view.triggered.connect(self.viewer.east_view)
 
         self.mainToolBar.action_take_screenshot.triggered.connect(self.viewer.take_screenshot)
+        self.mainToolBar.action_show_tree.triggered.connect(self.dockWidget.show)
         self.mainToolBar.action_help.triggered.connect(self.help_slot)
 
         self.viewer.file_dropped_signal.connect(self.fill_tree_widget)

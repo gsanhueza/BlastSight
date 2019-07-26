@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>container</class>
-    <widget class="QToolBar" name="mainToolBar">
-     <addaction name="action_camera_position"/>
-     <addaction name="action_plan_view"/>
-     <addaction name="action_north_view"/>
-     <addaction name="action_east_view"/>
-     <addaction name="action_take_screenshot"/>
-     <addaction name="separator"/>
-     <addaction name="action_quit"/>
+  <widget class="QToolBar" name="mainToolBar">
+   <addaction name="action_show_tree"/>
+   <addaction name="separator"/>
+   <addaction name="action_camera_position"/>
+   <addaction name="action_plan_view"/>
+   <addaction name="action_north_view"/>
+   <addaction name="action_east_view"/>
+   <addaction name="separator"/>
+   <addaction name="action_take_screenshot"/>
   <action name="action_load_mesh">
    <property name="icon">
     <iconset theme="fileopen">
@@ -31,6 +32,18 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Q</string>
+   </property>
+  </action>
+  <action name="action_show_tree">
+   <property name="icon">
+    <iconset theme="view-list-tree">
+     <normaloff>.</normaloff>.</iconset>
+   </property>
+   <property name="text">
+    <string>Show &amp;Tree</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+W</string>
    </property>
   </action>
   <action name="action_help">
