@@ -18,6 +18,7 @@ class TreeWidget(QTreeWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.setWindowFlags(Qt.WindowStaysOnTopHint)
 
         self.itemClicked.connect(self.single_click)
         self.itemDoubleClicked.connect(self.double_click)
@@ -27,9 +28,8 @@ class TreeWidget(QTreeWidget):
         self.clear()
 
         for drawable in viewer.drawable_collection.values():
-            if type(drawable.id) is int:
-                item = TreeWidgetItem(self, viewer, drawable)
-                self.addTopLevelItem(item)
+            item = TreeWidgetItem(self, viewer, drawable)
+            self.addTopLevelItem(item)
         self.select_item(self.topLevelItemCount(), 0)
 
     def context_menu(self, event) -> None:

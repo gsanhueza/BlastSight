@@ -63,10 +63,16 @@ class GLDrawableCollection(OrderedDict):
             self.programs[k].draw()
 
     def filter(self, drawable_type):
-        return list(filter(lambda x: isinstance(x, drawable_type), self.values()))
+        return list(filter(lambda x: isinstance(x, drawable_type), super().values()))
+
+    def keys(self):
+        return filter(lambda x: isinstance(x, int), super().keys())
 
     def items(self):
         return filter(lambda x: isinstance(x[0], int), super().items())
+
+    def values(self):
+        return filter(lambda x: isinstance(x.id, int), super().values())
 
     def __len__(self):
         return list(self.items()).__len__()
