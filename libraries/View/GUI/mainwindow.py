@@ -29,6 +29,7 @@ class MineVis(QMainWindow):
         self.statusBar.showMessage('Ready')
         self.threadPool = QThreadPool()
 
+        self.toolbar.addAction(self.toolbar.action_quit)
         self.generate_menubar()
         self.connect_actions()
 
@@ -38,7 +39,7 @@ class MineVis(QMainWindow):
         self.menu_File.addAction(self.mainToolBar.action_load_points)
         self.menu_File.addSeparator()
         self.menu_File.addAction(self.mainToolBar.action_quit)
-        
+
         self.menu_View.addAction(self.mainToolBar.action_normal_mode)
         self.menu_View.addAction(self.mainToolBar.action_draw_mode)
         self.menu_View.addAction(self.mainToolBar.action_selection_mode)
@@ -78,6 +79,10 @@ class MineVis(QMainWindow):
     @property
     def viewer(self):
         return self.openglwidget
+
+    @property
+    def toolbar(self):
+        return self.mainToolBar
 
     @property
     def last_dir(self) -> str:
