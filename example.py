@@ -29,7 +29,9 @@ if __name__ == '__main__':
                                      [0, 2, 1],
                                      [3, 2, 2]],
                            point_size=10.0,
-                           values=[1.5, 1.0, 0.5])
+                           values=[1.5, 1.0, 0.5],
+                           vmin=0.8,
+                           vmax=2.0)
 
     lines = viewer.lines(x=[-0.5, 0.5],
                          y=[-2.0, 1.5],

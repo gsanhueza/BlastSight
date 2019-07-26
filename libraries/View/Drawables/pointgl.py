@@ -10,10 +10,9 @@ class PointGL(GLDrawable):
 
         # Sizes
         self.values_size = 0
-
-        self.min_val = 0.0
-        self.max_val = 1.0
         self.point_size = self.element.point_size
+        self.min_val = element.vmin
+        self.max_val = element.vmax
 
     def setup_attributes(self) -> None:
         _POSITION = 0
@@ -29,8 +28,6 @@ class PointGL(GLDrawable):
         values = self.element.values
 
         self.values_size = values.size
-        self.min_val = values.min() if values.size > 0 else 0.0
-        self.max_val = values.max() if values.size > 0 else 1.0
 
         self.widget.makeCurrent()
         glBindVertexArray(self.vao)

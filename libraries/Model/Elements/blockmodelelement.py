@@ -15,6 +15,9 @@ class BlockModelElement(Element):
         self._z_str: str = None
         self._value_str: str = None
 
+        self.vmin = 0.0
+        self.vmax = 1.0
+
         super().__init__(*args, **kwargs)
 
     def _fill_element(self, *args, **kwargs):
@@ -36,6 +39,8 @@ class BlockModelElement(Element):
 
     def _fill_as_values(self, *args, **kwargs):
         self.values = kwargs.get('values')
+        self.vmin = kwargs.get('vmin', self.values.min())
+        self.vmax = kwargs.get('vmax', self.values.max())
         self.x_str, self.y_str, self.z_str, self.value_str = 'x', 'y', 'z', 'values'
 
         self._check_integrity()
