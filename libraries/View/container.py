@@ -27,7 +27,9 @@ class Container(QWidget):
         self.setWindowTitle('MineVis (Container)')
         self.setMinimumSize(400, 300)
 
-        self.toolbar.autoconnect_to(self.viewer)
+        self.toolbar.connect_tree(self.treeWidget)
+        self.toolbar.connect_viewer(self.viewer)
+
         self.toolbar.addAction(self.toolbar.action_quit)
         self.connect_actions()
 
@@ -41,11 +43,6 @@ class Container(QWidget):
 
     def connect_actions(self):
         self.toolbar.action_camera_position.triggered.connect(self.dialog_camera_position)
-        self.toolbar.action_plan_view.triggered.connect(self.viewer.plan_view)
-        self.toolbar.action_north_view.triggered.connect(self.viewer.north_view)
-        self.toolbar.action_east_view.triggered.connect(self.viewer.east_view)
-        self.toolbar.action_take_screenshot.triggered.connect(self.viewer.take_screenshot)
-        self.toolbar.action_show_tree.triggered.connect(self.treeWidget.show)
         self.toolbar.action_quit.triggered.connect(self.close)
         self.viewer.file_dropped_signal.connect(self.fill_tree_widget)
 
