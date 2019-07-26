@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>container</class>
+    <widget class="QToolBar" name="mainToolBar">
+     <addaction name="action_camera_position"/>
+     <addaction name="action_plan_view"/>
+     <addaction name="action_north_view"/>
+     <addaction name="action_east_view"/>
+     <addaction name="action_take_screenshot"/>
+     <addaction name="separator"/>
+     <addaction name="action_quit"/>
+  <action name="action_load_mesh">
+   <property name="icon">
+    <iconset theme="fileopen">
+     <normaloff>.</normaloff>.</iconset>
+   </property>
+   <property name="text">
+    <string>Load &amp;mesh</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+A</string>
+   </property>
+  </action>
+  <action name="action_quit">
+   <property name="icon">
+    <iconset theme="application-exit">
+     <normaloff>.</normaloff>.</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Quit</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Q</string>
+   </property>
+  </action>
+  <action name="action_help">
+   <property name="icon">
+    <iconset theme="help">
+     <normaloff>.</normaloff>.</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Help</string>
+   </property>
+   <property name="shortcut">
+    <string>F1</string>
+   </property>
+  </action>
+  <action name="action_normal_mode">
+   <property name="icon">
+    <iconset theme="draw-cuboid">
+     <normaloff>.</normaloff>.</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Normal mode</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+N</string>
+   </property>
+  </action>
+  <action name="action_draw_mode">
+   <property name="icon">
+    <iconset theme="draw-freehand">
+     <normaloff>.</normaloff>.</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Draw mode</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+D</string>
+   </property>
+  </action>
+  <action name="action_toggle_wireframe">
+   <property name="icon">
+    <iconset theme="draw-triangle">
+     <normaloff>.</normaloff>.</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Toggle wireframe</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+W</string>
+   </property>
+  </action>
+  <action name="action_load_block_model">
+   <property name="icon">
+    <iconset theme="code-block">
+     <normaloff>.</normaloff>.</iconset>
+   </property>
+   <property name="text">
+    <string>Load &amp;block model</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+E</string>
+   </property>
+  </action>
+  <action name="action_selection_mode">
+   <property name="icon">
+    <iconset theme="edit-select">
+     <normaloff>.</normaloff>.</iconset>
+   </property>
+   <property name="text">
+    <string>Selection mode</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
+  </action>
+  <action name="action_camera_position">
+   <property name="icon">
+    <iconset theme="camera-video-symbolic">
+     <normaloff>.</normaloff>.</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Camera position</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+C</string>
+   </property>
+  </action>
+  <action name="action_load_points">
+   <property name="icon">
+    <iconset theme="content-loading-symbolic">
+     <normaloff>.</normaloff>.</iconset>
+   </property>
+   <property name="text">
+    <string>Load &amp;points</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+P</string>
+   </property>
+  </action>
+  <action name="action_plan_view">
+   <property name="icon">
+    <iconset theme="draw-rectangle">
+     <normaloff>.</normaloff>.</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Plan view</string>
+   </property>
+  </action>
+  <action name="action_north_view">
+   <property name="icon">
+    <iconset theme="arrow-up">
+     <normaloff>.</normaloff>.</iconset>
+   </property>
+   <property name="text">
+    <string>N&amp;orth view</string>
+   </property>
+  </action>
+  <action name="action_east_view">
+   <property name="icon">
+    <iconset theme="arrow-right">
+     <normaloff>.</normaloff>.</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;East view</string>
+   </property>
+  </action>
+  <action name="action_take_screenshot">
+   <property name="icon">
+    <iconset theme="snap">
+     <normaloff>.</normaloff>.</iconset>
+   </property>
+   <property name="text">
+    <string>Take screenshot</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+T</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections/>
+ <slots/>
+</ui>

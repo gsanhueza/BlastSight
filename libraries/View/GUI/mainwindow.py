@@ -29,25 +29,49 @@ class MineVis(QMainWindow):
         self.statusBar.showMessage('Ready')
         self.threadPool = QThreadPool()
 
-        self.generate_toolbar()
+        self.generate_menubar()
+        self.connect_actions()
 
-    def generate_toolbar(self):
-        self.mainToolBar.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
+    def generate_menubar(self):
+        self.menu_File.addAction(self.mainToolBar.action_load_mesh)
+        self.menu_File.addAction(self.mainToolBar.action_load_block_model)
+        self.menu_File.addAction(self.mainToolBar.action_load_points)
+        self.menu_File.addSeparator()
+        self.menu_File.addAction(self.mainToolBar.action_quit)
+        
+        self.menu_View.addAction(self.mainToolBar.action_normal_mode)
+        self.menu_View.addAction(self.mainToolBar.action_draw_mode)
+        self.menu_View.addAction(self.mainToolBar.action_selection_mode)
+        self.menu_View.addSeparator()
+        self.menu_View.addAction(self.mainToolBar.action_camera_position)
+        self.menu_View.addAction(self.mainToolBar.action_plan_view)
+        self.menu_View.addAction(self.mainToolBar.action_north_view)
+        self.menu_View.addAction(self.mainToolBar.action_east_view)
+        self.menu_View.addSeparator()
+        self.menu_View.addAction(self.mainToolBar.action_take_screenshot)
 
-        self.mainToolBar.addAction(self.action_Load_mesh)
-        self.mainToolBar.addAction(self.action_Load_block_model)
-        self.mainToolBar.addAction(self.action_Load_points)
+        self.menu_Help.addAction(self.mainToolBar.action_help)
+        self.menu_Help.addSeparator()
 
-        self.mainToolBar.addSeparator()
+    def connect_actions(self):
+        self.mainToolBar.action_load_mesh.triggered.connect(self.load_mesh_slot)
+        self.mainToolBar.action_load_block_model.triggered.connect(self.load_block_model_slot)
+        self.mainToolBar.action_load_points.triggered.connect(self.load_points_slot)
+        self.mainToolBar.action_quit.triggered.connect(self.close)
 
-        self.mainToolBar.addAction(self.action_Plan_view)
-        self.mainToolBar.addAction(self.action_North_view)
-        self.mainToolBar.addAction(self.action_East_view)
-        self.mainToolBar.addAction(self.action_Take_screenshot)
+        self.mainToolBar.action_normal_mode.triggered.connect(self.normal_mode_slot)
+        self.mainToolBar.action_draw_mode.triggered.connect(self.draw_mode_slot)
+        self.mainToolBar.action_selection_mode.triggered.connect(self.selection_mode_slot)
 
-        self.mainToolBar.addSeparator()
+        self.mainToolBar.action_camera_position.triggered.connect(self.dialog_camera_position)
+        self.mainToolBar.action_plan_view.triggered.connect(self.viewer.plan_view)
+        self.mainToolBar.action_north_view.triggered.connect(self.viewer.north_view)
+        self.mainToolBar.action_east_view.triggered.connect(self.viewer.east_view)
 
-        self.mainToolBar.addAction(self.action_Quit)
+        self.mainToolBar.action_take_screenshot.triggered.connect(self.viewer.take_screenshot)
+        self.mainToolBar.action_help.triggered.connect(self.help_slot)
+
+        self.viewer.file_dropped_signal.connect(self.fill_tree_widget)
 
     @property
     def viewer(self):
