@@ -38,6 +38,7 @@ class Container(QWidget):
         self.mainToolBar.action_east_view.triggered.connect(self.viewer.east_view)
         self.mainToolBar.action_take_screenshot.triggered.connect(self.viewer.take_screenshot)
         self.mainToolBar.action_show_tree.triggered.connect(self.treeWidget.show)
+        self.mainToolBar.action_quit.triggered.connect(self.close)
         self.viewer.file_dropped_signal.connect(self.fill_tree_widget)
 
     def dialog_camera_position(self):
