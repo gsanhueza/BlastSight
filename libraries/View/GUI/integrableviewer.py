@@ -118,10 +118,7 @@ class IntegrableViewer(QOpenGLWidget):
 
     @property
     def last_id(self) -> int:
-        try:
-            return list(self.drawable_collection.items())[-1][0]
-        except IndexError:
-            return -1
+        return self.drawable_collection.last_id
 
     """
     Load methods

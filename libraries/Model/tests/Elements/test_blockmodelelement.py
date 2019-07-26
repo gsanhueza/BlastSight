@@ -111,10 +111,11 @@ class TestBlockModelElement:
             assert element.values[i] == expected[i]
 
     def test_data(self):
-        data = {'x': ('0', '2', '4', '6', '8', '10'),
-                'y': ('0', '0', '0', '3', '3', '1'),
-                'z': ('0', '3', '3', '3', '3', '3'),
-                'CuT': ('1', '0.4', '0.5', '0.8', '0.3', '0.2')}
+        data = {'x': [0.0, 2.0, 4.0, 6.0, 8.0, 10.0],
+                'y': [0.0, 0.0, 0.0, 3.0, 3.0, 1.0],
+                'z': [0.0, 3.0, 3.0, 3.0, 3.0, 3.0],
+                'CuT': [1.0, 0.4, 0.5, 0.8, 0.3, 0.2],
+                }
 
         element = BlockModelElement(data=data)
         element.x_str = 'x'
@@ -138,7 +139,10 @@ class TestBlockModelElement:
         assert element.z.size == 6
         assert len(list(element.values)) == 6
 
-        assert element.data == data
+        epsilon = 0.0001
+        for key in data.keys():
+            for ed, d in zip(element.data[key].tolist(), data[key]):
+                assert abs(ed - d) < epsilon
 
     def test_insufficient_data(self):
         data = {'x': ('0', '2', '4', '6', '8', '10'),

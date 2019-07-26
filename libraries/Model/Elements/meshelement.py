@@ -12,7 +12,7 @@ class MeshElement(Element):
 
         super().__init__(*args, **kwargs)
 
-        self.indices = kwargs.get('indices')
+        self.indices = kwargs.get('indices', [])
         self.values = kwargs.get('color', list(map(lambda x: random(), range(3))))
 
         assert self.x.size == self.indices.max() + 1

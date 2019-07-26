@@ -6,11 +6,8 @@ from .element import Element
 
 class BlockModelElement(Element):
     def __init__(self, *args, **kwargs):
-        self._values: np.ndarray = np.array([], np.float32)
         self._dataframe = None
         self._size = None
-
-        self._value_str: str = 'values'
 
         self.vmin = 0.0
         self.vmax = 1.0
@@ -64,6 +61,7 @@ class BlockModelElement(Element):
         self._size = np.array(size, np.float32)
 
     def update_values(self):
+        self._data.clear()
         self.x = self._dataframe[self.x_str]
         self.y = self._dataframe[self.y_str]
         self.z = self._dataframe[self.z_str]
