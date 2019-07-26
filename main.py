@@ -16,6 +16,18 @@ def application():
     sys.exit(qt_app.exec_())
 
 
+def container():
+    from qtpy.QtWidgets import QApplication
+    from libraries.View.GUI.container import Container
+
+    qt_app = QApplication(sys.argv)
+
+    w = Container()
+    w.show()
+
+    sys.exit(qt_app.exec_())
+
+
 def standalone():
     from libraries.View.viewer import Viewer
     viewer = Viewer()
@@ -24,13 +36,16 @@ def standalone():
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Starts MineVis in App or standalone Viewer mode.')
-    parser.add_argument('--app', action='store_true', help='Starts in App mode.')
-    parser.add_argument('--viewer', action='store_true', help='Starts in Viewer mode.')
+    parser = argparse.ArgumentParser(description='Starts MineVis in App/Container/Viewer mode.')
+    parser.add_argument('-a', '--app', action='store_true', help='Starts in App mode.')
+    parser.add_argument('-c', '--container', action='store_true', help='Starts in Container mode.')
+    parser.add_argument('-v', '--viewer', action='store_true', help='Starts in Viewer mode.')
 
     args = parser.parse_args()
 
-    if args.viewer and not args.app:
+    if args.viewer:
         standalone()
-    elif args.app or not args.viewer:
+    elif args.container:
+        container()
+    else:
         application()
