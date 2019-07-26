@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 from qtpy.QtWidgets import QTreeWidgetItem
-from qtpy.QtCore import Signal
 
 
 class TreeWidgetItem(QTreeWidgetItem):

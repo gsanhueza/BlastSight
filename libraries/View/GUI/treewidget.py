@@ -76,10 +76,7 @@ class TreeWidget(QTreeWidget):
         action_delete.triggered.connect(item.delete)
         action_wireframe.triggered.connect(item.toggle_wireframe)
         action_center_camera.triggered.connect(item.center_camera)
-
-        def emitter() -> None:
-            self.available_values_signal.emit(item.drawable.id)
-        action_available_values.triggered.connect(emitter)
+        action_available_values.triggered.connect(lambda: self.available_values_signal.emit(item.drawable.id))
 
         # Add actions depending on item type
         menu.addAction(action_show)
