@@ -78,6 +78,13 @@ class GLDrawableCollection(OrderedDict):
         return list(self.items()).__len__()
 
     @property
+    def last_id(self):
+        try:
+            return list(self.items())[-1][0]
+        except IndexError:
+            return -1
+
+    @property
     def background(self):
         return self.filter(BackgroundGL)
 
