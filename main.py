@@ -18,7 +18,7 @@ def application():
 
 def container():
     from qtpy.QtWidgets import QApplication
-    from libraries.View.GUI.container import Container
+    from libraries.View.container import Container
 
     qt_app = QApplication(sys.argv)
 
