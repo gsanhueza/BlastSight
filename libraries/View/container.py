@@ -27,10 +27,12 @@ class Container(QWidget):
         self.setWindowTitle('MineVis (Container)')
         self.setMinimumSize(400, 300)
 
+        self.toolbar.insertAction(self.toolbar.action_plan_view, self.toolbar.action_camera_position)
+        self.toolbar.addAction(self.toolbar.action_quit)
+
         self.toolbar.connect_tree(self.treeWidget)
         self.toolbar.connect_viewer(self.viewer)
 
-        self.toolbar.addAction(self.toolbar.action_quit)
         self.connect_actions()
 
     @property

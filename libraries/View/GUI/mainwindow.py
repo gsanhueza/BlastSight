@@ -29,7 +29,10 @@ class MineVis(QMainWindow):
         self.statusBar.showMessage('Ready')
         self.threadPool = QThreadPool()
 
+        # Extra actions
+        self.toolbar.insertAction(self.toolbar.action_plan_view, self.toolbar.action_camera_position)
         self.toolbar.addAction(self.toolbar.action_quit)
+        
         self.generate_menubar()
         self.connect_actions()
 

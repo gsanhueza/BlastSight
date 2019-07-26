@@ -183,7 +183,7 @@
   </action>
   <addaction name="action_show_tree"/>
   <addaction name="separator"/>
-  <addaction name="action_camera_position"/>
+<!--   <addaction name="action_camera_position"/> -->
   <addaction name="action_plan_view"/>
   <addaction name="action_north_view"/>
   <addaction name="action_east_view"/>
