@@ -1,12 +1,14 @@
 #!/usr/bin/env python
 
 from qtpy.QtWidgets import QTreeWidgetItem
+from qtpy.QtCore import Signal
 
 
 class TreeWidgetItem(QTreeWidgetItem):
-    def __init__(self, parent=None, mainwindow=None, drawable=None):
+
+    def __init__(self, parent=None, viewer=None, drawable=None):
         super().__init__(parent)
-        self._mainwindow = mainwindow
+        self._viewer = viewer
         self._drawable = drawable
 
         self.setText(0, f'{self.name}.{self.ext}')
@@ -24,8 +26,8 @@ class TreeWidgetItem(QTreeWidgetItem):
         return type(self.drawable)
 
     @property
-    def mainwindow(self):
-        return self._mainwindow
+    def viewer(self):
+        return self._viewer
 
     @property
     def drawable(self):
@@ -34,30 +36,26 @@ class TreeWidgetItem(QTreeWidgetItem):
     # Shown in contextual menu
     def show(self) -> None:
         self.drawable.show()
-        self.mainwindow.viewer.update()
+        self.viewer.update()
 
     def hide(self) -> None:
         self.drawable.hide()
-        self.mainwindow.viewer.update()
+        self.viewer.update()
 
     def delete(self) -> None:
-        self.mainwindow.viewer.delete(self.drawable.id)
-        self.mainwindow.viewer.update()
-        self.mainwindow.fill_tree_widget()
+        self.viewer.delete(self.drawable.id)
+        self.viewer.update()
 
     def toggle_wireframe(self) -> None:
         self.drawable.toggle_wireframe()
-        self.mainwindow.viewer.update()
+        self.viewer.update()
 
     def toggle_visibility(self) -> None:
         self.drawable.toggle_visibility()
-        self.mainwindow.viewer.update()
+        self.viewer.update()
 
     def center_camera(self) -> None:
         try:
-            self.mainwindow.viewer.camera_at(self.drawable.id)
+            self.viewer.camera_at(self.drawable.id)
         except ValueError:
-            self.mainwindow.dialog_available_values(self.drawable.id)
-
-    def available_value_names(self) -> None:
-        self.mainwindow.dialog_available_values(self.drawable.id)
+            pass

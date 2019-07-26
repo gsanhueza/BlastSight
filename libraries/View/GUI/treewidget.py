@@ -1,16 +1,20 @@
 #!/usr/bin/env python
 
 from qtpy.QtCore import Qt
+from qtpy.QtCore import Signal
 from qtpy.QtGui import QIcon
 from qtpy.QtWidgets import QAction
 from qtpy.QtWidgets import QMenu
 from qtpy.QtWidgets import QTreeWidget
+from .treewidgetitem import TreeWidgetItem
 from ..Drawables.meshgl import MeshGL
 from ..Drawables.blockmodelgl import BlockModelGL
 from ..Drawables.pointgl import PointGL
 
 
 class TreeWidget(QTreeWidget):
+    available_values_signal = Signal(int)
+
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setContextMenuPolicy(Qt.CustomContextMenu)
@@ -19,9 +23,14 @@ class TreeWidget(QTreeWidget):
         self.itemDoubleClicked.connect(self.double_click)
         self.customContextMenuRequested.connect(self.context_menu)
 
-        # # Qt documentation states that user types should begin at this value.
-        # self.type_mesh = QTreeWidgetItem.UserType
-        # self.type_block_model = QTreeWidgetItem.UserType + 1
+    def fill_from_viewer(self, viewer) -> None:
+        self.clear()
+
+        for drawable in viewer.drawable_collection.values():
+            if type(drawable.id) is int:
+                item = TreeWidgetItem(self, viewer, drawable)
+                self.addTopLevelItem(item)
+        self.select_item(self.topLevelItemCount(), 0)
 
     def context_menu(self, event) -> None:
         """
@@ -67,7 +76,10 @@ class TreeWidget(QTreeWidget):
         action_delete.triggered.connect(item.delete)
         action_wireframe.triggered.connect(item.toggle_wireframe)
         action_center_camera.triggered.connect(item.center_camera)
-        action_available_values.triggered.connect(item.available_value_names)
+
+        def emitter() -> None:
+            self.available_values_signal.emit(item.drawable.id)
+        action_available_values.triggered.connect(emitter)
 
         # Add actions depending on item type
         menu.addAction(action_show)

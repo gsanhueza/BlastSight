@@ -35,7 +35,7 @@ from ...Model.utils import mesh_intersection
 
 class IntegrableViewer(QOpenGLWidget):
     # Signals
-    file_dropped_signal = Signal()
+    file_modified_signal = Signal()
 
     def __init__(self, parent=None):
         QOpenGLWidget.__init__(self, parent)
@@ -132,7 +132,7 @@ class IntegrableViewer(QOpenGLWidget):
             drawable = drawable_type(self, element)
             self.drawable_collection.add(drawable)
 
-            self.file_dropped_signal.emit()
+            self.file_modified_signal.emit()
             self.update()
 
             return drawable
@@ -186,6 +186,7 @@ class IntegrableViewer(QOpenGLWidget):
     def delete(self, id_: int) -> None:
         self.model.delete(id_)
         self.drawable_collection.delete(id_)
+        self.file_modified_signal.emit()
         self.update()
 
     def camera_at(self, id_: int) -> None:

@@ -44,21 +44,14 @@ class Container(QWidget):
     def connect_actions(self):
         self.toolbar.action_camera_position.triggered.connect(self.dialog_camera_position)
         self.toolbar.action_quit.triggered.connect(self.close)
-        self.viewer.file_dropped_signal.connect(self.fill_tree_widget)
+        self.viewer.file_modified_signal.connect(self.fill_tree_widget)
 
     def dialog_camera_position(self):
         dialog = CameraPositionDialog(self)
         dialog.show()
 
     def fill_tree_widget(self) -> None:
-        # Tree widget
-        self.treeWidget.clear()
-
-        for drawable in self.viewer.drawable_collection.values():
-            if type(drawable.id) is int:
-                item = TreeWidgetItem(self.treeWidget, self, drawable)
-                self.treeWidget.addTopLevelItem(item)
-        self.treeWidget.select_item(self.treeWidget.topLevelItemCount(), 0)
+        self.treeWidget.fill_from_viewer(self.viewer)
 
     def dragEnterEvent(self, event, *args, **kwargs) -> None:
         self.viewer.dragEnterEvent(event, *args, **kwargs)

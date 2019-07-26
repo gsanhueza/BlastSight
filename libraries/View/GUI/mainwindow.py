@@ -34,47 +34,48 @@ class MineVis(QMainWindow):
         self.connect_actions()
 
     def generate_menubar(self):
-        self.menu_File.addAction(self.mainToolBar.action_load_mesh)
-        self.menu_File.addAction(self.mainToolBar.action_load_block_model)
-        self.menu_File.addAction(self.mainToolBar.action_load_points)
+        self.menu_File.addAction(self.toolbar.action_load_mesh)
+        self.menu_File.addAction(self.toolbar.action_load_block_model)
+        self.menu_File.addAction(self.toolbar.action_load_points)
         self.menu_File.addSeparator()
-        self.menu_File.addAction(self.mainToolBar.action_quit)
+        self.menu_File.addAction(self.toolbar.action_quit)
 
-        self.menu_View.addAction(self.mainToolBar.action_normal_mode)
-        self.menu_View.addAction(self.mainToolBar.action_draw_mode)
-        self.menu_View.addAction(self.mainToolBar.action_selection_mode)
+        self.menu_View.addAction(self.toolbar.action_normal_mode)
+        self.menu_View.addAction(self.toolbar.action_draw_mode)
+        self.menu_View.addAction(self.toolbar.action_selection_mode)
         self.menu_View.addSeparator()
-        self.menu_View.addAction(self.mainToolBar.action_camera_position)
-        self.menu_View.addAction(self.mainToolBar.action_plan_view)
-        self.menu_View.addAction(self.mainToolBar.action_north_view)
-        self.menu_View.addAction(self.mainToolBar.action_east_view)
+        self.menu_View.addAction(self.toolbar.action_camera_position)
+        self.menu_View.addAction(self.toolbar.action_plan_view)
+        self.menu_View.addAction(self.toolbar.action_north_view)
+        self.menu_View.addAction(self.toolbar.action_east_view)
         self.menu_View.addSeparator()
-        self.menu_View.addAction(self.mainToolBar.action_take_screenshot)
+        self.menu_View.addAction(self.toolbar.action_take_screenshot)
 
-        self.menu_Help.addAction(self.mainToolBar.action_help)
+        self.menu_Help.addAction(self.toolbar.action_help)
         self.menu_Help.addSeparator()
 
     def connect_actions(self):
-        self.mainToolBar.action_load_mesh.triggered.connect(self.load_mesh_slot)
-        self.mainToolBar.action_load_block_model.triggered.connect(self.load_block_model_slot)
-        self.mainToolBar.action_load_points.triggered.connect(self.load_points_slot)
-        self.mainToolBar.action_quit.triggered.connect(self.close)
+        self.toolbar.action_load_mesh.triggered.connect(self.load_mesh_slot)
+        self.toolbar.action_load_block_model.triggered.connect(self.load_block_model_slot)
+        self.toolbar.action_load_points.triggered.connect(self.load_points_slot)
+        self.toolbar.action_quit.triggered.connect(self.close)
 
-        self.mainToolBar.action_normal_mode.triggered.connect(self.normal_mode_slot)
-        self.mainToolBar.action_draw_mode.triggered.connect(self.draw_mode_slot)
-        self.mainToolBar.action_selection_mode.triggered.connect(self.selection_mode_slot)
+        self.toolbar.action_normal_mode.triggered.connect(self.normal_mode_slot)
+        self.toolbar.action_draw_mode.triggered.connect(self.draw_mode_slot)
+        self.toolbar.action_selection_mode.triggered.connect(self.selection_mode_slot)
 
-        self.mainToolBar.action_camera_position.triggered.connect(self.dialog_camera_position)
-        self.mainToolBar.action_plan_view.triggered.connect(self.viewer.plan_view)
-        self.mainToolBar.action_north_view.triggered.connect(self.viewer.north_view)
-        self.mainToolBar.action_east_view.triggered.connect(self.viewer.east_view)
+        self.toolbar.action_camera_position.triggered.connect(self.dialog_camera_position)
+        self.toolbar.action_plan_view.triggered.connect(self.viewer.plan_view)
+        self.toolbar.action_north_view.triggered.connect(self.viewer.north_view)
+        self.toolbar.action_east_view.triggered.connect(self.viewer.east_view)
 
-        self.mainToolBar.action_take_screenshot.triggered.connect(self.viewer.take_screenshot)
-        self.mainToolBar.action_show_tree.triggered.connect(self.dockWidget.show)
-        self.mainToolBar.action_help.triggered.connect(self.help_slot)
-        self.mainToolBar.action_quit.triggered.connect(self.close)
+        self.toolbar.action_take_screenshot.triggered.connect(self.viewer.take_screenshot)
+        self.toolbar.action_show_tree.triggered.connect(self.dockWidget.show)
+        self.toolbar.action_help.triggered.connect(self.help_slot)
+        self.toolbar.action_quit.triggered.connect(self.close)
 
-        self.viewer.file_dropped_signal.connect(self.fill_tree_widget)
+        self.viewer.file_modified_signal.connect(self.fill_tree_widget)
+        self.treeWidget.available_values_signal.connect(self.dialog_available_values)
 
     @property
     def viewer(self):
@@ -93,14 +94,7 @@ class MineVis(QMainWindow):
         self._settings.setValue('last_directory', last_dir)
 
     def fill_tree_widget(self) -> None:
-        # Tree widget
-        self.treeWidget.clear()
-
-        for drawable in self.viewer.drawable_collection.values():
-            if type(drawable.id) is int:
-                item = TreeWidgetItem(self.treeWidget, self, drawable)
-                self.treeWidget.addTopLevelItem(item)
-        self.treeWidget.select_item(self.treeWidget.topLevelItemCount(), 0)
+        self.treeWidget.fill_from_viewer(self.viewer)
 
     def dialog_available_values(self, id_):
         drawable = self.viewer.get_drawable(id_)
