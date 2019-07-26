@@ -182,9 +182,6 @@ class MineVis(QMainWindow):
                                 'MineVis - Help',
                                 'TO-DO: Create help message box')
 
-    """
-    Overridden events
-    """
     def dragEnterEvent(self, event, *args, **kwargs) -> None:
         self.viewer.dragEnterEvent(event, *args, **kwargs)
 

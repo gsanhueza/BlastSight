@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>container</class>
-  <widget class="QToolBar" name="mainToolBar">
-   <addaction name="action_show_tree"/>
-   <addaction name="separator"/>
-   <addaction name="action_camera_position"/>
-   <addaction name="action_plan_view"/>
-   <addaction name="action_north_view"/>
-   <addaction name="action_east_view"/>
-   <addaction name="separator"/>
-   <addaction name="action_take_screenshot"/>
-   <addaction name="action_quit"/>
+ <class>mainToolBar</class>
+ <widget class="QToolBar" name="mainToolBar">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>258</width>
+    <height>38</height>
+   </rect>
+  </property>
   <action name="action_load_mesh">
    <property name="icon">
     <iconset theme="fileopen">
@@ -182,8 +181,16 @@
     <string>Ctrl+T</string>
    </property>
   </action>
+  <addaction name="action_show_tree"/>
+  <addaction name="separator"/>
+  <addaction name="action_camera_position"/>
+  <addaction name="action_plan_view"/>
+  <addaction name="action_north_view"/>
+  <addaction name="action_east_view"/>
+  <addaction name="separator"/>
+  <addaction name="action_take_screenshot"/>
+  <addaction name="action_quit"/>
  </widget>
  <resources/>
  <connections/>
- <slots/>
 </ui>

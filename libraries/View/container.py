@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 
-from qtpy.QtWidgets import QWidget, QVBoxLayout
+from qtpy.QtWidgets import QVBoxLayout
+from qtpy.QtWidgets import QWidget
+
 from .GUI.toolbar import ToolBar
 from .GUI.integrableviewer import IntegrableViewer
 from .GUI.camerapositiondialog import CameraPositionDialog
@@ -54,3 +56,9 @@ class Container(QWidget):
                 item = TreeWidgetItem(self.treeWidget, self, drawable)
                 self.treeWidget.addTopLevelItem(item)
         self.treeWidget.select_item(self.treeWidget.topLevelItemCount(), 0)
+
+    def dragEnterEvent(self, event, *args, **kwargs) -> None:
+        self.viewer.dragEnterEvent(event, *args, **kwargs)
+
+    def dropEvent(self, event, *args, **kwargs) -> None:
+        self.viewer.dropEvent(event, *args, **kwargs)
