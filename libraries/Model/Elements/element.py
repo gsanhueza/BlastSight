@@ -6,9 +6,11 @@ import numpy as np
 class Element:
     def __init__(self, *args, **kwargs):
         # Base data
-        self._x: np.ndarray = np.empty(0, np.float32)
-        self._y: np.ndarray = np.empty(0, np.float32)
-        self._z: np.ndarray = np.empty(0, np.float32)
+        self._data: dict = {}
+        self.x_str: str = 'x'
+        self.y_str: str = 'y'
+        self.z_str: str = 'z'
+        self.value_str: str = 'values'
 
         # Metadata
         self._id: int = None
@@ -40,7 +42,7 @@ class Element:
     def _fill_as_vertices(self, msg, *args, **kwargs):
         assert 'vertices' in kwargs.keys(), msg
 
-        self.vertices = kwargs.get('vertices')
+        self.vertices = np.array(kwargs.get('vertices', []), np.float32)
 
     def _fill_as_xyz(self, msg, *args, **kwargs):
         assert 'x' in kwargs.keys(), msg
@@ -59,28 +61,48 @@ class Element:
     Attributes
     """
     @property
-    def x(self) -> np.ndarray:
-        return self._x
+    def x(self):
+        return self.data.get(self.x_str, np.empty(0))
 
     @x.setter
-    def x(self, x: list) -> None:
-        self._x = np.array(x, np.float32)
+    def x(self, val):
+        self.data[self.x_str] = np.array(val, np.float32)
 
     @property
-    def y(self) -> np.ndarray:
-        return self._y
+    def y(self):
+        return self.data.get(self.y_str, np.empty(0))
 
     @y.setter
-    def y(self, y: list) -> None:
-        self._y = np.array(y, np.float32)
+    def y(self, val):
+        self.data[self.y_str] = np.array(val, np.float32)
 
     @property
-    def z(self) -> np.ndarray:
-        return self._z
+    def z(self):
+        return self.data.get(self.z_str, np.empty(0))
 
     @z.setter
-    def z(self, z: list) -> None:
-        self._z = np.array(z, np.float32)
+    def z(self, val):
+        self.data[self.z_str] = np.array(val, np.float32)
+
+    @property
+    def vertices(self) -> np.ndarray:
+        return np.column_stack((self.x, self.y, self.z))
+
+    @vertices.setter
+    def vertices(self, vertices: list) -> None:
+        self.x, self.y, self.z = np.array(vertices, np.float32).T
+
+    @property
+    def values(self) -> np.ndarray:
+        return self.data.get(self.value_str, np.empty(0))
+
+    @values.setter
+    def values(self, val):
+        self.data[self.value_str] = np.array(val, np.float32)
+
+    @property
+    def data(self) -> dict:
+        return self._data
 
     @property
     def id(self) -> int:
@@ -91,16 +113,8 @@ class Element:
         self._id = _id
 
     @property
-    def vertices(self) -> np.ndarray:
-        return np.column_stack((self._x, self._y, self._z))
-
-    @vertices.setter
-    def vertices(self, vertices: list) -> None:
-        self._x, self._y, self._z = np.array(vertices, np.float32).T
-
-    @property
     def centroid(self) -> np.ndarray:
-        return np.array([self._x.mean(), self._y.mean(), self._z.mean()])
+        return np.array([self.x.mean(), self.y.mean(), self.z.mean()])
 
     """
     Metadata

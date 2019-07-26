@@ -9,7 +9,6 @@ from .element import Element
 class MeshElement(Element):
     def __init__(self, *args, **kwargs):
         self._indices: np.ndarray = np.array([], np.float32)
-        self._values: np.ndarray = np.array([], np.float32)
 
         super().__init__(*args, **kwargs)
 
@@ -23,13 +22,5 @@ class MeshElement(Element):
         return self._indices
 
     @indices.setter
-    def indices(self, indices: list):
+    def indices(self, indices):
         self._indices = np.array(indices, np.uint32)  # GL_UNSIGNED_INT = np.uint32
-
-    @property
-    def values(self) -> np.ndarray:
-        return self._values
-
-    @values.setter
-    def values(self, values: list):
-        self._values = np.array(values, np.float32)
