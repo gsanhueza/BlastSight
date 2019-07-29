@@ -13,6 +13,8 @@ class FPSCounter:
     def tick(self):
         self.counter += 1
         if time.time() - self.start_time > self.resolution:
-            self.fps = self.counter
+            diff = (time.time() - self.start_time)
+
+            self.fps = self.counter / diff if diff else 0.0
             self.counter = 0
             self.start_time = time.time()
