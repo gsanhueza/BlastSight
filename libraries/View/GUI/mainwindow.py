@@ -35,6 +35,9 @@ class MineVis(QMainWindow):
         self.generate_menubar()
         self.connect_actions()
 
+        # self._title = self.windowTitle()
+        # self.viewer.fps_signal.connect(lambda x: self.setWindowTitle(f'{self._title} (FPS: {x:.1f})'))
+
     def generate_menubar(self):
         self.menu_File.addAction(self.toolbar.action_load_mesh)
         self.menu_File.addAction(self.toolbar.action_load_block_model)

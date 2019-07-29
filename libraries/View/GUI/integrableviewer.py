@@ -36,6 +36,7 @@ from ...Model.utils import mesh_intersection
 class IntegrableViewer(QOpenGLWidget):
     # Signals
     file_modified_signal = Signal()
+    fps_signal = Signal(float)
 
     def __init__(self, parent=None):
         QOpenGLWidget.__init__(self, parent)
@@ -68,6 +69,7 @@ class IntegrableViewer(QOpenGLWidget):
 
         # FPS Counter
         self.fps_counter = FPSCounter()
+        self.fps_signal.connect(self.print_fps)
 
         # Thread Pool
         self.thread_pool = QThreadPool()
@@ -249,6 +251,7 @@ class IntegrableViewer(QOpenGLWidget):
         self.current_mode.overpaint(self)
 
         self.fps_counter.tick()
+        self.fps_signal.emit(self.fps_counter.fps)
 
     def resizeGL(self, w: float, h: float) -> None:
         self.proj.setToIdentity()
@@ -264,6 +267,11 @@ class IntegrableViewer(QOpenGLWidget):
     """
     Utilities
     """
+    @staticmethod
+    def print_fps(fps):
+        print(f'               \r', end='')
+        print(f'FPS: {fps:.1f}\r', end='')
+
     def detect_intersection(self, x: float, y: float, z: float) -> None:
         # For more info, read http://antongerdelan.net/opengl/raycasting.html
         y = self.height() - y  # Qt's y() to OpenGL's y()
