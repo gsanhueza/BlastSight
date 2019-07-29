@@ -19,10 +19,6 @@ class Element:
         self._fill_element(*args, **kwargs)
         self._fill_metadata(*args, **kwargs)
 
-    def __del__(self):
-        self._data.clear()
-        self._properties.clear()
-
     def _fill_element(self, msg=None, *args, **kwargs):
         if msg is None:
             msg = f'Must pass ["x", "y", "z"] or "vertices" as kwargs, got {list(kwargs.keys())}.'

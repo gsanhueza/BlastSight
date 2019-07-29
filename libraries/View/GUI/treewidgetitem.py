@@ -4,7 +4,6 @@ from qtpy.QtWidgets import QTreeWidgetItem
 
 
 class TreeWidgetItem(QTreeWidgetItem):
-
     def __init__(self, parent=None, viewer=None, drawable=None):
         super().__init__(parent)
         self._viewer = viewer
