@@ -20,8 +20,9 @@ class PointGL(GLDrawable):
 
         if self.vao is None:
             self.vao = glGenVertexArrays(1)
-
-        self.vbos = glGenBuffers(2)
+            self.vbos = glGenBuffers(2)
+        else:
+            glDeleteBuffers(len(self.vbos), self.vbos)
 
         # Data
         vertices = self.element.vertices
