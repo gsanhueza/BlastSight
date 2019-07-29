@@ -28,7 +28,7 @@ class TreeWidget(QTreeWidget):
         self.clear()
 
         for drawable in viewer.drawable_collection.values():
-            item = TreeWidgetItem(self, viewer, drawable)
+            item = TreeWidgetItem(self, viewer, drawable.id)
             self.addTopLevelItem(item)
         self.select_item(self.topLevelItemCount(), 0)
 

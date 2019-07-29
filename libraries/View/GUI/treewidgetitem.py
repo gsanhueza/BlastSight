@@ -4,10 +4,10 @@ from qtpy.QtWidgets import QTreeWidgetItem
 
 
 class TreeWidgetItem(QTreeWidgetItem):
-    def __init__(self, parent=None, viewer=None, drawable=None):
+    def __init__(self, parent=None, viewer=None, _id=None):
         super().__init__(parent)
         self._viewer = viewer
-        self._drawable = drawable
+        self._id = _id
 
         self.setText(0, f'{self.name}.{self.ext}')
 
@@ -29,7 +29,7 @@ class TreeWidgetItem(QTreeWidgetItem):
 
     @property
     def drawable(self):
-        return self._drawable
+        return self.viewer.get_drawable(self._id)
 
     # Shown in contextual menu
     def show(self) -> None:
@@ -43,6 +43,7 @@ class TreeWidgetItem(QTreeWidgetItem):
     def delete(self) -> None:
         self.viewer.delete(self.drawable.id)
         self.viewer.update()
+        self._viewer = None
 
     def toggle_wireframe(self) -> None:
         self.drawable.toggle_wireframe()
