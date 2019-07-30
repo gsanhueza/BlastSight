@@ -43,6 +43,17 @@ class GLDrawable:
         if not self.is_initialized:
             self.initialize()
 
+    def cleanup(self):
+        pass
+    #     self.is_visible = False
+    #     self.widget.makeCurrent()
+    #     if self.vao:
+    #         glBindVertexArray(self.vao)
+    #     glDeleteBuffers(len(self.vbos), self.vbos)
+    #     glBindVertexArray(0)
+    #     del self.vbos
+    #     del self.vao
+
     # This try/except catches an ImportError exception on glDeleteBuffers,
     # when the application is closed (either normally or suddenly).
     # Consider this as documentation that justifies the need to have
@@ -58,17 +69,11 @@ class GLDrawable:
     # File "/usr/lib/python3.7/site-packages/OpenGL/platform/baseplatform.py", line 381, in load
     # ImportError: sys.meta_path is None, Python is likely shutting down
     def __del__(self):
-        try:
-            if self.vao and bool(glBindVertexArray):
-                glBindVertexArray(self.vao)
-            if bool(glDeleteBuffers):
-                glDeleteBuffers(len(self.vbos), self.vbos)
-                glBindVertexArray(0)
-        except Exception:
-            pass
-        finally:
-            del self.vbos
-            del self.vao
+        self.widget.makeCurrent()
+        if self.vao is not None:
+            glBindVertexArray(self.vao)
+        glDeleteBuffers(len(self.vbos), self.vbos)
+        glBindVertexArray(0)
 
     """
     API for QTreeWidgetItem
