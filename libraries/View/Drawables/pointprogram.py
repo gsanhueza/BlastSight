@@ -11,6 +11,7 @@ class PointProgram(ShaderProgram):
     def setup(self) -> None:
         super().setup()
         self.add_uniform_loc('point_size')
+        self.add_uniform_loc('viewport')
         self.add_uniform_loc('min_max')
 
     def setup_shaders(self):
@@ -27,5 +28,6 @@ class PointProgram(ShaderProgram):
     def draw(self):
         for drawable in self.drawables:
             self.update_uniform('point_size', drawable.point_size)
+            self.update_uniform('viewport', self.widget.width(), self.widget.height())
             self.update_uniform('min_max', drawable.min_val, drawable.max_val)
             drawable.draw()

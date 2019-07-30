@@ -242,7 +242,6 @@ class IntegrableViewer(QOpenGLWidget):
 
         # Translate the camera
         self.camera.translate(self.xCameraPos, self.yCameraPos, self.zCameraPos)
-
         # Draw every GLDrawable (meshes, block models, etc)
         glEnable(GL_BLEND)
         self.drawable_collection.draw(self.proj, self.camera, self.world)

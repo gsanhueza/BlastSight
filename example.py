@@ -28,7 +28,7 @@ if __name__ == '__main__':
     points = viewer.points(vertices=[[-3, 2, 0],
                                      [0, 2, 1],
                                      [3, 2, 2]],
-                           point_size=10.0,
+                           point_size=3.0,
                            values=[1.5, 1.0, 0.5],
                            vmin=0.8,
                            vmax=2.0)
