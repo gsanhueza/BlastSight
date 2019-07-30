@@ -44,35 +44,13 @@ class GLDrawable:
             self.initialize()
 
     def cleanup(self):
-        pass
-    #     self.is_visible = False
-    #     self.widget.makeCurrent()
-    #     if self.vao:
-    #         glBindVertexArray(self.vao)
-    #     glDeleteBuffers(len(self.vbos), self.vbos)
-    #     glBindVertexArray(0)
-    #     del self.vbos
-    #     del self.vao
-
-    # This try/except catches an ImportError exception on glDeleteBuffers,
-    # when the application is closed (either normally or suddenly).
-    # Consider this as documentation that justifies the need to have
-    # a try/except block in a destroyer (the original exception gets
-    # ignored anyway, we're just silencing it here).
-    # Unless there's a more elegant solution, this will have to suffice.
-    #
-    # Exception ignored in: <function GLDrawable.__del__ at 0x7f8c22aefae8>
-    # Traceback (most recent call last):
-    # File "/data/gabriel/Proyectos/MineVis/libraries/View/Drawables/gldrawable.py", line 48, in __del__
-    # File "/usr/lib/python3.7/site-packages/OpenGL/wrapper.py", line 96, in __nonzero__
-    # File "/usr/lib/python3.7/site-packages/OpenGL/platform/baseplatform.py", line 376, in __nonzero__
-    # File "/usr/lib/python3.7/site-packages/OpenGL/platform/baseplatform.py", line 381, in load
-    # ImportError: sys.meta_path is None, Python is likely shutting down
-    def __del__(self):
         self.widget.makeCurrent()
         if self.vao is not None:
             glBindVertexArray(self.vao)
-        glDeleteBuffers(len(self.vbos), self.vbos)
+        if len(self.vbos) > 0:
+            glDeleteBuffers(len(self.vbos), self.vbos)
+            del self.vbos
+            del self.vao
         glBindVertexArray(0)
 
     """
