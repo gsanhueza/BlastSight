@@ -39,6 +39,7 @@ class GLDrawableCollection(OrderedDict):
         self[drawable.id] = drawable
 
     def delete(self, id_: int) -> None:
+        self[id_].cleanup()
         del self[id_]
 
     def draw(self, proj_matrix, view_matrix, model_matrix) -> None:
