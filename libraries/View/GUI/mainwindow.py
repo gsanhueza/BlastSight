@@ -102,9 +102,7 @@ class MineVis(QMainWindow):
         self.treeWidget.fill_from_viewer(self.viewer)
 
     def dialog_available_values(self, id_):
-        drawable = self.viewer.get_drawable(id_)
-        dialog = AvailableValuesDialog(self, drawable)
-
+        dialog = AvailableValuesDialog(self.viewer, id_)
         dialog.show()
 
     def dialog_camera_position(self):

@@ -9,54 +9,55 @@ from qtpy import uic
 
 
 class AvailableValuesDialog(QDialog):
-    def __init__(self, parent=None, drawable=None):
+    def __init__(self, parent=None, _id=None):
         QDialog.__init__(self, parent)
 
         # Avoids the QObject::startTimer warning (maybe)
         self.setAttribute(Qt.WA_DeleteOnClose)
 
         uic.loadUi(f'{pathlib.Path(__file__).parent}/UI/availablevaluesdialog.ui', self)
-        self.parent = parent
-        self.drawable = drawable
+        self.viewer = parent
+        self.id = _id
 
-        self.setWindowTitle(f'Set available values ({drawable.element.name}.{drawable.element.ext})')
+        element = self.viewer.get_drawable(self.id).element
+        self.setWindowTitle(f'Set available values ({element.name}.{element.ext})')
 
         # Fill content
-        for i in drawable.element.available_value_names:
+        for i in element.available_value_names:
             self.comboBox_x.addItem(i)
             self.comboBox_y.addItem(i)
             self.comboBox_z.addItem(i)
             self.comboBox_values.addItem(i)
 
-    @property
-    def element(self):
-        return self.drawable.element
-
     def accept(self):
-        self.element.x_str = self.comboBox_x.currentText()
-        self.element.y_str = self.comboBox_y.currentText()
-        self.element.z_str = self.comboBox_z.currentText()
-        self.element.value_str = self.comboBox_values.currentText()
+        element = self.viewer.get_drawable(self.id).element
 
-        self.element.update_values()
+        element.x_str = self.comboBox_x.currentText()
+        element.y_str = self.comboBox_y.currentText()
+        element.z_str = self.comboBox_z.currentText()
+        element.value_str = self.comboBox_values.currentText()
+
+        element.update_values()
 
         # Recreate the BlockModelGL instance with the "new" data
-        self.parent.viewer.update_drawable(self.element.id)
+        self.viewer.update_drawable(self.id)
 
         super().accept()
 
     def show(self):
+        element = self.viewer.get_drawable(self.id).element
+
         self.comboBox_x.setCurrentIndex(
-            self.comboBox_x.findText(self.element.x_str)
+            self.comboBox_x.findText(element.x_str)
         )
         self.comboBox_y.setCurrentIndex(
-            self.comboBox_y.findText(self.element.y_str)
+            self.comboBox_y.findText(element.y_str)
         )
         self.comboBox_z.setCurrentIndex(
-            self.comboBox_z.findText(self.element.z_str)
+            self.comboBox_z.findText(element.z_str)
         )
         self.comboBox_values.setCurrentIndex(
-            self.comboBox_values.findText(self.element.value_str)
+            self.comboBox_values.findText(element.value_str)
         )
 
         super().show()
