@@ -117,11 +117,6 @@ class TestMeshElement:
                                        ])
 
         epsilon = 0.00001
-        vol_det = element.volume(method='low_memory')
-        vol_int = element.volume(method='fast')
+        volume = element.volume()
 
-        with pytest.raises(Exception):
-            element.volume(method='not_a_method')
-
-        assert abs(vol_det - 8.0) < epsilon
-        assert abs(vol_int - 8.0) < epsilon
+        assert abs(volume - 8.0) < epsilon

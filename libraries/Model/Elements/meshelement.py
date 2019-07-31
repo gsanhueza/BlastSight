@@ -25,32 +25,9 @@ class MeshElement(Element):
     def indices(self, indices):
         self._indices = np.array(indices, np.uint32)  # GL_UNSIGNED_INT = np.uint32
 
-    def volume(self, **kwargs):
-        method = kwargs.get('method', 'fast')
-
-        if method == 'fast':
-            return self.volume_integral()
-        elif method == 'low_memory':
-            return self.volume_determinant()
-        else:
-            raise Exception('Method not defined!')
-
-    def volume_determinant(self):
-        # Idea from https://stackoverflow.com/questions/1838401/general-formula-to-calculate-polyhedron-volume
-        # Taken from http://melax.github.io/volint.html
-
-        # This works with constant memory, but it's horribly slow
-        volume = 0
-        triangles = self.vertices.view(np.ndarray)[self.indices]
-
-        for triangle in triangles:
-            volume += np.linalg.det(np.matrix(triangle))
-        return abs(volume / 6.0)
-
-    def volume_integral(self):
+    def volume(self):
         # Idea from https://www.geometrictools.com/Documentation/PolyhedralMassProperties.pdf
         # Optimizations taken from https://github.com/mikedh/trimesh/blob/master/trimesh/triangles.py
-
         triangles = self.vertices.view(np.ndarray)[self.indices]
 
         vectors = np.diff(triangles, axis=1)
