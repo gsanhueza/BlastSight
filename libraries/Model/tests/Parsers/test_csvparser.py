@@ -7,7 +7,8 @@ from libraries.Model.tests.globals import *
 
 class TestCSVParser:
     def test_load_simple_file(self):
-        data = Parser.load_file(f'{TEST_FILES_FOLDER_PATH}/mini.csv')
+        info = Parser.load_file(f'{TEST_FILES_FOLDER_PATH}/mini.csv')
+        data = info.data
         assert data is not None
         assert data['x'] is not None
         assert data['y'] is not None
@@ -30,7 +31,8 @@ class TestCSVParser:
             Parser.load_file(f'{TEST_FILES_FOLDER_PATH}/bad.csv')
 
     def test_load_complex_file(self):
-        data = Parser.load_file(f'{TEST_FILES_FOLDER_PATH}/complex.csv')
+        info = Parser.load_file(f'{TEST_FILES_FOLDER_PATH}/complex.csv')
+        data = info.data
         assert data is not None
         assert data['x'] is not None
         assert data['y'] is not None

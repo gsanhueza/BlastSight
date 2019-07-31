@@ -58,21 +58,25 @@ class Model:
     def mesh_by_path(self, path: str, *args, **kwargs) -> MeshElement:
         name = QFileInfo(path).baseName()
         ext = QFileInfo(path).suffix()
-        vertices, indices = self.get_parser(ext).load_file(path)
+        info = self.get_parser(ext).load_file(path)
+        vertices = info.vertices
+        indices = info.indices
 
         return self.mesh(vertices=vertices, indices=indices, name=name, ext=ext, *args, **kwargs)
 
     def block_model_by_path(self, path: str) -> BlockModelElement:
         name = QFileInfo(path).baseName()
         ext = QFileInfo(path).suffix()
-        data = self.get_parser(ext).load_file(path)
+        info = self.get_parser(ext).load_file(path)
+        data = info.data
 
         return self.block_model(data=data, name=name, ext=ext)
 
     def points_by_path(self, path: str) -> PointElement:
         name = QFileInfo(path).baseName()
         ext = QFileInfo(path).suffix()
-        data = self.get_parser(ext).load_file(path)
+        info = self.get_parser(ext).load_file(path)
+        data = info.data
 
         return self.points(data=data, name=name, ext=ext)
 

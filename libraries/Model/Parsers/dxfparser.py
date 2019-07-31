@@ -2,11 +2,12 @@
 
 import dxfgrabber
 from collections import OrderedDict
+from .parserdata import ParserData
 
 
 class DXFParser:
     @staticmethod
-    def load_file(file_path: str) -> tuple:
+    def load_file(file_path: str) -> ParserData:
         assert file_path.lower().endswith('dxf')
 
         dxf = dxfgrabber.readfile(file_path)
@@ -28,4 +29,8 @@ class DXFParser:
             faces.append(face_pointers[:3])
 
         # Model data
-        return list(vertices_dict.keys()), faces
+        data = ParserData()
+        data.vertices = list(vertices_dict.keys())
+        data.indices = faces
+
+        return data
