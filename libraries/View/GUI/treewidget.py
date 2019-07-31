@@ -13,7 +13,7 @@ from ..Drawables.pointgl import PointGL
 
 
 class TreeWidget(QTreeWidget):
-    available_values_signal = Signal(int)
+    headers_triggered_signal = Signal(int)
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -54,7 +54,7 @@ class TreeWidget(QTreeWidget):
         action_delete = QAction('&Delete', self)
         action_center_camera = QAction('&Center camera', self)
         action_wireframe = QAction('&Toggle wireframe', self)
-        action_available_values = QAction('&Available values', self)
+        action_headers = QAction('H&eaders', self)
 
         # Icons
         icon = QIcon.fromTheme('show-hidden')
@@ -66,7 +66,7 @@ class TreeWidget(QTreeWidget):
         icon = QIcon.fromTheme('draw-triangle')
         action_wireframe.setIcon(icon)
         icon = QIcon.fromTheme('auto-type')
-        action_available_values.setIcon(icon)
+        action_headers.setIcon(icon)
         icon = QIcon.fromTheme('camera')
         action_center_camera.setIcon(icon)
 
@@ -76,7 +76,7 @@ class TreeWidget(QTreeWidget):
         action_delete.triggered.connect(item.delete)
         action_wireframe.triggered.connect(item.toggle_wireframe)
         action_center_camera.triggered.connect(item.center_camera)
-        action_available_values.triggered.connect(lambda: self.available_values_signal.emit(item.drawable.id))
+        action_headers.triggered.connect(lambda: self.headers_triggered_signal.emit(item.drawable.id))
 
         # Add actions depending on item type
         menu.addAction(action_show)
@@ -86,7 +86,7 @@ class TreeWidget(QTreeWidget):
         if item.type == MeshGL:
             menu.addAction(action_wireframe)
         elif item.type == BlockModelGL or item.type == PointGL:
-            menu.addAction(action_available_values)
+            menu.addAction(action_headers)
 
         menu.addSeparator()
         menu.addAction(action_delete)

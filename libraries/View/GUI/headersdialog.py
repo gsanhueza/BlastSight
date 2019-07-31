@@ -8,22 +8,22 @@ from qtpy.QtWidgets import QDialogButtonBox
 from qtpy import uic
 
 
-class AvailableValuesDialog(QDialog):
+class HeadersDialog(QDialog):
     def __init__(self, parent=None, _id=None):
         QDialog.__init__(self, parent)
 
         # Avoids the QObject::startTimer warning (maybe)
         self.setAttribute(Qt.WA_DeleteOnClose)
 
-        uic.loadUi(f'{pathlib.Path(__file__).parent}/UI/availablevaluesdialog.ui', self)
+        uic.loadUi(f'{pathlib.Path(__file__).parent}/UI/headersdialog.ui', self)
         self.viewer = parent
         self.id = _id
 
         element = self.viewer.get_drawable(self.id).element
-        self.setWindowTitle(f'Set available values ({element.name}.{element.ext})')
+        self.setWindowTitle(f'Set headers ({element.name}.{element.ext})')
 
         # Fill content
-        for i in element.available_value_names:
+        for i in element.available_headers:
             self.comboBox_x.addItem(i)
             self.comboBox_y.addItem(i)
             self.comboBox_z.addItem(i)

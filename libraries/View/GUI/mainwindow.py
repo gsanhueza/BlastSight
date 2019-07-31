@@ -11,7 +11,7 @@ from qtpy.QtWidgets import QFileDialog
 from qtpy.QtWidgets import QMainWindow
 from qtpy.QtWidgets import QMessageBox
 
-from .availablevaluesdialog import AvailableValuesDialog
+from .headersdialog import HeadersDialog
 from .camerapositiondialog import CameraPositionDialog
 from .loadworker import LoadWorker
 
@@ -69,7 +69,7 @@ class MineVis(QMainWindow):
         self.toolbar.action_draw_mode.triggered.connect(self.draw_mode_slot)
         self.toolbar.action_selection_mode.triggered.connect(self.selection_mode_slot)
 
-        self.toolbar.action_camera_position.triggered.connect(self.dialog_camera_position)
+        self.toolbar.action_camera_position.triggered.connect(self.camera_position_dialog)
         self.toolbar.action_plan_view.triggered.connect(self.viewer.plan_view)
         self.toolbar.action_north_view.triggered.connect(self.viewer.north_view)
         self.toolbar.action_east_view.triggered.connect(self.viewer.east_view)
@@ -80,7 +80,7 @@ class MineVis(QMainWindow):
         self.toolbar.action_quit.triggered.connect(self.close)
 
         self.viewer.file_modified_signal.connect(self.fill_tree_widget)
-        self.treeWidget.available_values_signal.connect(self.dialog_available_values)
+        self.treeWidget.headers_triggered_signal.connect(self.headers_dialog)
 
     @property
     def viewer(self):
@@ -101,18 +101,18 @@ class MineVis(QMainWindow):
     def fill_tree_widget(self) -> None:
         self.treeWidget.fill_from_viewer(self.viewer)
 
-    def dialog_available_values(self, id_):
-        dialog = AvailableValuesDialog(self.viewer, id_)
+    def headers_dialog(self, id_):
+        dialog = HeadersDialog(self.viewer, id_)
         dialog.show()
 
-    def dialog_camera_position(self):
+    def camera_position_dialog(self):
         dialog = CameraPositionDialog(self)
         dialog.show()
 
     def _load_element(self, method: classmethod, path: str, auto_load=False) -> None:
         worker = LoadWorker(method, path)
         if auto_load:
-            worker.signals.loaded.connect(self.dialog_available_values)
+            worker.signals.loaded.connect(self.headers_dialog)
 
         self.threadPool.start(worker)
         self.last_dir = QFileInfo(path).absoluteDir().absolutePath()
@@ -144,7 +144,7 @@ class MineVis(QMainWindow):
             if path != '':
                 worker = LoadWorker(method, path)
                 if auto_load:
-                    worker.signals.loaded.connect(self.dialog_available_values)
+                    worker.signals.loaded.connect(self.headers_dialog)
 
                 self.threadPool.start(worker)
 

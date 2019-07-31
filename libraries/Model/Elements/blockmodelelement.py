@@ -45,11 +45,11 @@ class BlockModelElement(Element):
         assert len(self._dataframe) > 0, msg
 
     @property
-    def available_value_names(self) -> list:
+    def available_headers(self) -> list:
         return list(self._dataframe.keys())
 
-    @available_value_names.setter
-    def available_value_names(self, values: list) -> None:
+    @available_headers.setter
+    def available_headers(self, values: list) -> None:
         self.x_str, self.y_str, self.z_str, self.value_str = values
 
     @property
