@@ -29,7 +29,7 @@ class MineVis(QMainWindow):
         self.threadPool = QThreadPool()
 
         # Extra actions
-        self.toolbar.insertAction(self.toolbar.action_plan_view, self.toolbar.action_camera_position)
+        self.toolbar.insertAction(self.toolbar.action_plan_view, self.toolbar.action_camera_properties)
         self.toolbar.addAction(self.toolbar.action_quit)
 
         self.generate_menubar()
@@ -49,7 +49,7 @@ class MineVis(QMainWindow):
         self.menu_View.addAction(self.toolbar.action_draw_mode)
         self.menu_View.addAction(self.toolbar.action_selection_mode)
         self.menu_View.addSeparator()
-        self.menu_View.addAction(self.toolbar.action_camera_position)
+        self.menu_View.addAction(self.toolbar.action_camera_properties)
         self.menu_View.addAction(self.toolbar.action_plan_view)
         self.menu_View.addAction(self.toolbar.action_north_view)
         self.menu_View.addAction(self.toolbar.action_east_view)
@@ -69,7 +69,7 @@ class MineVis(QMainWindow):
         self.toolbar.action_draw_mode.triggered.connect(self.draw_mode_slot)
         self.toolbar.action_selection_mode.triggered.connect(self.selection_mode_slot)
 
-        self.toolbar.action_camera_position.triggered.connect(self.camera_properties_dialog)
+        self.toolbar.action_camera_properties.triggered.connect(self.camera_properties_dialog)
         self.toolbar.action_plan_view.triggered.connect(self.viewer.plan_view)
         self.toolbar.action_north_view.triggered.connect(self.viewer.north_view)
         self.toolbar.action_east_view.triggered.connect(self.viewer.east_view)
