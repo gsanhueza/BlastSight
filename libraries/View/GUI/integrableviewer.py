@@ -219,6 +219,7 @@ class IntegrableViewer(QOpenGLWidget):
     def initializeGL(self) -> None:
         glClearColor(0.0, 0.0, 0.0, 1.0)
         glEnable(GL_VERTEX_PROGRAM_POINT_SIZE)
+        glEnable(GL_POINT_SPRITE)
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
 
     def paintGL(self) -> None:
