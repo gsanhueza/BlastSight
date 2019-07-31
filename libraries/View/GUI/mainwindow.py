@@ -106,7 +106,7 @@ class MineVis(QMainWindow):
         dialog.show()
 
     def camera_properties_dialog(self):
-        dialog = CameraPropertiesDialog(self)
+        dialog = CameraPropertiesDialog(self.viewer)
         dialog.show()
 
     def _load_element(self, method: classmethod, path: str, auto_load=False) -> None:

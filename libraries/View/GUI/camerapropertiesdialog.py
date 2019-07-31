@@ -8,35 +8,31 @@ from qtpy import uic
 
 
 class CameraPropertiesDialog(QDialog):
-    def __init__(self, parent=None, drawable=None):
+    def __init__(self, parent=None):
         QDialog.__init__(self, parent)
+        uic.loadUi(f'{pathlib.Path(__file__).parent}/UI/camerapropertiesdialog.ui', self)
 
         # Avoids the QObject::startTimer warning (maybe)
         self.setAttribute(Qt.WA_DeleteOnClose)
-
-        uic.loadUi(f'{pathlib.Path(__file__).parent}/UI/camerapropertiesdialog.ui', self)
-        self.parent = parent
-        self.drawable = drawable
-
-        self.setWindowTitle(f'Set camera properties')
+        self.viewer = parent
 
     def accept(self):
-        self.parent.viewer.camera_position = [self.doubleSpinBox_x.value(),
-                                              self.doubleSpinBox_y.value(),
-                                              self.doubleSpinBox_z.value()]
-        self.parent.viewer.camera_rotation = [self.doubleSpinBox_rot_x.value(),
-                                              self.doubleSpinBox_rot_y.value(),
-                                              self.doubleSpinBox_rot_z.value()]
-        self.parent.viewer.centroid = [self.doubleSpinBox_center_x.value(),
-                                       self.doubleSpinBox_center_y.value(),
-                                       self.doubleSpinBox_center_z.value()]
+        self.viewer.camera_position = [self.doubleSpinBox_x.value(),
+                                       self.doubleSpinBox_y.value(),
+                                       self.doubleSpinBox_z.value()]
+        self.viewer.camera_rotation = [self.doubleSpinBox_rot_x.value(),
+                                       self.doubleSpinBox_rot_y.value(),
+                                       self.doubleSpinBox_rot_z.value()]
+        self.viewer.centroid = [self.doubleSpinBox_center_x.value(),
+                                self.doubleSpinBox_center_y.value(),
+                                self.doubleSpinBox_center_z.value()]
 
         super().accept()
 
     def show(self):
-        positions = self.parent.viewer.camera_position
-        rotations = self.parent.viewer.camera_rotation
-        centroid = self.parent.viewer.centroid
+        positions = self.viewer.camera_position
+        rotations = self.viewer.camera_rotation
+        centroid = self.viewer.centroid
 
         self.doubleSpinBox_x.setValue(positions[0])
         self.doubleSpinBox_y.setValue(positions[1])

@@ -49,7 +49,7 @@ class Container(QWidget):
         self.viewer.file_modified_signal.connect(self.fill_tree_widget)
 
     def camera_properties_dialog(self):
-        dialog = CameraPropertiesDialog(self)
+        dialog = CameraPropertiesDialog(self.viewer)
         dialog.show()
 
     def fill_tree_widget(self) -> None:
