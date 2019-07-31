@@ -5,7 +5,7 @@ from qtpy.QtWidgets import QWidget
 
 from .GUI.toolbar import ToolBar
 from .GUI.integrableviewer import IntegrableViewer
-from .GUI.camerapositiondialog import CameraPositionDialog
+from .GUI.camerapropertiesdialog import CameraPropertiesDialog
 from .GUI.treewidget import TreeWidget
 from .GUI.treewidgetitem import TreeWidgetItem
 
@@ -44,12 +44,12 @@ class Container(QWidget):
         return self.mainToolBar
 
     def connect_actions(self):
-        self.toolbar.action_camera_position.triggered.connect(self.dialog_camera_position)
+        self.toolbar.action_camera_position.triggered.connect(self.camera_properties_dialog)
         self.toolbar.action_quit.triggered.connect(self.close)
         self.viewer.file_modified_signal.connect(self.fill_tree_widget)
 
-    def dialog_camera_position(self):
-        dialog = CameraPositionDialog(self)
+    def camera_properties_dialog(self):
+        dialog = CameraPropertiesDialog(self)
         dialog.show()
 
     def fill_tree_widget(self) -> None:

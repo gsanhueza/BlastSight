@@ -12,7 +12,7 @@ from qtpy.QtWidgets import QMainWindow
 from qtpy.QtWidgets import QMessageBox
 
 from .headersdialog import HeadersDialog
-from .camerapositiondialog import CameraPositionDialog
+from .camerapropertiesdialog import CameraPropertiesDialog
 from .loadworker import LoadWorker
 
 
@@ -69,7 +69,7 @@ class MineVis(QMainWindow):
         self.toolbar.action_draw_mode.triggered.connect(self.draw_mode_slot)
         self.toolbar.action_selection_mode.triggered.connect(self.selection_mode_slot)
 
-        self.toolbar.action_camera_position.triggered.connect(self.camera_position_dialog)
+        self.toolbar.action_camera_position.triggered.connect(self.camera_properties_dialog)
         self.toolbar.action_plan_view.triggered.connect(self.viewer.plan_view)
         self.toolbar.action_north_view.triggered.connect(self.viewer.north_view)
         self.toolbar.action_east_view.triggered.connect(self.viewer.east_view)
@@ -105,8 +105,8 @@ class MineVis(QMainWindow):
         dialog = HeadersDialog(self.viewer, id_)
         dialog.show()
 
-    def camera_position_dialog(self):
-        dialog = CameraPositionDialog(self)
+    def camera_properties_dialog(self):
+        dialog = CameraPropertiesDialog(self)
         dialog.show()
 
     def _load_element(self, method: classmethod, path: str, auto_load=False) -> None:
