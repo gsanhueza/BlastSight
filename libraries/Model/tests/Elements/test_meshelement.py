@@ -88,3 +88,35 @@ class TestMeshElement:
         expected = [0.0, 1.0, 2.0]
         for i in range(len(expected)):
             assert element.values[i] == expected[i]
+
+    def test_volume(self):
+        # Cube
+        element = MeshElement(vertices=[[-1.0, -1.0, -1.0],
+                                        [+1.0, -1.0, -1.0],
+                                        [-1.0, +1.0, -1.0],
+                                        [+1.0, +1.0, -1.0],
+                                        [-1.0, -1.0, +1.0],
+                                        [+1.0, -1.0, +1.0],
+                                        [-1.0, +1.0, +1.0],
+                                        [+1.0, +1.0, +1.0],
+                                        ],
+                              indices=[[0, 1, 2],
+                                       [2, 1, 3],
+                                       [4, 6, 5],
+                                       [5, 6, 7],
+
+                                       [1, 5, 3],
+                                       [3, 5, 7],
+                                       [0, 2, 4],
+                                       [4, 2, 6],
+
+                                       [2, 3, 6],
+                                       [6, 3, 7],
+                                       [4, 1, 0],
+                                       [4, 5, 1],
+                                       ])
+
+        epsilon = 0.00001
+        volume = element.volume()
+
+        assert abs(volume - 8.0) < epsilon
