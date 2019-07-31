@@ -49,51 +49,21 @@ class MeshElement(Element):
 
     def volume_integral(self):
         # Idea from https://www.geometrictools.com/Documentation/PolyhedralMassProperties.pdf
-        # Taken from https://github.com/mikedh/trimesh/blob/master/trimesh/triangles.py
-        # (Give credit where it's due)
+        # Optimizations taken from https://github.com/mikedh/trimesh/blob/master/trimesh/triangles.py
 
-        # This is fast! But uses more memory
         triangles = self.vertices.view(np.ndarray)[self.indices]
 
         vectors = np.diff(triangles, axis=1)
         crosses = np.cross(vectors[:, 0], vectors[:, 1])
+        del vectors
 
-        # These are the subexpressions of the integral
-        # This is equivalent but 7x faster than triangles.sum(axis=1)
+        # This is equivalent but faster than triangles.sum(axis=1)
         f1 = triangles[:, 0, :] + triangles[:, 1, :] + triangles[:, 2, :]
+        del triangles
 
-        # For the the first vertex of every triangle:
-        # Triangles[:,0,:] will give rows like [[x0, y0, z0], ...]
-
-        # For the x coordinates of every triangle
-        # Triangles[:,:,0] will give rows like [[x0, x1, x2], ...]
-        f2 = (triangles[:, 0, :] ** 2 +
-              triangles[:, 1, :] ** 2 +
-              triangles[:, 0, :] * triangles[:, 1, :] +
-              triangles[:, 2, :] * f1)
-        f3 = ((triangles[:, 0, :] ** 3) +
-              (triangles[:, 0, :] ** 2) * (triangles[:, 1, :]) +
-              (triangles[:, 0, :]) * (triangles[:, 1, :] ** 2) +
-              (triangles[:, 1, :] ** 3) +
-              (triangles[:, 2, :] * f2))
-        g0 = (f2 + (triangles[:, 0, :] + f1) * triangles[:, 0, :])
-        g1 = (f2 + (triangles[:, 1, :] + f1) * triangles[:, 1, :])
-        g2 = (f2 + (triangles[:, 2, :] + f1) * triangles[:, 2, :])
-        integral = np.zeros((10, len(f1)))
-        integral[0] = crosses[:, 0] * f1[:, 0]
-        integral[1:4] = (crosses * f2).T
-        integral[4:7] = (crosses * f3).T
-
-        for i in range(3):
-            triangle_i = np.mod(i + 1, 3)
-            integral[i + 7] = crosses[:, i] * (
-                    (triangles[:, 0, triangle_i] * g0[:, i]) +
-                    (triangles[:, 1, triangle_i] * g1[:, i]) +
-                    (triangles[:, 2, triangle_i] * g2[:, i]))
-
-        coefficients = 1.0 / np.array([6, 24, 24, 24, 60, 60, 60, 120, 120, 120], np.float64)
-        integrated = integral.sum(axis=1) * coefficients
-
-        volume = integrated[0]
+        # Seems very similar to determinant calculation
+        volume = (crosses[:, 0] * f1[:, 0]).sum() / 6.0
+        del crosses
+        del f1
 
         return abs(volume)
