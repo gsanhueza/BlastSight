@@ -7,7 +7,9 @@ from libraries.Model.tests.globals import *
 
 class TestOFFParser:
     def test_load_file(self):
-        [vertices, indices] = Parser.load_file(f'{TEST_FILES_FOLDER_PATH}/caseron.off')
+        info = Parser.load_file(f'{TEST_FILES_FOLDER_PATH}/caseron.off')
+        vertices = info.vertices
+        indices = info.indices
         assert len(vertices) == 12
         assert len(indices) == 20
 

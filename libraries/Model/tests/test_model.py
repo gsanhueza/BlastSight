@@ -12,7 +12,10 @@ class TestModel:
     def test_add_mesh(self):
         model = Model()
         path = f'{TEST_FILES_FOLDER_PATH}/caseron.off'
-        vertices, indices = OFFParser.load_file(path)
+        info = OFFParser.load_file(path)
+        vertices = info.vertices
+        indices = info.indices
+
         x, y, z = zip(*vertices)
 
         mesh_1 = model.mesh(vertices=vertices, indices=indices, name='caseron', ext='off')
@@ -39,7 +42,9 @@ class TestModel:
     def test_get_mesh(self):
         model = Model()
         path = f'{TEST_FILES_FOLDER_PATH}/caseron.off'
-        vertices, indices = OFFParser.load_file(path)
+        info = OFFParser.load_file(path)
+        vertices = info.vertices
+        indices = info.indices
 
         mesh = model.mesh(vertices=vertices, indices=indices)
         mesh_get = model.get(mesh.id)
@@ -51,7 +56,9 @@ class TestModel:
     def test_delete_mesh(self):
         model = Model()
         path = f'{TEST_FILES_FOLDER_PATH}/caseron.off'
-        vertices, indices = OFFParser.load_file(path)
+        info = OFFParser.load_file(path)
+        vertices = info.vertices
+        indices = info.indices
 
         mesh = model.mesh(vertices=vertices, indices=indices)
         id_ = mesh.id
@@ -64,7 +71,8 @@ class TestModel:
     def test_add_block_model(self):
         model = Model()
         path = f'{TEST_FILES_FOLDER_PATH}/mini.csv'
-        data = CSVParser.load_file(path)
+        info = CSVParser.load_file(path)
+        data = info.data
 
         bm_1 = model.block_model(data=data)
         bm_2 = model.block_model(data=data)
@@ -88,7 +96,8 @@ class TestModel:
     def test_get_blockmodel(self):
         model = Model()
         path = f'{TEST_FILES_FOLDER_PATH}/mini.csv'
-        data = CSVParser.load_file(path)
+        info = CSVParser.load_file(path)
+        data = info.data
 
         bm = model.block_model(data=data)
         bm_get = model.get(bm.id)
@@ -100,7 +109,8 @@ class TestModel:
     def test_delete_blockmodel(self):
         model = Model()
         path = f'{TEST_FILES_FOLDER_PATH}/mini.csv'
-        data = CSVParser.load_file(path)
+        info = CSVParser.load_file(path)
+        data = info.data
 
         bm = model.block_model(data=data)
         id_ = bm.id
@@ -199,7 +209,8 @@ class TestModel:
     def test_add_points(self):
         model = Model()
         path = f'{TEST_FILES_FOLDER_PATH}/mini.csv'
-        data = CSVParser.load_file(path)
+        info = CSVParser.load_file(path)
+        data = info.data
 
         bm_1 = model.points(data=data)
         bm_2 = model.points(data=data)
@@ -223,7 +234,8 @@ class TestModel:
     def test_get_points(self):
         model = Model()
         path = f'{TEST_FILES_FOLDER_PATH}/mini.csv'
-        data = CSVParser.load_file(path)
+        info = CSVParser.load_file(path)
+        data = info.data
 
         bm = model.points(data=data)
         bm_get = model.get(bm.id)
@@ -235,7 +247,8 @@ class TestModel:
     def test_delete_points(self):
         model = Model()
         path = f'{TEST_FILES_FOLDER_PATH}/mini.csv'
-        data = CSVParser.load_file(path)
+        info = CSVParser.load_file(path)
+        data = info.data
 
         bm = model.points(data=data)
         id_ = bm.id

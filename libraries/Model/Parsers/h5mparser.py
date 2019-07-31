@@ -1,12 +1,13 @@
 #!/usr/bin/env python
 
 import h5py
+from .parserdata import ParserData
 
 
 # http://tdeboissiere.github.io/h5py-vs-npz.html
 class H5MParser:
     @staticmethod
-    def load_file(file_path: str) -> tuple:
+    def load_file(file_path: str) -> ParserData:
         assert file_path.lower().endswith('.h5m')
 
         hf = h5py.File(file_path, 'r')
@@ -14,7 +15,11 @@ class H5MParser:
         indices = hf['indices'][()]
         hf.close()
 
-        return vertices, indices
+        data = ParserData()
+        data.vertices = vertices
+        data.indices = indices
+
+        return data
 
     @staticmethod
     def save_file(file_path: str, vertices, indices) -> None:

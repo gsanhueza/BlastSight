@@ -8,7 +8,8 @@ from libraries.Model.tests.globals import *
 
 class TestH5PParser:
     def test_load_simple_file(self):
-        data = Parser.load_file(f'{TEST_FILES_FOLDER_PATH}/mini.h5p')
+        info = Parser.load_file(f'{TEST_FILES_FOLDER_PATH}/mini.h5p')
+        data = info.data
         assert data is not None
         assert data['x'] is not None
         assert data['y'] is not None
@@ -19,9 +20,12 @@ class TestH5PParser:
             assert data['abc']
 
     def test_save_file(self):
-        data = Parser.load_file(f'{TEST_FILES_FOLDER_PATH}/mini.h5p')
+        info = Parser.load_file(f'{TEST_FILES_FOLDER_PATH}/mini.h5p')
+        data = info.data
         Parser.save_file(f'{TEST_FILES_FOLDER_PATH}/mini_save.h5p', data)
-        data_s = Parser.load_file(f'{TEST_FILES_FOLDER_PATH}/mini_save.h5p')
+
+        info_s = Parser.load_file(f'{TEST_FILES_FOLDER_PATH}/mini_save.h5p')
+        data_s = info_s.data
 
         for k, k_s in zip(data.keys(), data_s.keys()):
             assert k == k_s
@@ -46,7 +50,8 @@ class TestH5PParser:
             Parser.load_file(f'{TEST_FILES_FOLDER_PATH}/bad.h5p')
 
     def test_load_complex_file(self):
-        data = Parser.load_file(f'{TEST_FILES_FOLDER_PATH}/complex.h5p')
+        info = Parser.load_file(f'{TEST_FILES_FOLDER_PATH}/complex.h5p')
+        data = info.data
         assert data is not None
         assert data['x'] is not None
         assert data['y'] is not None
