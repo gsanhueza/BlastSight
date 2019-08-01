@@ -12,6 +12,7 @@ from qtpy.QtWidgets import QOpenGLWidget
 from qtpy.QtGui import QRegion, QPixmap
 from qtpy.QtGui import QMatrix4x4
 from qtpy.QtGui import QVector3D
+from qtpy.QtGui import QVector4D
 
 from ..Drawables.gldrawablecollection import GLDrawableCollection
 
@@ -272,13 +273,19 @@ class IntegrableViewer(QOpenGLWidget):
         print(f'               \r', end='')
         print(f'FPS: {fps:.1f}\r', end='')
 
+    def unproject(self, _x, _y, _z, model, view, proj) -> QVector3D:
+        # Adapted from http://antongerdelan.net/opengl/raycasting.html
+        x = (2.0 * _x / self.width()) - 1.0
+        y = 1.0 - (2.0 * _y / self.height())
+
+        ray_eye = proj.inverted()[0] * QVector4D(x, y, -1.0, 1.0)
+        ray_eye = QVector4D(ray_eye.x(), ray_eye.y(), -1.0, 0.0)
+
+        ray_world = ((view * model).inverted()[0] * ray_eye).toVector3D()
+        return ray_world.normalized()
+
     def detect_intersection(self, x: float, y: float, z: float) -> None:
-        # For more info, read http://antongerdelan.net/opengl/raycasting.html
-        y = self.height() - y  # Qt's y() to OpenGL's y()
-
-        ray = QVector3D(x, y, z).unproject((self.camera * self.world), self.proj,
-                                           QRect(0, 0, self.width(), self.height())).normalized()
-
+        ray = self.unproject(x, y, z, self.world, self.camera, self.proj)
         ray_origin = (self.camera * self.world).inverted()[0].column(3).toVector3D()
 
         # To Numpy array
