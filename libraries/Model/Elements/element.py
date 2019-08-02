@@ -42,7 +42,7 @@ class Element:
     def _fill_as_vertices(self, msg, *args, **kwargs):
         assert 'vertices' in kwargs.keys(), msg
 
-        self.vertices = np.array(kwargs.get('vertices', []), np.float32)
+        self.vertices = kwargs.get('vertices', [])
 
     def _fill_as_xyz(self, msg, *args, **kwargs):
         assert 'x' in kwargs.keys(), msg

@@ -117,30 +117,30 @@ class MineVis(QMainWindow):
         self.threadPool.start(worker)
         self.last_dir = QFileInfo(path).absoluteDir().absolutePath()
 
-    def load_mesh(self, file_path: str) -> None:
+    def load_mesh(self, path: str) -> None:
         self._load_element(method=self.viewer.mesh_by_path,
-                           path=file_path)
+                           path=path)
 
-    def load_block_model(self, file_path: str) -> None:
+    def load_block_model(self, path: str) -> None:
         self._load_element(method=self.viewer.block_model_by_path,
-                           path=file_path,
+                           path=path,
                            auto_load=True)
 
-    def load_points(self, file_path: str) -> None:
+    def load_points(self, path: str) -> None:
         self._load_element(method=self.viewer.points_by_path,
-                           path=file_path,
+                           path=path,
                            auto_load=True)
 
     """
     Slots. Unless explicitly otherwise, slots are connected via Qt Designer
     """
     def _load_element_slot(self, method: classmethod, filters: str, auto_load=False) -> None:
-        (file_paths, selected_filter) = QFileDialog.getOpenFileNames(
+        (paths, selected_filter) = QFileDialog.getOpenFileNames(
             parent=self,
             directory=self.last_dir,
             filter=filters)
 
-        for path in file_paths:
+        for path in paths:
             if path != '':
                 worker = LoadWorker(method, path)
                 if auto_load:

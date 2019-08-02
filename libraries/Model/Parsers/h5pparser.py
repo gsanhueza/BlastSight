@@ -1,19 +1,28 @@
 #!/usr/bin/env python
 
 import pandas as pd
+from qtpy.QtCore import QFileInfo
 from .parserdata import ParserData
 
 
 class H5PParser:
     @staticmethod
-    def load_file(file_path: str) -> ParserData:
-        assert file_path.lower().endswith('.h5p')
+    def load_file(path: str) -> ParserData:
+        assert path.lower().endswith('.h5p')
+
+        # Metadata
+        properties = {
+            'name': QFileInfo(path).baseName(),
+            'ext': QFileInfo(path).suffix()
+        }
+
         data = ParserData()
-        data.data = pd.read_hdf(file_path, 'data')
+        data.data = pd.read_hdf(path, 'data')
+        data.properties = properties
 
         return data
 
     @staticmethod
-    def save_file(file_path: str, data) -> None:
-        path = file_path if file_path.endswith('.h5p') else f'{file_path}.h5p'
+    def save_file(path: str, data) -> None:
+        path = path if path.endswith('.h5p') else f'{path}.h5p'
         data.to_hdf(path, 'data')
