@@ -8,12 +8,13 @@ from .element import Element
 
 class MeshElement(Element):
     def __init__(self, *args, **kwargs):
-        self._indices: np.ndarray = np.array([], np.float32)
+        self._indices = None
+        self._color = None
 
         super().__init__(*args, **kwargs)
 
         self.indices = kwargs.get('indices', [])
-        self.values = kwargs.get('color', list(map(lambda x: random(), range(3))))
+        self.color = kwargs.get('color', [random() for _ in range(3)])
 
         assert self.x.size == self.indices.max() + 1
 
@@ -24,6 +25,18 @@ class MeshElement(Element):
     @indices.setter
     def indices(self, indices):
         self._indices = np.array(indices, np.uint32)  # GL_UNSIGNED_INT = np.uint32
+
+    @property
+    def color(self) -> np.array:
+        return self._color
+
+    @color.setter
+    def color(self, val):
+        self._color = np.array(val, np.float32)
+
+    @property
+    def rgba(self):
+        return np.append(self.color, self.alpha)
 
     def volume(self):
         # Idea from https://www.geometrictools.com/Documentation/PolyhedralMassProperties.pdf

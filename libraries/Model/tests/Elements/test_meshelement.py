@@ -76,18 +76,24 @@ class TestMeshElement:
         for i in range(len(expected)):
             assert element.centroid[i] == expected[i]
 
-    def test_set_values(self):
+    def test_set_color(self):
         element = MeshElement(x=[-1, 1, 0], y=[0, 0, 3], z=[0, 0, 0], indices=[[0, 1, 2]])
-        assert element.values.size == 3
-        assert type(element.values[0]) == np.float32
+        assert element.color.size == 3
+        assert type(element.color[0]) == np.float32
 
-        element.values = [0, 1, 2]
-        assert element.values.size == 3
-        assert type(element.values[0]) == np.float32
+        element.color = [0, 1, 2]
+        assert element.color.size == 3
+        assert type(element.color[0]) == np.float32
 
+        # Color = RGB
         expected = [0.0, 1.0, 2.0]
         for i in range(len(expected)):
-            assert element.values[i] == expected[i]
+            assert element.color[i] == expected[i]
+
+        # RGBA
+        expected = [0.0, 1.0, 2.0, 1.0]
+        for i in range(len(expected)):
+            assert element.rgba[i] == expected[i]
 
     def test_volume(self):
         # Cube

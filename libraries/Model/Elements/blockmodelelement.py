@@ -9,10 +9,19 @@ class BlockModelElement(Element):
         self._dataframe = None
         self._size = None
 
+        self.value_str: str = 'values'
         self.vmin = 0.0
         self.vmax = 1.0
 
         super().__init__(*args, **kwargs)
+
+    @property
+    def values(self) -> np.ndarray:
+        return self.data.get(self.value_str, np.empty(0))
+
+    @values.setter
+    def values(self, val):
+        self.data[self.value_str] = np.array(val, np.float32)
 
     def _fill_element(self, *args, **kwargs):
         msg = f'Must pass ["x", "y", "z", "values"], ["vertices", "values"] or ["data"] ' \

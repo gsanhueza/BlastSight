@@ -10,7 +10,6 @@ class Element:
         self.x_str: str = 'x'
         self.y_str: str = 'y'
         self.z_str: str = 'z'
-        self.value_str: str = 'values'
 
         # Metadata
         self._id: int = None
@@ -91,14 +90,6 @@ class Element:
     @vertices.setter
     def vertices(self, vertices: list) -> None:
         self.x, self.y, self.z = np.array(vertices, np.float32).T
-
-    @property
-    def values(self) -> np.ndarray:
-        return self.data.get(self.value_str, np.empty(0))
-
-    @values.setter
-    def values(self, val):
-        self.data[self.value_str] = np.array(val, np.float32)
 
     @property
     def data(self) -> dict:

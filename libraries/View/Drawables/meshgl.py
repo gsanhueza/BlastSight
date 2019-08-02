@@ -36,8 +36,7 @@ class MeshGL(GLDrawable):
         # Data
         vertices = self.element.vertices
         indices = self.element.indices
-        colors = np.array(np.tile(np.append(self.element.values, self.element.alpha),
-                                  vertices.size // 3), np.float32)
+        colors = np.array(np.tile(self.element.rgba, vertices.size // 3), np.float32)
 
         self.indices_size = indices.size
 
