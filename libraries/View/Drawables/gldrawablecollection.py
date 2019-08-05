@@ -26,14 +26,14 @@ class GLDrawableCollection(OrderedDict):
         super().__init__()
         self.programs = OrderedDict()
 
-        self.programs['mesh'] = MeshProgram(widget)
-        self.programs['wireframe'] = WireframeProgram(widget)
-        self.programs['blockmodel'] = BlockModelProgram(widget)
-        self.programs['line'] = LineProgram(widget)
-        self.programs['point'] = PointProgram(widget)
-        self.programs['tube'] = TubeProgram(widget)
-        self.programs['bg'] = BackgroundProgram(widget)
-        self.programs['axis'] = AxisProgram(widget)
+        self.programs['bg'] = BackgroundProgram(widget), (lambda: self.background)
+        self.programs['axis'] = AxisProgram(widget), (lambda: self.axis)
+        self.programs['blockmodel'] = BlockModelProgram(widget), (lambda: self.block_models)
+        self.programs['line'] = LineProgram(widget), (lambda: self.lines)
+        self.programs['tube'] = TubeProgram(widget), (lambda: self.tubes)
+        self.programs['point'] = PointProgram(widget), (lambda: self.points)
+        self.programs['mesh'] = MeshProgram(widget), (lambda: self.normal_meshes)
+        self.programs['wireframe'] = WireframeProgram(widget), (lambda: self.wireframe_meshes)
 
     def add(self, drawable: GLDrawable) -> None:
         self[drawable.id] = drawable
@@ -43,25 +43,14 @@ class GLDrawableCollection(OrderedDict):
         del self[id_]
 
     def draw(self, proj_matrix, view_matrix, model_matrix) -> None:
-        types = OrderedDict()
+        for k, v in self.programs.items():
+            self.programs[k][0].setup()
+            self.programs[k][0].bind()
 
-        types['bg'] = self.background
-        types['axis'] = self.axis
-        types['tube'] = self.tubes
-        types['wireframe'] = self.wireframe_meshes
-        types['line'] = self.lines
-        types['point'] = self.points
-        types['mesh'] = self.normal_meshes
-        types['blockmodel'] = self.block_models
-
-        for k, v in types.items():
-            self.programs[k].setup()
-            self.programs[k].bind()
-
-            self.programs[k].update_uniform('proj_matrix', proj_matrix)
-            self.programs[k].update_uniform('model_view_matrix', view_matrix * model_matrix)
-            self.programs[k].set_drawables(v)
-            self.programs[k].draw()
+            self.programs[k][0].update_uniform('proj_matrix', proj_matrix)
+            self.programs[k][0].update_uniform('model_view_matrix', view_matrix * model_matrix)
+            self.programs[k][0].set_drawables(self.programs[k][1]())
+            self.programs[k][0].draw()
 
     def filter(self, drawable_type):
         return list(filter(lambda x: isinstance(x, drawable_type), super().values()))
