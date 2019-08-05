@@ -20,5 +20,12 @@ class MeshProgram(ShaderProgram):
         self.shader_program.link()
 
     def draw(self):
+        # Opaque
         for drawable in self.drawables:
-            drawable.draw()
+            if drawable.element.alpha > 0.99:
+                drawable.draw()
+
+        # Transparent
+        for drawable in self.drawables:
+            if drawable.element.alpha < 0.99:
+                drawable.draw()
