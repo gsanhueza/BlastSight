@@ -47,7 +47,6 @@ class MineVis(QMainWindow):
         self.menu_File.addAction(self.toolbar.action_quit)
 
         self.menu_View.addAction(self.toolbar.action_normal_mode)
-        self.menu_View.addAction(self.toolbar.action_draw_mode)
         self.menu_View.addAction(self.toolbar.action_selection_mode)
         self.menu_View.addSeparator()
         self.menu_View.addAction(self.toolbar.action_camera_properties)
@@ -67,7 +66,6 @@ class MineVis(QMainWindow):
         self.toolbar.action_quit.triggered.connect(self.close)
 
         self.toolbar.action_normal_mode.triggered.connect(self.normal_mode_slot)
-        self.toolbar.action_draw_mode.triggered.connect(self.draw_mode_slot)
         self.toolbar.action_selection_mode.triggered.connect(self.selection_mode_slot)
 
         self.toolbar.action_camera_properties.triggered.connect(self.camera_properties_dialog)

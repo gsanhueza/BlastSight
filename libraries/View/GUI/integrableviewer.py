@@ -5,7 +5,7 @@ import numpy as np
 import traceback
 
 from OpenGL.GL import *
-from qtpy.QtCore import QRect, Signal, QPoint
+from qtpy.QtCore import Signal, QPoint
 from qtpy.QtCore import QFileInfo, QDirIterator
 from qtpy.QtCore import QThreadPool
 from qtpy.QtWidgets import QOpenGLWidget
@@ -27,7 +27,6 @@ from ..Drawables.axisgl import AxisGL
 from ..fpscounter import FPSCounter
 
 from ...Controller.normalmode import NormalMode
-from ...Controller.drawmode import DrawMode
 from ...Controller.selectionmode import SelectionMode
 
 from ...Model.model import Model
@@ -301,10 +300,6 @@ class IntegrableViewer(QOpenGLWidget):
     """
     def set_normal_mode(self) -> None:
         self.current_mode = NormalMode()
-        self.update()
-
-    def set_draw_mode(self) -> None:
-        self.current_mode = DrawMode()
         self.update()
 
     def set_selection_mode(self) -> None:
