@@ -14,6 +14,7 @@ from ..Drawables.pointgl import PointGL
 
 class TreeWidget(QTreeWidget):
     headers_triggered_signal = Signal(int)
+    colors_triggered_signal = Signal(int)
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -55,6 +56,7 @@ class TreeWidget(QTreeWidget):
         action_center_camera = QAction('&Center camera', self)
         action_wireframe = QAction('&Toggle wireframe', self)
         action_headers = QAction('H&eaders', self)
+        action_colors = QAction('C&olors', self)
 
         # Icons
         icon = QIcon.fromTheme('show-hidden')
@@ -69,6 +71,8 @@ class TreeWidget(QTreeWidget):
         action_headers.setIcon(icon)
         icon = QIcon.fromTheme('camera')
         action_center_camera.setIcon(icon)
+        icon = QIcon.fromTheme('colormanagement')
+        action_colors.setIcon(icon)
 
         # Action commands
         action_show.triggered.connect(item.show)
@@ -77,6 +81,7 @@ class TreeWidget(QTreeWidget):
         action_wireframe.triggered.connect(item.toggle_wireframe)
         action_center_camera.triggered.connect(item.center_camera)
         action_headers.triggered.connect(lambda: self.headers_triggered_signal.emit(item.drawable.id))
+        action_colors.triggered.connect(lambda: self.colors_triggered_signal.emit(item.drawable.id))
 
         # Add actions depending on item type
         menu.addAction(action_show)
@@ -85,6 +90,7 @@ class TreeWidget(QTreeWidget):
 
         if item.type == MeshGL:
             menu.addAction(action_wireframe)
+            menu.addAction(action_colors)
         elif item.type == BlockModelGL or item.type == PointGL:
             menu.addAction(action_headers)
 

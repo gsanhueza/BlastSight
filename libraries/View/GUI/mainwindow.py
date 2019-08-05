@@ -11,8 +11,9 @@ from qtpy.QtWidgets import QFileDialog
 from qtpy.QtWidgets import QMainWindow
 from qtpy.QtWidgets import QMessageBox
 
-from .headersdialog import HeadersDialog
 from .camerapropertiesdialog import CameraPropertiesDialog
+from .headersdialog import HeadersDialog
+from .colordialog import ColorDialog
 from .loadworker import LoadWorker
 
 
@@ -79,8 +80,10 @@ class MineVis(QMainWindow):
         self.toolbar.action_help.triggered.connect(self.help_slot)
         self.toolbar.action_quit.triggered.connect(self.close)
 
+        # External widgets
         self.viewer.file_modified_signal.connect(self.fill_tree_widget)
         self.treeWidget.headers_triggered_signal.connect(self.headers_dialog)
+        self.treeWidget.colors_triggered_signal.connect(self.color_dialog)
 
     @property
     def viewer(self):
@@ -103,6 +106,10 @@ class MineVis(QMainWindow):
 
     def headers_dialog(self, id_):
         dialog = HeadersDialog(self.viewer, id_)
+        dialog.show()
+
+    def color_dialog(self, id_):
+        dialog = ColorDialog(self.viewer, id_)
         dialog.show()
 
     def camera_properties_dialog(self):

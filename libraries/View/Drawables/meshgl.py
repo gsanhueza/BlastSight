@@ -30,8 +30,11 @@ class MeshGL(GLDrawable):
         _POSITION = 0
         _COLOR = 1
 
-        self.vao = glGenVertexArrays(1)
-        self.vbos = glGenBuffers(3)
+        if self.vao is None:
+            self.vao = glGenVertexArrays(1)
+            self.vbos = glGenBuffers(3)
+        else:
+            glDeleteBuffers(len(self.vbos), self.vbos)
 
         # Data
         vertices = self.element.vertices
@@ -40,6 +43,7 @@ class MeshGL(GLDrawable):
 
         self.indices_size = indices.size
 
+        self.widget.makeCurrent()
         glBindVertexArray(self.vao)
 
         glBindBuffer(GL_ARRAY_BUFFER, self.vbos[0])
