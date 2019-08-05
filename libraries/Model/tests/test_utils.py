@@ -9,12 +9,15 @@ class TestUtils:
                      [1.0, 0.0, 0.0],
                      [0.0, 1.0, 0.0],
                      [0.0, -1.0, 0.0]], np.float32)
-    triangle = np.array([mesh[0], mesh[1], mesh[2]], np.float32)
-    triangle_low = np.array([mesh[0], mesh[3], mesh[1]], np.float32)
+
+    triangle = mesh.view(np.ndarray)[[0, 1, 2]]
+    triangle_low = mesh.view(np.ndarray)[[0, 3, 1]]
+    triangle_degenerate = mesh.view(np.ndarray)[[0, 0, 0]]
 
     mesh_element = MeshElement(vertices=mesh, indices=[[0, 1, 2], [0, 3, 1]])
 
     origin = np.array([0.0, 0.5, 10.0], np.float32)
+    origin_low = np.array([0.0, -0.1, 1.0], np.float32)
     origin_translated = np.array([10.0, 0.5, 10.0], np.float32)
 
     ray = np.array([0.0, 0.0, -1.0], np.float32)
@@ -35,7 +38,8 @@ class TestUtils:
         assert triangle_intersection(self.origin, self.ray, self.triangle)
         assert not triangle_intersection(self.origin, self.ray_reversed, self.triangle)
         assert not triangle_intersection(self.origin, self.ray_low, self.triangle_low)
-        assert not mesh_intersection(self.origin, self.ray_perpendicular, self.mesh_element)
         assert not triangle_intersection(self.origin, self.ray_low, self.triangle)
         assert not triangle_intersection(self.origin_translated, self.ray, self.triangle)
         assert not triangle_intersection(self.origin, self.ray_oblique, self.triangle)
+        assert not triangle_intersection(self.origin, self.ray, self.triangle_degenerate)
+        assert not triangle_intersection(self.origin_low, self.ray, self.triangle)
