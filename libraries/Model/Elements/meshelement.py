@@ -26,18 +26,6 @@ class MeshElement(Element):
     def indices(self, indices):
         self._indices = np.array(indices, np.uint32)  # GL_UNSIGNED_INT = np.uint32
 
-    @property
-    def color(self) -> np.array:
-        return self._color
-
-    @color.setter
-    def color(self, val):
-        self._color = np.array(val, np.float32)
-
-    @property
-    def rgba(self):
-        return np.append(self.color, self.alpha)
-
     def volume(self):
         # Idea from https://www.geometrictools.com/Documentation/PolyhedralMassProperties.pdf
         # Optimizations taken from https://github.com/mikedh/trimesh/blob/master/trimesh/triangles.py

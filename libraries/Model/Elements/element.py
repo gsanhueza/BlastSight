@@ -96,16 +96,16 @@ class Element:
         return self._data
 
     @property
+    def centroid(self) -> np.ndarray:
+        return np.array([self.x.mean(), self.y.mean(), self.z.mean()])
+
+    @property
     def id(self) -> int:
         return self._id
 
     @id.setter
     def id(self, _id: int) -> None:
         self._id = _id
-
-    @property
-    def centroid(self) -> np.ndarray:
-        return np.array([self.x.mean(), self.y.mean(), self.z.mean()])
 
     """
     Metadata
@@ -127,9 +127,21 @@ class Element:
         self._properties['ext'] = ext
 
     @property
+    def color(self) -> np.array:
+        return self._color
+
+    @color.setter
+    def color(self, val):
+        self._color = np.array(val, np.float32)
+
+    @property
     def alpha(self):
         return self._properties.get('alpha', 1.0)
 
     @alpha.setter
     def alpha(self, val):
         self._properties['alpha'] = val
+
+    @property
+    def rgba(self):
+        return np.append(self.color, self.alpha)

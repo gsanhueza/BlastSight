@@ -23,12 +23,13 @@ class TubeGL(GLDrawable):
 
         # Data
         vertices = self.element.vertices
-        self.vertices_size = vertices.size
-        colors = np.array(np.tile(np.append(self.element.color, self.element.alpha),
-                                  vertices.size // 3), np.float32)
 
-        properties = np.array(np.tile(np.append(self.element.radius, self.element.resolution),
-                                      vertices.size // 3), np.float32)
+        # np.array([[0, 1, 2]], type) has size 3, despite having only 1 list there
+        self.vertices_size = vertices.size // 3
+
+        colors = np.array(np.tile(self.element.rgba, self.vertices_size), np.float32)
+        properties = np.array(np.tile(
+            np.append(self.element.radius, self.element.resolution), self.vertices_size), np.float32)
 
         glBindVertexArray(self.vao)
 
@@ -56,6 +57,5 @@ class TubeGL(GLDrawable):
             return
 
         glBindVertexArray(self.vao)
-        # np.array([[0, 1, 2]], type) has size 3, despite having only 1 list there
-        glDrawArrays(GL_LINE_STRIP, 0, self.vertices_size // 3)
+        glDrawArrays(GL_LINE_STRIP, 0, self.vertices_size)
         glBindVertexArray(0)
