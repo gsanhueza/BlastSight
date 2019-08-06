@@ -65,7 +65,7 @@ class Element:
 
     @x.setter
     def x(self, val):
-        self.data[self.x_str] = np.array(val, np.float32)
+        self.data[self.x_str] = np.array(val)
 
     @property
     def y(self):
@@ -73,7 +73,7 @@ class Element:
 
     @y.setter
     def y(self, val):
-        self.data[self.y_str] = np.array(val, np.float32)
+        self.data[self.y_str] = np.array(val)
 
     @property
     def z(self):
@@ -81,7 +81,7 @@ class Element:
 
     @z.setter
     def z(self, val):
-        self.data[self.z_str] = np.array(val, np.float32)
+        self.data[self.z_str] = np.array(val)
 
     @property
     def vertices(self) -> np.ndarray:
@@ -89,7 +89,7 @@ class Element:
 
     @vertices.setter
     def vertices(self, vertices: list) -> None:
-        self.x, self.y, self.z = np.array(vertices, np.float32).T
+        self.x, self.y, self.z = np.array(vertices).T
 
     @property
     def data(self) -> dict:
@@ -132,7 +132,7 @@ class Element:
 
     @color.setter
     def color(self, val):
-        self._color = np.array(val, np.float32)
+        self._color = np.array(val)
 
     @property
     def alpha(self):
@@ -144,4 +144,4 @@ class Element:
 
     @property
     def rgba(self):
-        return np.array(np.append(self.color, self.alpha), np.float32)
+        return np.array(np.append(self.color, self.alpha))

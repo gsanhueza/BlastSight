@@ -19,4 +19,4 @@ class LineElement(Element):
 
     @color.setter
     def color(self, color: list) -> None:
-        self._values = np.array(color, np.float32)
+        self._values = np.array(color)

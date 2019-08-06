@@ -22,9 +22,9 @@ class TubeGL(GLDrawable):
         self.vbos = glGenBuffers(3)
 
         # Data
-        vertices = self.element.vertices
-        colors = self.element.rgba
-        properties = np.array(np.append(self.element.radius, self.element.resolution), np.float32)
+        vertices = self.element.vertices.astype(np.float32)
+        colors = self.element.rgba.astype(np.float32)
+        properties = np.append(self.element.radius, self.element.resolution).astype(np.float32)
 
         # np.array([[0, 1, 2]], type) has size 3, despite having only 1 list there
         self.vertices_size = vertices.size // 3

@@ -8,7 +8,7 @@ class TestUtils:
     mesh = np.array([[-1.0, 0.0, 0.0],
                      [1.0, 0.0, 0.0],
                      [0.0, 1.0, 0.0],
-                     [0.0, -1.0, 0.0]], np.float32)
+                     [0.0, -1.0, 0.0]])
 
     triangle = mesh.view(np.ndarray)[[0, 1, 2]]
     triangle_low = mesh.view(np.ndarray)[[0, 3, 1]]
@@ -16,15 +16,15 @@ class TestUtils:
 
     mesh_element = MeshElement(vertices=mesh, indices=[[0, 1, 2], [0, 3, 1]])
 
-    origin = np.array([0.0, 0.5, 10.0], np.float32)
-    origin_low = np.array([0.0, -0.1, 1.0], np.float32)
-    origin_translated = np.array([10.0, 0.5, 10.0], np.float32)
+    origin = np.array([0.0, 0.5, 10.0])
+    origin_low = np.array([0.0, -0.1, 1.0])
+    origin_translated = np.array([10.0, 0.5, 10.0])
 
-    ray = np.array([0.0, 0.0, -1.0], np.float32)
-    ray_reversed = np.array([0.0, 0.0, 1.0], np.float32)
-    ray_oblique = np.array([0.6, 0.0, -0.8], np.float32)
-    ray_low = np.array([0.0, 0.8, -0.9], np.float32)
-    ray_perpendicular = np.array([1.0, 0.0, 0.0], np.float32)
+    ray = np.array([0.0, 0.0, -1.0])
+    ray_reversed = np.array([0.0, 0.0, 1.0])
+    ray_oblique = np.array([0.6, 0.0, -0.8])
+    ray_low = np.array([0.0, 0.8, -0.9])
+    ray_perpendicular = np.array([1.0, 0.0, 0.0])
 
     def test_mesh_intersection(self):
         assert mesh_intersection(self.origin, self.ray, self.mesh_element)

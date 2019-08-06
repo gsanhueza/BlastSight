@@ -21,7 +21,7 @@ class BlockModelElement(Element):
 
     @values.setter
     def values(self, val):
-        self.data[self.value_str] = np.array(val, np.float32)
+        self.data[self.value_str] = np.array(val)
 
     def _fill_element(self, *args, **kwargs):
         msg = f'Must pass ["x", "y", "z", "values"], ["vertices", "values"] or ["data"] ' \
@@ -41,7 +41,7 @@ class BlockModelElement(Element):
         self.block_size = kwargs.get('block_size', [1.0, 1.0, 1.0])
 
     def _fill_as_values(self, *args, **kwargs):
-        self.values = np.array(kwargs.get('values', []), np.float32)
+        self.values = np.array(kwargs.get('values', []))
         self.vmin = kwargs.get('vmin', self.values.min())
         self.vmax = kwargs.get('vmax', self.values.max())
 
@@ -67,7 +67,7 @@ class BlockModelElement(Element):
 
     @block_size.setter
     def block_size(self, size) -> None:
-        self._size = np.array(size, np.float32)
+        self._size = np.array(size)
 
     def update_values(self):
         self._data.clear()

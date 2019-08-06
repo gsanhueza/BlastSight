@@ -79,11 +79,9 @@ class TestMeshElement:
     def test_set_color(self):
         element = MeshElement(x=[-1, 1, 0], y=[0, 0, 3], z=[0, 0, 0], indices=[[0, 1, 2]])
         assert element.color.size == 3
-        assert type(element.color[0]) == np.float32
 
         element.color = [0, 1, 2]
         assert element.color.size == 3
-        assert type(element.color[0]) == np.float32
 
         # Color = RGB
         expected = [0.0, 1.0, 2.0]

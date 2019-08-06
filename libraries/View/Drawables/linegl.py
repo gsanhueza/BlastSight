@@ -20,8 +20,8 @@ class LineGL(GLDrawable):
         self.vbos = glGenBuffers(2)
 
         # Data
-        vertices = self.element.vertices
-        colors = self.element.rgba
+        vertices = self.element.vertices.astype(np.float32)
+        colors = self.element.rgba.astype(np.float32)
 
         # np.array([[0, 1, 2]], type) has size 3, despite having only 1 list there
         self.vertices_size = vertices.size // 3

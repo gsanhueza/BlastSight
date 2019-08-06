@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+import numpy as np
+
 from .gldrawable import GLDrawable
 from OpenGL.GL import *
 
@@ -25,8 +27,8 @@ class PointGL(GLDrawable):
             glDeleteBuffers(len(self.vbos), self.vbos)
 
         # Data
-        vertices = self.element.vertices
-        values = self.element.values
+        vertices = self.element.vertices.astype(np.float32)
+        values = self.element.values.astype(np.float32)
 
         self.values_size = values.size
 

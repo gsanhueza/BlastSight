@@ -11,10 +11,10 @@ class BlockModelGL(GLDrawable):
         super().__init__(widget, element)
 
         # Sizes
-        self.values_size = 0
-        self.block_size = self.element.block_size
         self.min_val = element.vmin
         self.max_val = element.vmax
+        self.values_size = 0
+        self.block_size = self.element.block_size.astype(np.float32)
 
     def setup_attributes(self) -> None:
         _POSITION = 0
@@ -27,8 +27,8 @@ class BlockModelGL(GLDrawable):
             glDeleteBuffers(len(self.vbos), self.vbos)
 
         # Data
-        vertices = self.element.vertices
-        values = self.element.values
+        vertices = self.element.vertices.astype(np.float32)
+        values = self.element.values.astype(np.float32)
 
         self.values_size = values.size
 

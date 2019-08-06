@@ -37,9 +37,9 @@ class MeshGL(GLDrawable):
             glDeleteBuffers(len(self.vbos), self.vbos)
 
         # Data
-        vertices = self.element.vertices
-        indices = self.element.indices
-        colors = self.element.rgba
+        vertices = self.element.vertices.astype(np.float32)
+        indices = self.element.indices.astype(np.uint32)
+        colors = self.element.rgba.astype(np.float32)
 
         self.indices_size = indices.size
 
