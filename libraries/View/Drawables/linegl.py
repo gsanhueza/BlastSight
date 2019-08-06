@@ -21,7 +21,7 @@ class LineGL(GLDrawable):
 
         # Data
         vertices = self.element.vertices
-        colors = np.array(np.tile(self.element.rgba, vertices.size), np.float32)
+        colors = self.element.rgba
 
         # np.array([[0, 1, 2]], type) has size 3, despite having only 1 list there
         self.vertices_size = vertices.size // 3
@@ -35,6 +35,8 @@ class LineGL(GLDrawable):
         glBindBuffer(GL_ARRAY_BUFFER, self.vbos[1])
         glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * colors.size, colors, GL_STATIC_DRAW)
         glVertexAttribPointer(_COLOR, 4, GL_FLOAT, False, 0, None)
+
+        glVertexAttribDivisor(_COLOR, 1)
 
         glEnableVertexAttribArray(_POSITION)
         glEnableVertexAttribArray(_COLOR)

@@ -144,4 +144,4 @@ class Element:
 
     @property
     def rgba(self):
-        return np.append(self.color, self.alpha)
+        return np.array(np.append(self.color, self.alpha), np.float32)

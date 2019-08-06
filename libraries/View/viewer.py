@@ -27,3 +27,5 @@ class Viewer(IntegrableViewer):
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_Delete and self.last_id >= 0:
             self.delete(self.last_id)
+        elif event.key() == Qt.Key_T:
+            self.take_screenshot()

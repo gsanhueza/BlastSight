@@ -39,7 +39,7 @@ class MeshGL(GLDrawable):
         # Data
         vertices = self.element.vertices
         indices = self.element.indices
-        colors = np.array(np.tile(self.element.rgba, vertices.size // 3), np.float32)
+        colors = self.element.rgba
 
         self.indices_size = indices.size
 
@@ -56,6 +56,10 @@ class MeshGL(GLDrawable):
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, self.vbos[2])
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices, GL_STATIC_DRAW)
+
+        # The attribute advances once per divisor instances of the set(s) of vertices being rendered
+        # And guess what, we have just 1 instance, exactly what we wanted!
+        glVertexAttribDivisor(_COLOR, 1)
 
         glEnableVertexAttribArray(_POSITION)
         glEnableVertexAttribArray(_COLOR)
