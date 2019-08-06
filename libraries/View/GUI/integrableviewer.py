@@ -220,12 +220,13 @@ class IntegrableViewer(QOpenGLWidget):
         glClearColor(0.0, 0.0, 0.0, 1.0)
         glEnable(GL_VERTEX_PROGRAM_POINT_SIZE)
         glEnable(GL_POINT_SPRITE)
+        glDisable(GL_CULL_FACE)
+        glEnable(GL_DEPTH_TEST)
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
 
     def paintGL(self) -> None:
         # Clear screen
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-        glDisable(GL_CULL_FACE)
 
         self.world.setToIdentity()
         self.camera.setToIdentity()
@@ -347,5 +348,9 @@ class IntegrableViewer(QOpenGLWidget):
 
     def _load_as_dir(self, path):
         it = QDirIterator(path, QDirIterator.Subdirectories)
+        path_list = []
         while it.hasNext():
-            self.mesh_by_path(it.next())
+            path_list.append(it.next())
+
+        for path in sorted(path_list):
+            self.mesh_by_path(path)
