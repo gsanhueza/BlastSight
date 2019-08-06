@@ -18,3 +18,7 @@ class PointElement(BlockModelElement):
     @point_size.setter
     def point_size(self, size) -> None:
         self._size = size
+
+    @property
+    def marker(self):
+        return self._properties.get('marker', 'circle')

@@ -25,13 +25,23 @@ if __name__ == '__main__':
                                 block_size=[1.0, 1.0, 1.0],
                                 values=[0.5, 1.0, 1.5])
 
-    points = viewer.points(vertices=[[-3, 2, 0],
-                                     [0, 2, 1],
-                                     [3, 2, 2]],
-                           point_size=3.0,
-                           values=[1.5, 1.0, 0.5],
-                           vmin=0.8,
-                           vmax=2.0)
+    points_square = viewer.points(vertices=[[-3, 2, 0],
+                                            [0, 2, 1],
+                                            [3, 2, 0]],
+                                  point_size=3.0,
+                                  values=[1.5, 1.0, 0.5],
+                                  vmin=0.8,
+                                  vmax=2.0,
+                                  marker='square')
+
+    points_circle = viewer.points(vertices=[[-2, 3, 1],
+                                            [0, 3, 0],
+                                            [2, 3, 1]],
+                                  point_size=5.0,
+                                  values=[0.5, 1.0, 1.5],
+                                  vmin=0.8,
+                                  vmax=2.0,
+                                  marker='circle')
 
     lines = viewer.lines(x=[-0.5, 0.5],
                          y=[-2.0, 1.5],

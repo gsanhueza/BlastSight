@@ -13,6 +13,7 @@ class PointProgram(ShaderProgram):
         self.add_uniform_loc('point_size')
         self.add_uniform_loc('viewport')
         self.add_uniform_loc('min_max')
+        self.add_uniform_loc('marker')
 
     def setup_shaders(self):
         vertex_shader = QOpenGLShader(QOpenGLShader.Vertex)
@@ -30,4 +31,5 @@ class PointProgram(ShaderProgram):
             self.update_uniform('point_size', drawable.point_size)
             self.update_uniform('viewport', self.widget.width(), self.widget.height())
             self.update_uniform('min_max', drawable.min_val, drawable.max_val)
+            self.update_uniform('marker', int(drawable.element.marker == 'circle'))
             drawable.draw()
