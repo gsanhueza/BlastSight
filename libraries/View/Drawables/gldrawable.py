@@ -45,13 +45,9 @@ class GLDrawable:
 
     def cleanup(self):
         self.widget.makeCurrent()
+        glDeleteBuffers(len(self.vbos), self.vbos)
         if self.vao is not None:
-            glBindVertexArray(self.vao)
-        if len(self.vbos) > 0:
-            glDeleteBuffers(len(self.vbos), self.vbos)
-            del self.vbos
-            del self.vao
-        glBindVertexArray(0)
+            glDeleteVertexArrays(1, int(self.vao))
 
     """
     API for QTreeWidgetItem
