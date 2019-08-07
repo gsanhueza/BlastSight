@@ -13,10 +13,6 @@ class Viewer(IntegrableViewer):
         super().__init__()
         self.setWindowTitle('MineVis (Viewer)')
 
-        # Force an OpenGLContext creation
-        super().show()
-        super().hide()
-
     def show(self):
         super().show()
         sys.exit(self.app.exec_())
