@@ -21,7 +21,7 @@ class BlockModelElement(Element):
 
     @values.setter
     def values(self, val):
-        self.data[self.value_str] = np.array(val)
+        self.data[self.value_str] = np.array(val, np.float32)
 
     def _fill_element(self, *args, **kwargs):
         msg = f'Must pass ["x", "y", "z", "values"], ["vertices", "values"] or ["data"] ' \

@@ -65,7 +65,7 @@ class Element:
 
     @x.setter
     def x(self, val):
-        self.data[self.x_str] = np.array(val)
+        self.data[self.x_str] = np.array(val, np.float32)
 
     @property
     def y(self):
@@ -73,7 +73,7 @@ class Element:
 
     @y.setter
     def y(self, val):
-        self.data[self.y_str] = np.array(val)
+        self.data[self.y_str] = np.array(val, np.float32)
 
     @property
     def z(self):
@@ -81,7 +81,7 @@ class Element:
 
     @z.setter
     def z(self, val):
-        self.data[self.z_str] = np.array(val)
+        self.data[self.z_str] = np.array(val, np.float32)
 
     @property
     def vertices(self) -> np.ndarray:
