@@ -87,3 +87,11 @@ def triangle_intersection(origin: np.ndarray, ray: np.ndarray, triangle: np.ndar
 
     # This means that there is a line intersection but not a ray intersection.
     return None
+
+
+def mesh_slice(mesh, plane_origin, plane_normal):
+    # Taken from https://pypi.org/project/meshcut/
+    # Although we might want to have an improved version for real-time slicing
+    import meshcut
+    cut = meshcut.cross_section(mesh.vertices, mesh.indices, plane_origin, plane_normal)
+    return np.concatenate(cut)
