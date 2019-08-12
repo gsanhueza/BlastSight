@@ -188,6 +188,10 @@ class IntegrableViewer(QOpenGLWidget):
         self.file_modified_signal.emit()
         self.update()
 
+    def clear(self):
+        for id_ in list(self.drawable_collection.keys()):
+            self.delete(id_)
+
     def camera_at(self, id_: int) -> None:
         drawable = self.get_drawable(id_)
         self.centroid = drawable.element.centroid
