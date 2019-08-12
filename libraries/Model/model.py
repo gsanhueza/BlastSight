@@ -2,7 +2,7 @@
 
 from .Elements.element import Element
 from .Elements.elementcollection import ElementCollection
-from .Elements.blockmodelelement import BlockModelElement
+from .Elements.blockelement import BlockElement
 from .Elements.pointelement import PointElement
 from .Elements.lineelement import LineElement
 from .Elements.meshelement import MeshElement
@@ -41,8 +41,8 @@ class Model:
     def mesh(self, *args, **kwargs) -> MeshElement:
         return self._element(MeshElement, *args, **kwargs)
 
-    def block_model(self, *args, **kwargs) -> BlockModelElement:
-        return self._element(BlockModelElement, *args, **kwargs)
+    def blocks(self, *args, **kwargs) -> BlockElement:
+        return self._element(BlockElement, *args, **kwargs)
 
     def points(self, *args, **kwargs) -> PointElement:
         return self._element(PointElement, *args, **kwargs)
@@ -65,7 +65,7 @@ class Model:
 
         return self.mesh(vertices=vertices, indices=indices, *args, **kwargs)
 
-    def block_model_by_path(self, path: str, *args, **kwargs) -> BlockModelElement:
+    def block_model_by_path(self, path: str, *args, **kwargs) -> BlockElement:
         ext = path.split('.')[-1]
         info = self.get_parser(ext).load_file(path)
         data = info.data
@@ -74,7 +74,7 @@ class Model:
         for k, v in properties.items():
             kwargs[k] = v
 
-        return self.block_model(data=data, *args, **kwargs)
+        return self.blocks(data=data, *args, **kwargs)
 
     def points_by_path(self, path: str, *args, **kwargs) -> PointElement:
         ext = path.split('.')[-1]
@@ -103,4 +103,4 @@ class Model:
 
     @property
     def block_model_collection(self) -> list:
-        return list(filter(lambda x: isinstance(x, BlockModelElement), self.element_collection.values()))
+        return list(filter(lambda x: isinstance(x, BlockElement), self.element_collection.values()))

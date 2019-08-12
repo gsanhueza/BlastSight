@@ -16,7 +16,7 @@ from qtpy.QtGui import QVector4D
 
 from ..Drawables.gldrawablecollection import GLDrawableCollection
 
-from ..Drawables.blockmodelgl import BlockModelGL
+from ..Drawables.blockgl import BlockGL
 from ..Drawables.meshgl import MeshGL
 from ..Drawables.pointgl import PointGL
 from ..Drawables.linegl import LineGL
@@ -142,8 +142,10 @@ class IntegrableViewer(QOpenGLWidget):
     def mesh(self, *args, **kwargs) -> MeshGL:
         return self.add_drawable(self.model.mesh, MeshGL, *args, **kwargs)
 
-    def block_model(self, *args, **kwargs) -> BlockModelGL:
-        return self.add_drawable(self.model.block_model, BlockModelGL, *args, **kwargs)
+    def blocks(self, *args, **kwargs) -> BlockGL:
+        if kwargs.get('as_points', False):
+            return self.add_drawable(self.model.blocks, PointGL, *args, **kwargs)
+        return self.add_drawable(self.model.blocks, BlockGL, *args, **kwargs)
 
     def points(self, *args, **kwargs) -> PointGL:
         return self.add_drawable(self.model.points, PointGL, *args, **kwargs)
@@ -157,8 +159,8 @@ class IntegrableViewer(QOpenGLWidget):
     def mesh_by_path(self, path: str, *args, **kwargs) -> MeshGL:
         return self.add_drawable(self.model.mesh_by_path, MeshGL, path, *args, **kwargs)
 
-    def block_model_by_path(self, path: str, *args, **kwargs) -> BlockModelGL:
-        return self.add_drawable(self.model.block_model_by_path, BlockModelGL, path, *args, **kwargs)
+    def block_model_by_path(self, path: str, *args, **kwargs) -> BlockGL:
+        return self.add_drawable(self.model.block_model_by_path, BlockGL, path, *args, **kwargs)
 
     def points_by_path(self, path: str, *args, **kwargs) -> PointGL:
         return self.add_drawable(self.model.points_by_path, PointGL, path, *args, **kwargs)

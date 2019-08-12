@@ -4,7 +4,7 @@ from qtpy.QtGui import QOpenGLShader
 from .shaderprogram import ShaderProgram
 
 
-class BlockModelProgram(ShaderProgram):
+class BlockProgram(ShaderProgram):
     def __init__(self, widget):
         super().__init__(widget)
 
@@ -18,9 +18,9 @@ class BlockModelProgram(ShaderProgram):
         fragment_shader = QOpenGLShader(QOpenGLShader.Fragment)
         geometry_shader = QOpenGLShader(QOpenGLShader.Geometry)
 
-        vertex_shader.compileSourceFile(f'{self.shader_dir}/BlockModel/vertex.glsl')
-        geometry_shader.compileSourceFile(f'{self.shader_dir}/BlockModel/geometry.glsl')
-        fragment_shader.compileSourceFile(f'{self.shader_dir}/BlockModel/fragment.glsl')
+        vertex_shader.compileSourceFile(f'{self.shader_dir}/Block/vertex.glsl')
+        geometry_shader.compileSourceFile(f'{self.shader_dir}/Block/geometry.glsl')
+        fragment_shader.compileSourceFile(f'{self.shader_dir}/Block/fragment.glsl')
 
         self.shader_program.addShader(vertex_shader)
         self.shader_program.addShader(fragment_shader)

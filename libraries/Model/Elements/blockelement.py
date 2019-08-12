@@ -4,7 +4,7 @@ import numpy as np
 from .element import Element
 
 
-class BlockModelElement(Element):
+class BlockElement(Element):
     def __init__(self, *args, **kwargs):
         self._dataframe = None
         self._size = None

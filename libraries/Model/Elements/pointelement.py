@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
-from .blockmodelelement import BlockModelElement
+from .blockelement import BlockElement
 
 
-class PointElement(BlockModelElement):
+class PointElement(BlockElement):
     """
     Points and block models are interpreted as almost the same. (Model)
     The difference is at drawing time. (View)

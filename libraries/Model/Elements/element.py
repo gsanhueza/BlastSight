@@ -63,29 +63,32 @@ class Element:
     def x(self):
         return self.data.get(self.x_str, np.empty(0))
 
-    @x.setter
-    def x(self, val):
-        self.data[self.x_str] = np.array(val, np.float32)
-
     @property
     def y(self):
         return self.data.get(self.y_str, np.empty(0))
-
-    @y.setter
-    def y(self, val):
-        self.data[self.y_str] = np.array(val, np.float32)
 
     @property
     def z(self):
         return self.data.get(self.z_str, np.empty(0))
 
-    @z.setter
-    def z(self, val):
-        self.data[self.z_str] = np.array(val, np.float32)
-
     @property
     def vertices(self) -> np.ndarray:
         return np.column_stack((self.x, self.y, self.z))
+
+    """
+    Setters
+    """
+    @x.setter
+    def x(self, val):
+        self.data[self.x_str] = np.array(val, np.float32)
+
+    @y.setter
+    def y(self, val):
+        self.data[self.y_str] = np.array(val, np.float32)
+
+    @z.setter
+    def z(self, val):
+        self.data[self.z_str] = np.array(val, np.float32)
 
     @vertices.setter
     def vertices(self, vertices: list) -> None:
@@ -99,6 +102,9 @@ class Element:
     def centroid(self) -> np.ndarray:
         return np.array([self.x.mean(), self.y.mean(), self.z.mean()])
 
+    """
+    Metadata
+    """
     @property
     def id(self) -> int:
         return self._id
@@ -107,9 +113,6 @@ class Element:
     def id(self, _id: int) -> None:
         self._id = _id
 
-    """
-    Metadata
-    """
     @property
     def name(self) -> str:
         return self._properties.get('name', None)

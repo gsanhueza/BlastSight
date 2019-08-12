@@ -2,16 +2,16 @@
 
 import numpy as np
 import pytest
-from libraries.Model.Elements.blockmodelelement import BlockModelElement
+from libraries.Model.Elements.blockelement import BlockElement
 
 
 class TestBlockModelElement:
     def test_empty_bm(self):
         with pytest.raises(Exception):
-            BlockModelElement()
+            BlockElement()
 
     def test_block_single(self):
-        element = BlockModelElement(x=[-1], y=[0], z=[0], values=[0])
+        element = BlockElement(x=[-1], y=[0], z=[0], values=[0])
         assert len(element.vertices) == 1
 
         for v in element.vertices:
@@ -31,7 +31,7 @@ class TestBlockModelElement:
             assert element.values[i] == expected[i]
 
     def test_block_multiple(self):
-        element = BlockModelElement(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], values=[10, 20, 30])
+        element = BlockElement(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], values=[10, 20, 30])
 
         list_vertices = element.vertices
         assert len(list_vertices) == 3
@@ -56,23 +56,23 @@ class TestBlockModelElement:
 
     def test_wrong_bm(self):
         with pytest.raises(Exception):
-            BlockModelElement(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0])
+            BlockElement(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0])
 
         with pytest.raises(Exception):
-            BlockModelElement(x=[-1, 1, 0], y=[0, 0], z=[0, 0, 0])
+            BlockElement(x=[-1, 1, 0], y=[0, 0], z=[0, 0, 0])
 
         with pytest.raises(Exception):
-            BlockModelElement(x=[-1, 1], y=[0, 0], z=[0, 0, 1])
+            BlockElement(x=[-1, 1], y=[0, 0], z=[0, 0, 1])
 
     def test_named_element(self):
         name = "NAME"
         extension = "EXT"
-        element = BlockModelElement(x=[0], y=[1], z=[2], values=[0], name=name, ext=extension)
+        element = BlockElement(x=[0], y=[1], z=[2], values=[0], name=name, ext=extension)
         assert element.name == name
         assert element.ext == extension
 
     def test_vertices_element(self):
-        element = BlockModelElement(vertices=[[0, 1, 2], [3, 4, 5]], values=[0, 0])
+        element = BlockElement(vertices=[[0, 1, 2], [3, 4, 5]], values=[0, 0])
 
         # Coordinates
         expected = [[0.0, 1.0, 2.0],
@@ -90,10 +90,10 @@ class TestBlockModelElement:
 
     def test_empty_vertices(self):
         with pytest.raises(Exception):
-            BlockModelElement(vertices=[])
+            BlockElement(vertices=[])
 
     def test_set_vertices(self):
-        element = BlockModelElement(vertices=[[0, 1, 2]], values=[8])
+        element = BlockElement(vertices=[[0, 1, 2]], values=[8])
         element.vertices = [[9, 8, 7], [6, 5, 4]]
 
         # Coordinates
@@ -117,7 +117,7 @@ class TestBlockModelElement:
                 'CuT': [1.0, 0.4, 0.5, 0.8, 0.3, 0.2],
                 }
 
-        element = BlockModelElement(data=data)
+        element = BlockElement(data=data)
         element.x_str = 'x'
         element.y_str = 'y'
         element.z_str = 'z'
@@ -150,7 +150,7 @@ class TestBlockModelElement:
                 'z': ('0', '3', '3', '3', '3', '3')}
 
         with pytest.raises(Exception):
-            BlockModelElement(data)
+            BlockElement(data)
 
     def test_inconsistent_data(self):
         data = {'x': ('0', '2', '4', '6', '8', '10'),
@@ -159,7 +159,7 @@ class TestBlockModelElement:
                 'CuT': ('1', '0.4', '0.5', '0.8', '0.3', '0.2')}
 
         with pytest.raises(Exception):
-            BlockModelElement(data)
+            BlockElement(data)
 
         data = {'x': ('0', '2', '4', '6', '8', '10'),
                 'y': ('0', '0', '0', '3', '3', '1'),
@@ -167,7 +167,7 @@ class TestBlockModelElement:
                 'CuT': ('1', '0.4', '0.5', '0.8', '0.3')}
 
         with pytest.raises(Exception):
-            BlockModelElement(data)
+            BlockElement(data)
 
         data = {'x': ('0', '2', '4', '6', '8'),
                 'y': ('0', '0', '0', '3', '3'),
@@ -175,7 +175,7 @@ class TestBlockModelElement:
                 'CuT': ('1', '0.4', '0.5', '0.8', '0.3', '0.2')}
 
         with pytest.raises(Exception):
-            BlockModelElement(data)
+            BlockElement(data)
 
     def test_data_wrong_string(self):
         data = {'x': ('0', '2', '4', '6', '8', '10'),
@@ -183,7 +183,7 @@ class TestBlockModelElement:
                 'z': ('0', '3', '3', '3', '3', '3'),
                 'CuT': ('1', '0.4', '0.5', '0.8', '0.3', '0.2')}
 
-        element = BlockModelElement(data=data)
+        element = BlockElement(data=data)
         element.x_str = 'x'
         element.y_str = 'y'
         element.z_str = 'z'
@@ -203,7 +203,7 @@ class TestBlockModelElement:
                 'elevation': ('0', '3', '3', '3', '3', '3'),
                 'CuT': ('1', '0.4', '0.5', '0.8', '0.3', '0.2')}
 
-        element = BlockModelElement(data=data)
+        element = BlockElement(data=data)
         assert 'easting' in list(element.available_headers)
         assert 'northing' in list(element.available_headers)
         assert 'elevation' in list(element.available_headers)
@@ -216,7 +216,7 @@ class TestBlockModelElement:
                 'z': ('0', '3', '3', '3', '3', '3'),
                 'CuT': ('1', '0.4', '0.5', '0.8', '0.3', '0.2')}
 
-        element = BlockModelElement(data=data)
+        element = BlockElement(data=data)
         element.available_headers = ['x', 'y', 'z', 'CuT']
         assert 'x' in element.available_headers
         assert 'y' in element.available_headers
@@ -225,10 +225,10 @@ class TestBlockModelElement:
 
     def test_empty_data(self):
         with pytest.raises(Exception):
-            BlockModelElement(data={})
+            BlockElement(data={})
 
     def test_block_size(self):
-        element = BlockModelElement(vertices=[[0, 1, 2]], values=[8], block_size=[2.0, 4.0, 7.0])
+        element = BlockElement(vertices=[[0, 1, 2]], values=[8], block_size=[2.0, 4.0, 7.0])
         epsilon = 0.0001
 
         assert abs(element.block_size[0] - 2.0) < epsilon

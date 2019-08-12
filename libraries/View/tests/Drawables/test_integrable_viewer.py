@@ -5,7 +5,7 @@ import pytest
 from libraries.Model.Elements.element import Element
 from libraries.Model.model import Model
 from libraries.View.Drawables.meshgl import MeshGL
-from libraries.View.Drawables.blockmodelgl import BlockModelGL
+from libraries.View.Drawables.blockgl import BlockGL
 from libraries.View.Drawables.pointgl import PointGL
 from libraries.View.GUI.integrableviewer import IntegrableViewer
 from libraries.Model.tests.globals import *
@@ -79,17 +79,17 @@ class TestIntegrableViewer:
 
     def test_integrable_viewer_add_block_model(self):
         widget = IntegrableViewer()
-        widget.block_model(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], values=[0, 1, 2])
+        widget.blocks(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], values=[0, 1, 2])
         widget.block_model_by_path(f'{TEST_FILES_FOLDER_PATH}/mini.csv')
 
         assert widget.drawable_collection.__len__() == 2
-        assert isinstance(widget.get_drawable(0), BlockModelGL)
-        assert isinstance(widget.get_drawable(1), BlockModelGL)
+        assert isinstance(widget.get_drawable(0), BlockGL)
+        assert isinstance(widget.get_drawable(1), BlockGL)
 
     def test_integrable_viewer_add_wrong_block_model(self):
         widget = IntegrableViewer()
 
-        added = widget.block_model()
+        added = widget.blocks()
         assert added is None
         assert widget.drawable_collection.__len__() == 0
 
@@ -120,7 +120,7 @@ class TestIntegrableViewer:
     def test_integrable_viewer_drawable_visibility(self):
         widget = IntegrableViewer()
         widget.mesh(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], indices=[[0, 1, 2]])
-        widget.block_model(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], values=[0, 1, 2])
+        widget.blocks(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], values=[0, 1, 2])
 
         assert widget.get_drawable(0).is_visible
         assert widget.get_drawable(1).is_visible
@@ -145,7 +145,7 @@ class TestIntegrableViewer:
     def test_integrable_viewer_delete_drawable(self):
         widget = IntegrableViewer()
         widget.mesh(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], indices=[[0, 1, 2]])
-        widget.block_model(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], values=[0, 1, 2])
+        widget.blocks(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], values=[0, 1, 2])
 
         assert widget.drawable_collection.__len__() == 2
         widget.delete(0)
@@ -172,11 +172,11 @@ class TestIntegrableViewer:
 
         assert viewer.last_id == 0
 
-        blocks = viewer.block_model(x=[-3, 3, 0],
-                                    y=[0, 0, 5],
-                                    z=[0, 0, 0],
-                                    block_size=[1.0, 1.0, 1.0],
-                                    values=[0.5, 1.0, 1.5])
+        blocks = viewer.blocks(x=[-3, 3, 0],
+                               y=[0, 0, 5],
+                               z=[0, 0, 0],
+                               block_size=[1.0, 1.0, 1.0],
+                               values=[0.5, 1.0, 1.5])
 
         assert viewer.last_id == 1
 

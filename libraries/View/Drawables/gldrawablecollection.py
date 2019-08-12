@@ -4,7 +4,7 @@ from collections import OrderedDict
 
 from .gldrawable import GLDrawable
 from .meshgl import MeshGL
-from .blockmodelgl import BlockModelGL
+from .blockgl import BlockGL
 from .linegl import LineGL
 from .pointgl import PointGL
 from .tubegl import TubeGL
@@ -13,7 +13,7 @@ from .axisgl import AxisGL
 
 from .meshprogram import MeshProgram
 from .wireframeprogram import WireframeProgram
-from .blockmodelprogram import BlockModelProgram
+from .blockprogram import BlockProgram
 from .lineprogram import LineProgram
 from .pointprogram import PointProgram
 from .tubeprogram import TubeProgram
@@ -28,7 +28,7 @@ class GLDrawableCollection(OrderedDict):
 
         self.programs['bg'] = BackgroundProgram(widget), (lambda: self.background)
         self.programs['axis'] = AxisProgram(widget), (lambda: self.axis)
-        self.programs['blockmodel'] = BlockModelProgram(widget), (lambda: self.block_models)
+        self.programs['blockmodel'] = BlockProgram(widget), (lambda: self.block_models)
         self.programs['line'] = LineProgram(widget), (lambda: self.lines)
         self.programs['tube'] = TubeProgram(widget), (lambda: self.tubes)
         self.programs['point'] = PointProgram(widget), (lambda: self.points)
@@ -96,7 +96,7 @@ class GLDrawableCollection(OrderedDict):
 
     @property
     def block_models(self):
-        return self.filter(BlockModelGL)
+        return self.filter(BlockGL)
 
     @property
     def points(self):

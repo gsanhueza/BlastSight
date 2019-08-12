@@ -6,7 +6,7 @@ from .gldrawable import GLDrawable
 from OpenGL.GL import *
 
 
-class BlockModelGL(GLDrawable):
+class BlockGL(GLDrawable):
     def __init__(self, widget=None, element=None):
         super().__init__(widget, element)
 

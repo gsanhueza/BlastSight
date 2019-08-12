@@ -74,8 +74,8 @@ class TestModel:
         info = CSVParser.load_file(path)
         data = info.data
 
-        bm_1 = model.block_model(data=data)
-        bm_2 = model.block_model(data=data)
+        bm_1 = model.blocks(data=data)
+        bm_2 = model.blocks(data=data)
 
         assert bm_1.id != bm_2.id
 
@@ -99,7 +99,7 @@ class TestModel:
         info = CSVParser.load_file(path)
         data = info.data
 
-        bm = model.block_model(data=data)
+        bm = model.blocks(data=data)
         bm_get = model.get(bm.id)
 
         assert bm is not None
@@ -112,7 +112,7 @@ class TestModel:
         info = CSVParser.load_file(path)
         data = info.data
 
-        bm = model.block_model(data=data)
+        bm = model.blocks(data=data)
         id_ = bm.id
         model.delete(id_)
 
