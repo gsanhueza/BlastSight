@@ -23,7 +23,7 @@ class HeadersDialog(QDialog):
         self.setWindowTitle(f'Set headers ({element.name}.{element.ext})')
 
         # Fill content
-        for i in element.available_headers:
+        for i in element.headers:
             self.comboBox_x.addItem(i)
             self.comboBox_y.addItem(i)
             self.comboBox_z.addItem(i)

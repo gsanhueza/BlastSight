@@ -14,14 +14,6 @@ class BlockElement(Element):
 
         super().__init__(*args, **kwargs)
 
-    @property
-    def values(self) -> np.ndarray:
-        return self.data.get(self.value_str, np.empty(0))
-
-    @values.setter
-    def values(self, val):
-        self.data[self.value_str] = np.array(val, np.float32)
-
     def _fill_element(self, *args, **kwargs):
         msg = f'Must pass ["x", "y", "z", "values"], ["vertices", "values"] or ["data"] ' \
             f'as kwargs, got {list(kwargs.keys())}.'
@@ -53,11 +45,11 @@ class BlockElement(Element):
         assert len(self._dataframe) > 0, msg
 
     @property
-    def available_headers(self) -> list:
+    def headers(self) -> list:
         return list(self._dataframe.keys())
 
-    @available_headers.setter
-    def available_headers(self, values: list) -> None:
+    @headers.setter
+    def headers(self, values: list) -> None:
         self.x_str, self.y_str, self.z_str, self.value_str = values
 
     @property

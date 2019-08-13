@@ -204,11 +204,11 @@ class TestBlockModelElement:
                 'CuT': ('1', '0.4', '0.5', '0.8', '0.3', '0.2')}
 
         element = BlockElement(data=data)
-        assert 'easting' in list(element.available_headers)
-        assert 'northing' in list(element.available_headers)
-        assert 'elevation' in list(element.available_headers)
-        assert 'CuT' in list(element.available_headers)
-        assert 'random' not in list(element.available_headers)
+        assert 'easting' in list(element.headers)
+        assert 'northing' in list(element.headers)
+        assert 'elevation' in list(element.headers)
+        assert 'CuT' in list(element.headers)
+        assert 'random' not in list(element.headers)
 
     def test_set_multiple_coordinates(self):
         data = {'x': ('0', '2', '4', '6', '8', '10'),
@@ -217,11 +217,11 @@ class TestBlockModelElement:
                 'CuT': ('1', '0.4', '0.5', '0.8', '0.3', '0.2')}
 
         element = BlockElement(data=data)
-        element.available_headers = ['x', 'y', 'z', 'CuT']
-        assert 'x' in element.available_headers
-        assert 'y' in element.available_headers
-        assert 'z' in element.available_headers
-        assert 'CuT' in element.available_headers
+        element.headers = ['x', 'y', 'z', 'CuT']
+        assert 'x' in element.headers
+        assert 'y' in element.headers
+        assert 'z' in element.headers
+        assert 'CuT' in element.headers
 
     def test_empty_data(self):
         with pytest.raises(Exception):

@@ -1,14 +1,14 @@
 #version 140
 
 in vec3 a_position;
-in float a_color;
+in vec3 a_color;
+in uint point_size;
 
-out float v_color;
+out vec3 v_color;
 
 uniform vec2 viewport;
 uniform mat4 proj_matrix;
 uniform mat4 model_view_matrix;
-uniform float point_size;
 
 void main()
 {

@@ -81,6 +81,10 @@ class Element:
         return self.data.get(self.z_str, np.empty(0))
 
     @property
+    def values(self) -> np.ndarray:
+        return self.data.get(self.value_str, np.empty(0))
+
+    @property
     def vertices(self) -> np.ndarray:
         return np.column_stack((self.x, self.y, self.z))
 
@@ -98,6 +102,10 @@ class Element:
     @z.setter
     def z(self, val):
         self.data[self.z_str] = np.array(val, np.float32)
+
+    @values.setter
+    def values(self, val):
+        self.data[self.value_str] = np.array(val, np.float32)
 
     @vertices.setter
     def vertices(self, vertices: list) -> None:
