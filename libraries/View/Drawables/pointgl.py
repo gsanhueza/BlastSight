@@ -36,7 +36,7 @@ class PointGL(GLDrawable):
         # Data
         vertices = self.element.vertices.astype(np.float32)
         colors = self.element.color.astype(np.float32)
-        sizes = self.element.point_size.astype(np.uint32)
+        sizes = self.element.point_size.astype(np.float32)
 
         # Recreate colors if we only have values
         if vertices.size > colors.size:

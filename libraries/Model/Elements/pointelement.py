@@ -5,6 +5,10 @@ from .element import Element
 
 
 class PointElement(Element):
+    def __init__(self, *args, **kwargs):
+        self._size = []
+        super().__init__(*args, **kwargs)
+
     def _fill_element(self, *args, **kwargs):
         msg = f'Must pass ["x", "y", "z", "color"], ["vertices", "color"] or ["data"] ' \
             f'as kwargs, got {list(kwargs.keys())}.'
@@ -31,7 +35,7 @@ class PointElement(Element):
         assert len(self._dataframe) > 0, msg
 
     def _fill_size(self, *args, **kwargs):
-        self.point_size = kwargs.get('point_size', [])
+        self.point_size = kwargs.get('point_size', 1.0)
 
     @property
     def headers(self) -> list:
