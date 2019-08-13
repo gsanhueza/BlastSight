@@ -9,7 +9,6 @@ class BlockElement(Element):
         self._dataframe = None
         self._size = None
 
-        self.value_str: str = 'values'
         self.vmin = 0.0
         self.vmax = 1.0
 
@@ -70,7 +69,7 @@ class BlockElement(Element):
         self._size = np.array(size)
 
     def update_values(self):
-        self._data.clear()
+        self.data.clear()
         self.x = self._dataframe[self.x_str]
         self.y = self._dataframe[self.y_str]
         self.z = self._dataframe[self.z_str]

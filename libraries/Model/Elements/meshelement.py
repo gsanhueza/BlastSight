@@ -8,9 +8,6 @@ from .element import Element
 
 class MeshElement(Element):
     def __init__(self, *args, **kwargs):
-        self._indices = None
-        self._color = None
-
         super().__init__(*args, **kwargs)
 
         self.indices = kwargs.get('indices', [])
@@ -20,11 +17,12 @@ class MeshElement(Element):
 
     @property
     def indices(self) -> np.array:
-        return self._indices
+        return self.data.get('indices', np.empty(0))
 
     @indices.setter
     def indices(self, indices):
-        self._indices = np.array(indices, np.uint32)  # GL_UNSIGNED_INT = np.uint32
+        # GL_UNSIGNED_INT = np.uint32
+        self.data['indices'] = np.array(indices, np.uint32)
 
     def volume(self):
         # Idea from https://www.geometrictools.com/Documentation/PolyhedralMassProperties.pdf

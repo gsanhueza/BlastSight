@@ -6,17 +6,20 @@ import numpy as np
 class Element:
     def __init__(self, *args, **kwargs):
         # Base data
-        self._data: dict = {}
+        self.data: dict = {}
         self.x_str: str = 'x'
         self.y_str: str = 'y'
         self.z_str: str = 'z'
+        self.value_str: str = 'values'
 
         # Metadata
-        self._id: int = None
-        self._properties: dict = None
+        self._id: int = -1
+        self._metadata: dict = {}
+        self._properties: dict = {}
 
         self._fill_element(*args, **kwargs)
         self._fill_metadata(*args, **kwargs)
+        self._fill_properties(*args, **kwargs)
 
     def _fill_element(self, msg=None, *args, **kwargs):
         if msg is None:
@@ -31,13 +34,6 @@ class Element:
 
         self._check_integrity()
 
-    def _fill_metadata(self, *args, **kwargs):
-        for k in ['x', 'y', 'z', 'vertices', 'indices', 'data']:
-            if k in kwargs.keys():
-                del kwargs[k]
-
-        self._properties = kwargs
-
     def _fill_as_vertices(self, msg, *args, **kwargs):
         assert 'vertices' in kwargs.keys(), msg
 
@@ -51,6 +47,19 @@ class Element:
         self.x = kwargs.get('x')
         self.y = kwargs.get('y')
         self.z = kwargs.get('z')
+
+    def _fill_metadata(self, *args, **kwargs):
+        self._metadata['name'] = kwargs.get('name')
+        self._metadata['ext'] = kwargs.get('ext')
+
+        self._metadata = kwargs
+
+    def _fill_properties(self, *args, **kwargs):
+        for k in ['x', 'y', 'z', 'vertices', 'values', 'data', 'name', 'ext']:
+            if k in kwargs.keys():
+                del kwargs[k]
+
+        self._properties = kwargs
 
     def _check_integrity(self):
         msg = f'Coordinates have different lengths: ({self.x.size}, {self.y.size}, {self.z.size})'
@@ -95,10 +104,6 @@ class Element:
         self.x, self.y, self.z = np.array(vertices).T
 
     @property
-    def data(self) -> dict:
-        return self._data
-
-    @property
     def centroid(self) -> np.ndarray:
         return np.array([self.x.mean(), self.y.mean(), self.z.mean()])
 
@@ -115,35 +120,35 @@ class Element:
 
     @property
     def name(self) -> str:
-        return self._properties.get('name', None)
+        return self._metadata.get('name', None)
 
     @name.setter
     def name(self, name: str) -> None:
-        self._properties['name'] = name
+        self._metadata['name'] = name
 
     @property
     def ext(self) -> str:
-        return self._properties.get('ext', None)
+        return self._metadata.get('ext', None)
 
     @ext.setter
     def ext(self, ext: str) -> None:
-        self._properties['ext'] = ext
+        self._metadata['ext'] = ext
 
     @property
     def color(self) -> np.array:
-        return self._color
+        return self.data.get('color', np.ones(3))
 
     @color.setter
     def color(self, val):
-        self._color = np.array(val)
+        self.data['color'] = np.array(val)
 
     @property
     def alpha(self):
-        return self._properties.get('alpha', 1.0)
+        return self.data.get('alpha', 1.0)
 
     @alpha.setter
     def alpha(self, val):
-        self._properties['alpha'] = val
+        self.data['alpha'] = val
 
     @property
     def rgba(self):
