@@ -1,27 +1,31 @@
-#version 150
-#extension GL_ARB_separate_shader_objects : enable
+#version 140
 
-in float f_color;
-in vec3 v_normal;
+in float v_color;
+in vec3 pos_mv;
 
 out vec4 out_color;
 
 uniform vec2 min_max;
 
-float normalize_clamp(float x, float vmin, float vmax)
+float lambertian(vec3 N, vec3 L)
 {
-    float clamped = clamp(x, vmin, vmax);
-    float epsilon = 0.0001;
-    if (abs(vmax - vmin) < epsilon)
-    {
-        return 0.0;
-    }
-    return (clamped - vmin) / (vmax - vmin);
+    vec3 normalized_N = normalize(N);
+    vec3 normalized_L = normalize(L);
+    return max(dot(normalized_N, normalized_L), 0.0);
 }
 
 vec3 lambert(vec3 N, vec3 L, vec3 color)
 {
-    return color * max(dot(normalize(N), normalize(L)), 0.0);
+    return color * lambertian(N, L);
+}
+
+float normalize_(float min_val, float max_val, float x)
+{
+    if (max_val == min_val)
+    {
+        return 0.0;
+    }
+    return (x - min_val) / (max_val - min_val);
 }
 
 vec3 hsv2rgb(vec3 c)
@@ -35,7 +39,11 @@ void main()
 {
     vec3 light_position_front = vec3(0.0, 0.0, 100000.0);
     vec3 light_position_up = vec3(0.0, 100000.0, 0.0);
-    vec3 light_color = hsv2rgb(vec3(2.0 / 3.0 * (1.0 - normalize_clamp(f_color, min_max.x, min_max.y)), 1.0, 1.0));
+    vec3 light_color = hsv2rgb(vec3(2.0 / 3.0 * (1.0 - normalize_(min_max.x, min_max.y, v_color)), 1.0, 1.0));
+
+    vec3 X = dFdx(pos_mv);
+    vec3 Y = dFdy(pos_mv);
+    vec3 v_normal = normalize(cross(X, Y));
 
     float front_light_bias = 0.85;
     vec3 color_front = lambert(v_normal, light_position_front, light_color);
