@@ -49,7 +49,7 @@ if __name__ == '__main__':
                          z=[-1.5, -1.5, -1.5, -1.5],
                          color=[0.9, 0.2, 0.2],
                          radius=0.2,
-                         resolution=15)
+                         resolution=150)
 
     viewer.camera_position = [0.0, 2.0, 15.0]
     viewer.centroid = [0.0, 0.0, 0.0]
