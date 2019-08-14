@@ -143,8 +143,6 @@ class IntegrableViewer(QOpenGLWidget):
         return self.add_drawable(self.model.mesh, MeshGL, *args, **kwargs)
 
     def blocks(self, *args, **kwargs) -> BlockGL:
-        if kwargs.get('as_points', False):
-            return self.add_drawable(self.model.blocks, PointGL, *args, **kwargs)
         return self.add_drawable(self.model.blocks, BlockGL, *args, **kwargs)
 
     def points(self, *args, **kwargs) -> PointGL:

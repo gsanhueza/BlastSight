@@ -10,25 +10,26 @@ class TubeGL(GLDrawable):
     def __init__(self, widget=None, element=None):
         super().__init__(widget, element)
 
-        self.vertices_size = 0
-        self.vao = None
+        self.indices_size = 0
 
     def setup_attributes(self) -> None:
         _POSITION = 0
         _COLOR = 1
-        _PROPERTIES = 2  # [radius, resolution]
 
-        self.vao = glGenVertexArrays(1)
-        self.vbos = glGenBuffers(3)
+        if self.vao is None:
+            self.vao = glGenVertexArrays(1)
+            self.vbos = glGenBuffers(3)
 
         # Data
-        vertices = self.element.vertices.astype(np.float32)
+        vertices, indices = self.element.as_mesh()
+
+        vertices = np.array(vertices).astype(np.float32)
+        indices = np.array(indices).astype(np.uint32)
         colors = self.element.rgba.astype(np.float32)
-        properties = np.append(self.element.radius, self.element.resolution).astype(np.float32)
 
-        # np.array([[0, 1, 2]], type) has size 3, despite having only 1 list there
-        self.vertices_size = vertices.size // 3
+        self.indices_size = indices.size
 
+        self.widget.makeCurrent()
         glBindVertexArray(self.vao)
 
         glBindBuffer(GL_ARRAY_BUFFER, self.vbos[0])
@@ -39,16 +40,15 @@ class TubeGL(GLDrawable):
         glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * colors.size, colors, GL_STATIC_DRAW)
         glVertexAttribPointer(_COLOR, 4, GL_FLOAT, False, 0, None)
 
-        glBindBuffer(GL_ARRAY_BUFFER, self.vbos[2])
-        glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * properties.size, properties, GL_STATIC_DRAW)
-        glVertexAttribPointer(_PROPERTIES, 2, GL_FLOAT, False, 0, None)
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, self.vbos[2])
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices, GL_STATIC_DRAW)
 
+        # The attribute advances once per divisor instances of the set(s) of vertices being rendered
+        # And guess what, we have just 1 instance, exactly what we wanted!
         glVertexAttribDivisor(_COLOR, 1)
-        glVertexAttribDivisor(_PROPERTIES, 1)
 
         glEnableVertexAttribArray(_POSITION)
         glEnableVertexAttribArray(_COLOR)
-        glEnableVertexAttribArray(_PROPERTIES)
 
         glBindVertexArray(0)
 
@@ -58,5 +58,5 @@ class TubeGL(GLDrawable):
             return
 
         glBindVertexArray(self.vao)
-        glDrawArrays(GL_LINE_STRIP, 0, self.vertices_size)
+        glDrawElements(GL_TRIANGLES, self.indices_size, GL_UNSIGNED_INT, None)
         glBindVertexArray(0)
