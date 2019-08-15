@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 
 import numpy as np
-from random import random
-
 from .element import Element
 
 
@@ -11,7 +9,7 @@ class MeshElement(Element):
         super().__init__(*args, **kwargs)
 
         self.indices = kwargs.get('indices', [])
-        self.color = kwargs.get('color', [random() for _ in range(3)])
+        self.color = kwargs.get('color', np.random.rand(3))
 
         assert self.x.size == self.indices.max() + 1
 

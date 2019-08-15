@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 
 import numpy as np
-from random import random
-
 from .element import Element
 
 
@@ -16,7 +14,7 @@ class LineElement(Element):
             self.z = np.append(self.z, self.z[0])
 
         assert len(self.vertices) >= 2
-        self.color = kwargs.get('color', [random() for _ in range(3)])
+        self.color = kwargs.get('color', np.random.rand(3))
 
     @property
     def color(self) -> np.ndarray:
