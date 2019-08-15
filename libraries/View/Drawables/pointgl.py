@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import numpy as np
-from matplotlib.colors import hsv_to_rgb
+from ...Model.utils import hsv_to_rgb
 
 from .gldrawable import GLDrawable
 from OpenGL.GL import *

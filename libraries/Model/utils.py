@@ -95,3 +95,61 @@ def mesh_slice(mesh, plane_origin, plane_normal):
     import meshcut
     cut = meshcut.cross_section(mesh.vertices, mesh.indices, plane_origin, plane_normal)
     return np.concatenate(cut)
+
+
+def hsv_to_rgb(hsv):
+    # Taken and adapted from matplotlib.colors
+    hsv = np.asarray(hsv)
+
+    h = hsv[:, 0]
+    s = hsv[:, 1]
+    v = hsv[:, 2]
+
+    r = np.empty_like(h)
+    g = np.empty_like(h)
+    b = np.empty_like(h)
+
+    i = (h * 6.0).astype(int)
+    f = (h * 6.0) - i
+    p = v * (1.0 - s)
+    q = v * (1.0 - s * f)
+    t = v * (1.0 - s * (1.0 - f))
+
+    idx = i % 6 == 0
+    r[idx] = v[idx]
+    g[idx] = t[idx]
+    b[idx] = p[idx]
+
+    idx = i == 1
+    r[idx] = q[idx]
+    g[idx] = v[idx]
+    b[idx] = p[idx]
+
+    idx = i == 2
+    r[idx] = p[idx]
+    g[idx] = v[idx]
+    b[idx] = t[idx]
+
+    idx = i == 3
+    r[idx] = p[idx]
+    g[idx] = q[idx]
+    b[idx] = v[idx]
+
+    idx = i == 4
+    r[idx] = t[idx]
+    g[idx] = p[idx]
+    b[idx] = v[idx]
+
+    idx = i == 5
+    r[idx] = v[idx]
+    g[idx] = p[idx]
+    b[idx] = q[idx]
+
+    idx = s == 0
+    r[idx] = v[idx]
+    g[idx] = v[idx]
+    b[idx] = v[idx]
+
+    rgb = np.stack([r, g, b], axis=-1)
+
+    return rgb
