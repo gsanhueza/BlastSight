@@ -6,7 +6,7 @@ import numpy as np
 class Element:
     def __init__(self, *args, **kwargs):
         # Base data
-        self.data: dict = {}
+        self._data: dict = {}
         self.x_str: str = 'x'
         self.y_str: str = 'y'
         self.z_str: str = 'z'
@@ -62,6 +62,10 @@ class Element:
     Attributes
     """
     @property
+    def data(self):
+        return self._data
+
+    @property
     def x(self):
         return self.data.get(self.x_str, np.empty(0))
 
@@ -84,6 +88,11 @@ class Element:
     """
     Setters
     """
+
+    @data.setter
+    def data(self, d):
+        self._data = d
+
     @x.setter
     def x(self, val):
         self.data[self.x_str] = np.array(val, np.float32)

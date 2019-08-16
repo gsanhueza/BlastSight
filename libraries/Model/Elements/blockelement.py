@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import pandas as pd
 import numpy as np
 from .element import Element
 
@@ -57,6 +58,12 @@ class BlockElement(Element):
     """
     Properties
     """
+    @property
+    def dataframe(self):
+        if self._dataframe is None:
+            self._dataframe = pd.DataFrame(super().data)
+        return self._dataframe
+
     @property
     def block_count(self):
         return np.array([self.x.size, self.y.size, self.z.size])

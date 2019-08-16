@@ -10,19 +10,24 @@ class H5PParser:
     def load_file(path: str) -> ParserData:
         assert path.lower().endswith('.h5p')
 
+        store = pd.HDFStore(path)
+        properties = store.get_storer('data').attrs.metadata
+
         # Metadata
-        properties = {
-            'name': QFileInfo(path).baseName(),
-            'ext': QFileInfo(path).suffix()
-        }
+        properties['name'] = QFileInfo(path).baseName()
+        properties['ext'] = QFileInfo(path).suffix()
 
         data = ParserData()
-        data.data = pd.read_hdf(path, 'data')
+        data.data = store['data']
         data.properties = properties
 
         return data
 
     @staticmethod
-    def save_file(path: str, data) -> None:
+    def save_file(path: str, data, properties={}) -> None:
         path = path if path.endswith('.h5p') else f'{path}.h5p'
-        data.to_hdf(path, 'data')
+
+        store = pd.HDFStore(path)
+        store.put('data', data)
+        store.get_storer('data').attrs.metadata = properties
+        store.close()

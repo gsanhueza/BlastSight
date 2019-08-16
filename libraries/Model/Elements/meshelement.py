@@ -41,3 +41,25 @@ class MeshElement(Element):
         del f1
 
         return abs(volume)
+
+    # The mesh is the only element to have exclusively one color and alpha.
+    # Thus, we put it as a property (instead of a dataset/list)
+    @property
+    def color(self) -> np.array:
+        return self._properties.get('color', np.ones(3))
+
+    @property
+    def alpha(self):
+        return self._properties.get('alpha', 1.0)
+
+    @property
+    def rgba(self):
+        return np.append(self.color, self.alpha)
+
+    @color.setter
+    def color(self, val):
+        self._properties['color'] = np.array(val)
+
+    @alpha.setter
+    def alpha(self, val):
+        self._properties['alpha'] = val
