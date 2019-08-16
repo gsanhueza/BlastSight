@@ -7,9 +7,9 @@ from .element import Element
 class PointElement(Element):
     def __init__(self, *args, **kwargs):
         self._size = []
+        self.colormap = 'redblue'  # redblue (min is red) or bluered (min is blue)
         self.vmin = 0.0
         self.vmax = 1.0
-        self.colormap = 'redblue'  # redblue (min is red) or bluered (min is blue)
 
         super().__init__(*args, **kwargs)
 
@@ -30,11 +30,8 @@ class PointElement(Element):
 
         self._fill_size(*args, **kwargs)
 
-    def _fill_as_data(self, *args, **kwargs):
-        msg = '"data" cannot be empty.'
-        self._dataframe = kwargs.get('data')
-
-        assert len(self._dataframe) > 0, msg
+    def _fill_size(self, *args, **kwargs):
+        self.point_size = kwargs.get('point_size', 1.0)
 
     def _fill_as_colors(self, *args, **kwargs):
         self.color = np.array(kwargs.get('color', []))
@@ -49,9 +46,17 @@ class PointElement(Element):
         self.vmax = kwargs.get('vmax', self.values.max())
         self.colormap = kwargs.get('colormap', 'redblue')
 
-    def _fill_size(self, *args, **kwargs):
-        self.point_size = kwargs.get('point_size', 1.0)
+    def _fill_as_data(self, *args, **kwargs):
+        msg = '"data" cannot be empty.'
+        self._dataframe = kwargs.get('data')
+        self.headers = kwargs.get('headers', list(self._dataframe.keys())[:4])
 
+        assert len(self._dataframe) > 0, msg
+        self.update_values()
+
+    """
+    Properties
+    """
     @property
     def headers(self) -> list:
         return list(self._dataframe.keys())

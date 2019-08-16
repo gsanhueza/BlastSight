@@ -17,6 +17,7 @@ class Element:
         self._metadata: dict = {}
         self._properties: dict = {}
 
+        # Element filling
         self._fill_element(*args, **kwargs)
         self._fill_metadata(*args, **kwargs)
         self._fill_properties(*args, **kwargs)
@@ -26,33 +27,25 @@ class Element:
             msg = f'Must pass ["x", "y", "z"] or "vertices" as kwargs, got {list(kwargs.keys())}.'
 
         if 'vertices' in kwargs.keys():
-            self._fill_as_vertices(msg, *args, **kwargs)
+            self._fill_as_vertices(*args, **kwargs)
         elif 'x' in kwargs.keys() and 'y' in kwargs.keys() and 'z' in kwargs.keys():
-            self._fill_as_xyz(msg, *args, **kwargs)
+            self._fill_as_xyz(*args, **kwargs)
         else:
             raise KeyError(msg)
 
         self._check_integrity()
 
-    def _fill_as_vertices(self, msg, *args, **kwargs):
-        assert 'vertices' in kwargs.keys(), msg
-
+    def _fill_as_vertices(self, *args, **kwargs):
         self.vertices = kwargs.get('vertices', [])
 
-    def _fill_as_xyz(self, msg, *args, **kwargs):
-        assert 'x' in kwargs.keys(), msg
-        assert 'y' in kwargs.keys(), msg
-        assert 'z' in kwargs.keys(), msg
-
+    def _fill_as_xyz(self, *args, **kwargs):
         self.x = kwargs.get('x')
         self.y = kwargs.get('y')
         self.z = kwargs.get('z')
 
     def _fill_metadata(self, *args, **kwargs):
-        self._metadata['name'] = kwargs.get('name')
-        self._metadata['ext'] = kwargs.get('ext')
-
-        self._metadata = kwargs
+        self._metadata['name'] = kwargs.get('name', None)
+        self._metadata['ext'] = kwargs.get('ext', None)
 
     def _fill_properties(self, *args, **kwargs):
         for k in ['x', 'y', 'z', 'vertices', 'values', 'data', 'name', 'ext']:
@@ -116,6 +109,29 @@ class Element:
         return np.array([self.x.mean(), self.y.mean(), self.z.mean()])
 
     """
+    Properties
+    """
+    @property
+    def color(self) -> np.array:
+        return self.data.get('color', np.ones(3))
+
+    @property
+    def alpha(self):
+        return self.data.get('alpha', 1.0)
+
+    @property
+    def rgba(self):
+        return np.append(self.color, self.alpha)
+
+    @color.setter
+    def color(self, val):
+        self.data['color'] = np.array(val)
+
+    @alpha.setter
+    def alpha(self, val):
+        self.data['alpha'] = val
+
+    """
     Metadata
     """
     @property
@@ -141,23 +157,3 @@ class Element:
     @ext.setter
     def ext(self, ext: str) -> None:
         self._metadata['ext'] = ext
-
-    @property
-    def color(self) -> np.array:
-        return self.data.get('color', np.ones(3))
-
-    @color.setter
-    def color(self, val):
-        self.data['color'] = np.array(val)
-
-    @property
-    def alpha(self):
-        return self.data.get('alpha', 1.0)
-
-    @alpha.setter
-    def alpha(self, val):
-        self.data['alpha'] = val
-
-    @property
-    def rgba(self):
-        return np.array(np.append(self.color, self.alpha))

@@ -118,22 +118,11 @@ class TestBlockModelElement:
                 }
 
         element = BlockElement(data=data)
-        element.x_str = 'x'
-        element.y_str = 'y'
-        element.z_str = 'z'
-        element.value_str = 'CuT'
-
-        assert element.x.size == 0
-        assert element.y.size == 0
-        assert element.z.size == 0
-        assert element.values.size == 0
-
         assert element.x_str == 'x'
         assert element.y_str == 'y'
         assert element.z_str == 'z'
         assert element.value_str == 'CuT'
 
-        element.update_values()
         assert element.x.size == 6
         assert element.y.size == 6
         assert element.z.size == 6
