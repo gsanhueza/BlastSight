@@ -144,6 +144,10 @@ class Element:
     def rgba(self) -> np.ndarray:
         return np.append(self.color, self.alpha)
 
+    @properties.setter
+    def properties(self, props):
+        self._properties = props
+
     @color.setter
     def color(self, val: list) -> None:
         self.properties['color'] = np.array(val)

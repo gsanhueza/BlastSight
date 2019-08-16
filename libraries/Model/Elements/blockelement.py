@@ -60,4 +60,3 @@ class BlockElement(PointElement):
     @block_size.setter
     def block_size(self, _size: list) -> None:
         self.properties['size'] = np.array(_size)
-
