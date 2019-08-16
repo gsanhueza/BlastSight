@@ -114,10 +114,14 @@ class MineVis(QMainWindow):
         dialog = CameraPropertiesDialog(self.viewer)
         dialog.show()
 
-    def _load_element(self, method: classmethod, path: str, auto_load=False) -> None:
+    def update_statusbar(self, id_):
+        self.statusBar.showMessage(f'Loaded (id: {id_}).')
+
+    def _load_element(self, method: classmethod, path: str) -> None:
+        self.statusBar.showMessage('Loading...')
+
         worker = LoadWorker(method, path)
-        if auto_load:
-            worker.signals.loaded.connect(self.headers_dialog)
+        worker.signals.loaded.connect(self.update_statusbar)
 
         self.threadPool.start(worker)
         self.last_dir = QFileInfo(path).absoluteDir().absolutePath()
@@ -128,13 +132,11 @@ class MineVis(QMainWindow):
 
     def load_block_model(self, path: str) -> None:
         self._load_element(method=self.viewer.block_model_by_path,
-                           path=path,
-                           auto_load=True)
+                           path=path)
 
     def load_points(self, path: str) -> None:
         self._load_element(method=self.viewer.points_by_path,
-                           path=path,
-                           auto_load=True)
+                           path=path)
 
     """
     Slots. Unless explicitly otherwise, slots are connected via Qt Designer
@@ -147,11 +149,7 @@ class MineVis(QMainWindow):
 
         for path in paths:
             if path != '':
-                worker = LoadWorker(method, path)
-                if auto_load:
-                    worker.signals.loaded.connect(self.headers_dialog)
-
-                self.threadPool.start(worker)
+                self._load_element(method, path)
 
     def load_mesh_slot(self) -> None:
         self._load_element_slot(method=self.load_mesh,
