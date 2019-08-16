@@ -11,7 +11,10 @@ class H5PParser:
         assert path.lower().endswith('.h5p')
 
         store = pd.HDFStore(path)
-        properties = store.get_storer('data').attrs.metadata
+        try:
+            properties = store.get_storer('data').attrs.metadata
+        except AttributeError:
+            properties = {}
 
         # Metadata
         properties['name'] = QFileInfo(path).baseName()
@@ -21,6 +24,7 @@ class H5PParser:
         data.data = store['data']
         data.properties = properties
 
+        store.close()
         return data
 
     @staticmethod
