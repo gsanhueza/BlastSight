@@ -7,6 +7,10 @@ from .element import Element
 class PointElement(Element):
     def __init__(self, *args, **kwargs):
         self._size = []
+        self.vmin = 0.0
+        self.vmax = 1.0
+        self.colormap = 'redblue'  # redblue (min is red) or bluered (min is blue)
+
         super().__init__(*args, **kwargs)
 
     def _fill_element(self, *args, **kwargs):
@@ -15,12 +19,10 @@ class PointElement(Element):
 
         if 'color' in kwargs.keys():
             super()._fill_element(msg, *args, **kwargs)
-            self.color = np.array(kwargs.get('color', []))
-            self.values = np.zeros(self.x.size)
+            self._fill_as_colors(*args, **kwargs)
         elif 'values' in kwargs.keys():
             super()._fill_element(msg, *args, **kwargs)
-            self.color = np.zeros((self.x.size, 3))
-            self.values = np.array(kwargs.get('values', []))
+            self._fill_as_values(*args, **kwargs)
         elif 'data' in kwargs.keys():
             self._fill_as_data(msg, *args, **kwargs)
         else:
@@ -33,6 +35,19 @@ class PointElement(Element):
         self._dataframe = kwargs.get('data')
 
         assert len(self._dataframe) > 0, msg
+
+    def _fill_as_colors(self, *args, **kwargs):
+        self.color = np.array(kwargs.get('color', []))
+        self.values = np.empty(0)
+        self.vmin = 0.0
+        self.vmax = 1.0
+
+    def _fill_as_values(self, *args, **kwargs):
+        self.color = np.empty(0)
+        self.values = np.array(kwargs.get('values', []))
+        self.vmin = kwargs.get('vmin', self.values.min())
+        self.vmax = kwargs.get('vmax', self.values.max())
+        self.colormap = kwargs.get('colormap', 'redblue')
 
     def _fill_size(self, *args, **kwargs):
         self.point_size = kwargs.get('point_size', 1.0)

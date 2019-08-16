@@ -13,14 +13,19 @@ class PointGL(GLDrawable):
         self.num_points = 0
 
     @staticmethod
-    def values_to_rgb(values):
+    def values_to_rgb(values, vmin, vmax, colormap):
+        values = np.clip(values, vmin, vmax)
         norm = values.max() - values.min()
         if norm == 0:
             return np.ones(3 * values.size)
 
         vals = (values - values.min()) / norm
         hsv = np.ones((vals.size, 3))
-        hsv[:, 0] = 2/3 * (1.0 - vals)
+
+        if colormap == 'redblue':
+            hsv[:, 0] = 2/3 * vals
+        elif colormap == 'bluered':
+            hsv[:, 0] = 2/3 * (1.0 - vals)
 
         return hsv_to_rgb(hsv)
 
@@ -40,7 +45,11 @@ class PointGL(GLDrawable):
 
         # Recreate colors if we only have values
         if vertices.size > colors.size:
-            colors = self.values_to_rgb(self.element.values).astype(np.float32)
+            colors = self.values_to_rgb(self.element.values,
+                                        self.element.vmin,
+                                        self.element.vmax,
+                                        self.element.colormap
+                                        ).astype(np.float32)
 
         self.num_points = sizes.size
 
