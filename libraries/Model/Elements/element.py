@@ -33,6 +33,9 @@ class Element:
         self._properties: dict = {}
         self._metadata: dict = {'id': -1}
 
+        self._initialize(*args, **kwargs)
+
+    def _initialize(self, *args, **kwargs):
         self._fill_element(*args, **kwargs)
         self._fill_metadata(*args, **kwargs)
         self._fill_properties(*args, **kwargs)
@@ -78,6 +81,10 @@ class Element:
     @property
     def data(self) -> dict:
         return self._data
+
+    @data.setter
+    def data(self, _data: dict) -> None:
+        self._data = _data
 
     @property
     def properties(self) -> dict:

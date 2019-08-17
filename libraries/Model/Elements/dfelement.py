@@ -2,10 +2,11 @@
 
 import numpy as np
 import pandas as pd
+from .element import Element
 
 
-class DFElement:
-    __slots__ = ['_data', '_properties', '_metadata', '_mapper']
+class DFElement(Element):
+    __slots__ = ['_mapper']
 
     def __init__(self, *args, **kwargs):
         """
@@ -37,14 +38,11 @@ class DFElement:
         """
         # Base data
         self._data: pd.DataFrame = pd.DataFrame()
+        self._mapper: dict = {'x': 'x', 'y': 'y', 'z': 'z', 'values': 'values'}
         self._properties: dict = {}
         self._metadata: dict = {'id': -1}
-        self._mapper: dict = {'x': 'x', 'y': 'y', 'z': 'z', 'values': 'values'}
 
-        self._fill_element(*args, **kwargs)
-        self._fill_metadata(*args, **kwargs)
-        self._fill_properties(*args, **kwargs)
-        self._check_integrity()
+        super()._initialize(*args, **kwargs)
 
     """
     Element filling    
@@ -107,23 +105,16 @@ class DFElement:
             raise ValueError(msg)
 
     """
-    Main accessors
+    Main accessors (Override)
     """
+
     @property
     def data(self) -> pd.DataFrame:
         return self._data
 
     @data.setter
-    def data(self, _data) -> None:
+    def data(self, _data: dict) -> None:
         self._data = pd.DataFrame(_data)
-
-    @property
-    def properties(self) -> dict:
-        return self._properties
-
-    @property
-    def metadata(self) -> dict:
-        return self._metadata
 
     @property
     def mapper(self) -> dict:
@@ -145,10 +136,6 @@ class DFElement:
         return self.data[self.mapper.get('z')].to_numpy()
 
     @property
-    def vertices(self) -> np.ndarray:
-        return np.column_stack((self.x, self.y, self.z))
-
-    @property
     def values(self) -> np.ndarray:
         return self.data[self.mapper.get('values')].to_numpy()
 
@@ -163,10 +150,6 @@ class DFElement:
     @z.setter
     def z(self, _z: list) -> None:
         self.data[self.mapper.get('z')] = np.array(_z)
-
-    @vertices.setter
-    def vertices(self, _vertices: list) -> None:
-        self.x, self.y, self.z = np.array(_vertices).T
 
     @values.setter
     def values(self, _values) -> None:
@@ -191,10 +174,6 @@ class DFElement:
     def size(self) -> float:
         return self.properties.get('size')
 
-    @property
-    def alpha(self) -> float:
-        return self.properties.get('alpha')
-
     @headers.setter
     def headers(self, _headers: list) -> None:
         self.mapper['x'], self.mapper['y'], self.mapper['z'], self.mapper['values'] = _headers
@@ -210,10 +189,6 @@ class DFElement:
     @size.setter
     def size(self, _size: float) -> None:
         self.properties['size'] = _size
-
-    @alpha.setter
-    def alpha(self, _alpha: float) -> None:
-        self.properties['alpha'] = _alpha
 
     """
     Mapper handling
@@ -249,37 +224,3 @@ class DFElement:
     @value_str.setter
     def value_str(self, _value_str: str) -> None:
         self.mapper['values'] = _value_str
-
-    """
-    Utilities
-    """
-    @property
-    def centroid(self) -> np.ndarray:
-        return np.array([self.x.mean(), self.y.mean(), self.z.mean()])
-
-    """
-    Metadata
-    """
-    @property
-    def id(self) -> int:
-        return self.metadata.get('id', -1)
-
-    @property
-    def name(self) -> str:
-        return self.metadata.get('name')
-
-    @property
-    def extension(self) -> str:
-        return self.metadata.get('extension')
-
-    @id.setter
-    def id(self, _id: int) -> None:
-        self.metadata['id'] = _id
-
-    @name.setter
-    def name(self, _name: str) -> None:
-        self._metadata['name'] = _name
-
-    @extension.setter
-    def extension(self, _extension: str) -> None:
-        self._metadata['extension'] = _extension
