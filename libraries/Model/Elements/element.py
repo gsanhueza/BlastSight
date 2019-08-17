@@ -4,27 +4,47 @@ import numpy as np
 
 
 class Element:
+    __slots__ = ['_data', '_properties', '_metadata']
+
     def __init__(self, *args, **kwargs):
+        """
+        Element is a class designed with the following idea:
+        (replace list for numpy arrays in the implementation)
+
+        {
+            'data': {
+                'x': list[float],
+                'y': list[float],
+                'z': list[float]
+            }
+            'properties': {
+                'color': list[float],
+                'alpha': float
+            },
+            'metadata': {
+                'id': int,
+                'name': str or None,
+                'extension': str or None
+            }
+        }
+        """
         # Base data
         self._data: dict = {}
-        self.x_str: str = 'x'
-        self.y_str: str = 'y'
-        self.z_str: str = 'z'
-        self.value_str: str = 'values'
-
-        # Metadata
-        self._id: int = -1
-        self._metadata: dict = {}
         self._properties: dict = {}
+        self._metadata: dict = {
+            'id': -1
+        }
 
-        # Element filling
         self._fill_element(*args, **kwargs)
         self._fill_metadata(*args, **kwargs)
         self._fill_properties(*args, **kwargs)
+        self._check_integrity()
 
-    def _fill_element(self, msg=None, *args, **kwargs):
-        if msg is None:
-            msg = f'Must pass ["x", "y", "z"] or "vertices" as kwargs, got {list(kwargs.keys())}.'
+    """
+    Element filling    
+    """
+    def _fill_element(self, *args, **kwargs):
+        msg = f'Data must contain ["x", "y", "z"] or "vertices", got {list(kwargs.keys())}.'
 
         if 'vertices' in kwargs.keys():
             self._fill_as_vertices(*args, **kwargs)
@@ -33,136 +53,135 @@ class Element:
         else:
             raise KeyError(msg)
 
-        self._check_integrity()
-
     def _fill_as_vertices(self, *args, **kwargs):
         self.vertices = kwargs.get('vertices', [])
 
     def _fill_as_xyz(self, *args, **kwargs):
-        self.x = kwargs.get('x')
-        self.y = kwargs.get('y')
-        self.z = kwargs.get('z')
-
-    def _fill_metadata(self, *args, **kwargs):
-        self._metadata['name'] = kwargs.get('name', None)
-        self._metadata['ext'] = kwargs.get('ext', None)
+        self.x = kwargs.get('x', [])
+        self.y = kwargs.get('y', [])
+        self.z = kwargs.get('z', [])
 
     def _fill_properties(self, *args, **kwargs):
-        for k in ['x', 'y', 'z', 'vertices', 'values', 'data', 'name', 'ext']:
-            if k in kwargs.keys():
-                del kwargs[k]
+        self.color = kwargs.get('color', [1.0] * 3)
+        self.alpha = kwargs.get('alpha', 1.0)
 
-        self._properties = kwargs
+    def _fill_metadata(self, *args, **kwargs):
+        self.name = kwargs.get('name', None)
+        self.extension = kwargs.get('ext', None)
 
     def _check_integrity(self):
         msg = f'Coordinates have different lengths: ({self.x.size}, {self.y.size}, {self.z.size})'
-        assert self.x.size == self.y.size == self.z.size, msg
+        if not (self.x.size == self.y.size == self.z.size):
+            raise ValueError(msg)
 
     """
-    Attributes
+    Main accessors
     """
     @property
-    def data(self):
+    def data(self) -> dict:
         return self._data
 
     @property
-    def x(self):
-        return self.data.get(self.x_str, np.empty(0))
+    def properties(self) -> dict:
+        return self._properties
 
     @property
-    def y(self):
-        return self.data.get(self.y_str, np.empty(0))
+    def metadata(self) -> dict:
+        return self._metadata
+
+    """
+    Data
+    """
+    @property
+    def x(self) -> np.ndarray:
+        return self.data.get('x')
 
     @property
-    def z(self):
-        return self.data.get(self.z_str, np.empty(0))
+    def y(self) -> np.ndarray:
+        return self.data.get('y')
 
     @property
-    def values(self) -> np.ndarray:
-        return self.data.get(self.value_str, np.empty(0))
+    def z(self) -> np.ndarray:
+        return self.data.get('z')
 
     @property
     def vertices(self) -> np.ndarray:
         return np.column_stack((self.x, self.y, self.z))
 
-    """
-    Setters
-    """
-
-    @data.setter
-    def data(self, d):
-        self._data = d
-
     @x.setter
-    def x(self, val):
-        self.data[self.x_str] = np.array(val, np.float32)
+    def x(self, val: list) -> None:
+        self.data['x'] = np.array(val, np.float32)
 
     @y.setter
-    def y(self, val):
-        self.data[self.y_str] = np.array(val, np.float32)
+    def y(self, val: list) -> None:
+        self.data['y'] = np.array(val, np.float32)
 
     @z.setter
-    def z(self, val):
-        self.data[self.z_str] = np.array(val, np.float32)
-
-    @values.setter
-    def values(self, val):
-        self.data[self.value_str] = np.array(val, np.float32)
+    def z(self, val: list) -> None:
+        self.data['z'] = np.array(val, np.float32)
 
     @vertices.setter
-    def vertices(self, vertices: list) -> None:
-        self.x, self.y, self.z = np.array(vertices).T
-
-    @property
-    def centroid(self) -> np.ndarray:
-        return np.array([self.x.mean(), self.y.mean(), self.z.mean()])
+    def vertices(self, vertex_list: list) -> None:
+        self.x, self.y, self.z = np.array(vertex_list).T
 
     """
     Properties
     """
     @property
     def color(self) -> np.array:
-        return self.data.get('color', np.ones(3))
+        return self.properties.get('color')
 
     @property
-    def alpha(self):
-        return self.data.get('alpha', 1.0)
+    def alpha(self) -> float:
+        return self.properties.get('alpha')
 
     @property
-    def rgba(self):
+    def rgba(self) -> np.ndarray:
         return np.append(self.color, self.alpha)
 
     @color.setter
-    def color(self, val):
-        self.data['color'] = np.array(val)
+    def color(self, val: list) -> None:
+        self.properties['color'] = np.array(val)
 
     @alpha.setter
-    def alpha(self, val):
-        self.data['alpha'] = val
+    def alpha(self, val: float) -> None:
+        self.properties['alpha'] = val
+
+    @rgba.setter
+    def rgba(self, val: list) -> None:
+        self.color = np.array(val)[:3]
+        self.alpha = val[-1]
+
+    """
+    Utilities    
+    """
+    @property
+    def centroid(self) -> np.ndarray:
+        return np.array([self.x.mean(), self.y.mean(), self.z.mean()])
 
     """
     Metadata
     """
     @property
     def id(self) -> int:
-        return self._id
-
-    @id.setter
-    def id(self, _id: int) -> None:
-        self._id = _id
+        return self.metadata.get('id', -1)
 
     @property
     def name(self) -> str:
-        return self._metadata.get('name', None)
-
-    @name.setter
-    def name(self, name: str) -> None:
-        self._metadata['name'] = name
+        return self.metadata.get('name')
 
     @property
-    def ext(self) -> str:
-        return self._metadata.get('ext', None)
+    def extension(self) -> str:
+        return self.metadata.get('extension')
 
-    @ext.setter
-    def ext(self, ext: str) -> None:
-        self._metadata['ext'] = ext
+    @id.setter
+    def id(self, _id: int) -> None:
+        self.metadata['id'] = _id
+
+    @name.setter
+    def name(self, _name: str) -> None:
+        self._metadata['name'] = _name
+
+    @extension.setter
+    def extension(self, _extension: str) -> None:
+        self._metadata['extension'] = _extension

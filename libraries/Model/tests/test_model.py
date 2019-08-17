@@ -32,7 +32,7 @@ class TestModel:
 
         assert mesh_1.id != mesh_2.id
         assert mesh_1.name == 'caseron'
-        assert mesh_1.ext == 'dxf'
+        assert mesh_1.extension == 'dxf'
 
     def test_wrong_mesh(self):
         model = Model()

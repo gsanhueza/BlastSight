@@ -39,7 +39,7 @@ class TestElement:
         extension = "EXT"
         element = Element(x=[0], y=[1], z=[2], name=name, ext=extension)
         assert element.name == name
-        assert element.ext == extension
+        assert element.extension == extension
 
     def test_vertices_element(self):
         element = Element(vertices=[[0, 1, 2], [3, 4, 5]])
@@ -69,9 +69,9 @@ class TestElement:
     def test_setters(self):
         element = Element(vertices=[[0, 1, 2]])
         element.name = 'name123'
-        element.ext = 'off'
+        element.extension = 'off'
         element.alpha = 0.8
 
         assert element.name == 'name123'
-        assert element.ext == 'off'
+        assert element.extension == 'off'
         assert element.alpha == 0.8
