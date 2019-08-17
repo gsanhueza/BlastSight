@@ -69,7 +69,7 @@ class TestBlockModelElement:
         extension = "EXT"
         element = BlockElement(x=[0], y=[1], z=[2], values=[0], name=name, ext=extension)
         assert element.name == name
-        assert element.ext == extension
+        assert element.extension == extension
 
     def test_vertices_element(self):
         element = BlockElement(vertices=[[0, 1, 2], [3, 4, 5]], values=[0, 0])
@@ -91,24 +91,6 @@ class TestBlockModelElement:
     def test_empty_vertices(self):
         with pytest.raises(Exception):
             BlockElement(vertices=[])
-
-    def test_set_vertices(self):
-        element = BlockElement(vertices=[[0, 1, 2]], values=[8])
-        element.vertices = [[9, 8, 7], [6, 5, 4]]
-
-        # Coordinates
-        expected = [[9.0, 8.0, 7.0],
-                    [6.0, 5.0, 4.0]]
-
-        for i in range(len(expected)):
-            for j in range(3):
-                assert element.vertices[i][j] == expected[i][j]
-
-        # Values
-        expected = [8]
-        assert element.values.size == len(expected)
-        for i in range(len(expected)):
-            assert element.values[i] == expected[i]
 
     def test_data(self):
         data = {'x': [0.0, 2.0, 4.0, 6.0, 8.0, 10.0],

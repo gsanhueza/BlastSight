@@ -10,7 +10,7 @@ class H5PParser:
     def load_file(path: str) -> ParserData:
         assert path.lower().endswith('.h5p')
 
-        store = pd.HDFStore(path)
+        store = pd.HDFStore(path, 'r')
         try:
             properties = store.get_storer('data').attrs.metadata
         except AttributeError:
@@ -31,7 +31,7 @@ class H5PParser:
     def save_file(path: str, data, properties={}) -> None:
         path = path if path.endswith('.h5p') else f'{path}.h5p'
 
-        store = pd.HDFStore(path)
+        store = pd.HDFStore(path, 'w')
         store.put('data', data)
         store.get_storer('data').attrs.metadata = properties
         store.close()

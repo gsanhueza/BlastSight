@@ -6,39 +6,62 @@ from .element import Element
 
 class TubeElement(Element):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self._radius = None
-        self._resolution = None
+        """
+        TubeElement is a class inheriting from Element.
 
-        assert len(self.vertices) >= 2
-        self.color = kwargs.get('color', np.random.rand(3))
+        {
+            'data': {
+                'x': list[float],
+                'y': list[float],
+                'z': list[float],
+            }
+            'properties': {
+                'color': list[float],
+                'alpha': float,
+                'radius': float,
+                'resolution': int
+            },
+            'metadata': {
+                'id': int,
+                'name': str or None,
+                'extension': str or None
+            }
+        }
+        """
+        super().__init__(*args, **kwargs)
+
+    def _fill_properties(self, *args, **kwargs):
+        super()._fill_properties(*args, **kwargs)
         self.radius = kwargs.get('radius', 0.15)
         self.resolution = kwargs.get('resolution', 15)
 
-    @property
-    def color(self) -> np.ndarray:
-        return self._values
+    def _check_integrity(self):
+        super()._check_integrity()
+        if len(self.vertices) < 2:
+            raise ValueError("Not enough data to create this element.")
 
+    """
+    Properties
+    """
     @property
     def radius(self) -> float:
-        return self._radius
+        return self.properties.get('radius')
 
     @property
     def resolution(self) -> int:
-        return self._resolution
-
-    @color.setter
-    def color(self, color: list) -> None:
-        self._values = np.array(color)
+        return self.properties.get('resolution')
 
     @radius.setter
-    def radius(self, value) -> None:
-        self._radius = value
+    def radius(self, _radius: float) -> None:
+        self.properties['radius'] = _radius
 
     @resolution.setter
-    def resolution(self, value) -> None:
-        self._resolution = value
+    def resolution(self, _resolution: int) -> None:
+        self.properties['resolution'] = _resolution
 
+    """
+    Utilities
+    """
     def as_mesh(self):
         vertices = []
         indices = []

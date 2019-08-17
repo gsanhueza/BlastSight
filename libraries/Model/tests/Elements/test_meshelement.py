@@ -60,13 +60,13 @@ class TestMeshElement:
                 assert element.indices[i][j] == expected[i][j]
 
     def test_wrong_mesh(self):
-        with pytest.raises(Exception):
+        with pytest.raises(ValueError):
             MeshElement(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0], indices=[[0, 1, 2]])
 
-        with pytest.raises(Exception):
+        with pytest.raises(ValueError):
             MeshElement(x=[-1, 1, 0], y=[0, 1], z=[0, 0, 0], indices=[[0, 1, 2]])
 
-        with pytest.raises(Exception):
+        with pytest.raises(ValueError):
             MeshElement(x=[-1, 1], y=[0, 0], z=[0, 0], indices=[[0, 1, 2]])
 
     def test_centroid_single(self):

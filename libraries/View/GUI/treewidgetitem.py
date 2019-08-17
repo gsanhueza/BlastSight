@@ -17,7 +17,7 @@ class TreeWidgetItem(QTreeWidgetItem):
 
     @property
     def ext(self) -> str:
-        return self.drawable.element.ext
+        return self.drawable.element.extension
 
     @property
     def type(self) -> type:

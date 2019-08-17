@@ -69,7 +69,7 @@ class TestPointElement:
         extension = "EXT"
         element = PointElement(x=[0], y=[1], z=[2], values=[0], name=name, ext=extension)
         assert element.name == name
-        assert element.ext == extension
+        assert element.extension == extension
 
     def test_vertices_element(self):
         element = PointElement(vertices=[[0, 1, 2], [3, 4, 5]], values=[0, 0])
@@ -91,24 +91,6 @@ class TestPointElement:
     def test_empty_vertices(self):
         with pytest.raises(Exception):
             PointElement(vertices=[])
-
-    def test_set_vertices(self):
-        element = PointElement(vertices=[[0, 1, 2]], values=[8])
-        element.vertices = [[9, 8, 7], [6, 5, 4]]
-
-        # Coordinates
-        expected = [[9.0, 8.0, 7.0],
-                    [6.0, 5.0, 4.0]]
-
-        for i in range(len(expected)):
-            for j in range(3):
-                assert element.vertices[i][j] == expected[i][j]
-
-        # Values
-        expected = [8]
-        assert element.values.size == len(expected)
-        for i in range(len(expected)):
-            assert element.values[i] == expected[i]
 
     def test_data(self):
         data = {'x': [0.0, 2.0, 4.0, 6.0, 8.0, 10.0],
@@ -134,43 +116,43 @@ class TestPointElement:
                 assert abs(ed - d) < epsilon
 
     def test_insufficient_data(self):
-        data = {'x': ('0', '2', '4', '6', '8', '10'),
-                'y': ('0', '0', '0', '3', '3', '1'),
-                'z': ('0', '3', '3', '3', '3', '3')}
+        data = {'x': ['0', '2', '4', '6', '8', '10'],
+                'y': ['0', '0', '0', '3', '3', '1'],
+                'z': ['0', '3', '3', '3', '3', '3']}
 
         with pytest.raises(Exception):
             PointElement(data)
 
     def test_inconsistent_data(self):
-        data = {'x': ('0', '2', '4', '6', '8', '10'),
-                'y': ('0', '0', '0', '3', '3', '1'),
-                'z': ('0', '3', '3', '3', '3'),
-                'CuT': ('1', '0.4', '0.5', '0.8', '0.3', '0.2')}
+        data = {'x': ['0', '2', '4', '6', '8', '10'],
+                'y': ['0', '0', '0', '3', '3', '1'],
+                'z': ['0', '3', '3', '3', '3'],
+                'CuT': ['1', '0.4', '0.5', '0.8', '0.3', '0.2']}
 
         with pytest.raises(Exception):
             PointElement(data)
 
-        data = {'x': ('0', '2', '4', '6', '8', '10'),
-                'y': ('0', '0', '0', '3', '3', '1'),
-                'z': ('0', '3', '3', '3', '3', '3'),
-                'CuT': ('1', '0.4', '0.5', '0.8', '0.3')}
+        data = {'x': ['0', '2', '4', '6', '8', '10'],
+                'y': ['0', '0', '0', '3', '3', '1'],
+                'z': ['0', '3', '3', '3', '3', '3'],
+                'CuT': ['1', '0.4', '0.5', '0.8', '0.3']}
 
         with pytest.raises(Exception):
             PointElement(data)
 
-        data = {'x': ('0', '2', '4', '6', '8'),
-                'y': ('0', '0', '0', '3', '3'),
-                'z': ('0', '3', '3', '3', '3'),
-                'CuT': ('1', '0.4', '0.5', '0.8', '0.3', '0.2')}
+        data = {'x': ['0', '2', '4', '6', '8'],
+                'y': ['0', '0', '0', '3', '3'],
+                'z': ['0', '3', '3', '3', '3'],
+                'CuT': ['1', '0.4', '0.5', '0.8', '0.3', '0.2']}
 
         with pytest.raises(Exception):
             PointElement(data)
 
     def test_data_wrong_string(self):
-        data = {'x': ('0', '2', '4', '6', '8', '10'),
-                'y': ('0', '0', '0', '3', '3', '1'),
-                'z': ('0', '3', '3', '3', '3', '3'),
-                'CuT': ('1', '0.4', '0.5', '0.8', '0.3', '0.2')}
+        data = {'x': ['0', '2', '4', '6', '8', '10'],
+                'y': ['0', '0', '0', '3', '3', '1'],
+                'z': ['0', '3', '3', '3', '3', '3'],
+                'CuT': ['1', '0.4', '0.5', '0.8', '0.3', '0.2']}
 
         element = PointElement(data=data)
         element.x_str = 'x'
@@ -187,10 +169,10 @@ class TestPointElement:
             element.update_values()
 
     def test_available_coordinates(self):
-        data = {'easting': ('0', '2', '4', '6', '8', '10'),
-                'northing': ('0', '0', '0', '3', '3', '1'),
-                'elevation': ('0', '3', '3', '3', '3', '3'),
-                'CuT': ('1', '0.4', '0.5', '0.8', '0.3', '0.2')}
+        data = {'easting': ['0', '2', '4', '6', '8', '10'],
+                'northing': ['0', '0', '0', '3', '3', '1'],
+                'elevation': ['0', '3', '3', '3', '3', '3'],
+                'CuT': ['1', '0.4', '0.5', '0.8', '0.3', '0.2']}
 
         element = PointElement(data=data)
         assert 'easting' in list(element.headers)
@@ -200,10 +182,10 @@ class TestPointElement:
         assert 'random' not in list(element.headers)
 
     def test_set_multiple_coordinates(self):
-        data = {'x': ('0', '2', '4', '6', '8', '10'),
-                'y': ('0', '0', '0', '3', '3', '1'),
-                'z': ('0', '3', '3', '3', '3', '3'),
-                'CuT': ('1', '0.4', '0.5', '0.8', '0.3', '0.2')}
+        data = {'x': ['0', '2', '4', '6', '8', '10'],
+                'y': ['0', '0', '0', '3', '3', '1'],
+                'z': ['0', '3', '3', '3', '3', '3'],
+                'CuT': ['1', '0.4', '0.5', '0.8', '0.3', '0.2']}
 
         element = PointElement(data=data)
         element.headers = ['x', 'y', 'z', 'CuT']
