@@ -35,6 +35,7 @@ class BlockElement(PointElement):
         Where 'data' will be implemented as a Pandas DataFrame.
         """
         super().__init__(*args, **kwargs)
+        del self.properties['marker']
 
     def _fill_size(self, *args, **kwargs):
         self.block_size = kwargs.get('block_size', [1.0, 1.0, 1.0])

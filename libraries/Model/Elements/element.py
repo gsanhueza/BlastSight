@@ -82,10 +82,6 @@ class Element:
     def data(self) -> dict:
         return self._data
 
-    @data.setter
-    def data(self, _data: dict) -> None:
-        self._data = _data
-
     @property
     def properties(self) -> dict:
         return self._properties
@@ -93,6 +89,15 @@ class Element:
     @property
     def metadata(self) -> dict:
         return self._metadata
+
+    @data.setter
+    def data(self, _data: dict) -> None:
+        self._data = _data
+
+    @properties.setter
+    def properties(self, _properties):
+        for k, v in _properties.items():
+            self._properties[k] = v
 
     """
     Data
@@ -143,10 +148,6 @@ class Element:
     @property
     def rgba(self) -> np.ndarray:
         return np.append(self.color, self.alpha)
-
-    @properties.setter
-    def properties(self, props):
-        self._properties = props
 
     @color.setter
     def color(self, val: list) -> None:

@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import numpy as np
 import json
 import pathlib
 
@@ -31,7 +32,13 @@ class HeadersDialog(QDialog):
             self.comboBox_values.addItem(i)
 
         # Fill properties (FIXME Create rows, not textedits)
-        self.textEdit_properties.setText(json.dumps(element.properties))
+        props = {}
+
+        for k, v in element.properties.items():
+            if type(v) != np.ndarray:
+                props[k] = v
+
+        self.textEdit_properties.setText(json.dumps(props))
 
     def accept(self):
         element = self.viewer.get_drawable(self.id).element
