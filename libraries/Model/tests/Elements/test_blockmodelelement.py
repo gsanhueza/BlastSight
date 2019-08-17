@@ -69,7 +69,7 @@ class TestBlockModelElement:
         extension = "EXT"
         element = BlockElement(x=[0], y=[1], z=[2], values=[0], name=name, ext=extension)
         assert element.name == name
-        assert element.ext == extension
+        assert element.extension == extension
 
     def test_vertices_element(self):
         element = BlockElement(vertices=[[0, 1, 2], [3, 4, 5]], values=[0, 0])

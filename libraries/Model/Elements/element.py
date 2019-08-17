@@ -31,9 +31,7 @@ class Element:
         # Base data
         self._data: dict = {}
         self._properties: dict = {}
-        self._metadata: dict = {
-            'id': -1
-        }
+        self._metadata: dict = {'id': -1}
 
         self._fill_element(*args, **kwargs)
         self._fill_metadata(*args, **kwargs)
