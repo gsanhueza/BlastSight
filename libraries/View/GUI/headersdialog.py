@@ -35,10 +35,12 @@ class HeadersDialog(QDialog):
         props = {}
 
         for k, v in element.properties.items():
-            if type(v) != np.ndarray:
+            if type(v) == np.ndarray:
+                props[k] = v.tolist()
+            else:
                 props[k] = v
 
-        self.textEdit_properties.setText(json.dumps(props))
+        self.textEdit_properties.setText(json.dumps(props, indent=4))
 
     def accept(self):
         element = self.viewer.get_drawable(self.id).element
