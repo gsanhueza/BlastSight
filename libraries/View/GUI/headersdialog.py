@@ -20,7 +20,7 @@ class HeadersDialog(QDialog):
         self.id = _id
 
         element = self.viewer.get_drawable(self.id).element
-        self.setWindowTitle(f'Set headers ({element.name}.{element.ext})')
+        self.setWindowTitle(f'Set headers ({element.name}.{element.extension})')
 
         # Fill content
         for i in element.headers:
@@ -36,8 +36,6 @@ class HeadersDialog(QDialog):
         element.y_str = self.comboBox_y.currentText()
         element.z_str = self.comboBox_z.currentText()
         element.value_str = self.comboBox_values.currentText()
-
-        element.update_values()
 
         # Recreate the BlockModelGL instance with the "new" data
         self.viewer.update_drawable(self.id)

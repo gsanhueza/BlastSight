@@ -22,9 +22,10 @@ class PointElement(DFElement):
                 'header_value': str,
                 'vmin': float,
                 'vmax': float,
-                'size': list[float],
+                'size': list[list[float]],
                 'alpha': float,
                 'colormap': str
+                'colors': list[list[float]] (Optional, auto-generated if None)
             }
             'metadata': {
                 'id': int,
@@ -41,7 +42,7 @@ class PointElement(DFElement):
         super()._fill_properties(*args, **kwargs)
         self.marker = kwargs.get('marker', 'circle')
         self.colormap = kwargs.get('colormap', 'redblue')  # redblue (min is red) or bluered (min is blue)
-        self.colors = kwargs.get('color', self.values_to_rgb(self.values, self.vmin, self.vmax, self.colormap))
+        self.colors = kwargs.get('color', [])
 
     def _fill_size(self, *args, **kwargs):
         self.point_size = kwargs.get('point_size', [1.0] * self.x.size)
@@ -59,6 +60,8 @@ class PointElement(DFElement):
 
     @property
     def colors(self):
+        if self.properties.get('colors').size == 0:
+            return self.values_to_rgb(self.values, self.vmin, self.vmax, self.colormap)
         return self.properties.get('colors')
 
     @property

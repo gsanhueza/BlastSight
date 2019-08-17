@@ -215,9 +215,6 @@ class DFElement:
     def alpha(self, _alpha: float) -> None:
         self.properties['alpha'] = _alpha
 
-    def update_values(self):
-        raise NotImplementedError
-
     """
     Mapper handling
     """

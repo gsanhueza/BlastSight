@@ -25,10 +25,6 @@ class PointGL(GLDrawable):
         colors = self.element.colors.astype(np.float32)
         sizes = self.element.point_size.astype(np.float32)
 
-        print(f'Vertices: {vertices}')
-        print(f'Colors: {colors}')
-        print(f'Sizes: {sizes}')
-
         self.num_points = sizes.size
 
         self.widget.makeCurrent()
