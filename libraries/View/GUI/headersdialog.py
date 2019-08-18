@@ -35,7 +35,7 @@ class HeadersDialog(QDialog):
         props = {}
 
         for k, v in element.properties.items():
-            if type(v) == np.ndarray:
+            if type(v) is np.ndarray:
                 props[k] = v.tolist()
             else:
                 props[k] = v
@@ -49,7 +49,14 @@ class HeadersDialog(QDialog):
         element.y_str = self.comboBox_y.currentText()
         element.z_str = self.comboBox_z.currentText()
         element.value_str = self.comboBox_values.currentText()
-        element.properties = json.loads(self.textEdit_properties.toPlainText())
+
+        props = json.loads(self.textEdit_properties.toPlainText())
+
+        for k, v in props.items():
+            if type(v) is list:
+                props[k] = np.array(v)
+
+        element.properties = props
 
         # Recreate the BlockModelGL instance with the "new" data
         self.viewer.update_drawable(self.id)
