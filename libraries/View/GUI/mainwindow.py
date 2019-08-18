@@ -141,7 +141,7 @@ class MineVis(QMainWindow):
     """
     Slots. Unless explicitly otherwise, slots are connected via Qt Designer
     """
-    def _load_element_slot(self, method: classmethod, filters: str, auto_load=False) -> None:
+    def _load_element_slot(self, method: classmethod, filters: str) -> None:
         (paths, selected_filter) = QFileDialog.getOpenFileNames(
             parent=self,
             directory=self.last_dir,
