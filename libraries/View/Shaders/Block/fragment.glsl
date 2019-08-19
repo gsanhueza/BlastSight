@@ -1,6 +1,7 @@
 #version 140
 
 in float v_color;
+in float v_alpha;
 in vec3 pos_mv;
 
 out vec4 out_color;
@@ -49,5 +50,5 @@ void main()
     vec3 color_front = lambert(v_normal, light_position_front, light_color);
     vec3 color_up = lambert(v_normal, light_position_up, light_color);
 
-    out_color = vec4(0.05 + (front_light_bias * color_front) + ((1 - front_light_bias) * color_up), 1.0);
+    out_color = vec4(0.05 + (front_light_bias * color_front) + ((1 - front_light_bias) * color_up), v_alpha);
 }

@@ -32,30 +32,23 @@ class PointGL(GLDrawable):
         self.widget.makeCurrent()
         glBindVertexArray(self.vao)
 
-        glBindBuffer(GL_ARRAY_BUFFER, self.vbos[0])
-        glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * vertices.size, vertices, GL_STATIC_DRAW)
-        glVertexAttribPointer(_POSITION, 3, GL_FLOAT, False, 0, None)
+        # buffers = [(pointer, basesize, array)...]
+        buffers = [(_POSITION, 3, vertices),
+                   (_COLOR, 3, colors),
+                   (_ALPHA, 1, alpha),
+                   (_SIZE, 1, sizes),
+                   ]
 
-        glBindBuffer(GL_ARRAY_BUFFER, self.vbos[1])
-        glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * colors.size, colors, GL_STATIC_DRAW)
-        glVertexAttribPointer(_COLOR, 3, GL_FLOAT, False, 0, None)
-
-        glBindBuffer(GL_ARRAY_BUFFER, self.vbos[2])
-        glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * alpha.size, alpha, GL_STATIC_DRAW)
-        glVertexAttribPointer(_ALPHA, 1, GL_FLOAT, False, 0, None)
-
-        glBindBuffer(GL_ARRAY_BUFFER, self.vbos[3])
-        glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * sizes.size, sizes, GL_STATIC_DRAW)
-        glVertexAttribPointer(_SIZE, 1, GL_FLOAT, False, 0, None)
+        for i, buf in enumerate(buffers):
+            pointer, basesize, array = buf
+            glBindBuffer(GL_ARRAY_BUFFER, self.vbos[i])
+            glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * array.size, array, GL_STATIC_DRAW)
+            glVertexAttribPointer(pointer, basesize, GL_FLOAT, False, 0, None)
+            glEnableVertexAttribArray(pointer)
 
         # The attribute advances once per divisor instances of the set(s) of vertices being rendered
         # And guess what, we have just 1 instance, exactly what we wanted!
         glVertexAttribDivisor(_ALPHA, 1)
-
-        glEnableVertexAttribArray(_POSITION)
-        glEnableVertexAttribArray(_COLOR)
-        glEnableVertexAttribArray(_ALPHA)
-        glEnableVertexAttribArray(_SIZE)
 
         glBindVertexArray(0)
 
