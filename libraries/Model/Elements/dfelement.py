@@ -3,6 +3,7 @@
 import numpy as np
 import pandas as pd
 from .element import Element
+from ..utils import hsv_to_rgb
 
 
 class DFElement(Element):
@@ -188,6 +189,31 @@ class DFElement(Element):
     @size.setter
     def size(self, _size: float) -> None:
         self.properties['size'] = _size
+
+    """
+    Utilities
+    """
+    @staticmethod
+    def color_from_dict(colormap: str):
+        d = {
+            'redblue': lambda v: 2.0 / 3.0 * v,
+            'bluered': lambda v: 2.0 / 3.0 * (1.0 - v),
+        }
+
+        return d.get(colormap)
+
+    @staticmethod
+    def values_to_rgb(values: np.ndarray, vmin: float, vmax: float, colormap: str):
+        values = np.clip(values, vmin, vmax)
+        norm = values.max() - values.min()
+        if norm == 0:
+            return np.ones(3 * values.size)
+
+        vals = (values - values.min()) / norm
+        hsv = np.ones((vals.size, 3))
+
+        hsv[:, 0] = DFElement.color_from_dict(colormap)(vals)
+        return hsv_to_rgb(hsv)
 
     """
     Mapper handling
