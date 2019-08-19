@@ -88,7 +88,7 @@ class PointElement(DFElement):
     Utilities
     """
     @staticmethod
-    def color_from_dict(colormap):
+    def color_from_dict(colormap: str):
         d = {
             'redblue': lambda v: 2.0 / 3.0 * v,
             'bluered': lambda v: 2.0 / 3.0 * (1.0 - v),
@@ -97,7 +97,7 @@ class PointElement(DFElement):
         return d.get(colormap)
 
     @staticmethod
-    def values_to_rgb(values, vmin, vmax, colormap):
+    def values_to_rgb(values: np.ndarray, vmin: float, vmax: float, colormap: str):
         values = np.clip(values, vmin, vmax)
         norm = values.max() - values.min()
         if norm == 0:

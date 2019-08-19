@@ -51,7 +51,7 @@ class HeadersDialog(QDialog):
         props = json.loads(self.textEdit_properties.toPlainText())
 
         for k, v in props.items():
-            props[k] = np.array(v)
+            props[k] = v
 
         element.properties = props
 
