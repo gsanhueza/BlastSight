@@ -13,6 +13,20 @@ setuptools.setup(
     url='https://github.com/gsanhueza/MineVis',
     packages=setuptools.find_packages(),
     include_package_data=True,
+    install_requires=[
+        'numpy',
+        'PyQt5',
+        'dxfgrabber',
+        'PyOpenGL',
+        'pandas',
+        'qtpy',
+        'h5py',
+        'tables',
+    ],
+    tests_require=[
+        'pytest',
+        'pytest-cov',
+    ],
     classifiers=[
         'Programming Language :: Python :: 3',
         'Operating System :: OS Independent',
