@@ -42,7 +42,7 @@ class PointElement(DFElement):
         super()._fill_properties(*args, **kwargs)
         self.marker = kwargs.get('marker', 'circle')
         self.colormap = kwargs.get('colormap', 'redblue')  # redblue (min is red) or bluered (min is blue)
-        self.colors = kwargs.get('color', [])
+        self.color = kwargs.get('color', [])
 
     def _fill_size(self, *args, **kwargs):
         self.point_size = kwargs.get('point_size', [1.0] * self.x.size)
@@ -59,10 +59,10 @@ class PointElement(DFElement):
         return self.properties.get('marker')
 
     @property
-    def colors(self):
-        if self.properties.get('colors').size == 0:
+    def color(self):
+        if self.properties.get('color').size == 0:
             return self.values_to_rgb(self.values, self.vmin, self.vmax, self.colormap)
-        return self.properties.get('colors')
+        return self.properties.get('color')
 
     @property
     def colormap(self) -> str:
@@ -76,9 +76,9 @@ class PointElement(DFElement):
     def marker(self, _marker: str) -> None:
         self.properties['marker'] = _marker
 
-    @colors.setter
-    def colors(self, _colors: list):
-        self.properties['colors'] = np.array(_colors)
+    @color.setter
+    def color(self, _colors: list):
+        self.properties['color'] = np.array(_colors)
 
     @colormap.setter
     def colormap(self, _colormap: str) -> None:
@@ -87,6 +87,15 @@ class PointElement(DFElement):
     """
     Utilities
     """
+    @staticmethod
+    def color_from_dict(colormap):
+        d = {
+            'redblue': lambda v: 2.0 / 3.0 * v,
+            'bluered': lambda v: 2.0 / 3.0 * (1.0 - v),
+        }
+
+        return d.get(colormap)
+
     @staticmethod
     def values_to_rgb(values, vmin, vmax, colormap):
         values = np.clip(values, vmin, vmax)
@@ -97,9 +106,5 @@ class PointElement(DFElement):
         vals = (values - values.min()) / norm
         hsv = np.ones((vals.size, 3))
 
-        if colormap == 'redblue':
-            hsv[:, 0] = 2 / 3 * vals
-        elif colormap == 'bluered':
-            hsv[:, 0] = 2 / 3 * (1.0 - vals)
-
+        hsv[:, 0] = PointElement.color_from_dict(colormap)(vals)
         return hsv_to_rgb(hsv)

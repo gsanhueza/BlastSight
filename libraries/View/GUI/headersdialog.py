@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+import numpy as np
+import json
 import pathlib
 
 from qtpy.QtCore import Qt
@@ -29,6 +31,15 @@ class HeadersDialog(QDialog):
             self.comboBox_z.addItem(i)
             self.comboBox_values.addItem(i)
 
+        # Fill properties (FIXME Create rows, not textedits)
+        props = {}
+
+        for k, v in element.properties.items():
+            if type(v) is not np.ndarray:
+                props[k] = v  # Temporarily omitting lists
+
+        self.textEdit_properties.setText(json.dumps(props, indent=4))
+
     def accept(self):
         element = self.viewer.get_drawable(self.id).element
 
@@ -36,6 +47,13 @@ class HeadersDialog(QDialog):
         element.y_str = self.comboBox_y.currentText()
         element.z_str = self.comboBox_z.currentText()
         element.value_str = self.comboBox_values.currentText()
+
+        props = json.loads(self.textEdit_properties.toPlainText())
+
+        for k, v in props.items():
+            props[k] = np.array(v)
+
+        element.properties = props
 
         # Recreate the BlockModelGL instance with the "new" data
         self.viewer.update_drawable(self.id)

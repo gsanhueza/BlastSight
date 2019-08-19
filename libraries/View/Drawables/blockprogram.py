@@ -25,5 +25,5 @@ class BlockProgram(ShaderProgram):
 
     def draw(self):
         for drawable in self.drawables:
-            self.update_uniform('min_max', drawable.min_val, drawable.max_val)
+            self.update_uniform('min_max', drawable.element.vmin, drawable.element.vmax)
             drawable.draw()

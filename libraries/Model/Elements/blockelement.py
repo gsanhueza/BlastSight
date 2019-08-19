@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
 import numpy as np
-from .pointelement import PointElement
+from .dfelement import DFElement
 
 
-class BlockElement(PointElement):
+class BlockElement(DFElement):
     def __init__(self, *args, **kwargs):
         """
         BlockElement is a class inheriting from PointElement (which inherits from DFElement).
@@ -36,6 +36,11 @@ class BlockElement(PointElement):
         """
         super().__init__(*args, **kwargs)
 
+    def _fill_properties(self, *args, **kwargs):
+        super()._fill_properties(*args, **kwargs)
+        self.colormap = kwargs.get('colormap', 'redblue')  # redblue (min is red) or bluered (min is blue)
+        self.color = kwargs.get('color', [])
+
     def _fill_size(self, *args, **kwargs):
         self.block_size = kwargs.get('block_size', [1.0, 1.0, 1.0])
     """
@@ -60,4 +65,3 @@ class BlockElement(PointElement):
     @block_size.setter
     def block_size(self, _size: list) -> None:
         self.properties['size'] = np.array(_size)
-

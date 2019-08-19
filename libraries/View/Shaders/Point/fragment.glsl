@@ -2,6 +2,7 @@
 
 uniform int marker;
 in vec3 v_color;
+in float v_alpha;
 
 out vec4 out_color;
 
@@ -15,5 +16,5 @@ void main()
     if ((length(gl_PointCoord - vec2(0.5)) > 0.5) && marker > 0)
         discard;
 
-    out_color = vec4(v_color, 1.0);
+    out_color = vec4(v_color, v_alpha);
 }

@@ -10,10 +10,6 @@ class BlockGL(GLDrawable):
     def __init__(self, widget=None, element=None):
         super().__init__(widget, element)
 
-        # Sizes
-        self.min_val = element.vmin
-        self.max_val = element.vmax
-
         self.num_cubes = 0
         self.num_indices = 0
 
@@ -27,9 +23,9 @@ class BlockGL(GLDrawable):
             self.vbos = glGenBuffers(4)
 
         # Data
-        vertices = self.element.vertices.astype(np.float32)
-        values = self.element.values.astype(np.float32)
-        block_size = self.element.block_size.astype(np.float32)
+        vertices = np.array(self.element.vertices, np.float32)
+        values = np.array(self.element.values, np.float32)
+        block_size = np.array(self.element.block_size, np.float32)
         template, indices = self.generate_cube(block_size)
 
         self.num_cubes = values.size

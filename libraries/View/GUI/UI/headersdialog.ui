@@ -39,6 +39,13 @@
      </property>
     </widget>
    </item>
+   <item row="4" column="0">
+    <widget class="QLabel" name="label_properties">
+     <property name="text">
+      <string>Properties</string>
+     </property>
+    </widget>
+   </item>
    <item row="0" column="1">
     <widget class="QComboBox" name="comboBox_x"/>
    </item>
@@ -50,6 +57,9 @@
    </item>
    <item row="3" column="1">
     <widget class="QComboBox" name="comboBox_values"/>
+   </item>
+   <item row="4" column="1">
+    <widget class="QTextEdit" name="textEdit_properties"/>
    </item>
    <item row="6" column="0" colspan="2">
     <widget class="QDialogButtonBox" name="buttonBox">
