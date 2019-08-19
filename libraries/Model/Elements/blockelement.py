@@ -24,6 +24,7 @@ class BlockElement(DFElement):
                 'size': list[float],
                 'alpha': float,
                 'colormap': str
+                'colors': list[list[float]] (Optional, auto-generated if None)
             }
             'metadata': {
                 'id': int,

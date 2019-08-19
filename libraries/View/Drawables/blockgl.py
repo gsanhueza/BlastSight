@@ -17,45 +17,46 @@ class BlockGL(GLDrawable):
         _POSITION = 0
         _TEMPLATE = 1
         _COLOR = 2
+        _ALPHA = 3
 
         if self.vao is None:
             self.vao = glGenVertexArrays(1)
-            self.vbos = glGenBuffers(4)
+            self.vbos = glGenBuffers(5)
 
         # Data
         vertices = np.array(self.element.vertices, np.float32)
-        values = np.array(self.element.values, np.float32)
         block_size = np.array(self.element.block_size, np.float32)
         template, indices = self.generate_cube(block_size)
+        colors = self.element.color.astype(np.float32)
+        alpha = np.array([self.element.alpha], np.float32)
 
-        self.num_cubes = values.size
+        self.num_cubes = vertices.size // 3
         self.num_indices = indices.size
 
         self.widget.makeCurrent()
         glBindVertexArray(self.vao)
 
-        glBindBuffer(GL_ARRAY_BUFFER, self.vbos[0])
-        glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * vertices.size, vertices, GL_STATIC_DRAW)
-        glVertexAttribPointer(_POSITION, 3, GL_FLOAT, False, 0, None)
+        # buffers = [(pointer, basesize, array)...]
+        buffers = [(_POSITION, 3, vertices),
+                   (_TEMPLATE, 3, template),
+                   (_COLOR, 3, colors),
+                   (_ALPHA, 1, alpha),
+                   ]
 
-        glBindBuffer(GL_ARRAY_BUFFER, self.vbos[1])
-        glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * template.size, template, GL_STATIC_DRAW)
-        glVertexAttribPointer(_TEMPLATE, 3, GL_FLOAT, False, 0, None)
+        for i, buf in enumerate(buffers):
+            pointer, basesize, array = buf
+            glBindBuffer(GL_ARRAY_BUFFER, self.vbos[i])
+            glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * array.size, array, GL_STATIC_DRAW)
+            glVertexAttribPointer(pointer, basesize, GL_FLOAT, False, 0, None)
+            glEnableVertexAttribArray(pointer)
 
-        glBindBuffer(GL_ARRAY_BUFFER, self.vbos[2])
-        glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * values.size, values, GL_STATIC_DRAW)
-        glVertexAttribPointer(_COLOR, 1, GL_FLOAT, False, 0, None)
-
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, self.vbos[3])
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, self.vbos[-1])
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices, GL_STATIC_DRAW)
-
-        glEnableVertexAttribArray(_POSITION)
-        glEnableVertexAttribArray(_TEMPLATE)
-        glEnableVertexAttribArray(_COLOR)
 
         glVertexAttribDivisor(_POSITION, 1)
         glVertexAttribDivisor(_TEMPLATE, 0)
         glVertexAttribDivisor(_COLOR, 1)
+        glVertexAttribDivisor(_ALPHA, -1)
 
         glBindVertexArray(0)
 
