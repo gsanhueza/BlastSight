@@ -1,0 +1,30 @@
+#!/usr/bin/env python
+
+from qtpy.QtGui import QColor
+from qtpy.QtWidgets import QColorDialog
+
+
+class ColorDialog(QColorDialog):
+    def __init__(self, parent=None, _id=None):
+        QColorDialog.__init__(self, parent)
+        self.setOption(self.ShowAlphaChannel)
+
+        self.viewer = parent
+        self.id = _id
+
+        element = self.viewer.get_drawable(self.id).element
+        self.setWindowTitle(f'Set color ({element.name}.{element.extension})')
+        self.setCurrentColor(QColor.fromRgb(*[int(255 * x) for x in element.rgba.tolist()]))
+
+    def accept(self):
+        element = self.viewer.get_drawable(self.id).element
+
+        element.color = [self.currentColor().red() / 255,
+                         self.currentColor().green() / 255,
+                         self.currentColor().blue() / 255]
+        element.alpha = self.currentColor().alpha() / 255
+
+        # Recreate the GLDrawable instance with the "new" data
+        self.viewer.update_drawable(self.id)
+
+        super().accept()

@@ -2,6 +2,13 @@
 
 MineVis is a 3D visualization software designed to aid in Mining research.
 
+## Packaging
+
+You need to have `setuptools` and `wheel` installed.
+
+Run the following command to create a pip-installable package:
+`python setup.py bdist_wheel`
+
 ## Testing
 
 Create a `.coveragerc` file with the following content:
@@ -14,11 +21,11 @@ branch = True
 show_missing = True
 omit = 
     *__init__.py*
-    main.py
-    example.py
+    minevis/main.py
+    minevis/example.py
     venv/*
-    libraries/*/tests/*
-
+    minevis/*/tests/*
+    setup.py
 ```
 
 Run the following command: `pytest --cov=.`.
