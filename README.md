@@ -24,7 +24,7 @@ omit =
     minevis/example.py
     venv/*
     minevis/*/tests/*
-
+    setup.py
 ```
 
 Run the following command: `pytest --cov=.`.

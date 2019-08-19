@@ -9,4 +9,5 @@ omit =
     minevis/example.py
     venv/*
     minevis/*/tests/*
+    setup.py
 
