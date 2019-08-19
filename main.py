@@ -6,7 +6,7 @@ import sys
 
 def application():
     from qtpy.QtWidgets import QApplication
-    from libraries.View.GUI.mainwindow import MineVis
+    from minevis.view.gui.mainwindow import MineVis
 
     qt_app = QApplication(sys.argv)
 
@@ -18,7 +18,7 @@ def application():
 
 def container():
     from qtpy.QtWidgets import QApplication
-    from libraries.View.container import Container
+    from minevis.view.container import Container
 
     qt_app = QApplication(sys.argv)
 
@@ -29,7 +29,7 @@ def container():
 
 
 def standalone():
-    from libraries.View.viewer import Viewer
+    from minevis.view.viewer import Viewer
     viewer = Viewer()
 
     viewer.show()

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from libraries.View.viewer import Viewer
+from minevis.view.viewer import Viewer
 
 
 if __name__ == '__main__':
