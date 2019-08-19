@@ -4,9 +4,10 @@ MineVis is a 3D visualization software designed to aid in Mining research.
 
 ## Packaging
 
-Run the following command to create a pip-installable package:
-`python setup.py sdist bdist_wheel`
+You need to have `setuptools` and `wheel` installed.
 
+Run the following command to create a pip-installable package:
+`python setup.py bdist_wheel`
 
 ## Testing
 
