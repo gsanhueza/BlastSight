@@ -37,11 +37,6 @@ class BlockElement(DFElement):
         """
         super().__init__(*args, **kwargs)
 
-    def _fill_properties(self, *args, **kwargs):
-        super()._fill_properties(*args, **kwargs)
-        self.colormap = kwargs.get('colormap', 'redblue')  # redblue (min is red) or bluered (min is blue)
-        self.color = kwargs.get('color', [])
-
     def _fill_size(self, *args, **kwargs):
         self.block_size = kwargs.get('block_size', [1.0, 1.0, 1.0])
     """

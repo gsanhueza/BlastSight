@@ -52,7 +52,7 @@ class DFElement(Element):
     """
     def _fill_element(self, *args, **kwargs):
         # Base data
-        msg = f'Data must contain ["x", "y", "z"]. "vertices" or "data", got {list(kwargs.keys())}.'
+        msg = f'Data must contain ["x", "y", "z"], "vertices" or "data", got {list(kwargs.keys())}.'
         if 'data' in kwargs.keys():
             self._fill_as_data(*args, **kwargs)
         elif 'vertices' in kwargs.keys():
@@ -81,6 +81,8 @@ class DFElement(Element):
     def _fill_properties(self, *args, **kwargs):
         self.headers = kwargs.get('headers', list(self.data.keys())[:4])
         self.alpha = kwargs.get('alpha', 1.0)
+        self.colormap = kwargs.get('colormap', 'red-blue')  # red-blue (min is red, max is blue)
+        self.color = kwargs.get('color', [])
 
         try:
             self.vmin = kwargs.get('vmin', self.values.min())
@@ -160,7 +162,6 @@ class DFElement(Element):
     """
     Properties
     """
-
     @property
     def color(self):
         if self.properties.get('color').size == 0:
@@ -217,8 +218,10 @@ class DFElement(Element):
     @staticmethod
     def color_from_dict(colormap: str):
         d = {
-            'redblue': lambda v: 2.0 / 3.0 * v,
-            'bluered': lambda v: 2.0 / 3.0 * (1.0 - v),
+            'red-blue': lambda v: 2.0 / 3.0 * v,
+            'blue-red': lambda v: 2.0 / 3.0 * (1.0 - v),
+            'red-green': lambda v: 1.0 / 3.0 * v,
+            'green-red': lambda v: 1.0 / 3.0 * (1.0 - v),
         }
 
         return d.get(colormap)

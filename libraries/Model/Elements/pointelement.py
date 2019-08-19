@@ -40,8 +40,6 @@ class PointElement(DFElement):
     def _fill_properties(self, *args, **kwargs):
         super()._fill_properties(*args, **kwargs)
         self.marker = kwargs.get('marker', 'circle')
-        self.colormap = kwargs.get('colormap', 'redblue')  # redblue (min is red) or bluered (min is blue)
-        self.color = kwargs.get('color', [])
 
     def _fill_size(self, *args, **kwargs):
         self.point_size = kwargs.get('point_size', [1.0] * self.x.size)
