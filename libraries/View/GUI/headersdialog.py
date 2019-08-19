@@ -35,10 +35,8 @@ class HeadersDialog(QDialog):
         props = {}
 
         for k, v in element.properties.items():
-            if type(v) is np.ndarray:
-                props[k] = v.tolist()
-            else:
-                props[k] = v
+            if type(v) is not np.ndarray:
+                props[k] = v  # Temporarily omitting lists
 
         self.textEdit_properties.setText(json.dumps(props, indent=4))
 
@@ -53,8 +51,7 @@ class HeadersDialog(QDialog):
         props = json.loads(self.textEdit_properties.toPlainText())
 
         for k, v in props.items():
-            if type(v) is list:
-                props[k] = np.array(v)
+            props[k] = np.array(v)
 
         element.properties = props
 

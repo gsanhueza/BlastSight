@@ -107,7 +107,6 @@ class DFElement(Element):
     """
     Main accessors (Override)
     """
-
     @property
     def data(self) -> pd.DataFrame:
         return self._data

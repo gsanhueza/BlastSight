@@ -63,7 +63,7 @@ class Element:
         self.z = kwargs.get('z', [])
 
     def _fill_properties(self, *args, **kwargs):
-        self.color = kwargs.get('color', [1.0] * 3)
+        self.color = kwargs.get('color', np.random.rand(3))
         self.alpha = kwargs.get('alpha', 1.0)
 
     def _fill_metadata(self, *args, **kwargs):

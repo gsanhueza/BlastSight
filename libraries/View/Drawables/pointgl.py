@@ -14,15 +14,17 @@ class PointGL(GLDrawable):
     def setup_attributes(self) -> None:
         _POSITION = 0
         _COLOR = 1
-        _SIZE = 2
+        _ALPHA = 2
+        _SIZE = 3
 
         if self.vao is None:
             self.vao = glGenVertexArrays(1)
-            self.vbos = glGenBuffers(3)
+            self.vbos = glGenBuffers(4)
 
         # Data
         vertices = self.element.vertices.astype(np.float32)
-        colors = self.element.colors.astype(np.float32)
+        colors = self.element.color.astype(np.float32)
+        alpha = np.array([self.element.alpha], np.float32)
         sizes = self.element.point_size.astype(np.float32)
 
         self.num_points = sizes.size
@@ -39,18 +41,23 @@ class PointGL(GLDrawable):
         glVertexAttribPointer(_COLOR, 3, GL_FLOAT, False, 0, None)
 
         glBindBuffer(GL_ARRAY_BUFFER, self.vbos[2])
+        glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * alpha.size, alpha, GL_STATIC_DRAW)
+        glVertexAttribPointer(_ALPHA, 1, GL_FLOAT, False, 0, None)
+
+        glBindBuffer(GL_ARRAY_BUFFER, self.vbos[3])
         glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * sizes.size, sizes, GL_STATIC_DRAW)
         glVertexAttribPointer(_SIZE, 1, GL_FLOAT, False, 0, None)
 
+        # The attribute advances once per divisor instances of the set(s) of vertices being rendered
+        # And guess what, we have just 1 instance, exactly what we wanted!
+        glVertexAttribDivisor(_ALPHA, 1)
+
         glEnableVertexAttribArray(_POSITION)
         glEnableVertexAttribArray(_COLOR)
+        glEnableVertexAttribArray(_ALPHA)
         glEnableVertexAttribArray(_SIZE)
 
         glBindVertexArray(0)
-
-        del vertices
-        del colors
-        del sizes
 
     def draw(self):
         super().draw()
