@@ -25,12 +25,12 @@ class BlockGL(GLDrawable):
 
         # Data
         vertices = np.array(self.element.vertices, np.float32)
-        values = np.array(self.element.values, np.float32)
         block_size = np.array(self.element.block_size, np.float32)
         template, indices = self.generate_cube(block_size)
+        colors = self.element.color.astype(np.float32)
         alpha = np.array([self.element.alpha], np.float32)
 
-        self.num_cubes = values.size
+        self.num_cubes = vertices.size // 3
         self.num_indices = indices.size
 
         self.widget.makeCurrent()
@@ -39,7 +39,7 @@ class BlockGL(GLDrawable):
         # buffers = [(pointer, basesize, array)...]
         buffers = [(_POSITION, 3, vertices),
                    (_TEMPLATE, 3, template),
-                   (_COLOR, 1, values),
+                   (_COLOR, 3, colors),
                    (_ALPHA, 1, alpha),
                    ]
 

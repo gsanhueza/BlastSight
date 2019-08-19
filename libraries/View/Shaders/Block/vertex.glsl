@@ -2,11 +2,11 @@
 
 in vec3 a_position;
 in vec3 a_template;
-in float a_color;
+in vec3 a_color;
 in float a_alpha;
 
 out vec3 pos_mv;
-out float v_color;
+out vec3 v_color;
 out float v_alpha;
 
 uniform mat4 proj_matrix;

@@ -27,6 +27,8 @@ class DFElement(Element):
                 'vmax': float,
                 'size': float,
                 'alpha': float,
+                'colormap': str
+                'colors': list[list[float]] (Optional, auto-generated if None)
             }
             'metadata': {
                 'id': int,
@@ -158,6 +160,17 @@ class DFElement(Element):
     """
     Properties
     """
+
+    @property
+    def color(self):
+        if self.properties.get('color').size == 0:
+            return self.values_to_rgb(self.values, self.vmin, self.vmax, self.colormap)
+        return self.properties.get('color')
+
+    @property
+    def colormap(self) -> str:
+        return self.properties.get('colormap')
+
     @property
     def headers(self) -> list:
         return list(self.data.keys())
@@ -173,6 +186,14 @@ class DFElement(Element):
     @property
     def size(self) -> float:
         return self.properties.get('size')
+
+    @color.setter
+    def color(self, _colors: list):
+        self.properties['color'] = np.array(_colors)
+
+    @colormap.setter
+    def colormap(self, _colormap: str) -> None:
+        self.properties['colormap'] = _colormap
 
     @headers.setter
     def headers(self, _headers: list) -> None:
