@@ -17,7 +17,7 @@ from .colordialog import ColorDialog
 from .loadworker import LoadWorker
 
 
-class MineVis(QMainWindow):
+class MainWindow(QMainWindow):
     def __init__(self, parent=None):
         QMainWindow.__init__(self, parent)
         uic.loadUi(f'{pathlib.Path(__file__).parent}/UI/mainwindow.ui', self)

@@ -6,11 +6,11 @@ import sys
 
 def application():
     from qtpy.QtWidgets import QApplication
-    from minevis.view.gui.mainwindow import MineVis
+    from minevis.view.gui.mainwindow import MainWindow
 
     qt_app = QApplication(sys.argv)
 
-    w = MineVis()
+    w = MainWindow()
     w.show()
 
     sys.exit(qt_app.exec_())
