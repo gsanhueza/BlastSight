@@ -2,7 +2,7 @@
 
 import pytest
 from minevis.model.parsers.offparser import OFFParser as Parser
-from minevis.model.tests.globals import *
+from tests.globals import *
 
 
 class TestOFFParser:

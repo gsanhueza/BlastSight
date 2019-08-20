@@ -4,7 +4,7 @@ import pytest
 from minevis.model.parsers.offparser import OFFParser
 from minevis.model.parsers.csvparser import CSVParser
 from minevis.model.model import Model
-from minevis.model.tests.globals import *
+from tests.globals import *
 
 
 class TestModel:

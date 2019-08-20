@@ -3,7 +3,7 @@
 import os
 import pytest
 from minevis.model.parsers.h5pparser import H5PParser as Parser
-from minevis.model.tests.globals import *
+from tests.globals import *
 
 
 class TestH5PParser:

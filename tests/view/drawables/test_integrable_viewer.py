@@ -8,7 +8,8 @@ from minevis.view.drawables.meshgl import MeshGL
 from minevis.view.drawables.blockgl import BlockGL
 from minevis.view.drawables.pointgl import PointGL
 from minevis.view.gui.integrableviewer import IntegrableViewer
-from minevis.model.tests.globals import *
+
+from tests.globals import *
 
 
 class TestIntegrableViewer:

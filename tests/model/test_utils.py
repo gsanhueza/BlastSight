@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 from minevis.model.utils import *
-from ..elements.meshelement import MeshElement
+from minevis.model.elements.meshelement import MeshElement
 
 
 class TestUtils:

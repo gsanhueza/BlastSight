@@ -21,10 +21,11 @@ branch = True
 show_missing = True
 omit = 
     *__init__.py*
-    minevis/main.py
-    minevis/example.py
+    main.py
+    example.py
+    minevis/__main__.py
+    tests/*
     venv/*
-    minevis/*/tests/*
     setup.py
 ```
 

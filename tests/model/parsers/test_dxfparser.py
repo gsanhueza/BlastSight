@@ -2,7 +2,7 @@
 
 import pytest
 from minevis.model.parsers.dxfparser import DXFParser as Parser
-from minevis.model.tests.globals import *
+from tests.globals import *
 
 
 class TestDXFParser:
