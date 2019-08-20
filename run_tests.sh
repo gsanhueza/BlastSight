@@ -1,4 +1,4 @@
 #!/usr/bin/env sh
 
-pytest --cov=.
+pytest --cov=minevis
 

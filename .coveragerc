@@ -5,10 +5,5 @@ branch = True
 show_missing = True
 omit = 
     *__init__.py*
-    main.py
-    example.py
     minevis/__main__.py
-    tests/*
-    venv/*
-    setup.py
 
