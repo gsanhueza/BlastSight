@@ -9,36 +9,29 @@ from OpenGL.GL import *
 class BlockGL(GLDrawable):
     def __init__(self, widget=None, element=None):
         super().__init__(widget, element)
-
         self.num_cubes = 0
-        self.num_indices = 0
 
     def setup_attributes(self) -> None:
         _POSITION = 0
-        _TEMPLATE = 1
-        _COLOR = 2
-        _ALPHA = 3
+        _COLOR = 1
+        _ALPHA = 2
 
         if self.vao is None:
             self.vao = glGenVertexArrays(1)
-            self.vbos = glGenBuffers(5)
+            self.vbos = glGenBuffers(3)
 
         # Data
         vertices = np.array(self.element.vertices, np.float32)
-        block_size = np.array(self.element.block_size, np.float32)
-        template, indices = self.generate_cube(block_size)
-        colors = self.element.color.astype(np.float32)
+        colors = np.array(self.element.color, np.float32)
         alpha = np.array([self.element.alpha], np.float32)
 
         self.num_cubes = vertices.size // 3
-        self.num_indices = indices.size
 
         self.widget.makeCurrent()
         glBindVertexArray(self.vao)
 
         # buffers = [(pointer, basesize, array, glsize, gltype)]
         buffers = [(_POSITION, 3, vertices, GLfloat, GL_FLOAT),
-                   (_TEMPLATE, 3, template, GLfloat, GL_FLOAT),
                    (_COLOR, 3, colors, GLfloat, GL_FLOAT),
                    (_ALPHA, 1, alpha, GLfloat, GL_FLOAT),
                    ]
@@ -50,13 +43,7 @@ class BlockGL(GLDrawable):
             glVertexAttribPointer(pointer, basesize, gltype, False, 0, None)
             glEnableVertexAttribArray(pointer)
 
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, self.vbos[-1])
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices, GL_STATIC_DRAW)
-
-        glVertexAttribDivisor(_POSITION, 1)
-        glVertexAttribDivisor(_TEMPLATE, 0)
-        glVertexAttribDivisor(_COLOR, 1)
-        glVertexAttribDivisor(_ALPHA, -1)
+        glVertexAttribDivisor(_ALPHA, 1)
 
         glBindVertexArray(0)
 
@@ -66,36 +53,5 @@ class BlockGL(GLDrawable):
             return
 
         glBindVertexArray(self.vao)
-        glDrawElementsInstanced(GL_TRIANGLES, self.num_indices, GL_UNSIGNED_INT, None, self.num_cubes)
+        glDrawArrays(GL_POINTS, 0, self.num_cubes)
         glBindVertexArray(0)
-
-    # Taken from https://stackoverflow.com/questions/28375338/cube-using-single-gl-triangle-strip
-    @staticmethod
-    def generate_cube(size: np.ndarray) -> tuple:
-        cube_vertices = np.array([
-            [1, 1, -1],
-            [1, -1, -1],
-            [1, 1, 1],
-            [1, -1, 1],
-            [-1, 1, -1],
-            [-1, -1, -1],
-            [-1, 1, 1],
-            [-1, -1, 1],
-        ]) * size * 0.5
-
-        cube_indices = np.array([
-            [4, 2, 0],
-            [2, 7, 3],
-            [6, 5, 7],
-            [1, 7, 5],
-            [0, 3, 1],
-            [4, 1, 5],
-            [4, 6, 2],
-            [2, 6, 7],
-            [6, 4, 5],
-            [1, 3, 7],
-            [0, 2, 3],
-            [4, 0, 1],
-        ])
-
-        return cube_vertices.astype(np.float32), cube_indices.astype(np.uint32)
