@@ -36,18 +36,18 @@ class BlockGL(GLDrawable):
         self.widget.makeCurrent()
         glBindVertexArray(self.vao)
 
-        # buffers = [(pointer, basesize, array)...]
-        buffers = [(_POSITION, 3, vertices),
-                   (_TEMPLATE, 3, template),
-                   (_COLOR, 3, colors),
-                   (_ALPHA, 1, alpha),
+        # buffers = [(pointer, basesize, array, glsize, gltype)]
+        buffers = [(_POSITION, 3, vertices, GLfloat, GL_FLOAT),
+                   (_TEMPLATE, 3, template, GLfloat, GL_FLOAT),
+                   (_COLOR, 3, colors, GLfloat, GL_FLOAT),
+                   (_ALPHA, 1, alpha, GLfloat, GL_FLOAT),
                    ]
 
         for i, buf in enumerate(buffers):
-            pointer, basesize, array = buf
+            pointer, basesize, array, glsize, gltype = buf
             glBindBuffer(GL_ARRAY_BUFFER, self.vbos[i])
-            glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * array.size, array, GL_STATIC_DRAW)
-            glVertexAttribPointer(pointer, basesize, GL_FLOAT, False, 0, None)
+            glBufferData(GL_ARRAY_BUFFER, sizeof(glsize) * array.size, array, GL_STATIC_DRAW)
+            glVertexAttribPointer(pointer, basesize, gltype, False, 0, None)
             glEnableVertexAttribArray(pointer)
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, self.vbos[-1])

@@ -42,7 +42,7 @@ class PointElement(DFElement):
         self.marker = kwargs.get('marker', 'circle')
 
     def _fill_size(self, *args, **kwargs):
-        self.point_size = kwargs.get('point_size', [1.0] * self.x.size)
+        self.point_size = kwargs.get('point_size', 1.0)
 
     """
     Properties
@@ -66,8 +66,11 @@ class PointElement(DFElement):
         return self.properties.get('colormap')
 
     @point_size.setter
-    def point_size(self, size) -> None:
-        self.properties['size'] = np.tile(size, self.x.size) if type(size) is float else np.array(size)
+    def point_size(self, _size) -> None:
+        if type(_size) is float:
+            self.properties['size'] = np.tile(_size, self.x.size).astype(np.ubyte)
+        else:
+            self.properties['size'] = np.array(_size, np.ubyte)
 
     @marker.setter
     def marker(self, _marker: str) -> None:
