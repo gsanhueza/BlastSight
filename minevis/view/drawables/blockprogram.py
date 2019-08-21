@@ -2,6 +2,7 @@
 
 from qtpy.QtGui import QOpenGLShader
 from .shaderprogram import ShaderProgram
+from OpenGL.GL import *
 
 
 class BlockProgram(ShaderProgram):
@@ -10,7 +11,6 @@ class BlockProgram(ShaderProgram):
 
     def setup(self) -> None:
         super().setup()
-        self.add_uniform_loc('min_max')
 
     def setup_shaders(self):
         vertex_shader = QOpenGLShader(QOpenGLShader.Vertex)
@@ -24,6 +24,7 @@ class BlockProgram(ShaderProgram):
         self.shader_program.link()
 
     def draw(self):
+        glEnable(GL_CULL_FACE)
         for drawable in self.drawables:
-            self.update_uniform('min_max', drawable.element.vmin, drawable.element.vmax)
             drawable.draw()
+        glDisable(GL_CULL_FACE)

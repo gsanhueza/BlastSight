@@ -66,7 +66,6 @@ class BlockGL(GLDrawable):
             return
 
         glBindVertexArray(self.vao)
-        # np.array([[0, 1, 2]], type) has size 3, despite having only 1 list there
         glDrawElementsInstanced(GL_TRIANGLES, self.num_indices, GL_UNSIGNED_INT, None, self.num_cubes)
         glBindVertexArray(0)
 

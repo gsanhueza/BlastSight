@@ -6,18 +6,9 @@ in vec3 pos_mv;
 
 out vec4 out_color;
 
-uniform vec2 min_max;
-
-float lambertian(vec3 N, vec3 L)
-{
-    vec3 normalized_N = normalize(N);
-    vec3 normalized_L = normalize(L);
-    return max(dot(normalized_N, normalized_L), 0.0);
-}
-
 vec3 lambert(vec3 N, vec3 L, vec3 color)
 {
-    return color * lambertian(N, L);
+    return color * max(dot(normalize(N), normalize(L)), 0.0);
 }
 
 void main()
