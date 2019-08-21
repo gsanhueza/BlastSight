@@ -13,6 +13,7 @@ from .parsers.offparser import OFFParser
 from .parsers.h5mparser import H5MParser
 from .parsers.h5pparser import H5PParser
 from .parsers.csvparser import CSVParser
+from .parsers.outparser import OUTParser
 
 
 class Model:
@@ -25,6 +26,7 @@ class Model:
         self.add_parser('h5m', H5MParser)
         self.add_parser('h5p', H5PParser)
         self.add_parser('csv', CSVParser)
+        self.add_parser('out', OUTParser)
 
     def add_parser(self, extension: str, handler: type) -> None:
         self.parser_dict[extension] = handler
