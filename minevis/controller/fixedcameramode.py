@@ -4,9 +4,9 @@ from qtpy.QtCore import Qt, QPoint
 from .mode import Mode
 
 
-class NormalMode(Mode):
+class FixedCameraMode(Mode):
     def __init__(self):
-        print("MODE: Normal Mode")
+        print("MODE: Fixed Camera Mode")
         self.lastPos = None
 
     def mousePressEvent(self, event, widget):
@@ -17,13 +17,7 @@ class NormalMode(Mode):
         dy = event.y() - self.lastPos.y()
 
         widget.world.setToIdentity()
-        if event.buttons() == Qt.LeftButton:
-            self.set_x_rotation(widget, widget.xWorldRot + dy)
-            self.set_z_rotation(widget, widget.zWorldRot + dx)
-        elif event.buttons() == Qt.RightButton:
-            self.set_x_rotation(widget, widget.xWorldRot + dy)
-            self.set_y_rotation(widget, widget.yWorldRot + dx)
-        elif event.buttons() == Qt.MiddleButton:
+        if event.buttons() == Qt.MiddleButton:
             distance_x = abs(widget.zCameraPos + widget.centroid[2]) / widget.width()
             distance_y = abs(widget.zCameraPos + widget.centroid[2]) / widget.height()
             self.set_x_movement(widget, widget.xCameraPos + (distance_x * dx))

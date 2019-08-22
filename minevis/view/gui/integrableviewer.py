@@ -28,6 +28,7 @@ from ..fpscounter import FPSCounter
 
 from ...controller.normalmode import NormalMode
 from ...controller.selectionmode import SelectionMode
+from ...controller.fixedcameramode import FixedCameraMode
 
 from ...model.model import Model
 from ...model.utils import mesh_intersection
@@ -303,13 +304,24 @@ class IntegrableViewer(QOpenGLWidget):
     """
     Controller
     """
-    def set_normal_mode(self) -> None:
-        self.current_mode = NormalMode()
+    def set_controller_mode(self, mode: str):
+        controllers = {
+            'normal': NormalMode,
+            'select': SelectionMode,
+            'fixed': FixedCameraMode,
+        }
+
+        self.current_mode = controllers[mode]()
         self.update()
 
+    def set_normal_mode(self) -> None:
+        self.set_controller_mode('normal')
+
     def set_selection_mode(self) -> None:
-        self.current_mode = SelectionMode()
-        self.update()
+        self.set_controller_mode('select')
+
+    def set_fixed_camera_mode(self) -> None:
+        self.set_controller_mode('fixed')
 
     def take_screenshot(self):
         save_path = 'minevis_screenshot.png'
