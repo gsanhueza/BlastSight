@@ -89,12 +89,22 @@ def triangle_intersection(origin: np.ndarray, ray: np.ndarray, triangle: np.ndar
     return None
 
 
-def mesh_slice(mesh, plane_origin, plane_normal):
+def slice_mesh(mesh: MeshElement, plane_origin: np.ndarray, plane_normal: np.ndarray) -> np.ndarray:
     # Taken from https://pypi.org/project/meshcut/
     # Although we might want to have an improved version for real-time slicing
     import meshcut
     cut = meshcut.cross_section(mesh.vertices, mesh.indices, plane_origin, plane_normal)
     return np.concatenate(cut)
+
+
+def triangulate_slice(slice_vertices: np.ndarray) -> tuple:
+    from .polytri import triangulate
+    generator = triangulate(slice_vertices)
+    gen_list = list(generator)
+    triangles = np.concatenate(gen_list)
+    vertices, indices = np.unique(triangles, axis=0, return_inverse=True)
+
+    return vertices, indices
 
 
 def hsv_to_rgb(hsv):
