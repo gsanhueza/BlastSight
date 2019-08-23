@@ -44,10 +44,11 @@ class GLDrawable:
             self.initialize()
 
     def cleanup(self):
-        self.widget.makeCurrent()
-        glDeleteBuffers(len(self.vbos), self.vbos)
-        if self.vao is not None:
-            glDeleteVertexArrays(1, int(self.vao))
+        if self.is_initialized:
+            self.widget.makeCurrent()
+            glDeleteBuffers(len(self.vbos), self.vbos)
+            if self.vao is not None:
+                glDeleteVertexArrays(1, int(self.vao))
 
     """
     API for QTreeWidgetItem
