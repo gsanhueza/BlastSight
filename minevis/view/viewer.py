@@ -15,7 +15,7 @@ class Viewer(IntegrableViewer):
 
     def show(self):
         super().show()
-        sys.exit(self.app.exec_())
+        self.app.exec_()
 
     def dragEnterEvent(self, event, *args, **kwargs) -> None:
         super().dragEnterEvent(event, *args, **kwargs)
