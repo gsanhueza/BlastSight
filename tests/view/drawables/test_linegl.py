@@ -5,7 +5,7 @@ import pytest
 from minevis.model.elements.lineelement import LineElement
 from minevis.view.gui.integrableviewer import IntegrableViewer
 from minevis.view.drawables.linegl import LineGL
-from minevis.view.drawables.lineprogram import LineProgram
+from minevis.view.drawables.glprograms.lineprogram import LineProgram
 
 
 class TestLineGL:

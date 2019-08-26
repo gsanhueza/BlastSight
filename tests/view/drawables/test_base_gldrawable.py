@@ -21,10 +21,10 @@ class TestBaseDrawables:
     element.id = 0
 
     def test_base(self):
-        assert GLDrawable(widget=IntegrableViewer(), element=self.element)
+        assert GLDrawable(widget=self.widget, element=self.element)
 
     def test_drawable_id(self):
-        drawable = GLDrawable(widget=IntegrableViewer(), element=self.element)
+        drawable = GLDrawable(widget=self.widget, element=self.element)
         assert drawable.id == self.element.id
 
         drawable.id = 50

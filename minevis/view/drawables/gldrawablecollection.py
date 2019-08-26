@@ -11,14 +11,14 @@ from .tubegl import TubeGL
 from .backgroundgl import BackgroundGL
 from .axisgl import AxisGL
 
-from .meshprogram import MeshProgram
-from .wireframeprogram import WireframeProgram
-from .blockprogram import BlockProgram
-from .lineprogram import LineProgram
-from .pointprogram import PointProgram
-from .tubeprogram import TubeProgram
-from .backgroundprogram import BackgroundProgram
-from .axisprogram import AxisProgram
+from .glprograms.meshprogram import MeshProgram
+from .glprograms.wireframeprogram import WireframeProgram
+from .glprograms.blockprogram import BlockProgram
+from .glprograms.lineprogram import LineProgram
+from .glprograms.pointprogram import PointProgram
+from .glprograms.tubeprogram import TubeProgram
+from .glprograms.backgroundprogram import BackgroundProgram
+from .glprograms.axisprogram import AxisProgram
 
 
 class GLDrawableCollection(OrderedDict):

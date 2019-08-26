@@ -1,2 +1,2 @@
-include minevis/view/shaders/*/*
+include minevis/view/drawables/shaders/*/*
 include minevis/view/gui/UI/*

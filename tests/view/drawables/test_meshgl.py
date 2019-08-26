@@ -5,7 +5,7 @@ import pytest
 from minevis.model.elements.meshelement import MeshElement
 from minevis.view.gui.integrableviewer import IntegrableViewer
 from minevis.view.drawables.meshgl import MeshGL
-from minevis.view.drawables.meshprogram import MeshProgram
+from minevis.view.drawables.glprograms.meshprogram import MeshProgram
 
 
 class TestMeshGL:

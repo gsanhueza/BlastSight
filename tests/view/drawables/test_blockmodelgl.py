@@ -5,7 +5,7 @@ import pytest
 from minevis.model.elements.blockelement import BlockElement
 from minevis.view.gui.integrableviewer import IntegrableViewer
 from minevis.view.drawables.blockgl import BlockGL
-from minevis.view.drawables.blockprogram import BlockProgram
+from minevis.view.drawables.glprograms.blockprogram import BlockProgram
 
 
 class TestBlockModelGL:
