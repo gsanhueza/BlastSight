@@ -81,7 +81,7 @@ class TestIntegrableViewer:
     def test_integrable_viewer_add_block_model(self):
         widget = IntegrableViewer()
         widget.blocks(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], values=[0, 1, 2])
-        widget.block_model_by_path(f'{TEST_FILES_FOLDER_PATH}/mini.csv')
+        widget.blocks_by_path(f'{TEST_FILES_FOLDER_PATH}/mini.csv')
 
         assert widget.drawable_collection.__len__() == 2
         assert isinstance(widget.get_drawable(0), BlockGL)
@@ -94,7 +94,7 @@ class TestIntegrableViewer:
         assert added is None
         assert widget.drawable_collection.__len__() == 0
 
-        added = widget.block_model_by_path('')
+        added = widget.blocks_by_path('')
         assert added is None
         assert widget.drawable_collection.__len__() == 0
 

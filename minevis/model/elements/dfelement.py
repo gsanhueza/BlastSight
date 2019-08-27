@@ -27,8 +27,8 @@ class DFElement(Element):
                 'vmax': float,
                 'size': float,
                 'alpha': float,
-                'colormap': str
-                'colors': list[list[float]] (Optional, auto-generated if None)
+                'colormap': str (Optional, used if 'colors' were auto-generated)
+                'color': list[list[float]] (Optional, auto-generated from 'values' if None)
             }
             'metadata': {
                 'id': int,

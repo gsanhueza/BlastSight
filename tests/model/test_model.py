@@ -83,15 +83,15 @@ class TestModel:
         model = Model()
         path = f'{TEST_FILES_FOLDER_PATH}/mini.csv'
 
-        bm_1 = model.block_model_by_path(path=path)
-        bm_2 = model.block_model_by_path(path=path)
+        bm_1 = model.blocks_by_path(path=path)
+        bm_2 = model.blocks_by_path(path=path)
 
         assert bm_1.id != bm_2.id
 
     def test_wrong_blockmodel(self):
         model = Model()
         with pytest.raises(Exception):
-            model.block_model_by_path(f'{TEST_FILES_FOLDER_PATH}/nonexistent.csv')
+            model.blocks_by_path(f'{TEST_FILES_FOLDER_PATH}/nonexistent.csv')
 
     def test_get_blockmodel(self):
         model = Model()
@@ -262,7 +262,7 @@ class TestModel:
         model = Model()
         elem_1 = model.mesh_by_path(path=f'{TEST_FILES_FOLDER_PATH}/caseron.off')
         elem_2 = model.mesh_by_path(path=f'{TEST_FILES_FOLDER_PATH}/caseron.dxf')
-        elem_3 = model.block_model_by_path(path=f'{TEST_FILES_FOLDER_PATH}/mini.csv')
+        elem_3 = model.blocks_by_path(path=f'{TEST_FILES_FOLDER_PATH}/mini.csv')
 
         assert elem_1.id != elem_2.id != elem_3.id
 
@@ -270,7 +270,7 @@ class TestModel:
         model = Model()
         elem_1 = model.mesh_by_path(path=f'{TEST_FILES_FOLDER_PATH}/caseron.off')
         elem_2 = model.mesh_by_path(path=f'{TEST_FILES_FOLDER_PATH}/caseron.dxf')
-        elem_3 = model.block_model_by_path(path=f'{TEST_FILES_FOLDER_PATH}/mini.csv')
+        elem_3 = model.blocks_by_path(path=f'{TEST_FILES_FOLDER_PATH}/mini.csv')
 
         assert type(elem_1) == type(elem_2)
         assert type(elem_2) != type(elem_3)
@@ -286,7 +286,7 @@ class TestModel:
         model = Model()
         model.mesh_by_path(path=f'{TEST_FILES_FOLDER_PATH}/caseron.off')
         model.mesh_by_path(path=f'{TEST_FILES_FOLDER_PATH}/caseron.dxf')
-        model.block_model_by_path(path=f'{TEST_FILES_FOLDER_PATH}/mini.csv')
+        model.blocks_by_path(path=f'{TEST_FILES_FOLDER_PATH}/mini.csv')
 
         assert len(model.element_collection) == 3
         assert len(model.mesh_collection) == 2

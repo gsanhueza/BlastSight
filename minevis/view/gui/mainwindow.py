@@ -131,7 +131,7 @@ class MainWindow(QMainWindow):
                            path=path)
 
     def load_block_model(self, path: str) -> None:
-        self._load_element(method=self.viewer.block_model_by_path,
+        self._load_element(method=self.viewer.blocks_by_path,
                            path=path)
 
     def load_points(self, path: str) -> None:

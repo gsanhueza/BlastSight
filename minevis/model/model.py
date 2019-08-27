@@ -67,7 +67,7 @@ class Model:
 
         return self.mesh(vertices=vertices, indices=indices, *args, **kwargs)
 
-    def block_model_by_path(self, path: str, *args, **kwargs) -> BlockElement:
+    def blocks_by_path(self, path: str, *args, **kwargs) -> BlockElement:
         ext = path.split('.')[-1]
         info = self.get_parser(ext).load_file(path)
         data = info.data

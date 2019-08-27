@@ -158,8 +158,8 @@ class IntegrableViewer(QOpenGLWidget):
     def mesh_by_path(self, path: str, *args, **kwargs) -> MeshGL:
         return self.add_drawable(self.model.mesh_by_path, MeshGL, path, *args, **kwargs)
 
-    def block_model_by_path(self, path: str, *args, **kwargs) -> BlockGL:
-        return self.add_drawable(self.model.block_model_by_path, BlockGL, path, *args, **kwargs)
+    def blocks_by_path(self, path: str, *args, **kwargs) -> BlockGL:
+        return self.add_drawable(self.model.blocks_by_path, BlockGL, path, *args, **kwargs)
 
     def points_by_path(self, path: str, *args, **kwargs) -> PointGL:
         return self.add_drawable(self.model.points_by_path, PointGL, path, *args, **kwargs)
