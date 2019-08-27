@@ -1,11 +1,13 @@
 #!/usr/bin/env python
 
 import h5py
+import numpy as np
 from qtpy.QtCore import QFileInfo
 from .parserdata import ParserData
+from .parser import Parser
 
 
-class H5MParser:
+class H5MParser(Parser):
     @staticmethod
     def load_file(path: str) -> ParserData:
         assert path.lower().endswith('.h5m')
@@ -28,7 +30,22 @@ class H5MParser:
         return data
 
     @staticmethod
-    def save_file(path: str, vertices, indices, properties={}) -> None:
+    def save_file(*args, **kwargs) -> None:
+        path = kwargs.get('path', None)
+
+        if path is None:
+            raise KeyError('Path missing.')
+
+        vertices = kwargs.get('vertices', None)
+        indices = kwargs.get('indices', None)
+
+        if vertices is None or indices is None:
+            data = kwargs.get('data', {})
+            vertices = np.column_stack((data['x'], data['y'], data['z']))
+            indices = data.get('indices', [])
+
+        properties = kwargs.get('properties', {})
+
         path = path if path.endswith('.h5m') else f'{path}.h5m'
         hf = h5py.File(path, 'w')
         hf.create_dataset('vertices', data=vertices, dtype='float32')

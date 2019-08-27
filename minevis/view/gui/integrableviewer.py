@@ -165,6 +165,18 @@ class IntegrableViewer(QOpenGLWidget):
         return self.add_drawable(self.model.points_by_path, PointGL, path, *args, **kwargs)
 
     """
+    Export methods
+    """
+    def export_mesh(self, path, id_):
+        self.model.export_mesh(path, id_)
+
+    def export_blocks(self, path, id_):
+        self.model.export_blocks(path, id_)
+
+    def export_points(self, path, id_):
+        self.model.export_points(path, id_)
+
+    """
     Individual drawable manipulation
     """
     def show_drawable(self, id_: int) -> None:

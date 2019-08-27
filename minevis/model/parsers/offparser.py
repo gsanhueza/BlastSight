@@ -2,9 +2,10 @@
 
 from qtpy.QtCore import QFileInfo
 from .parserdata import ParserData
+from .parser import Parser
 
 
-class OFFParser:
+class OFFParser(Parser):
     @staticmethod
     def load_file(path: str) -> ParserData:
         assert path.lower().endswith('off')
@@ -26,3 +27,7 @@ class OFFParser:
             data.properties = properties
 
             return data
+
+    @staticmethod
+    def save_file(path: str, *args, **kwargs):
+        raise NotImplementedError

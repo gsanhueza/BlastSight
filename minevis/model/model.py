@@ -8,6 +8,7 @@ from .elements.lineelement import LineElement
 from .elements.meshelement import MeshElement
 from .elements.tubeelement import TubeElement
 
+from .parsers.parser import Parser
 from .parsers.dxfparser import DXFParser
 from .parsers.offparser import OFFParser
 from .parsers.h5mparser import H5MParser
@@ -31,9 +32,12 @@ class Model:
     def add_parser(self, extension: str, handler: type) -> None:
         self.parser_dict[extension] = handler
 
-    def get_parser(self, ext: str) -> type:
+    def get_parser(self, ext: str) -> Parser:
         return self.parser_dict.get(ext.lower(), None)
 
+    """
+    Element loading
+    """
     def _element(self, element_type: type, *args, **kwargs):
         element = element_type(*args, **kwargs)
         self.element_collection.add(element)
@@ -89,6 +93,29 @@ class Model:
 
         return self.points(data=data, *args, **kwargs)
 
+    """
+    Element exporting
+    """
+    def export(self, path, id_):
+        element = self.get(id_)
+        ext = path.split('.')[-1]
+
+        self.get_parser(ext).save_file(path=path,
+                                       data=element.data,
+                                       properties=element.properties)
+
+    def export_mesh(self, path, id_):
+        self.export(path, id_)
+
+    def export_blocks(self, path, id_):
+        self.export(path, id_)
+
+    def export_points(self, path, id_):
+        self.export(path, id_)
+
+    """
+    Element handling
+    """
     def get(self, id_: int) -> Element:
         return self.element_collection[id_]
 

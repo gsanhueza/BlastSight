@@ -3,9 +3,10 @@
 import pandas as pd
 from qtpy.QtCore import QFileInfo
 from .parserdata import ParserData
+from .parser import Parser
 
 
-class OUTParser:
+class OUTParser(Parser):
     @staticmethod
     def load_file(path: str) -> ParserData:
         assert path.lower().endswith('out')
@@ -22,3 +23,7 @@ class OUTParser:
             data.properties = properties
 
             return data
+
+    @staticmethod
+    def save_file(*args, **kwargs) -> None:
+        raise NotImplementedError

@@ -3,9 +3,10 @@
 import pandas as pd
 from qtpy.QtCore import QFileInfo
 from .parserdata import ParserData
+from .parser import Parser
 
 
-class H5PParser:
+class H5PParser(Parser):
     @staticmethod
     def load_file(path: str) -> ParserData:
         assert path.lower().endswith('.h5p')
@@ -28,7 +29,15 @@ class H5PParser:
         return data
 
     @staticmethod
-    def save_file(path: str, data, properties={}) -> None:
+    def save_file(*args, **kwargs) -> None:
+        path = kwargs.get('path', None)
+
+        if path is None:
+            raise KeyError('Path missing.')
+
+        data = kwargs.get('data', [])
+        properties = kwargs.get('properties', {})
+
         path = path if path.endswith('.h5p') else f'{path}.h5p'
 
         store = pd.HDFStore(path, 'w')

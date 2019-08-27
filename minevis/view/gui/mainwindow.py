@@ -82,6 +82,9 @@ class MainWindow(QMainWindow):
         self.viewer.file_modified_signal.connect(self.fill_tree_widget)
         self.treeWidget.headers_triggered_signal.connect(self.headers_dialog)
         self.treeWidget.colors_triggered_signal.connect(self.color_dialog)
+        self.treeWidget.export_mesh_signal.connect(self.export_mesh_dialog)
+        self.treeWidget.export_blocks_signal.connect(self.export_blocks_dialog)
+        self.treeWidget.export_points_signal.connect(self.export_points_dialog)
 
     @property
     def viewer(self):
@@ -109,6 +112,36 @@ class MainWindow(QMainWindow):
     def color_dialog(self, id_):
         dialog = ColorDialog(self.viewer, id_)
         dialog.show()
+
+    def export_mesh_dialog(self, id_):
+        (path, selected_filter) = QFileDialog.getSaveFileName(
+            parent=self,
+            caption='Export mesh',
+            directory=self.viewer.get_drawable(id_).element.name,
+            filter='MineVis mesh (*.h5m);;')
+
+        if path != '':
+            self.viewer.export_mesh(path, id_)
+
+    def export_blocks_dialog(self, id_):
+        (path, selected_filter) = QFileDialog.getSaveFileName(
+            parent=self,
+            caption='Export blocks',
+            directory=self.viewer.get_drawable(id_).element.name,
+            filter='MineVis blocks (*.h5p);;')
+
+        if path != '':
+            self.viewer.export_blocks(path, id_)
+
+    def export_points_dialog(self, id_):
+        (path, selected_filter) = QFileDialog.getSaveFileName(
+            parent=self,
+            caption='Export points',
+            directory=self.viewer.get_drawable(id_).element.name,
+            filter='MineVis points (*.h5p);;')
+
+        if path != '':
+            self.viewer.export_blocks(path, id_)
 
     def camera_properties_dialog(self):
         dialog = CameraPropertiesDialog(self.viewer)

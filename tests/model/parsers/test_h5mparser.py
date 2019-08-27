@@ -8,7 +8,7 @@ from tests.globals import *
 
 class TestH5MParser:
     def test_load_file(self):
-        info = Parser.load_file(f'{TEST_FILES_FOLDER_PATH}/caseron.h5m')
+        info = Parser.load_file(path=f'{TEST_FILES_FOLDER_PATH}/caseron.h5m')
         vertices = info.vertices
         indices = info.indices
         properties = info.properties
@@ -18,14 +18,15 @@ class TestH5MParser:
         assert properties.get('ext', '') == 'h5m'
 
     def test_save_file(self):
-        info = Parser.load_file(f'{TEST_FILES_FOLDER_PATH}/caseron.h5m')
+        info = Parser.load_file(path=f'{TEST_FILES_FOLDER_PATH}/caseron.h5m')
         vertices = info.vertices
         indices = info.indices
 
         properties = {'color': [1.0, 0.6, 0.2], 'alpha': 0.5}
 
-        Parser.save_file(f'{TEST_FILES_FOLDER_PATH}/caseron_save.h5m', vertices, indices, properties)
-        info_s = Parser.load_file(f'{TEST_FILES_FOLDER_PATH}/caseron_save.h5m')
+        Parser.save_file(path=f'{TEST_FILES_FOLDER_PATH}/caseron_save.h5m',
+                         vertices=vertices, indices=indices, properties=properties)
+        info_s = Parser.load_file(path=f'{TEST_FILES_FOLDER_PATH}/caseron_save.h5m')
         vertices_s = info_s.vertices
         indices_s = info_s.indices
         properties_s = info_s.properties
@@ -51,12 +52,12 @@ class TestH5MParser:
 
     def test_load_inexistent(self):
         with pytest.raises(Exception):
-            Parser.load_file(f'{TEST_FILES_FOLDER_PATH}/nonexistent.h5m')
+            Parser.load_file(path=f'{TEST_FILES_FOLDER_PATH}/nonexistent.h5m')
 
     def test_load_wrong_extension(self):
         with pytest.raises(Exception):
-            Parser.load_file(f'{TEST_FILES_FOLDER_PATH}/caseron.dxf')
+            Parser.load_file(path=f'{TEST_FILES_FOLDER_PATH}/caseron.dxf')
 
     def test_load_damaged(self):
         with pytest.raises(Exception):
-            Parser.load_file(f'{TEST_FILES_FOLDER_PATH}/bad.h5m')
+            Parser.load_file(path=f'{TEST_FILES_FOLDER_PATH}/bad.h5m')

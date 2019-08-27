@@ -15,6 +15,9 @@ from ..drawables.pointgl import PointGL
 class TreeWidget(QTreeWidget):
     headers_triggered_signal = Signal(int)
     colors_triggered_signal = Signal(int)
+    export_mesh_signal = Signal(int)
+    export_blocks_signal = Signal(int)
+    export_points_signal = Signal(int)
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -57,6 +60,9 @@ class TreeWidget(QTreeWidget):
         action_wireframe = QAction('&Toggle wireframe', self)
         action_headers = QAction('H&eaders', self)
         action_colors = QAction('C&olors', self)
+        action_export_mesh = QAction('&Export mesh', self)
+        action_export_blocks = QAction('Export &blocks', self)
+        action_export_points = QAction('Export &points', self)
 
         # Icons
         icon = QIcon.fromTheme('show-hidden')
@@ -73,6 +79,12 @@ class TreeWidget(QTreeWidget):
         action_center_camera.setIcon(icon)
         icon = QIcon.fromTheme('colormanagement')
         action_colors.setIcon(icon)
+        icon = QIcon.fromTheme('document-export')
+        action_export_mesh.setIcon(icon)
+        icon = QIcon.fromTheme('document-export')
+        action_export_blocks.setIcon(icon)
+        icon = QIcon.fromTheme('document-export')
+        action_export_points.setIcon(icon)
 
         # Action commands
         action_show.triggered.connect(item.show)
@@ -80,8 +92,13 @@ class TreeWidget(QTreeWidget):
         action_delete.triggered.connect(item.delete)
         action_wireframe.triggered.connect(item.toggle_wireframe)
         action_center_camera.triggered.connect(item.center_camera)
+
         action_headers.triggered.connect(lambda: self.headers_triggered_signal.emit(item.drawable.id))
         action_colors.triggered.connect(lambda: self.colors_triggered_signal.emit(item.drawable.id))
+
+        action_export_mesh.triggered.connect(lambda: self.export_mesh_signal.emit(item.drawable.id))
+        action_export_blocks.triggered.connect(lambda: self.export_blocks_signal.emit(item.drawable.id))
+        action_export_points.triggered.connect(lambda: self.export_points_signal.emit(item.drawable.id))
 
         # Add actions depending on item type
         menu.addAction(action_show)
@@ -91,10 +108,17 @@ class TreeWidget(QTreeWidget):
         if item.type == MeshGL:
             menu.addAction(action_wireframe)
             menu.addAction(action_colors)
-        elif item.type == BlockGL or item.type == PointGL:
+            menu.addSeparator()
+            menu.addAction(action_export_mesh)
+        elif item.type == BlockGL:
             menu.addAction(action_headers)
+            menu.addSeparator()
+            menu.addAction(action_export_blocks)
+        elif item.type == PointGL:
+            menu.addAction(action_headers)
+            menu.addSeparator()
+            menu.addAction(action_export_points)
 
-        menu.addSeparator()
         menu.addAction(action_delete)
 
         menu.exec_(global_pos)

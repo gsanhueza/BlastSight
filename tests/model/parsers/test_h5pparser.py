@@ -8,7 +8,7 @@ from tests.globals import *
 
 class TestH5PParser:
     def test_load_simple_file(self):
-        info = Parser.load_file(f'{TEST_FILES_FOLDER_PATH}/mini.h5p')
+        info = Parser.load_file(path=f'{TEST_FILES_FOLDER_PATH}/mini.h5p')
         data = info.data
         assert data is not None
         assert data['x'] is not None
@@ -20,11 +20,11 @@ class TestH5PParser:
             assert data['abc']
 
     def test_save_file(self):
-        info = Parser.load_file(f'{TEST_FILES_FOLDER_PATH}/mini.h5p')
+        info = Parser.load_file(path=f'{TEST_FILES_FOLDER_PATH}/mini.h5p')
         data = info.data
-        Parser.save_file(f'{TEST_FILES_FOLDER_PATH}/mini_save.h5p', data)
+        Parser.save_file(path=f'{TEST_FILES_FOLDER_PATH}/mini_save.h5p', data=data)
 
-        info_s = Parser.load_file(f'{TEST_FILES_FOLDER_PATH}/mini_save.h5p')
+        info_s = Parser.load_file(path=f'{TEST_FILES_FOLDER_PATH}/mini_save.h5p')
         data_s = info_s.data
 
         for k, k_s in zip(data.keys(), data_s.keys()):
@@ -39,18 +39,18 @@ class TestH5PParser:
 
     def test_load_inexistent(self):
         with pytest.raises(Exception):
-            Parser.load_file(f'{TEST_FILES_FOLDER_PATH}/nonexistent.h5p')
+            Parser.load_file(path=f'{TEST_FILES_FOLDER_PATH}/nonexistent.h5p')
 
     def test_load_wrong_extension(self):
         with pytest.raises(Exception):
-            Parser.load_file(f'{TEST_FILES_FOLDER_PATH}/caseron.off')
+            Parser.load_file(path=f'{TEST_FILES_FOLDER_PATH}/caseron.off')
 
     def test_load_damaged(self):
         with pytest.raises(Exception):
-            Parser.load_file(f'{TEST_FILES_FOLDER_PATH}/bad.h5p')
+            Parser.load_file(path=f'{TEST_FILES_FOLDER_PATH}/bad.h5p')
 
     def test_load_complex_file(self):
-        info = Parser.load_file(f'{TEST_FILES_FOLDER_PATH}/complex.h5p')
+        info = Parser.load_file(path=f'{TEST_FILES_FOLDER_PATH}/complex.h5p')
         data = info.data
         assert data is not None
         assert data['x'] is not None

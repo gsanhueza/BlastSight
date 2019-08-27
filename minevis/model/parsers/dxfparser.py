@@ -4,9 +4,10 @@ import dxfgrabber
 from qtpy.QtCore import QFileInfo
 from collections import OrderedDict
 from .parserdata import ParserData
+from .parser import Parser
 
 
-class DXFParser:
+class DXFParser(Parser):
     @staticmethod
     def load_file(path: str) -> ParserData:
         assert path.lower().endswith('dxf')
@@ -42,3 +43,7 @@ class DXFParser:
         data.properties = properties
 
         return data
+
+    @staticmethod
+    def save_file(path: str, *args, **kwargs):
+        raise NotImplementedError
