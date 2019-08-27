@@ -7,7 +7,7 @@ from ..utils import hsv_to_rgb
 
 
 class DFElement(Element):
-    __slots__ = ['_mapper']
+    __slots__ = ['_mapper', '_datasets']
 
     def __init__(self, *args, **kwargs):
         """
@@ -21,14 +21,15 @@ class DFElement(Element):
                 'z': list[float],
                 'values: list[float],
             },
+            'datasets': {
+                'color': list[list[float]] (Optional, auto-generated from 'values' if None)
+            },
             'properties': {
                 'headers': list[str],
                 'vmin': float,
                 'vmax': float,
-                'size': float,
                 'alpha': float,
-                'colormap': str (Optional, used if 'colors' were auto-generated)
-                'color': list[list[float]] (Optional, auto-generated from 'values' if None)
+                'colormap': str (Optional, used from 'values')
             }
             'metadata': {
                 'id': int,
@@ -37,14 +38,21 @@ class DFElement(Element):
             }
         }
 
-        Where 'data' will be implemented as a Pandas DataFrame, and has at least 4 keys.
+        The 'data' dictionary has at least 4 keys, but it can be more than 4.
+        It will be implemented as a Pandas DataFrame.
+        They don't need to be named 'x, y, z, values' (see self.mapper).
+
+        The 'datasets' dictionary was created because some properties
+        might get too big to fit in an HDF5 attribute.
+        It's expected to be used by children of this class.
         """
         # Base data
         self._data: pd.DataFrame = pd.DataFrame()
-        self._mapper: dict = {'x': 'x', 'y': 'y', 'z': 'z', 'values': 'values'}
+        self._datasets: dict = {}
         self._properties: dict = {}
         self._metadata: dict = {'id': -1}
 
+        self._mapper: dict = {'x': 'x', 'y': 'y', 'z': 'z', 'values': 'values'}
         super()._initialize(*args, **kwargs)
 
     """
@@ -91,11 +99,6 @@ class DFElement(Element):
             self.vmin = kwargs.get('vmin', 0.0)
             self.vmax = kwargs.get('vmax', 1.0)
 
-        self._fill_size(*args, **kwargs)
-
-    def _fill_size(self, *args, **kwargs):
-        self.size = kwargs.get('size', 1.0)
-
     def _fill_metadata(self, *args, **kwargs):
         self.name = kwargs.get('name', None)
         self.extension = kwargs.get('ext', None)
@@ -123,6 +126,10 @@ class DFElement(Element):
     @property
     def mapper(self) -> dict:
         return self._mapper
+
+    @property
+    def datasets(self) -> dict:
+        return self._datasets
 
     """
     Data
@@ -164,17 +171,13 @@ class DFElement(Element):
     """
     @property
     def color(self):
-        if self.properties.get('color').size == 0:
+        if self.datasets.get('color').size == 0:
             return self.values_to_rgb(self.values, self.vmin, self.vmax, self.colormap)
-        return self.properties.get('color')
+        return self.datasets.get('color')
 
     @property
     def colormap(self) -> str:
         return self.properties.get('colormap')
-
-    @property
-    def headers(self) -> list:
-        return list(self.data.keys())
 
     @property
     def vmin(self) -> float:
@@ -184,21 +187,17 @@ class DFElement(Element):
     def vmax(self) -> float:
         return self.properties.get('vmax')
 
-    @property
-    def size(self) -> float:
-        return self.properties.get('size')
-
     @color.setter
     def color(self, _colors: list):
-        self.properties['color'] = np.array(_colors)
+        self.datasets['color'] = np.array(_colors)
+
+    @property
+    def headers(self) -> list:
+        return list(self.data.keys())
 
     @colormap.setter
     def colormap(self, _colormap: str) -> None:
         self.properties['colormap'] = _colormap
-
-    @headers.setter
-    def headers(self, _headers: list) -> None:
-        self.mapper['x'], self.mapper['y'], self.mapper['z'], self.mapper['values'] = _headers
 
     @vmin.setter
     def vmin(self, _vmin: float) -> None:
@@ -208,9 +207,9 @@ class DFElement(Element):
     def vmax(self, _vmax: float) -> None:
         self.properties['vmax'] = _vmax
 
-    @size.setter
-    def size(self, _size: float) -> None:
-        self.properties['size'] = _size
+    @headers.setter
+    def headers(self, _headers: list) -> None:
+        self.mapper['x'], self.mapper['y'], self.mapper['z'], self.mapper['values'] = _headers
 
     """
     Utilities

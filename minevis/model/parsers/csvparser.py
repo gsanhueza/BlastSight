@@ -12,7 +12,7 @@ class CSVParser:
 
         # Metadata
         properties = {
-            'name': QFileInfo(path).baseName(),
+            'name': QFileInfo(path).completeBaseName(),
             'ext': QFileInfo(path).suffix()
         }
 

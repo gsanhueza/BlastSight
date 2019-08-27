@@ -3,7 +3,25 @@
 
 class ParserData:
     def __init__(self):
-        # Original idea is {'data': {'vertices': [], 'indices': []}, 'properties': {}}
+        """
+        For meshes:
+        {
+            'data': {
+                'vertices': list[list[float]],
+                'indices': list[int]
+            },
+            'properties': {
+                'color': list[float],
+                'alpha': float
+            }
+        }
+
+        For blocks/points:
+        {
+            'data': Pandas DataFrame,
+            'properties': dict of properties
+        }
+        """
         self._data = {'data': {}, 'properties': {}}
 
     @property

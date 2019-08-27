@@ -16,15 +16,16 @@ class PointElement(DFElement):
                 'z': list[float],
                 'values: list[float],
             },
+            'datasets': {
+                'size': list[float], (Each point has its own size in 1D)
+                'color': list[list[float]] (Optional, auto-generated from 'values' if None)
+            },
             'properties': {
-                'header_position': list[str],
-                'header_value': str,
+                'headers': list[str],
                 'vmin': float,
                 'vmax': float,
-                'size': list[list[float]],
                 'alpha': float,
-                'colormap': str
-                'colors': list[list[float]] (Optional, auto-generated if None)
+                'colormap': str (Optional, used from 'values')
             }
             'metadata': {
                 'id': int,
@@ -33,15 +34,15 @@ class PointElement(DFElement):
             }
         }
 
-        Where 'data' will be implemented as a Pandas DataFrame.
+        In a PointElement, each point has its own 1D size, and each block has its own color.
+        If the user didn't specify colors, they will be auto-calculated from 'values' and 'colormap'.
+        The rest of the explanation is in DFElement class.
         """
         super().__init__(*args, **kwargs)
 
     def _fill_properties(self, *args, **kwargs):
         super()._fill_properties(*args, **kwargs)
         self.marker = kwargs.get('marker', 'circle')
-
-    def _fill_size(self, *args, **kwargs):
         self.point_size = kwargs.get('point_size', 1.0)
 
     """
@@ -49,37 +50,19 @@ class PointElement(DFElement):
     """
     @property
     def point_size(self) -> np.ndarray:
-        return self.properties.get('size')
+        return self.datasets.get('size')
 
     @property
     def marker(self) -> str:
         return self.properties.get('marker')
 
-    @property
-    def color(self):
-        if self.properties.get('color').size == 0:
-            return self.values_to_rgb(self.values, self.vmin, self.vmax, self.colormap)
-        return self.properties.get('color')
-
-    @property
-    def colormap(self) -> str:
-        return self.properties.get('colormap')
-
     @point_size.setter
     def point_size(self, _size) -> None:
         if type(_size) is float:
-            self.properties['size'] = np.tile(_size, self.x.size).astype(np.ubyte)
+            self.datasets['size'] = np.tile(_size, self.x.size).astype(np.ubyte)
         else:
-            self.properties['size'] = np.array(_size, np.ubyte)
+            self.datasets['size'] = np.array(_size, np.ubyte)
 
     @marker.setter
     def marker(self, _marker: str) -> None:
         self.properties['marker'] = _marker
-
-    @color.setter
-    def color(self, _colors: list):
-        self.properties['color'] = np.array(_colors)
-
-    @colormap.setter
-    def colormap(self, _colormap: str) -> None:
-        self.properties['colormap'] = _colormap

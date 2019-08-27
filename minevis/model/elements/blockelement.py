@@ -16,15 +16,16 @@ class BlockElement(DFElement):
                 'z': list[float],
                 'values: list[float],
             },
+            'datasets': {
+                'color': list[list[float]] (Optional, auto-generated from 'values' if None)
+            },
             'properties': {
-                'header_position': list[str],
-                'header_value': str,
+                'headers': list[str],
                 'vmin': float,
                 'vmax': float,
-                'size': list[float],
                 'alpha': float,
-                'colormap': str
-                'colors': list[list[float]] (Optional, auto-generated if None)
+                'size': float,
+                'colormap': str (Optional, used from 'values')
             }
             'metadata': {
                 'id': int,
@@ -33,12 +34,16 @@ class BlockElement(DFElement):
             }
         }
 
-        Where 'data' will be implemented as a Pandas DataFrame.
+        In a BlockElement, all blocks have the same 3D size, but each block has its own color.
+        If the user didn't specify colors, they will be auto-calculated from 'values' and 'colormap'.
+        The rest of the explanation is in DFElement class.
         """
         super().__init__(*args, **kwargs)
 
-    def _fill_size(self, *args, **kwargs):
+    def _fill_properties(self, *args, **kwargs):
+        super()._fill_properties(*args, **kwargs)
         self.block_size = kwargs.get('block_size', [1.0, 1.0, 1.0])
+
     """
     Properties
     """
