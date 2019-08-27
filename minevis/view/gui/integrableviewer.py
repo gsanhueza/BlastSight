@@ -180,11 +180,11 @@ class IntegrableViewer(QOpenGLWidget):
     Individual drawable manipulation
     """
     def show_drawable(self, id_: int) -> None:
-        self.drawable_collection[id_].show()
+        self.get_drawable(id_).show()
         self.update()
 
     def hide_drawable(self, id_: int) -> None:
-        self.drawable_collection[id_].hide()
+        self.get_drawable(id_).hide()
         self.update()
 
     def get_drawable(self, id_: int):
@@ -210,9 +210,8 @@ class IntegrableViewer(QOpenGLWidget):
         self.centroid = drawable.element.centroid
         self.camera_position = drawable.element.centroid
 
-        dx = abs(drawable.element.x.max() - drawable.element.x.min())
-        dy = abs(drawable.element.y.max() - drawable.element.y.min())
-        dz = abs(drawable.element.z.max() - drawable.element.z.min())
+        min_bound, max_bound = drawable.element.bounding_box
+        dx, dy, dz = max_bound - min_bound
 
         # Put the camera in a position that allow us to see the element
         self.zCameraPos -= 1.2 * max(dx, dy, dz) / math.tan(math.pi / 4)

@@ -19,10 +19,9 @@ def mesh_intersection(origin: np.ndarray, ray: np.ndarray, mesh: MeshElement) ->
     return [x for x in results if x is not None]
 
 
-def aabb_intersection(origin, ray, mesh):
+def aabb_intersection(origin: np.ndarray, ray: np.ndarray, mesh: MeshElement):
     # Adapted from https://tavianator.com/fast-branchless-raybounding-box-intersections-part-2-nans/
-    b_min = np.array([mesh.x.min(), mesh.y.min(), mesh.z.min()])
-    b_max = np.array([mesh.x.max(), mesh.y.max(), mesh.z.max()])
+    b_min, b_max = mesh.bounding_box
     b_diff = b_max - b_min
 
     if b_diff.min() == 0.0:  # Flat mesh means AABB unreliable

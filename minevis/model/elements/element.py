@@ -169,6 +169,13 @@ class Element:
     def centroid(self) -> np.ndarray:
         return np.array([self.x.mean(), self.y.mean(), self.z.mean()])
 
+    @property
+    def bounding_box(self) -> tuple:
+        min_bounds = self.vertices.min(axis=0)
+        max_bounds = self.vertices.max(axis=0)
+
+        return min_bounds, max_bounds
+
     """
     Metadata
     """
