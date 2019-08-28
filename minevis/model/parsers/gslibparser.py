@@ -6,7 +6,7 @@ from .parserdata import ParserData
 from .parser import Parser
 
 
-class OUTParser(Parser):
+class GSLibParser(Parser):
     @staticmethod
     def load_file(path: str) -> ParserData:
         assert path.lower().endswith('out')
@@ -17,9 +17,11 @@ class OUTParser(Parser):
             'ext': QFileInfo(path).suffix()
         }
 
+        header_count, headers = GSLibParser.get_header_info(path)
+
         with open(path, 'r') as f:
             data = ParserData()
-            data.data = pd.read_csv(f, header=None, prefix='col_', sep=' ')
+            data.data = pd.read_csv(f, sep=' ', header=None, names=headers, skiprows=header_count + 2)
             data.properties = properties
 
             return data
@@ -27,3 +29,11 @@ class OUTParser(Parser):
     @staticmethod
     def save_file(*args, **kwargs) -> None:
         raise NotImplementedError
+
+    @staticmethod
+    def get_header_info(path: str) -> tuple:
+        with open(path, 'r') as gslib_file:
+            gslib_file.readline()
+            header_count = int(gslib_file.readline().strip().split()[0])
+            headers = [gslib_file.readline().strip().split()[0] for _ in range(header_count)]
+            return header_count, headers

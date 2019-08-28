@@ -197,7 +197,7 @@ class MainWindow(QMainWindow):
                                 filters='Data Files (*.csv *.h5p *.out);;'
                                         'CSV Files (*.csv);;'
                                         'H5P Files (*.h5p);;'
-                                        'OUT Files (*.out);;'
+                                        'GSLib Files (*.out);;'
                                         'All Files (*.*)')
 
     def load_points_slot(self) -> None:
@@ -205,7 +205,7 @@ class MainWindow(QMainWindow):
                                 filters='Data Files (*.csv *.h5p *.out);;'
                                         'CSV Files (*.csv);;'
                                         'H5P Files (*.h5p);;'
-                                        'OUT Files (*.out);;'
+                                        'GSLib Files (*.out);;'
                                         'All Files (*.*)')
 
     def normal_mode_slot(self) -> None:
