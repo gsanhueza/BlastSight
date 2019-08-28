@@ -63,7 +63,7 @@ class MeshElement(Element):
     def volume(self):
         # Idea from https://www.geometrictools.com/Documentation/PolyhedralMassProperties.pdf
         # Optimizations taken from https://github.com/mikedh/trimesh/blob/master/trimesh/triangles.py
-        triangles = self.vertices.view(np.ndarray)[self.indices]
+        triangles = self.vertices[self.indices]
 
         vectors = np.diff(triangles, axis=1)
         crosses = np.cross(vectors[:, 0], vectors[:, 1])
