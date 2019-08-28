@@ -25,7 +25,7 @@ class PointGL(GLDrawable):
         vertices = self.element.vertices.astype(np.float32)
         colors = self.element.color.astype(np.float32)
         alpha = np.array([self.element.alpha], np.float32)
-        sizes = self.element.point_size.astype(np.ubyte)
+        sizes = self.element.point_size.astype(np.uint16)
 
         self.num_points = sizes.size
 
@@ -36,7 +36,7 @@ class PointGL(GLDrawable):
         buffers = [(_POSITION, 3, vertices, GLfloat, GL_FLOAT),
                    (_COLOR, 3, colors, GLfloat, GL_FLOAT),
                    (_ALPHA, 1, alpha, GLfloat, GL_FLOAT),
-                   (_SIZE, 1, sizes, GLubyte, GL_UNSIGNED_BYTE)  # Point size = [0, 255]
+                   (_SIZE, 1, sizes, GLushort, GL_UNSIGNED_SHORT)  # Point size = [0, 65535]
                    ]
 
         for i, buf in enumerate(buffers):

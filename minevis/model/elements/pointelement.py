@@ -59,9 +59,9 @@ class PointElement(DFElement):
     @point_size.setter
     def point_size(self, _size) -> None:
         if type(_size) is float:
-            self.datasets['size'] = np.tile(_size, self.x.size).astype(np.ubyte)
+            self.datasets['size'] = np.tile(_size, self.x.size).astype(np.uint16)
         else:
-            self.datasets['size'] = np.array(_size, np.ubyte)
+            self.datasets['size'] = np.array(_size, np.uint16)
 
     @marker.setter
     def marker(self, _marker: str) -> None:
