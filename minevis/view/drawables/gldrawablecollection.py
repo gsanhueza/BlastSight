@@ -26,12 +26,12 @@ class GLDrawableCollection(OrderedDict):
         super().__init__()
         self.programs = OrderedDict()
 
-        self.programs['bg'] = BackgroundProgram(widget), (lambda: self.background)
-        self.programs['axis'] = AxisProgram(widget), (lambda: self.axis)
-        self.programs['blockmodel'] = BlockProgram(widget), (lambda: self.block_models)
-        self.programs['line'] = LineProgram(widget), (lambda: self.lines)
-        self.programs['tube'] = TubeProgram(widget), (lambda: self.tubes)
-        self.programs['point'] = PointProgram(widget), (lambda: self.points)
+        self.programs['bg'] = BackgroundProgram(widget), (lambda: self.filter(BackgroundGL))
+        self.programs['axis'] = AxisProgram(widget), (lambda: self.filter(AxisGL))
+        self.programs['blockmodel'] = BlockProgram(widget), (lambda: self.filter(BlockGL))
+        self.programs['line'] = LineProgram(widget), (lambda: self.filter(LineGL))
+        self.programs['tube'] = TubeProgram(widget), (lambda: self.filter(TubeGL))
+        self.programs['point'] = PointProgram(widget), (lambda: self.filter(PointGL))
         self.programs['mesh'] = MeshProgram(widget), (lambda: self.normal_meshes)
         self.programs['wireframe'] = WireframeProgram(widget), (lambda: self.wireframe_meshes)
 
@@ -75,37 +75,9 @@ class GLDrawableCollection(OrderedDict):
             return -1
 
     @property
-    def background(self):
-        return self.filter(BackgroundGL)
-
-    @property
-    def axis(self):
-        return self.filter(AxisGL)
-
-    @property
-    def meshes(self):
-        return self.filter(MeshGL)
-
-    @property
     def normal_meshes(self):
-        return list(filter(lambda x: not x.wireframe_enabled, self.meshes))
+        return list(filter(lambda x: not x.wireframe_enabled, self.filter(MeshGL)))
 
     @property
     def wireframe_meshes(self):
-        return list(filter(lambda x: x.wireframe_enabled, self.meshes))
-
-    @property
-    def block_models(self):
-        return self.filter(BlockGL)
-
-    @property
-    def points(self):
-        return self.filter(PointGL)
-
-    @property
-    def lines(self):
-        return self.filter(LineGL)
-
-    @property
-    def tubes(self):
-        return self.filter(TubeGL)
+        return list(filter(lambda x: x.wireframe_enabled, self.filter(MeshGL)))

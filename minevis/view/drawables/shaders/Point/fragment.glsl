@@ -13,14 +13,14 @@ vec3 lambert(vec3 N, vec3 L, vec3 color)
 
 void main()
 {
-    /* A point is defined as a square [0, 1].
-     * We need to move it to [-0.5, 0.5] and only if the pixel is inside a circle
-     * of center (0, 0) and radius 0.5 we will draw it.
-     * Taken from https://stackoverflow.com/questions/17274820/drawing-round-points-using-modern-opengl
+    /* A point is defined as a square [0.0, 1.0].
+     * We need to move it to [-1.0, 1.0] and only if the pixel is inside
+     * a circle of center (0.0, 0.0) and radius 1.0 we will draw it.
+     *
+     * Taken and adapted from:
+     * https://stackoverflow.com/questions/17274820/drawing-round-points-using-modern-opengl
      */
-    vec2 pos_screen = gl_PointCoord - vec2(0.5);
-    vec3 v_normal = vec3(0.0, 0.0, 1.0);
-    vec3 ambient_light = vec3(0.1);
+    vec2 pos_screen = 2.0 * gl_PointCoord - vec2(1.0);
     vec3 col = v_color;
 
     switch(marker)
@@ -28,18 +28,19 @@ void main()
     case 0:  // Square
         break;
     case 1:  // Circle
-        if (length(pos_screen) > 0.5)
+        if (length(pos_screen) > 1.0)
             discard;
         break;
     case 2:  // Sphere (impostor)
-        if (length(pos_screen) > 0.5)
+        if (length(pos_screen) > 1.0)
             discard;
 
-        float normal_bias = 1.8;  // bias 2.0 = black on borders
-        vec3 light_position = vec3(0.0, 0.0, 1000.0);
+        float normal_bias = 0.8;  // bias 1.0 => black on borders
+        vec3 light_vector = vec3(0.0, 0.0, 1.0);
+        vec3 ambient_light = vec3(0.1);
+        vec3 v_normal = vec3(pos_screen.x, pos_screen.y, 1.0 - normal_bias * length(pos_screen));
 
-        v_normal = vec3(pos_screen.x, -pos_screen.y, 1.0 - normal_bias * length(pos_screen));
-        col = lambert(v_normal, light_position, v_color);
+        col = lambert(v_normal, light_vector, v_color);
     }
 
     out_color = vec4(ambient_light + col, v_alpha);

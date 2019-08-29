@@ -14,13 +14,14 @@ vec3 lambert(vec3 N, vec3 L, vec3 color)
 
 void main()
 {
-    vec3 light_position_front = vec3(0.0, 0.0, 100000.0);
-    vec3 light_position_up = vec3(0.0, 100000.0, 0.0);
+    vec3 light_vector_front = vec3(0.0, 0.0, 1.0);
+    vec3 light_vector_up = vec3(0.0, 1.0, 0.0);
     vec3 light_color = f_color;
 
-    float front_light_bias = 0.85;
-    vec3 color_front = lambert(v_normal, light_position_front, light_color);
-    vec3 color_up = lambert(v_normal, light_position_up, light_color);
+    float front_bias = 0.9;
+    vec3 ambient_light = vec3(0.1);
+    vec3 color_front = front_bias * lambert(v_normal, light_vector_front, light_color);
+    vec3 color_up = (1.0 - front_bias) * lambert(v_normal, light_vector_up, light_color);
 
-    out_color = vec4(0.05 + (front_light_bias * color_front) + ((1 - front_light_bias) * color_up), f_alpha);
+    out_color = vec4(ambient_light + color_front + color_up, f_alpha);
 }

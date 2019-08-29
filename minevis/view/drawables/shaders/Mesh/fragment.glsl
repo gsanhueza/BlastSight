@@ -15,8 +15,8 @@ void main()
     vec3 Y = dFdy(pos_mv);
     vec3 v_normal = cross(X, Y);
 
-    vec3 light_position = vec3(0.0, 0.0, 1000.0);
-    vec3 col = lambert(v_normal, light_position, v_color.rgb);
+    vec3 light_vector = vec3(0.0, 0.0, 1.0);
+    vec3 col = lambert(v_normal, light_vector, v_color.rgb);
     vec3 ambient_light = vec3(0.1);
 
     out_color = vec4(ambient_light + col, v_color.a);

@@ -44,40 +44,46 @@ def demo():
                 color=[0.0, 0.0, 1.0],
                 indices=[[0, 1, 2]],
                 alpha=0.4,
-                name='mesh_name',
+                name='Mesh',
                 ext='dxf')
 
     viewer.blocks(x=[-3, 3, 0], y=[0, 0, 5], z=[0, 0, 0],
                   block_size=[1.0, 1.0, 1.0],
-                  values=[0.5, 1.0, 1.5])
+                  values=[0.5, 1.0, 1.5],
+                  name='Blocks')
 
     viewer.points(vertices=[[-3, 2, 0], [0, 2, 1], [3, 2, 0]],
                   point_size=3.0,
                   color=[[1.0, 1.0, 0.0],
                          [0.0, 1.0, 1.0],
                          [1.0, 0.0, 1.0]],
-                  marker='square')
+                  marker='square',
+                  name='Points rendered as squares')
 
     viewer.points(vertices=[[-2, 3, 1], [0, 3, 0], [2, 3, 1]],
                   point_size=[1, 3, 5],
                   color=[[1.0, 0.0, 0.0],
                          [0.0, 1.0, 0.0],
                          [0.0, 0.0, 1.0]],
-                  marker='circle')
+                  marker='circle',
+                  name='Points rendered as circles')
 
     viewer.points(vertices=[[-3, 5, 0], [3, 5, 0]],
                   point_size=[4, 4],
                   color=[[0.8, 0.5, 0.2],
                          [0.5, 0.2, 0.8]],
-                  marker='sphere')
+                  marker='sphere',
+                  name='Points rendered as spheres')
 
     viewer.lines(x=[-0.5, 0.5], y=[-2.0, 1.5], z=[-2.0, -2.0],
-                 color=[0.2, 0.8, 0.8])
+                 color=[0.2, 0.8, 0.8],
+                 name='Lines')
 
     viewer.tubes(x=[0.5, -0.5, 1.5, 1.5], y=[-2.0, 1.8, 1.8, 0.0], z=[-1.5, -1.5, -1.5, -1.5],
                  color=[0.9, 0.2, 0.2],
                  radius=0.2,
-                 resolution=150)
+                 resolution=150,
+                 name='Tubes')
 
     viewer.camera_position = [0.0, 2.0, 15.0]
     viewer.centroid = [0.0, 0.0, 0.0]
