@@ -65,6 +65,12 @@ def demo():
                          [0.0, 0.0, 1.0]],
                   marker='circle')
 
+    viewer.points(vertices=[[-3, 5, 0], [3, 5, 0]],
+                  point_size=[4, 4],
+                  color=[[0.8, 0.5, 0.2],
+                         [0.5, 0.2, 0.8]],
+                  marker='sphere')
+
     viewer.lines(x=[-0.5, 0.5], y=[-2.0, 1.5], z=[-2.0, -2.0],
                  color=[0.2, 0.8, 0.8])
 

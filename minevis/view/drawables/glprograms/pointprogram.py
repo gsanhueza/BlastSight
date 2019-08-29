@@ -27,5 +27,5 @@ class PointProgram(ShaderProgram):
     def draw(self):
         for drawable in self.drawables:
             self.update_uniform('viewport', self.widget.width(), self.widget.height())
-            self.update_uniform('marker', int(drawable.element.marker == 'circle'))
+            self.update_uniform('marker', drawable.element.marker)
             drawable.draw()

@@ -39,6 +39,11 @@ class PointElement(DFElement):
         The rest of the explanation is in DFElement class.
         """
         super().__init__(*args, **kwargs)
+        self.marker_dict = {
+            'square': 0,
+            'circle': 1,
+            'sphere': 2,
+        }
 
     def _fill_properties(self, *args, **kwargs):
         super()._fill_properties(*args, **kwargs)
@@ -53,8 +58,8 @@ class PointElement(DFElement):
         return self.datasets.get('size')
 
     @property
-    def marker(self) -> str:
-        return self.properties.get('marker')
+    def marker(self) -> int:
+        return self.marker_dict.get(self.properties.get('marker'), 0)
 
     @point_size.setter
     def point_size(self, _size) -> None:
