@@ -20,6 +20,7 @@ void main()
      * Taken and adapted from:
      * https://stackoverflow.com/questions/17274820/drawing-round-points-using-modern-opengl
      */
+    vec3 ambient_light = vec3(0.1);
     vec2 pos_screen = 2.0 * gl_PointCoord - vec2(1.0);
     vec3 col = v_color;
 
@@ -37,7 +38,6 @@ void main()
 
         float normal_bias = 0.8;  // bias 1.0 => black on borders
         vec3 light_vector = vec3(0.0, 0.0, 1.0);
-        vec3 ambient_light = vec3(0.1);
         vec3 v_normal = vec3(pos_screen.x, pos_screen.y, 1.0 - normal_bias * length(pos_screen));
 
         col = lambert(v_normal, light_vector, v_color);

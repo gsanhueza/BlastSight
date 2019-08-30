@@ -53,7 +53,7 @@ def demo():
                   name='Blocks')
 
     viewer.points(vertices=[[-3, 2, 0], [0, 2, 1], [3, 2, 0]],
-                  point_size=3.0,
+                  point_size=2.0,
                   color=[[1.0, 1.0, 0.0],
                          [0.0, 1.0, 1.0],
                          [1.0, 0.0, 1.0]],
@@ -61,7 +61,7 @@ def demo():
                   name='Points rendered as squares')
 
     viewer.points(vertices=[[-2, 3, 1], [0, 3, 0], [2, 3, 1]],
-                  point_size=[1, 3, 5],
+                  point_size=[1, 2, 3],
                   color=[[1.0, 0.0, 0.0],
                          [0.0, 1.0, 0.0],
                          [0.0, 0.0, 1.0]],

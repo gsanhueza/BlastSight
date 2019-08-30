@@ -17,5 +17,5 @@ void main()
     gl_Position = proj_matrix * model_view_matrix * vec4(a_position, 1.0);
     v_color = a_color;
     v_alpha = a_alpha;
-    gl_PointSize = viewport.y * point_size / (5 * gl_Position.w);
+    gl_PointSize = viewport.y * point_size / (proj_matrix[1][1] * gl_Position.w);
 }
