@@ -12,7 +12,6 @@ from .backgroundgl import BackgroundGL
 from .axisgl import AxisGL
 
 from .glprograms.meshprogram import MeshProgram
-from .glprograms.wireframeprogram import WireframeProgram
 from .glprograms.blockprogram import BlockProgram
 from .glprograms.lineprogram import LineProgram
 from .glprograms.pointprogram import PointProgram
@@ -32,8 +31,7 @@ class GLDrawableCollection(OrderedDict):
         self.programs['line'] = LineProgram(widget), (lambda: self.filter(LineGL))
         self.programs['tube'] = TubeProgram(widget), (lambda: self.filter(TubeGL))
         self.programs['point'] = PointProgram(widget), (lambda: self.filter(PointGL))
-        self.programs['mesh'] = MeshProgram(widget), (lambda: self.normal_meshes)
-        self.programs['wireframe'] = WireframeProgram(widget), (lambda: self.wireframe_meshes)
+        self.programs['mesh'] = MeshProgram(widget), (lambda: self.filter(MeshGL))
 
     def add(self, drawable: GLDrawable) -> None:
         self[drawable.id] = drawable
@@ -73,11 +71,3 @@ class GLDrawableCollection(OrderedDict):
             return list(self.items())[-1][0]
         except IndexError:
             return -1
-
-    @property
-    def normal_meshes(self):
-        return list(filter(lambda x: not x.wireframe_enabled, self.filter(MeshGL)))
-
-    @property
-    def wireframe_meshes(self):
-        return list(filter(lambda x: x.wireframe_enabled, self.filter(MeshGL)))

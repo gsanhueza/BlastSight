@@ -2,6 +2,7 @@
 
 from qtpy.QtGui import QOpenGLShader
 from .shaderprogram import ShaderProgram
+from OpenGL.GL import *
 
 
 class MeshProgram(ShaderProgram):
@@ -20,12 +21,27 @@ class MeshProgram(ShaderProgram):
         self.shader_program.link()
 
     def draw(self):
-        # Opaque
-        for drawable in self.drawables:
-            if drawable.element.alpha > 0.99:
-                drawable.draw()
+        wireframed = []
+        normal = []
+        normal_opaque = []
+        normal_glass = []
 
-        # Transparent
         for drawable in self.drawables:
-            if drawable.element.alpha < 0.99:
-                drawable.draw()
+            wireframed.append(drawable) if drawable.wireframe_enabled else normal.append(drawable)
+
+        for drawable in normal:
+            normal_opaque.append(drawable) if drawable.element.alpha >= 0.99 else normal_glass.append(drawable)
+
+        # Opaque/Wireframe
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
+        for drawable in wireframed:
+            drawable.draw()
+
+        # Opaque/Normal
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)
+        for drawable in normal_opaque:
+            drawable.draw()
+
+        # Transparent/Normal
+        for drawable in normal_glass:
+            drawable.draw()
