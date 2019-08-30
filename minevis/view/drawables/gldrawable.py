@@ -17,14 +17,6 @@ class GLDrawable:
         self.is_visible = True
 
     @property
-    def id(self) -> int:
-        return self._element.id
-
-    @id.setter
-    def id(self, _id: int) -> None:
-        self._element.id = _id
-
-    @property
     def widget(self):
         return self._widget
 
@@ -32,12 +24,20 @@ class GLDrawable:
     def element(self):
         return self._element
 
+    @property
+    def id(self) -> int:
+        return self.element.id
+
+    @id.setter
+    def id(self, _id: int) -> None:
+        self.element.id = _id
+
     def initialize(self) -> None:
         self.setup_attributes()
         self.is_initialized = True
 
     def setup_attributes(self) -> None:
-        pass
+        raise NotImplementedError
 
     def draw(self) -> None:
         if not self.is_initialized:
@@ -51,7 +51,7 @@ class GLDrawable:
                 glDeleteVertexArrays(1, int(self.vao))
 
     """
-    API for QTreeWidgetItem
+    Quick GLDrawable API
     """
     def show(self) -> None:
         self.is_visible = True

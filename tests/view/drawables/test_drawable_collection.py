@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import pytest
 from minevis.model.elements.element import Element
 from minevis.view.drawables.gldrawablecollection import GLDrawableCollection
 from minevis.view.drawables.gldrawable import GLDrawable
@@ -67,7 +68,11 @@ class TestGLDrawableCollection:
         collection = GLDrawableCollection(widget)
         drawable_1 = GLDrawable(widget, element=self.element)
         drawable_2 = GLDrawable(widget, element=self.element)
+
+        with pytest.raises(Exception):
+            drawable_1.initialize()
+            drawable_2.initialize()
+
         collection.add(drawable_1)
-        drawable_2.initialize()
         collection.add(drawable_2)
         collection.draw(widget.proj, widget.camera, widget.world)

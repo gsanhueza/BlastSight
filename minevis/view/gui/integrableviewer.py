@@ -15,6 +15,7 @@ from qtpy.QtGui import QVector3D
 from qtpy.QtGui import QVector4D
 
 from ..drawables.gldrawablecollection import GLDrawableCollection
+from ..drawables.glconstantcollection import GLConstantCollection
 
 from ..drawables.blockgl import BlockGL
 from ..drawables.meshgl import MeshGL
@@ -50,10 +51,11 @@ class IntegrableViewer(QOpenGLWidget):
         self.set_normal_mode()
 
         # Drawable elements
+        self.constant_collection = GLConstantCollection(self)
         self.drawable_collection = GLDrawableCollection(self)
 
-        self.drawable_collection.add(BackgroundGL(self, type('NullElement', (), {'id': 'BG'})))
-        self.drawable_collection.add(AxisGL(self, type('NullElement', (), {'id': 'AXIS'})))
+        self.constant_collection.add(BackgroundGL(self, type('NullElement', (), {'id': 'BG'})))
+        self.constant_collection.add(AxisGL(self, type('NullElement', (), {'id': 'AXIS'})))
 
         # Camera/World/Projection
         self._camera = QMatrix4x4()
@@ -263,6 +265,7 @@ class IntegrableViewer(QOpenGLWidget):
         self.camera.translate(self.xCameraPos, self.yCameraPos, self.zCameraPos)
         # Draw every GLDrawable (meshes, block models, etc)
         glEnable(GL_BLEND)
+        self.constant_collection.draw(self.proj, self.camera, self.world)
         self.drawable_collection.draw(self.proj, self.camera, self.world)
 
         # QPainter can draw *after* OpenGL finishes
