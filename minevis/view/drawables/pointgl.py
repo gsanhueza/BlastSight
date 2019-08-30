@@ -7,7 +7,7 @@ from OpenGL.GL import *
 
 
 class PointGL(GLDrawable):
-    def __init__(self, widget=None, element=None):
+    def __init__(self, widget, element, *args, **kwargs):
         super().__init__(widget, element)
         self.num_points = 0
 

@@ -7,7 +7,7 @@ from OpenGL.GL import *
 
 
 class LineGL(GLDrawable):
-    def __init__(self, widget=None, element=None):
+    def __init__(self, widget, element, *args, **kwargs):
         super().__init__(widget, element)
 
         self.vertices_size = 0

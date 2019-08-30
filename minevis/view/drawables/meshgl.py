@@ -7,14 +7,14 @@ from OpenGL.GL import *
 
 
 class MeshGL(GLDrawable):
-    def __init__(self, widget=None, element=None):
+    def __init__(self, widget, element, *args, **kwargs):
         super().__init__(widget, element)
 
         # Size
         self.indices_size = 0
 
         # Wireframe
-        self.wireframe_enabled = False
+        self.wireframe_enabled = kwargs.get('wireframe', False)
 
     def toggle_wireframe(self) -> bool:
         self.wireframe_enabled = not self.wireframe_enabled

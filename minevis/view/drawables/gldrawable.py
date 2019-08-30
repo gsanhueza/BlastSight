@@ -4,7 +4,7 @@ from OpenGL.GL import *
 
 
 class GLDrawable:
-    def __init__(self, widget, element):
+    def __init__(self, widget, element, *args, **kwargs):
         assert widget
         assert element
         self._widget = widget

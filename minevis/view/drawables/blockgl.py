@@ -7,7 +7,7 @@ from OpenGL.GL import *
 
 
 class BlockGL(GLDrawable):
-    def __init__(self, widget=None, element=None):
+    def __init__(self, widget, element, *args, **kwargs):
         super().__init__(widget, element)
         self.num_cubes = 0
 

@@ -130,7 +130,7 @@ class IntegrableViewer(QOpenGLWidget):
     def add_drawable(self, method: classmethod, drawable_type: type, *args, **kwargs):
         try:
             element = method(*args, **kwargs)
-            drawable = drawable_type(self, element)
+            drawable = drawable_type(self, element, *args, **kwargs)
             self.drawable_collection.add(drawable)
 
             self.file_modified_signal.emit()

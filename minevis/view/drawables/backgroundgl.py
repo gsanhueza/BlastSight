@@ -6,7 +6,7 @@ from .gldrawable import GLDrawable
 
 
 class BackgroundGL(GLDrawable):
-    def __init__(self, widget, element):
+    def __init__(self, widget, element, *args, **kwargs):
         super().__init__(widget, element)
 
     def draw(self):
