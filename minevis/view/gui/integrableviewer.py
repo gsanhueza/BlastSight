@@ -38,6 +38,7 @@ class IntegrableViewer(QOpenGLWidget):
     # Signals
     file_modified_signal = Signal()
     fps_signal = Signal(float)
+    mesh_clicked_signal = Signal(int)
 
     def __init__(self, parent=None):
         QOpenGLWidget.__init__(self, parent)
@@ -308,9 +309,21 @@ class IntegrableViewer(QOpenGLWidget):
         ray = np.array([ray.x(), ray.y(), ray.z()])
         ray_origin = np.array([ray_origin.x(), ray_origin.y(), ray_origin.z()])
 
+        intersected_mesh_ids = []
+
         for mesh in self.model.mesh_collection:
-            print(f'(Mesh {mesh.id}) Intersects: {mesh_intersection(ray_origin, ray, mesh)}')
-        print('-------------------------------')
+            point_list = mesh_intersection(ray_origin, ray, mesh)
+            # print(f'(Mesh {mesh.id}) Intersects: {point_list}')
+            if len(point_list) > 0:
+                intersected_mesh_ids.append(mesh.id)
+
+        # Emit signal with clicked mesh
+        if len(intersected_mesh_ids) > 0:
+            self.mesh_clicked_signal.emit(intersected_mesh_ids[-1])
+        else:
+            self.mesh_clicked_signal.emit(-1)
+
+        # print('-------------------------------')
 
     """
     Controller

@@ -24,7 +24,7 @@ def aabb_intersection(origin: np.ndarray, ray: np.ndarray, mesh: MeshElement):
     b_min, b_max = mesh.bounding_box
     b_diff = b_max - b_min
 
-    if b_diff.min() == 0.0:  # Flat mesh means AABB unreliable
+    if b_diff.min() < 1e-12:  # Flat mesh means AABB unreliable
         return True
 
     # Result of division by zero used deliberately
