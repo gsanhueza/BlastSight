@@ -65,26 +65,16 @@ class TreeWidget(QTreeWidget):
         action_export_points = QAction('Export &points', self)
 
         # Icons
-        icon = QIcon.fromTheme('show-hidden')
-        action_show.setIcon(icon)
-        icon = QIcon.fromTheme('object-hidden')
-        action_hide.setIcon(icon)
-        icon = QIcon.fromTheme('stock_close')
-        action_delete.setIcon(icon)
-        icon = QIcon.fromTheme('draw-triangle')
-        action_wireframe.setIcon(icon)
-        icon = QIcon.fromTheme('auto-type')
-        action_headers.setIcon(icon)
-        icon = QIcon.fromTheme('camera')
-        action_center_camera.setIcon(icon)
-        icon = QIcon.fromTheme('colormanagement')
-        action_colors.setIcon(icon)
-        icon = QIcon.fromTheme('document-export')
-        action_export_mesh.setIcon(icon)
-        icon = QIcon.fromTheme('document-export')
-        action_export_blocks.setIcon(icon)
-        icon = QIcon.fromTheme('document-export')
-        action_export_points.setIcon(icon)
+        action_show.setIcon(QIcon.fromTheme('show-hidden'))
+        action_hide.setIcon(QIcon.fromTheme('object-hidden'))
+        action_delete.setIcon(QIcon.fromTheme('stock_close'))
+        action_wireframe.setIcon(QIcon.fromTheme('draw-triangle'))
+        action_headers.setIcon(QIcon.fromTheme('auto-type'))
+        action_center_camera.setIcon(QIcon.fromTheme('camera'))
+        action_colors.setIcon(QIcon.fromTheme('colormanagement'))
+        action_export_mesh.setIcon(QIcon.fromTheme('document-export'))
+        action_export_blocks.setIcon(QIcon.fromTheme('document-export'))
+        action_export_points.setIcon(QIcon.fromTheme('document-export'))
 
         # Action commands
         action_show.triggered.connect(item.show)
@@ -139,22 +129,22 @@ class TreeWidget(QTreeWidget):
 
         last_pos = self.indexOfTopLevelItem(self.currentItem())
 
-        if event.key() == Qt.Key_Delete:
+        def delete_current():
             self.currentItem().delete()
             self.select_item(last_pos, 0)
-        elif event.key() == Qt.Key_Enter or event.key() == Qt.Key_Return:
-            self.currentItem().center_camera()
-        elif event.key() == Qt.Key_H:
-            self.currentItem().hide()
-        elif event.key() == Qt.Key_S:
-            self.currentItem().show()
-        elif event.key() == Qt.Key_T:
-            self.currentItem().toggle_visibility()
-        elif event.key() == Qt.Key_Up:
-            self.select_item(last_pos - 1, 0)
-        elif event.key() == Qt.Key_Down:
-            self.select_item(last_pos + 1, 0)
-        elif event.key() == Qt.Key_Home:
-            self.select_item(0, 0)
-        elif event.key() == Qt.Key_End:
-            self.select_item(self.topLevelItemCount() - 1, 0)
+
+        shortcut_commands_dict = {
+            Qt.Key_Delete: lambda: delete_current(),
+            Qt.Key_Enter: lambda: self.currentItem().center_camera(),
+            Qt.Key_Return: lambda: self.currentItem().center_camera(),
+            Qt.Key_H: lambda: self.currentItem().hide(),
+            Qt.Key_S: lambda: self.currentItem().show(),
+            Qt.Key_T: lambda: self.currentItem().toggle_visibility(),
+            Qt.Key_Up: lambda: self.select_item(last_pos - 1, 0),
+            Qt.Key_Down: lambda: self.select_item(last_pos + 1, 0),
+            Qt.Key_Home: lambda: self.select_item(0, 0),
+            Qt.Key_End: lambda: self.select_item(self.topLevelItemCount() - 1, 0),
+        }
+
+        # Execute command based on event.key()
+        shortcut_commands_dict.get(event.key(), lambda: None)()
