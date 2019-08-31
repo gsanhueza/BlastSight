@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-from qtpy.QtGui import QOpenGLShader
 from .shaderprogram import ShaderProgram
 from OpenGL.GL import *
 
@@ -8,31 +7,24 @@ from OpenGL.GL import *
 class MeshProgram(ShaderProgram):
     def __init__(self, widget):
         super().__init__(widget)
-
-    def setup_shaders(self):
-        vertex_shader = QOpenGLShader(QOpenGLShader.Vertex)
-        fragment_shader = QOpenGLShader(QOpenGLShader.Fragment)
-
-        vertex_shader.compileSourceFile(f'{self.shader_dir}/Mesh/vertex.glsl')
-        fragment_shader.compileSourceFile(f'{self.shader_dir}/Mesh/fragment.glsl')
-
-        self.shader_program.addShader(vertex_shader)
-        self.shader_program.addShader(fragment_shader)
-        self.shader_program.link()
+        self.base_name = 'Mesh'
 
     def draw(self):
         wireframed = []
-        normal = []
         normal_opaque = []
         normal_glass = []
 
+        # Prepare meshes
         for drawable in self.drawables:
-            wireframed.append(drawable) if drawable.wireframe_enabled else normal.append(drawable)
+            if drawable.wireframe_enabled:
+                wireframed.append(drawable)
+            else:
+                if drawable.element.alpha >= 0.99:
+                    normal_opaque.append(drawable)
+                else:
+                    normal_glass.append(drawable)
 
-        for drawable in normal:
-            normal_opaque.append(drawable) if drawable.element.alpha >= 0.99 else normal_glass.append(drawable)
-
-        # Opaque/Wireframe
+        # Wireframe
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
         for drawable in wireframed:
             drawable.draw()

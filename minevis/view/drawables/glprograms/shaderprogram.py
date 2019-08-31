@@ -12,6 +12,8 @@ class ShaderProgram:
         self.shader_program = None
         self.shader_dir = f'{pathlib.Path(__file__).parent.parent}/shaders'
         self.uniform_locs = {}
+        self.drawables = None
+        self.base_name = None
 
     def setup(self) -> None:
         if self.shader_program:
@@ -24,16 +26,29 @@ class ShaderProgram:
         self.add_uniform_loc('proj_matrix')
 
     def setup_shaders(self) -> None:
-        # Shaders
-        vertex_shader = QOpenGLShader(QOpenGLShader.Vertex)
-        fragment_shader = QOpenGLShader(QOpenGLShader.Fragment)
+        # Placeholders to avoid early garbage collection
+        vs = self.enable_vertex_shader()
+        fs = self.enable_fragment_shader()
 
-        vertex_shader.compileSourceFile(f'{self.shader_dir}/Background/vertex.glsl')
-        fragment_shader.compileSourceFile(f'{self.shader_dir}/Background/fragment.glsl')
-
-        self.shader_program.addShader(vertex_shader)
-        self.shader_program.addShader(fragment_shader)
         self.shader_program.link()
+
+    def enable_vertex_shader(self, filename='vertex.glsl'):
+        shader = QOpenGLShader(QOpenGLShader.Vertex)
+        shader.compileSourceFile(f'{self.shader_dir}/{self.base_name}/{filename}')
+        self.shader_program.addShader(shader)
+        return shader
+
+    def enable_fragment_shader(self, filename='fragment.glsl'):
+        shader = QOpenGLShader(QOpenGLShader.Fragment)
+        shader.compileSourceFile(f'{self.shader_dir}/{self.base_name}/{filename}')
+        self.shader_program.addShader(shader)
+        return shader
+
+    def enable_geometry_shader(self, filename='geometry.glsl'):
+        shader = QOpenGLShader(QOpenGLShader.Geometry)
+        shader.compileSourceFile(f'{self.shader_dir}/{self.base_name}/{filename}')
+        self.shader_program.addShader(shader)
+        return shader
 
     def add_uniform_loc(self, loc_str) -> None:
         self.uniform_locs[loc_str] = self.shader_program.uniformLocation(loc_str)
@@ -44,9 +59,9 @@ class ShaderProgram:
     def set_drawables(self, drawables):
         self.drawables = drawables
 
+    def bind(self) -> None:
+        self.shader_program.bind()
+
     def draw(self):
         for drawable in self.drawables:
             drawable.draw()
-
-    def bind(self) -> None:
-        self.shader_program.bind()
