@@ -14,8 +14,8 @@ class AxisGL(GLDrawable):
         _POSITION = 0
         _COLOR = 1
 
-        self.vao = glGenVertexArrays(1)
-        self.vbos = glGenBuffers(2)
+        # Generate VAO and VBOs (see GLDrawable)
+        self.create_vao_vbos(2)
 
         # Data
         vertices = np.array([[0.0, 0.0, 0.0], [1.0, 0.0, 0.0],
@@ -28,16 +28,13 @@ class AxisGL(GLDrawable):
 
         glBindVertexArray(self.vao)
 
-        glBindBuffer(GL_ARRAY_BUFFER, self.vbos[0])
-        glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * vertices.size, vertices, GL_STATIC_DRAW)
-        glVertexAttribPointer(_POSITION, 3, GL_FLOAT, False, 0, None)
+        # buffer_properties = [(pointer, basesize, array, glsize, gltype)]
+        buffer_properties = [(_POSITION, 3, vertices, GLfloat, GL_FLOAT),
+                             (_COLOR, 3, colors, GLfloat, GL_FLOAT),
+                             ]
 
-        glBindBuffer(GL_ARRAY_BUFFER, self.vbos[1])
-        glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * colors.size, colors, GL_STATIC_DRAW)
-        glVertexAttribPointer(_COLOR, 3, GL_FLOAT, False, 0, None)
-
-        glEnableVertexAttribArray(_POSITION)
-        glEnableVertexAttribArray(_COLOR)
+        # Fill buffers (see GLDrawable)
+        self.fill_buffers(buffer_properties)
 
         glBindVertexArray(0)
 

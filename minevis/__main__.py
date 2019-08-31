@@ -41,13 +41,13 @@ def demo():
     viewer.setWindowTitle('MineVis (Demo)')
 
     viewer.mesh(x=[-1, 1, 0], y=[0, 0, 1], z=[-3, -3, -3],
-                color=[1.0, 0.5, 0.0],
+                color=[0.0, 0.0, 1.0],
                 indices=[[0, 1, 2]],
                 alpha=0.7,
                 name='Normal Mesh')
 
     viewer.mesh(x=[-1, 1, 0], y=[0, 0, -1], z=[-3, -3, -3],
-                color=[0.0, 0.0, 1.0],
+                color=[1.0, 0.5, 0.0],
                 indices=[[0, 1, 2]],
                 alpha=1.0,
                 wireframe=True,

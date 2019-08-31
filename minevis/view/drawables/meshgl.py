@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
 import numpy as np
+from OpenGL.GL import *
 
 from .gldrawable import GLDrawable
-from OpenGL.GL import *
 
 
 class MeshGL(GLDrawable):
@@ -40,9 +40,8 @@ class MeshGL(GLDrawable):
         _COLOR = 1
         _WIREFRAME = 2
 
-        if self.vao is None:
-            self.vao = glGenVertexArrays(1)
-            self.vbos = glGenBuffers(4)
+        # Generate VAO and VBOs (see GLDrawable)
+        self.create_vao_vbos(4)
 
         # Data
         vertices = self.element.vertices.astype(np.float32)
@@ -55,18 +54,14 @@ class MeshGL(GLDrawable):
         self.widget.makeCurrent()
         glBindVertexArray(self.vao)
 
-        # buffers = [(pointer, basesize, array, glsize, gltype)]
-        buffers = [(_POSITION, 3, vertices, GLfloat, GL_FLOAT),
-                   (_COLOR, 4, colors, GLfloat, GL_FLOAT),
-                   (_WIREFRAME, 1, wireframe, GLbyte, GL_BYTE),
-                   ]
+        # buffer_properties = [(pointer, basesize, array, glsize, gltype)]
+        buffer_properties = [(_POSITION, 3, vertices, GLfloat, GL_FLOAT),
+                             (_COLOR, 4, colors, GLfloat, GL_FLOAT),
+                             (_WIREFRAME, 1, wireframe, GLbyte, GL_BYTE),
+                             ]
 
-        for i, buf in enumerate(buffers):
-            pointer, basesize, array, glsize, gltype = buf
-            glBindBuffer(GL_ARRAY_BUFFER, self.vbos[i])
-            glBufferData(GL_ARRAY_BUFFER, sizeof(glsize) * array.size, array, GL_STATIC_DRAW)
-            glVertexAttribPointer(pointer, basesize, gltype, False, 0, None)
-            glEnableVertexAttribArray(pointer)
+        # Fill buffers (see GLDrawable)
+        self.fill_buffers(buffer_properties)
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, self.vbos[-1])
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices, GL_STATIC_DRAW)

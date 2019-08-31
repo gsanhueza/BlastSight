@@ -10,7 +10,7 @@ class GLDrawable:
         self._widget = widget
         self._element = element
 
-        self.vao = None
+        self.vaos = []
         self.vbos = []
 
         self.is_initialized = False
@@ -23,6 +23,12 @@ class GLDrawable:
     @property
     def element(self):
         return self._element
+
+    @property
+    def vao(self) -> int:
+        # We already know that we have only one VAO.
+        # But cleanup is easier if we have the VAO in a list.
+        return self.vaos[-1]
 
     @property
     def id(self) -> int:
@@ -39,6 +45,21 @@ class GLDrawable:
     def setup_attributes(self) -> None:
         raise NotImplementedError
 
+    def create_vao_vbos(self, vbo_count):
+        if len(self.vaos) == 0:
+            self.vaos = [glGenVertexArrays(1)]
+            self.vbos = glGenBuffers(vbo_count)
+
+    def fill_buffers(self, buffer_properties: list) -> None:
+        # buffer_properties = [(pointer, basesize, array, glsize, gltype)]
+
+        for i, buf in enumerate(buffer_properties):
+            pointer, basesize, array, glsize, gltype = buf
+            glBindBuffer(GL_ARRAY_BUFFER, self.vbos[i])
+            glBufferData(GL_ARRAY_BUFFER, sizeof(glsize) * array.size, array, GL_STATIC_DRAW)
+            glVertexAttribPointer(pointer, basesize, gltype, False, 0, None)
+            glEnableVertexAttribArray(pointer)
+
     def draw(self) -> None:
         if not self.is_initialized:
             self.initialize()
@@ -47,8 +68,7 @@ class GLDrawable:
         if self.is_initialized:
             self.widget.makeCurrent()
             glDeleteBuffers(len(self.vbos), self.vbos)
-            if self.vao is not None:
-                glDeleteVertexArrays(1, int(self.vao))
+            glDeleteVertexArrays(len(self.vaos), self.vaos)
 
     """
     Quick GLDrawable API
