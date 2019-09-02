@@ -11,8 +11,9 @@ class MeshProgram(ShaderProgram):
 
     def draw(self):
         wireframed = []
+        highlighted = []
         normal_opaque = []
-        normal_glass = []
+        normal_transparent = []
 
         # Prepare meshes
         for drawable in self.drawables:
@@ -22,12 +23,20 @@ class MeshProgram(ShaderProgram):
                 if drawable.element.alpha >= 0.99:
                     normal_opaque.append(drawable)
                 else:
-                    normal_glass.append(drawable)
+                    normal_transparent.append(drawable)
+                if drawable.is_highlighted:
+                    highlighted.append(drawable)
 
         # Wireframe
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
         for drawable in wireframed:
             drawable.draw()
+
+        # Highlighted
+        glLineWidth(3)
+        for drawable in highlighted:
+            drawable.draw()
+        glLineWidth(1)
 
         # Opaque/Normal
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)
@@ -35,5 +44,5 @@ class MeshProgram(ShaderProgram):
             drawable.draw()
 
         # Transparent/Normal
-        for drawable in normal_glass:
+        for drawable in normal_transparent:
             drawable.draw()

@@ -9,12 +9,14 @@ from .gldrawable import GLDrawable
 class MeshGL(GLDrawable):
     def __init__(self, widget, element, *args, **kwargs):
         super().__init__(widget, element)
-
-        # Size
         self.indices_size = 0
 
-        # Wireframe
+        self.is_highlighted = kwargs.get('highlighting', False)
         self.wireframe_enabled = kwargs.get('wireframe', False)
+
+    def toggle_highlighting(self) -> bool:
+        self.is_highlighted = not self.is_highlighted
+        return self.is_highlighted
 
     def toggle_wireframe(self) -> bool:
         self.wireframe_enabled = not self.wireframe_enabled

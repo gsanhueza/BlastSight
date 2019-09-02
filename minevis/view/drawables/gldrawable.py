@@ -14,6 +14,7 @@ class GLDrawable:
         self.vbos = []
 
         self.is_initialized = False
+        self.is_highlighted = False
         self.is_visible = True
 
     @property

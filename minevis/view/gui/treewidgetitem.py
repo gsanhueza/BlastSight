@@ -45,6 +45,10 @@ class TreeWidgetItem(QTreeWidgetItem):
         self.viewer.update()
         self._viewer = None
 
+    def toggle_highlighting(self) -> None:
+        self.drawable.toggle_highlighting()
+        self.viewer.update()
+
     def toggle_wireframe(self) -> None:
         self.drawable.toggle_wireframe()
         self.viewer.update()

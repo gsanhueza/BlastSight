@@ -57,6 +57,7 @@ class TreeWidget(QTreeWidget):
         action_hide = QAction('&Hide', self)
         action_delete = QAction('&Delete', self)
         action_center_camera = QAction('&Center camera', self)
+        action_highlight = QAction('T&oggle highlighting', self)
         action_wireframe = QAction('&Toggle wireframe', self)
         action_headers = QAction('H&eaders', self)
         action_colors = QAction('C&olors', self)
@@ -68,6 +69,7 @@ class TreeWidget(QTreeWidget):
         action_show.setIcon(QIcon.fromTheme('show-hidden'))
         action_hide.setIcon(QIcon.fromTheme('object-hidden'))
         action_delete.setIcon(QIcon.fromTheme('stock_close'))
+        action_highlight.setIcon(QIcon.fromTheme('camera-ready'))
         action_wireframe.setIcon(QIcon.fromTheme('draw-triangle'))
         action_headers.setIcon(QIcon.fromTheme('auto-type'))
         action_center_camera.setIcon(QIcon.fromTheme('camera'))
@@ -80,6 +82,7 @@ class TreeWidget(QTreeWidget):
         action_show.triggered.connect(item.show)
         action_hide.triggered.connect(item.hide)
         action_delete.triggered.connect(item.delete)
+        action_highlight.triggered.connect(item.toggle_highlighting)
         action_wireframe.triggered.connect(item.toggle_wireframe)
         action_center_camera.triggered.connect(item.center_camera)
 
@@ -96,6 +99,7 @@ class TreeWidget(QTreeWidget):
         menu.addAction(action_center_camera)
 
         if item.type == MeshGL:
+            menu.addAction(action_highlight)
             menu.addAction(action_wireframe)
             menu.addAction(action_colors)
             menu.addSeparator()
