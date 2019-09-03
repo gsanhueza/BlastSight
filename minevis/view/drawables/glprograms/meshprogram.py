@@ -45,6 +45,12 @@ class MeshProgram(ShaderProgram):
 
         # Transparent/Normal
         glDepthMask(GL_FALSE)
-        for drawable in normal_transparent:
-            drawable.draw()
+        glEnable(GL_CULL_FACE)
+
+        for gl_cull in [GL_FRONT, GL_BACK]:
+            glCullFace(gl_cull)
+            for drawable in normal_transparent:
+                drawable.draw()
+
+        glDisable(GL_CULL_FACE)
         glDepthMask(GL_TRUE)

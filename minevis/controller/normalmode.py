@@ -32,4 +32,9 @@ class NormalMode(Mode):
         self.lastPos = QPoint(event.pos())
 
     def wheelEvent(self, event, widget):
-        self.set_z_movement(widget, widget.zCameraPos * pow(1.2, -event.angleDelta().y() / 120))
+        sign = event.angleDelta().y() / abs(event.angleDelta().y())
+
+        off_center = max(widget.camera_position[2] - widget.centroid[2], 0.0)
+        shift = max(-sign, 0.2 * off_center) * sign
+
+        self.set_z_movement(widget, widget.zCameraPos + shift)
