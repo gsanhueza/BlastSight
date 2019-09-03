@@ -17,14 +17,19 @@ class GSLibParser(Parser):
             'ext': QFileInfo(path).suffix()
         }
 
-        header_count, headers = GSLibParser.get_header_info(path)
+        data = ParserData()
+        try:
+            header_count, headers = GSLibParser.get_header_info(path)
+            with open(path, 'r') as f:
+                data.data = pd.read_csv(f, sep=' ', header=None, names=headers, skiprows=header_count + 2)
+                data.properties = properties
+        except ValueError:  # This "GSLib" file doesn't have headers
+            print(f'*** WARNING: We can read {path}, but keep in mind that this not a real GSLib file. ***')
+            with open(path, 'r') as f:
+                data.data = pd.read_csv(f, sep=' ', header=None, prefix='col_')
+                data.properties = properties
 
-        with open(path, 'r') as f:
-            data = ParserData()
-            data.data = pd.read_csv(f, sep=' ', header=None, names=headers, skiprows=header_count + 2)
-            data.properties = properties
-
-            return data
+        return data
 
     @staticmethod
     def save_file(*args, **kwargs) -> None:

@@ -44,5 +44,7 @@ class MeshProgram(ShaderProgram):
             drawable.draw()
 
         # Transparent/Normal
+        glDepthMask(GL_FALSE)
         for drawable in normal_transparent:
             drawable.draw()
+        glDepthMask(GL_TRUE)
