@@ -44,5 +44,7 @@ class AxisGL(GLDrawable):
             return
 
         glBindVertexArray(self.vao)
+        glLineWidth(5)
         glDrawArrays(GL_LINES, 0, 18)
+        glLineWidth(1)
         glBindVertexArray(0)

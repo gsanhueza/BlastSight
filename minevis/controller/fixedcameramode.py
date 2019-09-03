@@ -24,11 +24,3 @@ class FixedCameraMode(Mode):
             self.set_y_movement(widget, widget.yCameraPos - (distance_y * dy))
 
         self.lastPos = QPoint(event.pos())
-
-    def wheelEvent(self, event, widget):
-        sign = event.angleDelta().y() / abs(event.angleDelta().y())
-
-        off_center = max(widget.camera_position[2] - widget.centroid[2], 0.0)
-        shift = max(-sign, 0.2 * off_center) * sign
-
-        self.set_z_movement(widget, widget.zCameraPos + shift)
