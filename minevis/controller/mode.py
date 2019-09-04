@@ -19,7 +19,7 @@ class Mode:
         movement_rate = rate / (1.0 + max(0.0, min(sign, rate)))
 
         off_center = max(widget.zCameraPos - widget.zCentroidPos, 0.0)
-        shift = -sign * movement_rate * max(-sign/rate, off_center)
+        shift = -sign * movement_rate * max(-sign, off_center)
 
         self.set_z_movement(widget, widget.zCameraPos + shift)
 

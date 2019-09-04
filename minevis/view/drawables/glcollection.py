@@ -18,12 +18,16 @@ class GLCollection(OrderedDict):
 
     def draw(self, proj_matrix, view_matrix, model_matrix) -> None:
         for gl_program, lambda_drawables in self.programs.items():
+            drawables = lambda_drawables()
+            if len(drawables) == 0:
+                continue
+
             gl_program.setup()
             gl_program.bind()
 
             gl_program.update_uniform('proj_matrix', proj_matrix)
             gl_program.update_uniform('model_view_matrix', view_matrix * model_matrix)
-            gl_program.set_drawables(lambda_drawables())
+            gl_program.set_drawables(drawables)
             gl_program.draw()
 
     def filter(self, drawable_type):
