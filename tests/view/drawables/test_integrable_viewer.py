@@ -26,10 +26,10 @@ class TestIntegrableViewer:
 
     def test_integrable_viewer_centroid(self):
         widget = IntegrableViewer()
-        assert widget.centroid == [0.0, 0.0, 0.0]
+        assert widget.rotation_center == [0.0, 0.0, 0.0]
 
-        widget.centroid = [1.0, 2.0, 3.0]
-        assert widget.centroid == [1.0, 2.0, 3.0]
+        widget.rotation_center = [1.0, 2.0, 3.0]
+        assert widget.rotation_center == [1.0, 2.0, 3.0]
 
     def test_integrable_viewer_camera(self):
         widget = IntegrableViewer()
@@ -37,19 +37,19 @@ class TestIntegrableViewer:
         assert widget.camera_position[1] == 0.0
         assert widget.camera_position[2] == 200.0
 
-        assert widget.camera_rotation[0] == 0.0
-        assert widget.camera_rotation[1] == 0.0
-        assert widget.camera_rotation[2] == 0.0
+        assert widget.rotation_angle[0] == 0.0
+        assert widget.rotation_angle[1] == 0.0
+        assert widget.rotation_angle[2] == 0.0
 
         widget.camera_position = [5.0, 10.0, 15.0]
         assert widget.camera_position[0] == 5.0
         assert widget.camera_position[1] == 10.0
         assert widget.camera_position[2] == 15.0
 
-        widget.camera_rotation = [90.0, 10.0, 45.0]
-        assert widget.camera_rotation[0] == 90.0
-        assert widget.camera_rotation[1] == 10.0
-        assert widget.camera_rotation[2] == 45.0
+        widget.rotation_angle = [90.0, 10.0, 45.0]
+        assert widget.rotation_angle[0] == 90.0
+        assert widget.rotation_angle[1] == 10.0
+        assert widget.rotation_angle[2] == 45.0
 
     def test_integrable_viewer_last_id(self):
         widget = IntegrableViewer()

@@ -21,7 +21,7 @@
      </property>
      <widget class="QWidget" name="camera_position_tab">
       <attribute name="title">
-       <string>Camera properties</string>
+       <string>Camera position</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_2">
        <item row="0" column="0">

@@ -92,7 +92,7 @@ def demo():
                  name='Tubes')
 
     viewer.camera_position = [0.0, 2.0, 15.0]
-    viewer.centroid = [0.0, 0.0, 0.0]
+    viewer.rotation_center = [0.0, 0.0, 0.0]
 
     for id_, drawable in viewer.drawable_collection.items():
         print(f'Drawable {id_}: Name = {drawable.element.name}, Type = {type(drawable)}')

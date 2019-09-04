@@ -62,14 +62,10 @@ class IntegrableViewer(QOpenGLWidget):
         self._world = QMatrix4x4()
         self._proj = QMatrix4x4()
 
-        # Positions and rotations
-        self._initial_centroid = [0.0, 0.0, 0.0]
-        self._initial_position = [0.0, 0.0, -200.0]
-        self._initial_rotation = [0.0, 0.0, 0.0]
-
-        self.xWorldPos, self.yWorldPos, self.zWorldPos = self._initial_centroid
-        self.xWorldRot, self.yWorldRot, self.zWorldRot = self._initial_rotation
-        self.xCameraPos, self.yCameraPos, self.zCameraPos = self._initial_position
+        # Initial positions and rotations
+        self.rotation_center = [0.0, 0.0, 0.0]
+        self.rotation_angle = [0.0, 0.0, 0.0]
+        self.camera_position = [0.0, 0.0, 200.0]
 
         # FPS Counter
         self.fps_counter = FPSCounter()
@@ -100,27 +96,27 @@ class IntegrableViewer(QOpenGLWidget):
 
     @property
     def camera_position(self) -> list:
-        return [-self.xCameraPos, -self.yCameraPos, -self.zCameraPos]
+        return [self.xCameraPos, self.yCameraPos, self.zCameraPos]
 
     @camera_position.setter
     def camera_position(self, pos: list) -> None:
-        self.xCameraPos, self.yCameraPos, self.zCameraPos = -pos[0], -pos[1], -pos[2]
+        self.xCameraPos, self.yCameraPos, self.zCameraPos = pos
 
     @property
-    def camera_rotation(self) -> list:
-        return [self.xWorldRot, self.yWorldRot, self.zWorldRot]
+    def rotation_angle(self) -> list:
+        return [self.xCentroidRot, self.yCentroidRot, self.zCentroidRot]
 
-    @camera_rotation.setter
-    def camera_rotation(self, rot: list) -> None:
-        self.xWorldRot, self.yWorldRot, self.zWorldRot = [rot[0], rot[1], rot[2]]
+    @rotation_angle.setter
+    def rotation_angle(self, rot: list) -> None:
+        self.xCentroidRot, self.yCentroidRot, self.zCentroidRot = rot
 
     @property
-    def centroid(self) -> list:
-        return [self.xWorldPos, self.yWorldPos, self.zWorldPos]
+    def rotation_center(self) -> list:
+        return [self.xCentroidPos, self.yCentroidPos, self.zCentroidPos]
 
-    @centroid.setter
-    def centroid(self, _centroid: list) -> None:
-        self.xWorldPos, self.yWorldPos, self.zWorldPos = _centroid
+    @rotation_center.setter
+    def rotation_center(self, _centroid: list) -> None:
+        self.xCentroidPos, self.yCentroidPos, self.zCentroidPos = _centroid
 
     @property
     def last_id(self) -> int:
@@ -194,7 +190,7 @@ class IntegrableViewer(QOpenGLWidget):
         return self.drawable_collection[id_]
 
     def update_drawable(self, id_: int) -> None:
-        self.xWorldPos, self.yWorldPos, self.zWorldPos = self.model.get(id_).centroid
+        self.xCentroidPos, self.yCentroidPos, self.zCentroidPos = self.model.get(id_).centroid
         self.get_drawable(id_).setup_attributes()
         self.update()
 
@@ -210,26 +206,27 @@ class IntegrableViewer(QOpenGLWidget):
 
     def camera_at(self, id_: int) -> None:
         drawable = self.get_drawable(id_)
-        self.centroid = drawable.element.centroid
+        self.rotation_center = drawable.element.centroid
         self.camera_position = drawable.element.centroid
 
         min_bound, max_bound = drawable.element.bounding_box
         dx, dy, dz = max_bound - min_bound
 
         # Put the camera in a position that allow us to see the element
-        self.zCameraPos -= 1.2 * max(dx, dy, dz) / math.tan(math.pi / 4)
+        self.zCameraPos += 1.2 * max(dx, dy, dz) / math.tan(math.pi / 4)
+
         self.update()
 
     def plan_view(self):
-        self.xWorldRot, self.yWorldRot, self.zWorldRot = [0.0, 0.0, 0.0]
+        self.xCentroidRot, self.yCentroidRot, self.zCentroidRot = [0.0, 0.0, 0.0]
         self.update()
 
     def north_view(self):
-        self.xWorldRot, self.yWorldRot, self.zWorldRot = [270.0, 0.0, 270.0]
+        self.xCentroidRot, self.yCentroidRot, self.zCentroidRot = [270.0, 0.0, 270.0]
         self.update()
 
     def east_view(self):
-        self.xWorldRot, self.yWorldRot, self.zWorldRot = [270.0, 0.0, 0.0]
+        self.xCentroidRot, self.yCentroidRot, self.zCentroidRot = [270.0, 0.0, 0.0]
         self.update()
 
     """
@@ -251,18 +248,18 @@ class IntegrableViewer(QOpenGLWidget):
         self.camera.setToIdentity()
 
         # Translate by centroid (world position)
-        self.world.translate(self.xWorldPos, self.yWorldPos, self.zWorldPos)
+        self.world.translate(self.xCentroidPos, self.yCentroidPos, self.zCentroidPos)
 
         # Allow rotation of the world
-        self.world.rotate(self.xWorldRot, 1.0, 0.0, 0.0)
-        self.world.rotate(self.yWorldRot, 0.0, 1.0, 0.0)
-        self.world.rotate(self.zWorldRot, 0.0, 0.0, 1.0)
+        self.world.rotate(self.xCentroidRot, 1.0, 0.0, 0.0)
+        self.world.rotate(self.yCentroidRot, 0.0, 1.0, 0.0)
+        self.world.rotate(self.zCentroidRot, 0.0, 0.0, 1.0)
 
         # Restore world
-        self.world.translate(-self.xWorldPos, -self.yWorldPos, -self.zWorldPos)
+        self.world.translate(-self.xCentroidPos, -self.yCentroidPos, -self.zCentroidPos)
 
         # Translate the camera
-        self.camera.translate(self.xCameraPos, self.yCameraPos, self.zCameraPos)
+        self.camera.translate(-self.xCameraPos, -self.yCameraPos, -self.zCameraPos)
 
         # Draw every GLDrawable (meshes, block models, etc)
         glEnable(GL_BLEND)
@@ -282,8 +279,8 @@ class IntegrableViewer(QOpenGLWidget):
         if perspective:
             self.proj.perspective(45.0, (w / h), 1.0, 10000.0)
         else:
-            w = w * (abs(self.zWorldPos) - abs(self.zCameraPos)) * -0.001
-            h = h * (abs(self.zWorldPos) - abs(self.zCameraPos)) * -0.001
+            w = w * (abs(self.zCentroidPos) - abs(self.zCameraPos)) * -0.001
+            h = h * (abs(self.zCentroidPos) - abs(self.zCameraPos)) * -0.001
             self.proj.ortho(-w, w, -h, h, 1.0, 10000.0)
 
     """

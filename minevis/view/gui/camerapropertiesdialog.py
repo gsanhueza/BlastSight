@@ -20,19 +20,19 @@ class CameraPropertiesDialog(QDialog):
         self.viewer.camera_position = [self.doubleSpinBox_x.value(),
                                        self.doubleSpinBox_y.value(),
                                        self.doubleSpinBox_z.value()]
-        self.viewer.camera_rotation = [self.doubleSpinBox_rot_x.value(),
-                                       self.doubleSpinBox_rot_y.value(),
-                                       self.doubleSpinBox_rot_z.value()]
-        self.viewer.centroid = [self.doubleSpinBox_center_x.value(),
-                                self.doubleSpinBox_center_y.value(),
-                                self.doubleSpinBox_center_z.value()]
+        self.viewer.rotation_angle = [self.doubleSpinBox_rot_x.value(),
+                                      self.doubleSpinBox_rot_y.value(),
+                                      self.doubleSpinBox_rot_z.value()]
+        self.viewer.rotation_center = [self.doubleSpinBox_center_x.value(),
+                                       self.doubleSpinBox_center_y.value(),
+                                       self.doubleSpinBox_center_z.value()]
 
         super().accept()
 
     def show(self):
         positions = self.viewer.camera_position
-        rotations = self.viewer.camera_rotation
-        centroid = self.viewer.centroid
+        rotations = self.viewer.rotation_angle
+        centers = self.viewer.rotation_center
 
         self.doubleSpinBox_x.setValue(positions[0])
         self.doubleSpinBox_y.setValue(positions[1])
@@ -42,8 +42,8 @@ class CameraPropertiesDialog(QDialog):
         self.doubleSpinBox_rot_y.setValue(rotations[1])
         self.doubleSpinBox_rot_z.setValue(rotations[2])
 
-        self.doubleSpinBox_center_x.setValue(centroid[0])
-        self.doubleSpinBox_center_y.setValue(centroid[1])
-        self.doubleSpinBox_center_z.setValue(centroid[2])
+        self.doubleSpinBox_center_x.setValue(centers[0])
+        self.doubleSpinBox_center_y.setValue(centers[1])
+        self.doubleSpinBox_center_z.setValue(centers[2])
 
         super().show()

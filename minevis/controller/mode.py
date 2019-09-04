@@ -18,8 +18,8 @@ class Mode:
         rate = 0.1
         movement_rate = rate / (1.0 + max(0.0, min(sign, rate)))
 
-        off_center = max(widget.camera_position[2] - widget.centroid[2], 0.0)
-        shift = movement_rate * sign * max(-sign, off_center)
+        off_center = max(widget.zCameraPos - widget.zCentroidPos, 0.0)
+        shift = -sign * movement_rate * max(-sign/rate, off_center)
 
         self.set_z_movement(widget, widget.zCameraPos + shift)
 
@@ -33,20 +33,20 @@ class Mode:
     @staticmethod
     def set_x_rotation(widget, angle):
         angle = Mode.normalize_angle(angle)
-        if angle != widget.xWorldRot:
-            widget.xWorldRot = angle
+        if angle != widget.xCentroidRot:
+            widget.xCentroidRot = angle
 
     @staticmethod
     def set_y_rotation(widget, angle):
         angle = Mode.normalize_angle(angle)
-        if angle != widget.yWorldRot:
-            widget.yWorldRot = angle
+        if angle != widget.yCentroidRot:
+            widget.yCentroidRot = angle
 
     @staticmethod
     def set_z_rotation(widget, angle):
         angle = Mode.normalize_angle(angle)
-        if angle != widget.zWorldRot:
-            widget.zWorldRot = angle
+        if angle != widget.zCentroidRot:
+            widget.zCentroidRot = angle
 
     @staticmethod
     def set_x_movement(widget, position):
