@@ -59,7 +59,7 @@ class TreeWidget(QTreeWidget):
         action_center_camera = QAction('&Center camera', self)
         action_highlight = QAction('T&oggle highlighting', self)
         action_wireframe = QAction('&Toggle wireframe', self)
-        action_headers = QAction('H&eaders', self)
+        action_properties = QAction('&Properties', self)
         action_colors = QAction('C&olors', self)
         action_export_mesh = QAction('&Export mesh', self)
         action_export_blocks = QAction('Export &blocks', self)
@@ -71,7 +71,7 @@ class TreeWidget(QTreeWidget):
         action_delete.setIcon(QIcon.fromTheme('stock_close'))
         action_highlight.setIcon(QIcon.fromTheme('camera-ready'))
         action_wireframe.setIcon(QIcon.fromTheme('draw-triangle'))
-        action_headers.setIcon(QIcon.fromTheme('auto-type'))
+        action_properties.setIcon(QIcon.fromTheme('auto-type'))
         action_center_camera.setIcon(QIcon.fromTheme('camera'))
         action_colors.setIcon(QIcon.fromTheme('colormanagement'))
         action_export_mesh.setIcon(QIcon.fromTheme('document-export'))
@@ -86,7 +86,7 @@ class TreeWidget(QTreeWidget):
         action_wireframe.triggered.connect(item.toggle_wireframe)
         action_center_camera.triggered.connect(item.center_camera)
 
-        action_headers.triggered.connect(lambda: self.headers_triggered_signal.emit(item.drawable.id))
+        action_properties.triggered.connect(lambda: self.headers_triggered_signal.emit(item.drawable.id))
         action_colors.triggered.connect(lambda: self.colors_triggered_signal.emit(item.drawable.id))
 
         action_export_mesh.triggered.connect(lambda: self.export_mesh_signal.emit(item.drawable.id))
@@ -105,11 +105,11 @@ class TreeWidget(QTreeWidget):
             menu.addSeparator()
             menu.addAction(action_export_mesh)
         elif item.type == BlockGL:
-            menu.addAction(action_headers)
+            menu.addAction(action_properties)
             menu.addSeparator()
             menu.addAction(action_export_blocks)
         elif item.type == PointGL:
-            menu.addAction(action_headers)
+            menu.addAction(action_properties)
             menu.addSeparator()
             menu.addAction(action_export_points)
 

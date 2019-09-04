@@ -7,10 +7,10 @@ from qtpy.QtWidgets import QDialog
 from qtpy import uic
 
 
-class CameraPropertiesDialog(QDialog):
+class CameraDialog(QDialog):
     def __init__(self, parent=None):
         QDialog.__init__(self, parent)
-        uic.loadUi(f'{pathlib.Path(__file__).parent}/UI/camerapropertiesdialog.ui', self)
+        uic.loadUi(f'{pathlib.Path(__file__).parent}/UI/cameradialog.ui', self)
 
         # Avoids the QObject::startTimer warning (maybe)
         self.setAttribute(Qt.WA_DeleteOnClose)

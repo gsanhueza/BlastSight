@@ -10,19 +10,19 @@ from qtpy.QtWidgets import QDialogButtonBox
 from qtpy import uic
 
 
-class HeadersDialog(QDialog):
+class PropertiesDialog(QDialog):
     def __init__(self, parent=None, _id=None):
         QDialog.__init__(self, parent)
 
         # Avoids the QObject::startTimer warning (maybe)
         self.setAttribute(Qt.WA_DeleteOnClose)
 
-        uic.loadUi(f'{pathlib.Path(__file__).parent}/UI/headersdialog.ui', self)
+        uic.loadUi(f'{pathlib.Path(__file__).parent}/UI/propertiesdialog.ui', self)
         self.viewer = parent
         self.id = _id
 
         element = self.viewer.get_drawable(self.id).element
-        self.setWindowTitle(f'Set headers ({element.name}.{element.extension})')
+        self.setWindowTitle(f'Set properties ({element.name}.{element.extension})')
 
         # Fill content
         for i in element.headers:

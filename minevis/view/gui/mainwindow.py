@@ -11,8 +11,8 @@ from qtpy.QtWidgets import QFileDialog
 from qtpy.QtWidgets import QMainWindow
 from qtpy.QtWidgets import QMessageBox
 
-from .camerapropertiesdialog import CameraPropertiesDialog
-from .headersdialog import HeadersDialog
+from .cameradialog import CameraDialog
+from .propertiesdialog import PropertiesDialog
 from .colordialog import ColorDialog
 from .loadworker import LoadWorker
 
@@ -68,7 +68,7 @@ class MainWindow(QMainWindow):
         self.toolbar.action_normal_mode.triggered.connect(self.normal_mode_slot)
         self.toolbar.action_selection_mode.triggered.connect(self.selection_mode_slot)
 
-        self.toolbar.action_camera_properties.triggered.connect(self.camera_properties_dialog)
+        self.toolbar.action_camera_properties.triggered.connect(self.camera_dialog)
         self.toolbar.action_plan_view.triggered.connect(self.viewer.plan_view)
         self.toolbar.action_north_view.triggered.connect(self.viewer.north_view)
         self.toolbar.action_east_view.triggered.connect(self.viewer.east_view)
@@ -80,7 +80,7 @@ class MainWindow(QMainWindow):
 
         # External widgets
         self.viewer.file_modified_signal.connect(self.fill_tree_widget)
-        self.treeWidget.headers_triggered_signal.connect(self.headers_dialog)
+        self.treeWidget.headers_triggered_signal.connect(self.properties_dialog)
         self.treeWidget.colors_triggered_signal.connect(self.color_dialog)
         self.treeWidget.export_mesh_signal.connect(self.export_mesh_dialog)
         self.treeWidget.export_blocks_signal.connect(self.export_blocks_dialog)
@@ -105,12 +105,16 @@ class MainWindow(QMainWindow):
     def fill_tree_widget(self) -> None:
         self.treeWidget.fill_from_viewer(self.viewer)
 
-    def headers_dialog(self, id_):
-        dialog = HeadersDialog(self.viewer, id_)
+    def properties_dialog(self, id_):
+        dialog = PropertiesDialog(self.viewer, id_)
         dialog.show()
 
     def color_dialog(self, id_):
         dialog = ColorDialog(self.viewer, id_)
+        dialog.show()
+
+    def camera_dialog(self):
+        dialog = CameraDialog(self.viewer)
         dialog.show()
 
     def export_mesh_dialog(self, id_):
@@ -142,10 +146,6 @@ class MainWindow(QMainWindow):
 
         if path != '':
             self.viewer.export_blocks(path, id_)
-
-    def camera_properties_dialog(self):
-        dialog = CameraPropertiesDialog(self.viewer)
-        dialog.show()
 
     def update_statusbar(self, id_):
         self.statusBar.showMessage(f'Loaded (id: {id_}).')
