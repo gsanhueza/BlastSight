@@ -1,5 +1,4 @@
-#version 150
-#extension GL_ARB_separate_shader_objects : enable
+#version 330
 
 in vec3 v_normal;
 in vec3 f_color;

@@ -1,8 +1,8 @@
-#version 140
+#version 330
 
-in vec3 a_position;
-in vec3 a_color;
-in float a_alpha;
+layout (location = 0) in vec3 a_position;
+layout (location = 1) in vec3 a_color;
+layout (location = 2) in float a_alpha;
 
 out vec3 v_position;
 out vec3 v_color;

@@ -1,4 +1,4 @@
-#version 140
+#version 330
 
 uniform int marker;
 in vec3 v_color;

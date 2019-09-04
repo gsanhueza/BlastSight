@@ -1,4 +1,4 @@
-#version 140
+#version 330
 
 varying vec3 v_color;
 out vec4 out_color;
