@@ -17,13 +17,16 @@ class MeshProgram(ShaderProgram):
 
         # Prepare meshes
         for drawable in self.drawables:
-            if drawable.wireframe_enabled:
+            # Wireframe
+            if drawable.is_wireframed:
                 wireframed.append(drawable)
             else:
+                # Non-wireframe
                 if drawable.element.alpha >= 0.99:
                     normal_opaque.append(drawable)
                 else:
                     normal_transparent.append(drawable)
+                # Highlighted
                 if drawable.is_highlighted:
                     highlighted.append(drawable)
 

@@ -40,27 +40,27 @@ class TestMeshGL:
     def test_meshgl_wireframe_no_init(self):
         drawable = MeshGL(widget=IntegrableViewer(), element=self.element)
 
-        assert not drawable.wireframe_enabled
+        assert not drawable.is_wireframed
         drawable.toggle_wireframe()
-        assert drawable.wireframe_enabled
+        assert drawable.is_wireframed
         drawable.toggle_wireframe()
-        assert not drawable.wireframe_enabled
+        assert not drawable.is_wireframed
 
     def test_meshgl_wireframe(self):
         drawable = MeshGL(widget=IntegrableViewer(), element=self.element)
         drawable.initialize()
 
-        assert not drawable.wireframe_enabled
+        assert not drawable.is_wireframed
         drawable.toggle_wireframe()
-        assert drawable.wireframe_enabled
+        assert drawable.is_wireframed
         drawable.toggle_wireframe()
-        assert not drawable.wireframe_enabled
+        assert not drawable.is_wireframed
 
         drawable.disable_wireframe()
-        assert not drawable.wireframe_enabled
+        assert not drawable.is_wireframed
 
         drawable.enable_wireframe()
-        assert drawable.wireframe_enabled
+        assert drawable.is_wireframed
 
     def test_draw(self):
         widget = IntegrableViewer()

@@ -11,29 +11,29 @@ class MeshGL(GLDrawable):
         super().__init__(widget, element)
         self.indices_size = 0
 
-        self.is_highlighted = kwargs.get('highlighting', False)
-        self.wireframe_enabled = kwargs.get('wireframe', False)
+        self.is_highlighted = kwargs.get('highlight', False)
+        self.is_wireframed = kwargs.get('wireframe', False)
 
     def toggle_highlighting(self) -> bool:
         self.is_highlighted = not self.is_highlighted
         return self.is_highlighted
 
     def toggle_wireframe(self) -> bool:
-        self.wireframe_enabled = not self.wireframe_enabled
+        self.is_wireframed = not self.is_wireframed
 
         # Against our original idea, here we do not want to fill the
         # buffers again until OpenGL is already rendering.
         if self.is_initialized:
             self.setup_attributes()
-        return self.wireframe_enabled
+        return self.is_wireframed
 
     def disable_wireframe(self) -> None:
-        self.wireframe_enabled = False
+        self.is_wireframed = False
         if self.is_initialized:
             self.setup_attributes()
 
     def enable_wireframe(self):
-        self.wireframe_enabled = True
+        self.is_wireframed = True
         if self.is_initialized:
             self.setup_attributes()
 
@@ -49,7 +49,7 @@ class MeshGL(GLDrawable):
         vertices = self.element.vertices.astype(np.float32)
         indices = self.element.indices.astype(np.uint32)
         colors = self.element.rgba.astype(np.float32)
-        wireframe = np.array([1 if self.wireframe_enabled else 0], np.byte)
+        wireframe = np.array([self.is_wireframed], np.bool8)
 
         self.indices_size = indices.size
 
@@ -59,7 +59,7 @@ class MeshGL(GLDrawable):
         # buffer_properties = [(pointer, basesize, array, glsize, gltype)]
         buffer_properties = [(_POSITION, 3, vertices, GLfloat, GL_FLOAT),
                              (_COLOR, 4, colors, GLfloat, GL_FLOAT),
-                             (_WIREFRAME, 1, wireframe, GLbyte, GL_BYTE),
+                             (_WIREFRAME, 1, wireframe, GLboolean, GL_UNSIGNED_BYTE),
                              ]
 
         # Fill buffers (see GLDrawable)
