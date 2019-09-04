@@ -160,16 +160,13 @@ class MainWindow(QMainWindow):
         self.last_dir = QFileInfo(path).absoluteDir().absolutePath()
 
     def load_mesh(self, path: str) -> None:
-        self._load_element(method=self.viewer.mesh_by_path,
-                           path=path)
+        self._load_element(method=self.viewer.mesh_by_path, path=path)
 
     def load_block_model(self, path: str) -> None:
-        self._load_element(method=self.viewer.blocks_by_path,
-                           path=path)
+        self._load_element(method=self.viewer.blocks_by_path, path=path)
 
     def load_points(self, path: str) -> None:
-        self._load_element(method=self.viewer.points_by_path,
-                           path=path)
+        self._load_element(method=self.viewer.points_by_path, path=path)
 
     """
     Slots. Unless explicitly otherwise, slots are connected via Qt Designer

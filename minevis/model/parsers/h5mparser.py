@@ -41,7 +41,7 @@ class H5MParser(Parser):
 
         if vertices is None or indices is None:
             data = kwargs.get('data', {})
-            vertices = np.column_stack((data['x'], data['y'], data['z']))
+            vertices = data.get('vertices', np.column_stack((data['x'], data['y'], data['z'])))
             indices = data.get('indices', [])
 
         properties = kwargs.get('properties', {})
