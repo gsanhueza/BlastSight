@@ -40,20 +40,27 @@ def demo():
     viewer = Viewer()
     viewer.setWindowTitle('MineVis (Demo)')
 
-    viewer.mesh(x=[-1, 1, 0], y=[0, 0, 1], z=[-3, -3, -3],
+    viewer.mesh(x=[1, 3, 2], y=[0, 0, 1], z=[-3, -3, -3],
                 color=[0.0, 0.0, 1.0],
                 indices=[[0, 1, 2]],
                 alpha=0.7,
                 name='Normal Mesh')
 
-    viewer.mesh(x=[-1, 1, 0], y=[0, 0, -1], z=[-3, -3, -3],
+    viewer.mesh(x=[1, 3, 2], y=[0, 0, -1], z=[-3, -3, -3],
                 color=[1.0, 0.5, 0.0],
                 indices=[[0, 1, 2]],
                 alpha=1.0,
                 wireframe=True,
                 name='Wireframed Mesh')
 
-    viewer.blocks(x=[-3, 3, 0], y=[0, 0, 5], z=[0, 0, 0],
+    viewer.mesh(x=[-3, -1, -2, -2], y=[0, 0, 1, -1], z=[-3, -3, -3, -3],
+                color=[1.0, 0.5, 0.5],
+                indices=[[0, 1, 2], [0, 3, 1]],
+                alpha=1.0,
+                highlight=True,
+                name='Highlighted Mesh')
+
+    viewer.blocks(x=[-4, 4, 0], y=[0, 0, 5], z=[0, 0, 0],
                   block_size=[1.0, 1.0, 1.0],
                   values=[0.5, 1.0, 1.5],
                   name='Blocks')
@@ -75,23 +82,24 @@ def demo():
                   name='Points rendered as circles')
 
     viewer.points(vertices=[[-3, 5, 0], [3, 5, 0]],
-                  point_size=[4, 4],
+                  point_size=4.0,
                   color=[[0.8, 0.5, 0.2],
                          [0.5, 0.2, 0.8]],
                   marker='sphere',
                   name='Points rendered as spheres')
 
-    viewer.lines(x=[-0.5, 0.5], y=[-2.0, 1.5], z=[-2.0, -2.0],
+    viewer.lines(x=[-1.0, 1.0, -1.0, 1.0], y=[1.0, 1.0, -1.0, -1.0], z=[-2.0, -2.0, -2.0, -2.0],
                  color=[0.2, 0.8, 0.8],
+                 loop=True,
                  name='Lines')
 
-    viewer.tubes(x=[0.5, -0.5, 1.5, 1.5], y=[-2.0, 1.8, 1.8, 0.0], z=[-1.5, -1.5, -1.5, -1.5],
+    viewer.tubes(x=[1.0, -1.0, 1.0, -1.0], y=[2.0, 2.0, -2.0, -2.0], z=[-1.5, -1.5, -1.5, -1.5],
                  color=[0.9, 0.2, 0.2],
                  radius=0.2,
                  resolution=150,
                  name='Tubes')
 
-    viewer.camera_position = [0.0, 2.0, 15.0]
+    viewer.camera_position = [0.0, 2.0, 12.0]
     viewer.rotation_center = [0.0, 0.0, 0.0]
 
     for id_, drawable in viewer.drawable_collection.items():
