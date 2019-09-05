@@ -123,6 +123,10 @@ class Model:
         self.element_collection.delete(id_)
 
     @property
+    def last_id(self) -> int:
+        return self.element_collection.last_id
+
+    @property
     def element_collection(self) -> ElementCollection:
         return self._element_collection
 

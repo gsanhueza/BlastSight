@@ -7,20 +7,17 @@ from .element import Element
 class ElementCollection(OrderedDict):
     def __init__(self):
         super().__init__()
-        self._last_id = -1
+        self.current_id = -1
 
     @property
-    def last_id(self) -> int:
-        return self._last_id
-
-    @last_id.setter
-    def last_id(self, id_: int) -> None:
-        self._last_id = id_
+    def last_id(self):
+        # bool(dict) evaluates to False if the dictionary is empty
+        return list(self.keys())[-1] if bool(self) else -1
 
     def add(self, element: Element) -> None:
-        self.last_id += 1
-        self[self.last_id] = element
-        element.id = self.last_id  # Auto-update on element add
+        self.current_id += 1
+        self[self.current_id] = element
+        element.id = self.current_id  # Auto-update on element add
 
     def delete(self, _id):
         del self[_id]
