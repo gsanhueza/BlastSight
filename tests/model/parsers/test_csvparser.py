@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import os
 import pytest
 from minevis.model.parsers.csvparser import CSVParser as Parser
 from tests.globals import *
@@ -49,3 +50,25 @@ class TestCSVParser:
 
         with pytest.raises(Exception):
             assert data['abc']
+
+    def test_save_file(self):
+        info = Parser.load_file(path=f'{TEST_FILES_FOLDER_PATH}/mini.csv')
+        data = info.data
+        Parser.save_file(path=f'{TEST_FILES_FOLDER_PATH}/mini_save.csv', data=data)
+
+        info_s = Parser.load_file(path=f'{TEST_FILES_FOLDER_PATH}/mini_save.csv')
+        data_s = info_s.data
+
+        for k, k_s in zip(data.keys(), data_s.keys()):
+            assert k == k_s
+
+        for v, v_s in zip(data.values, data_s.values):
+            for e, e_s in zip(v, v_s):
+                assert e == e_s
+
+        # Cleanup
+        os.remove(f'{TEST_FILES_FOLDER_PATH}/mini_save.csv')
+
+    def test_save_empty(self):
+        with pytest.raises(Exception):
+            Parser.save_file()

@@ -68,3 +68,7 @@ class TestH5PParser:
 
         with pytest.raises(Exception):
             assert data['abc']
+
+    def test_save_empty(self):
+        with pytest.raises(Exception):
+            Parser.save_file()

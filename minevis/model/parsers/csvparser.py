@@ -25,5 +25,11 @@ class CSVParser(Parser):
             return data
 
     @staticmethod
-    def save_file(path: str, *args, **kwargs):
-        raise NotImplementedError
+    def save_file(*args, **kwargs):
+        path = kwargs.get('path', None)
+
+        if path is None:
+            raise KeyError('Path missing.')
+
+        data = kwargs.get('data', pd.DataFrame())
+        data.to_csv(path, index=False)
