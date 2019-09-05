@@ -10,8 +10,6 @@ from .parser import Parser
 class H5MParser(Parser):
     @staticmethod
     def load_file(path: str) -> ParserData:
-        assert path.lower().endswith('.h5m')
-
         hf = h5py.File(path, 'r')
         vertices = hf['vertices'][()]
         indices = hf['indices'][()]
@@ -46,7 +44,6 @@ class H5MParser(Parser):
 
         properties = kwargs.get('properties', {})
 
-        path = path if path.endswith('.h5m') else f'{path}.h5m'
         hf = h5py.File(path, 'w')
         hf.create_dataset('vertices', data=vertices, dtype='float32')
         hf.create_dataset('indices', data=indices, dtype='uint32')

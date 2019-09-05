@@ -9,8 +9,6 @@ from .parser import Parser
 class H5PParser(Parser):
     @staticmethod
     def load_file(path: str) -> ParserData:
-        assert path.lower().endswith('.h5p')
-
         store = pd.HDFStore(path, 'r')
         try:
             properties = store.get_storer('data').attrs.metadata
@@ -37,8 +35,6 @@ class H5PParser(Parser):
 
         data = kwargs.get('data', [])
         properties = kwargs.get('properties', {})
-
-        path = path if path.endswith('.h5p') else f'{path}.h5p'
 
         store = pd.HDFStore(path, 'w')
         store.put('data', data)
