@@ -42,6 +42,31 @@ class Element:
         self._check_integrity()
 
     """
+    'Hacky' utilities
+
+    Like getattr and setattr, but for @property instead of attributes.
+    We're using self.__class__.mro() to reach the parents too.
+    """
+    def set_property(self, _property, _value):
+        for cls in self.__class__.mro():
+            try:
+                cls.__dict__[_property].fset(self, _value)
+                return
+            except KeyError:
+                continue
+
+        raise KeyError(_property)
+
+    def get_property(self, _property):
+        for cls in self.__class__.mro():
+            try:
+                return cls.__dict__[_property].fget(self)
+            except KeyError:
+                continue
+
+        raise KeyError(_property)
+
+    """
     Element filling    
     """
     def _fill_element(self, *args, **kwargs):
@@ -137,6 +162,10 @@ class Element:
     """
     Properties
     """
+    @property
+    def enabled_properties(self):
+        return ['color', 'alpha']
+
     @property
     def color(self) -> np.array:
         return self.properties.get('color')

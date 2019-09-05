@@ -34,9 +34,12 @@ class PropertiesDialog(QDialog):
         # Fill properties (FIXME Create rows, not textedits)
         props = {}
 
-        for k, v in element.properties.items():
-            if type(v) is not np.ndarray:
-                props[k] = v  # Temporarily omitting lists
+        for k in element.enabled_properties:
+            v = element.get_property(k)
+            if type(v) is np.ndarray:
+                props[k] = v.tolist()
+            else:
+                props[k] = v
 
         self.textEdit_properties.setText(json.dumps(props, indent=4))
 
@@ -51,9 +54,10 @@ class PropertiesDialog(QDialog):
         props = json.loads(self.textEdit_properties.toPlainText())
 
         for k, v in props.items():
-            props[k] = v
-
-        element.properties = props
+            try:
+                element.set_property(k, v)
+            except KeyError:
+                print(f'{k} property does not exist.')
 
         # Recreate the BlockModelGL instance with the "new" data
         self.viewer.update_drawable(self.id)

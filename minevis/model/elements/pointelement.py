@@ -47,19 +47,35 @@ class PointElement(DFElement):
 
     def _fill_properties(self, *args, **kwargs):
         super()._fill_properties(*args, **kwargs)
-        self.marker = kwargs.get('marker', 'circle')
+        self.marker = kwargs.get('marker', 'square')
         self.point_size = kwargs.get('point_size', 1.0)
 
     """
     Properties
     """
     @property
+    def enabled_properties(self):
+        return ['alpha', 'colormap', 'vmin', 'vmax', 'marker', 'avg_size']
+
+    @property
+    def avg_size(self) -> float:
+        return self.point_size.mean()
+
+    @property
     def point_size(self) -> np.ndarray:
         return self.datasets.get('size')
 
     @property
-    def marker(self) -> int:
-        return self.marker_dict.get(self.properties.get('marker'), 0)
+    def marker_num(self) -> int:
+        return self.marker_dict.get(self.marker, 0)
+
+    @property
+    def marker(self) -> str:
+        return self.properties.get('marker', 'square')
+
+    @avg_size.setter
+    def avg_size(self, _avg_size: float):
+        self.point_size = _avg_size
 
     @point_size.setter
     def point_size(self, _size) -> None:

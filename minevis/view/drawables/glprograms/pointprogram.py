@@ -19,5 +19,5 @@ class PointProgram(ShaderProgram):
             viewport = [self.widget.devicePixelRatio() * self.widget.width(),
                         self.widget.devicePixelRatio() * self.widget.height()]
             self.update_uniform('viewport', *viewport)
-            self.update_uniform('marker', drawable.element.marker)
+            self.update_uniform('marker', drawable.element.marker_num)
             drawable.draw()

@@ -48,6 +48,10 @@ class BlockElement(DFElement):
     Properties
     """
     @property
+    def enabled_properties(self):
+        return ['alpha', 'colormap', 'vmin', 'vmax', 'block_size']
+
+    @property
     def block_count(self):
         return np.array([self.x.size, self.y.size, self.z.size])
 
