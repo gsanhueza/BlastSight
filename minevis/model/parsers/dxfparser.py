@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 
 import dxfgrabber
+import numpy as np
+
 from qtpy.QtCore import QFileInfo
-from collections import OrderedDict
 from .parserdata import ParserData
 from .parser import Parser
 
@@ -13,22 +14,12 @@ class DXFParser(Parser):
         assert path.lower().endswith('dxf')
 
         dxf = dxfgrabber.readfile(path)
-        vertices_dict = OrderedDict()
 
-        # Detect vertices and faces
-        index = 0
-        faces = []
+        # Detect vertices and indices
+        points = []
         for entity in dxf.entities:
-            face_pointers = []
-            # Vertices
-            for vertex in entity.points:
-                if vertex not in vertices_dict:
-                    vertices_dict[vertex] = index
-                    index += 1
-
-                # Faces
-                face_pointers.append(vertices_dict[vertex])
-            faces.append(face_pointers[:3])
+            points += entity.points[:3]
+        vertices, indices = np.unique(np.array(points), axis=0, return_inverse=True)
 
         # Metadata
         properties = {
@@ -38,8 +29,8 @@ class DXFParser(Parser):
 
         # Model data
         data = ParserData()
-        data.vertices = list(vertices_dict.keys())
-        data.indices = faces
+        data.vertices = vertices
+        data.indices = indices.reshape((indices.size // 3, 3))
         data.properties = properties
 
         return data

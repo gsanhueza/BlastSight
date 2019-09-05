@@ -20,6 +20,7 @@ class GLCollection(OrderedDict):
         for gl_program, lambda_drawables in self.programs.items():
             drawables = lambda_drawables()
             if len(drawables) == 0:
+                gl_program.set_drawables([])
                 continue
 
             gl_program.setup()
