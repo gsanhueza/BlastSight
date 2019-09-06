@@ -3,11 +3,10 @@
 from qtpy.QtWidgets import QVBoxLayout
 from qtpy.QtWidgets import QWidget
 
-from .gui.toolbar import ToolBar
-from .gui.integrableviewer import IntegrableViewer
-from .gui.camerapropertiesdialog import CameraPropertiesDialog
-from .gui.treewidget import TreeWidget
-from .gui.treewidgetitem import TreeWidgetItem
+from .toolbar import ToolBar
+from .integrableviewer import IntegrableViewer
+from .cameradialog import CameraDialog
+from .treewidget import TreeWidget
 
 
 class Container(QWidget):
@@ -49,7 +48,7 @@ class Container(QWidget):
         self.viewer.file_modified_signal.connect(self.fill_tree_widget)
 
     def camera_properties_dialog(self):
-        dialog = CameraPropertiesDialog(self.viewer)
+        dialog = CameraDialog(self.viewer)
         dialog.show()
 
     def fill_tree_widget(self) -> None:

@@ -134,3 +134,13 @@ class TestElement:
 
         with pytest.raises(Exception):
             element.get_property('wrong')
+
+    def test_center_centroid(self):
+        element = Element(vertices=[[0, 1, 2], [3, 4, 5], [3, 4, 5]])
+        assert element.center[0] == 1.5
+        assert element.center[1] == 2.5
+        assert element.center[2] == 3.5
+
+        assert element.centroid[0] == 2.0
+        assert element.centroid[1] == 3.0
+        assert element.centroid[2] == 4.0

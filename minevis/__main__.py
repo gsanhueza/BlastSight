@@ -18,7 +18,7 @@ def application():
 
 def container():
     from qtpy.QtWidgets import QApplication
-    from minevis.view.container import Container
+    from minevis.view.gui.container import Container
 
     qt_app = QApplication(sys.argv)
 

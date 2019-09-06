@@ -95,24 +95,24 @@ class IntegrableViewer(QOpenGLWidget):
         return self._proj
 
     @property
-    def camera_position(self) -> list:
-        return [self.xCameraPos, self.yCameraPos, self.zCameraPos]
+    def camera_position(self) -> np.ndarray:
+        return np.array([self.xCameraPos, self.yCameraPos, self.zCameraPos])
 
     @camera_position.setter
     def camera_position(self, pos: list) -> None:
         self.xCameraPos, self.yCameraPos, self.zCameraPos = pos
 
     @property
-    def rotation_angle(self) -> list:
-        return [self.xCentroidRot, self.yCentroidRot, self.zCentroidRot]
+    def rotation_angle(self) -> np.ndarray:
+        return np.array([self.xCentroidRot, self.yCentroidRot, self.zCentroidRot])
 
     @rotation_angle.setter
     def rotation_angle(self, rot: list) -> None:
         self.xCentroidRot, self.yCentroidRot, self.zCentroidRot = rot
 
     @property
-    def rotation_center(self) -> list:
-        return [self.xCentroidPos, self.yCentroidPos, self.zCentroidPos]
+    def rotation_center(self) -> np.ndarray:
+        return np.array([self.xCentroidPos, self.yCentroidPos, self.zCentroidPos])
 
     @rotation_center.setter
     def rotation_center(self, _centroid: list) -> None:
@@ -248,7 +248,7 @@ class IntegrableViewer(QOpenGLWidget):
         self.camera.setToIdentity()
 
         # Translate by centroid (world position)
-        self.world.translate(self.xCentroidPos, self.yCentroidPos, self.zCentroidPos)
+        self.world.translate(*self.rotation_center)
 
         # Allow rotation of the world
         self.world.rotate(self.xCentroidRot, 1.0, 0.0, 0.0)
@@ -256,10 +256,10 @@ class IntegrableViewer(QOpenGLWidget):
         self.world.rotate(self.zCentroidRot, 0.0, 0.0, 1.0)
 
         # Restore world
-        self.world.translate(-self.xCentroidPos, -self.yCentroidPos, -self.zCentroidPos)
+        self.world.translate(*-self.rotation_center)
 
         # Translate the camera
-        self.camera.translate(-self.xCameraPos, -self.yCameraPos, -self.zCameraPos)
+        self.camera.translate(*-self.camera_position)
 
         # Draw every GLDrawable (meshes, block models, etc)
         glEnable(GL_BLEND)
@@ -274,7 +274,6 @@ class IntegrableViewer(QOpenGLWidget):
 
     def resizeGL(self, w: float, h: float) -> None:
         # TODO Enable perspective/orthogonal in application
-
         self.proj.setToIdentity()
         # Perspective
         self.proj.perspective(45.0, (w / h), 1.0, 10000.0)

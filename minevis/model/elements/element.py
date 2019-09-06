@@ -196,14 +196,15 @@ class Element:
     """
     @property
     def centroid(self) -> np.ndarray:
-        return np.array([self.x.mean(), self.y.mean(), self.z.mean()])
+        return self.vertices.mean(axis=0)
+
+    @property
+    def center(self) -> np.ndarray:
+        return np.sum(self.bounding_box, axis=0) / 2
 
     @property
     def bounding_box(self) -> tuple:
-        min_bounds = self.vertices.min(axis=0)
-        max_bounds = self.vertices.max(axis=0)
-
-        return min_bounds, max_bounds
+        return self.vertices.min(axis=0), self.vertices.max(axis=0)
 
     """
     Metadata

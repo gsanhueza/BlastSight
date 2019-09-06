@@ -31,10 +31,14 @@ class TestIntegrableViewer:
 
     def test_centroid(self):
         widget = IntegrableViewer()
-        assert widget.rotation_center == [0.0, 0.0, 0.0]
+        assert widget.rotation_center[0] == 0.0
+        assert widget.rotation_center[1] == 0.0
+        assert widget.rotation_center[2] == 0.0
 
         widget.rotation_center = [1.0, 2.0, 3.0]
-        assert widget.rotation_center == [1.0, 2.0, 3.0]
+        assert widget.rotation_center[0] == 1.0
+        assert widget.rotation_center[1] == 2.0
+        assert widget.rotation_center[2] == 3.0
 
     def test_camera(self):
         widget = IntegrableViewer()
