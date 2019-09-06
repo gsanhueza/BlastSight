@@ -199,8 +199,30 @@ class TestPointElement:
             PointElement(data={})
 
     def test_point_size(self):
-        element = PointElement(vertices=[[0, 1, 2]], values=[8], point_size=2.0)
-        assert element.point_size == 2.0
+        element = PointElement(vertices=[[0, 1, 2], [3, 4, 5]], values=[8, 16], point_size=[2.0, 4.0])
+        assert element.point_size[0] == 2.0
+        assert element.point_size[1] == 4.0
+        assert element.avg_size == 3.0
+
+        element.avg_size = 5.0
+        assert element.point_size[0] == 5.0
+        assert element.point_size[1] == 5.0
 
         element.point_size = 10.0
-        assert element.point_size == 10.0
+        assert element.point_size[0] == 10.0
+        assert element.point_size[1] == 10.0
+        assert element.avg_size == 10.0
+
+    def test_enabled_properties(self):
+        element = PointElement(vertices=[[0, 1, 2]], values=[8])
+        for prop in ['alpha', 'colormap', 'vmin', 'vmax', 'marker', 'avg_size']:
+            assert prop in element.enabled_properties
+
+    def test_markers(self):
+        element = PointElement(vertices=[[0, 1, 2]], values=[8])
+        assert element.marker == 'square'
+        assert element.marker_num == element.marker_dict.get('square')
+
+        element.marker = 'sphere'
+        assert element.marker == 'sphere'
+        assert element.marker_num == element.marker_dict.get('sphere')

@@ -32,10 +32,6 @@ class GSLibParser(Parser):
         return data
 
     @staticmethod
-    def save_file(*args, **kwargs) -> None:
-        raise NotImplementedError
-
-    @staticmethod
     def get_header_info(path: str) -> tuple:
         with open(path, 'r') as gslib_file:
             gslib_file.readline()

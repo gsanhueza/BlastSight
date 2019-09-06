@@ -92,25 +92,12 @@ class DFElement(Element):
         self.colormap = kwargs.get('colormap', 'red-blue')  # red-blue (min is red, max is blue)
         self.color = kwargs.get('color', [])
 
-        try:
-            self.vmin = kwargs.get('vmin', self.values.min())
-            self.vmax = kwargs.get('vmax', self.values.max())
-        except ValueError:
-            self.vmin = kwargs.get('vmin', 0.0)
-            self.vmax = kwargs.get('vmax', 1.0)
+        self.vmin = kwargs.get('vmin', self.values.min())
+        self.vmax = kwargs.get('vmax', self.values.max())
 
     def _fill_metadata(self, *args, **kwargs):
         self.name = kwargs.get('name', None)
         self.extension = kwargs.get('ext', None)
-
-    def _check_integrity(self):
-        msg = '"data" cannot be empty.'
-        if len(self.data) == 0:
-            raise ValueError(msg)
-
-        msg = f'Coordinates have different lengths: ({self.x.size}, {self.y.size}, {self.z.size})'
-        if not (self.x.size == self.y.size == self.z.size):
-            raise ValueError(msg)
 
     """
     Main accessors (Override)
@@ -216,14 +203,14 @@ class DFElement(Element):
     """
     @staticmethod
     def color_from_dict(colormap: str):
-        d = {
+        colormap_dict = {
             'red-blue': lambda v: 2.0 / 3.0 * v,
             'blue-red': lambda v: 2.0 / 3.0 * (1.0 - v),
             'red-green': lambda v: 1.0 / 3.0 * v,
             'green-red': lambda v: 1.0 / 3.0 * (1.0 - v),
         }
 
-        return d.get(colormap)
+        return colormap_dict.get(colormap)
 
     @staticmethod
     def values_to_rgb(values: np.ndarray, vmin: float, vmax: float, colormap: str):

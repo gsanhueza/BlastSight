@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import os
 import pytest
 
 from minevis.model.elements.element import Element
@@ -9,6 +10,10 @@ from minevis.view.drawables.blockgl import BlockGL
 from minevis.view.drawables.pointgl import PointGL
 from minevis.view.gui.integrableviewer import IntegrableViewer
 
+from minevis.controller.normalmode import NormalMode
+from minevis.controller.fixedcameramode import FixedCameraMode
+from minevis.controller.selectionmode import SelectionMode
+
 from tests.globals import *
 
 
@@ -16,7 +21,7 @@ class TestIntegrableViewer:
     element = Element(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0])
     element.id = 0
 
-    def test_integrable_viewer_model(self):
+    def test_model(self):
         widget = IntegrableViewer()
         orig_model = widget.model
         widget.model = Model()
@@ -24,14 +29,14 @@ class TestIntegrableViewer:
 
         assert orig_model is not new_model
 
-    def test_integrable_viewer_centroid(self):
+    def test_centroid(self):
         widget = IntegrableViewer()
         assert widget.rotation_center == [0.0, 0.0, 0.0]
 
         widget.rotation_center = [1.0, 2.0, 3.0]
         assert widget.rotation_center == [1.0, 2.0, 3.0]
 
-    def test_integrable_viewer_camera(self):
+    def test_camera(self):
         widget = IntegrableViewer()
         assert widget.camera_position[0] == 0.0
         assert widget.camera_position[1] == 0.0
@@ -51,14 +56,14 @@ class TestIntegrableViewer:
         assert widget.rotation_angle[1] == 10.0
         assert widget.rotation_angle[2] == 45.0
 
-    def test_integrable_viewer_last_id(self):
+    def test_last_id(self):
         widget = IntegrableViewer()
         assert widget.last_id == -1
 
         widget.mesh(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], indices=[[0, 1, 2]])
         assert widget.last_id == 0
 
-    def test_integrable_viewer_add_mesh(self):
+    def test_add_mesh(self):
         widget = IntegrableViewer()
         widget.mesh(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], indices=[[0, 1, 2]])
         widget.mesh_by_path(f'{TEST_FILES_FOLDER_PATH}/caseron.dxf')
@@ -67,7 +72,7 @@ class TestIntegrableViewer:
         assert isinstance(widget.get_drawable(0), MeshGL)
         assert isinstance(widget.get_drawable(1), MeshGL)
 
-    def test_integrable_viewer_add_wrong_mesh(self):
+    def test_add_wrong_mesh(self):
         widget = IntegrableViewer()
 
         added = widget.mesh()
@@ -78,7 +83,7 @@ class TestIntegrableViewer:
         assert added is None
         assert widget.drawable_collection.__len__() == 0
 
-    def test_integrable_viewer_add_block_model(self):
+    def test_add_block_model(self):
         widget = IntegrableViewer()
         widget.blocks(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], values=[0, 1, 2])
         widget.blocks_by_path(f'{TEST_FILES_FOLDER_PATH}/mini.csv')
@@ -87,7 +92,7 @@ class TestIntegrableViewer:
         assert isinstance(widget.get_drawable(0), BlockGL)
         assert isinstance(widget.get_drawable(1), BlockGL)
 
-    def test_integrable_viewer_add_wrong_block_model(self):
+    def test_add_wrong_block_model(self):
         widget = IntegrableViewer()
 
         added = widget.blocks()
@@ -98,7 +103,7 @@ class TestIntegrableViewer:
         assert added is None
         assert widget.drawable_collection.__len__() == 0
 
-    def test_integrable_viewer_add_points(self):
+    def test_add_points(self):
         widget = IntegrableViewer()
         widget.points(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], values=[0, 1, 2])
         widget.points_by_path(f'{TEST_FILES_FOLDER_PATH}/mini.csv')
@@ -107,7 +112,7 @@ class TestIntegrableViewer:
         assert isinstance(widget.get_drawable(0), PointGL)
         assert isinstance(widget.get_drawable(1), PointGL)
 
-    def test_integrable_viewer_add_wrong_points(self):
+    def test_add_wrong_points(self):
         widget = IntegrableViewer()
 
         added = widget.points()
@@ -118,7 +123,7 @@ class TestIntegrableViewer:
         assert added is None
         assert widget.drawable_collection.__len__() == 0
 
-    def test_integrable_viewer_drawable_visibility(self):
+    def test_drawable_visibility(self):
         widget = IntegrableViewer()
         widget.mesh(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], indices=[[0, 1, 2]])
         widget.blocks(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], values=[0, 1, 2])
@@ -143,7 +148,20 @@ class TestIntegrableViewer:
         assert widget.get_drawable(0).is_visible
         assert widget.get_drawable(1).is_visible
 
-    def test_integrable_viewer_delete_drawable(self):
+    def test_update_drawable(self):
+        widget = IntegrableViewer()
+        meshgl = widget.mesh(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], indices=[[0, 1, 2]])
+
+        widget.camera_at(meshgl.id)
+        assert meshgl.element.centroid[0] == widget.rotation_center[0]
+
+        meshgl.element.x = [-10, 10, 10]
+        assert not meshgl.element.centroid[0] == widget.rotation_center[0]
+
+        widget.update_drawable(0)
+        assert meshgl.element.centroid[0] == widget.rotation_center[0]
+
+    def test_delete_drawable(self):
         widget = IntegrableViewer()
         widget.mesh(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], indices=[[0, 1, 2]])
         widget.blocks(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], values=[0, 1, 2])
@@ -212,3 +230,69 @@ class TestIntegrableViewer:
         assert viewer.get_drawable(2) is points
         assert viewer.get_drawable(3) is lines
         assert viewer.get_drawable(4) is tubes
+
+    def test_export(self):
+        viewer = IntegrableViewer()
+
+        mesh = viewer.mesh_by_path(path=f'{TEST_FILES_FOLDER_PATH}/caseron.off')
+        blocks = viewer.blocks_by_path(path=f'{TEST_FILES_FOLDER_PATH}/mini.csv')
+        points = viewer.points_by_path(path=f'{TEST_FILES_FOLDER_PATH}/mini.csv')
+
+        viewer.export_mesh(f'{TEST_FILES_FOLDER_PATH}/caseron_model_export.h5m', mesh.id)
+        viewer.export_blocks(f'{TEST_FILES_FOLDER_PATH}/mini_model_export_blocks.h5p', blocks.id)
+        viewer.export_points(f'{TEST_FILES_FOLDER_PATH}/mini_model_export_points.h5p', points.id)
+
+        # Cleanup
+        os.remove(f'{TEST_FILES_FOLDER_PATH}/caseron_model_export.h5m')
+        os.remove(f'{TEST_FILES_FOLDER_PATH}/mini_model_export_blocks.h5p')
+        os.remove(f'{TEST_FILES_FOLDER_PATH}/mini_model_export_points.h5p')
+
+    def test_clear(self):
+        viewer = IntegrableViewer()
+
+        viewer.mesh_by_path(path=f'{TEST_FILES_FOLDER_PATH}/caseron.off')
+        viewer.blocks_by_path(path=f'{TEST_FILES_FOLDER_PATH}/mini.csv')
+        viewer.points_by_path(path=f'{TEST_FILES_FOLDER_PATH}/mini.csv')
+
+        assert len(viewer.drawable_collection) == 3
+        viewer.clear()
+        assert len(viewer.drawable_collection) == 0
+
+    def test_plan_north_east_view(self):
+        viewer = IntegrableViewer()
+
+        # Default
+        assert viewer.rotation_angle[0] == 0.0
+        assert viewer.rotation_angle[1] == 0.0
+        assert viewer.rotation_angle[2] == 0.0
+
+        # Plan
+        viewer.plan_view()
+        assert viewer.rotation_angle[0] == 0.0
+        assert viewer.rotation_angle[1] == 0.0
+        assert viewer.rotation_angle[2] == 0.0
+
+        # North
+        viewer.north_view()
+        assert viewer.rotation_angle[0] == 270.0
+        assert viewer.rotation_angle[1] == 0.0
+        assert viewer.rotation_angle[2] == 270.0
+
+        # East
+        viewer.east_view()
+        assert viewer.rotation_angle[0] == 270.0
+        assert viewer.rotation_angle[1] == 0.0
+        assert viewer.rotation_angle[2] == 0.0
+
+    def test_controller_modes(self):
+        viewer = IntegrableViewer()
+        assert type(viewer.current_mode) is NormalMode
+
+        viewer.set_fixed_camera_mode()
+        assert type(viewer.current_mode) is FixedCameraMode
+
+        viewer.set_selection_mode()
+        assert type(viewer.current_mode) is SelectionMode
+
+        viewer.set_normal_mode()
+        assert type(viewer.current_mode) is NormalMode

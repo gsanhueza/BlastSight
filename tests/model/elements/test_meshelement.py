@@ -23,7 +23,7 @@ class TestMeshElement:
                     [0.0, 1.0, 0.0]]
 
         for i in range(len(expected)):
-            for j in range(3):
+            for j in range(len(expected[0])):
                 assert element.vertices[i][j] == expected[i][j]
 
         assert len(element.indices) == 1
@@ -31,7 +31,7 @@ class TestMeshElement:
         expected = [[0, 1, 2]]
 
         for i in range(len(expected)):
-            for j in range(3):
+            for j in range(len(expected[0])):
                 assert element.indices[i][j] == expected[i][j]
 
     def test_shared_triangles(self):
@@ -48,7 +48,7 @@ class TestMeshElement:
                     [2.0, 1.0, 0.0]]
 
         for i in range(len(expected)):
-            for j in range(3):
+            for j in range(len(expected[0])):
                 assert element.vertices[i][j] == expected[i][j]
 
         assert len(element.indices) == 2
@@ -56,7 +56,7 @@ class TestMeshElement:
         expected = [[0, 1, 2], [1, 3, 2]]
 
         for i in range(len(expected)):
-            for j in range(3):
+            for j in range(len(expected[0])):
                 assert element.indices[i][j] == expected[i][j]
 
     def test_wrong_mesh(self):
@@ -68,6 +68,9 @@ class TestMeshElement:
 
         with pytest.raises(ValueError):
             MeshElement(x=[-1, 1], y=[0, 0], z=[0, 0], indices=[[0, 1, 2]])
+
+        with pytest.raises(KeyError):
+            MeshElement(x=[-1, 1], y=[0, 0], z=[0, 0])
 
     def test_centroid_single(self):
         element = MeshElement(x=[-1, 1, 0], y=[0, 0, 3], z=[0, 0, 0], indices=[[0, 1, 2]])

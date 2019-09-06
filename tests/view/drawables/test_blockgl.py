@@ -8,7 +8,7 @@ from minevis.view.drawables.blockgl import BlockGL
 from minevis.view.drawables.glprograms.blockprogram import BlockProgram
 
 
-class TestBlockModelGL:
+class TestBlockGL:
     element = BlockElement(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], values=[0, 1, 2])
     element.id = 0
 
@@ -46,6 +46,9 @@ class TestBlockModelGL:
         drawable = BlockGL(widget=IntegrableViewer(), element=self.element)
         drawable.setup_attributes()
 
+        program.set_drawables([drawable])
+        program.draw()
+
         drawable.hide()
         assert not drawable.is_visible
         drawable.draw()
@@ -56,3 +59,13 @@ class TestBlockModelGL:
 
         drawable.hide()
         assert not drawable.is_visible
+
+    def test_program(self):
+        widget = IntegrableViewer()
+        program = BlockProgram(widget)
+        program.setup()
+        program.bind()
+
+        drawable = BlockGL(widget=IntegrableViewer(), element=self.element)
+        program.set_drawables([drawable])
+        program.draw()

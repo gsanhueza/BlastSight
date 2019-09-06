@@ -22,7 +22,7 @@ class TestLineElement:
                     [1.0, 0.0, 0.0]]
 
         for i in range(len(expected)):
-            for j in range(3):
+            for j in range(len(expected[0])):
                 assert element.vertices[i][j] == expected[i][j]
 
         # Color
@@ -34,7 +34,6 @@ class TestLineElement:
         element = LineElement(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], color=[1.0, 1.0, 0.0])
 
         assert len(element.vertices) == 3
-
         for v in element.vertices:
             assert type(v) == np.ndarray
 
@@ -43,13 +42,26 @@ class TestLineElement:
                     [0.0, 1.0, 0.0]]
 
         for i in range(len(expected)):
-            for j in range(3):
+            for j in range(len(expected[0])):
                 assert element.vertices[i][j] == expected[i][j]
 
         # Color
         expected = [1.0, 1.0, 0.0]
         for i in range(len(expected)):
             assert element.color[i] == expected[i]
+
+    def test_loop_lines(self):
+        element = LineElement(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], color=[1.0, 1.0, 0.0], loop=True)
+        assert len(element.vertices) == 4
+
+        expected = [[-1.0, 0.0, 0.0],
+                    [1.0, 0.0, 0.0],
+                    [0.0, 1.0, 0.0],
+                    [-1.0, 0.0, 0.0]]
+
+        for i in range(len(expected)):
+            for j in range(len(expected[0])):
+                assert element.vertices[i][j] == expected[i][j]
 
     def test_wrong_lines(self):
         with pytest.raises(Exception):

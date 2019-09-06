@@ -210,3 +210,8 @@ class TestBlockModelElement:
         assert abs(element.block_size[0] - 2.3) < epsilon
         assert abs(element.block_size[1] - 4.2) < epsilon
         assert abs(element.block_size[2] - 7.1) < epsilon
+
+    def test_enabled_properties(self):
+        element = BlockElement(vertices=[[0, 1, 2]], values=[8], block_size=[2.0, 4.0, 7.0])
+        for prop in ['alpha', 'colormap', 'vmin', 'vmax', 'block_size']:
+            assert prop in element.enabled_properties

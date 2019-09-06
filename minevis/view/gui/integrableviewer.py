@@ -273,15 +273,16 @@ class IntegrableViewer(QOpenGLWidget):
         self.fps_signal.emit(self.fps_counter.fps)
 
     def resizeGL(self, w: float, h: float) -> None:
-        self.proj.setToIdentity()
-        perspective = True  # TODO Switch perspective/orthogonal in application
+        # TODO Enable perspective/orthogonal in application
 
-        if perspective:
-            self.proj.perspective(45.0, (w / h), 1.0, 10000.0)
-        else:
-            w = w * (abs(self.zCentroidPos) - abs(self.zCameraPos)) * -0.001
-            h = h * (abs(self.zCentroidPos) - abs(self.zCameraPos)) * -0.001
-            self.proj.ortho(-w, w, -h, h, 1.0, 10000.0)
+        self.proj.setToIdentity()
+        # Perspective
+        self.proj.perspective(45.0, (w / h), 1.0, 10000.0)
+
+        # Orthogonal
+        # w = w * (abs(self.zCentroidPos) - abs(self.zCameraPos)) * -0.001
+        # h = h * (abs(self.zCentroidPos) - abs(self.zCameraPos)) * -0.001
+        # self.proj.ortho(-w, w, -h, h, 1.0, 10000.0)
 
     """
     Utilities

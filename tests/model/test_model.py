@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import os
 import pytest
 from minevis.model.parsers.offparser import OFFParser
 from minevis.model.parsers.csvparser import CSVParser
@@ -282,12 +283,32 @@ class TestModel:
         assert type(elem_get_1) == type(elem_get_2)
         assert type(elem_get_2) != type(elem_get_3)
 
-    def test_collection_types(self):
+    def test_collection(self):
         model = Model()
+
+        assert model.last_id == -1
         model.mesh_by_path(path=f'{TEST_FILES_FOLDER_PATH}/caseron.off')
+        assert model.last_id == 0
         model.mesh_by_path(path=f'{TEST_FILES_FOLDER_PATH}/caseron.dxf')
+        assert model.last_id == 1
         model.blocks_by_path(path=f'{TEST_FILES_FOLDER_PATH}/mini.csv')
+        assert model.last_id == 2
 
         assert len(model.element_collection) == 3
         assert len(model.mesh_collection) == 2
         assert len(model.block_model_collection) == 1
+
+    def test_export(self):
+        model = Model()
+        mesh = model.mesh_by_path(path=f'{TEST_FILES_FOLDER_PATH}/caseron.off')
+        blocks = model.blocks_by_path(path=f'{TEST_FILES_FOLDER_PATH}/mini.csv')
+        points = model.points_by_path(path=f'{TEST_FILES_FOLDER_PATH}/mini.csv')
+
+        model.export_mesh(f'{TEST_FILES_FOLDER_PATH}/caseron_model_export.h5m', mesh.id)
+        model.export_blocks(f'{TEST_FILES_FOLDER_PATH}/mini_model_export_blocks.h5p', blocks.id)
+        model.export_points(f'{TEST_FILES_FOLDER_PATH}/mini_model_export_points.h5p', points.id)
+
+        # Cleanup
+        os.remove(f'{TEST_FILES_FOLDER_PATH}/caseron_model_export.h5m')
+        os.remove(f'{TEST_FILES_FOLDER_PATH}/mini_model_export_blocks.h5p')
+        os.remove(f'{TEST_FILES_FOLDER_PATH}/mini_model_export_points.h5p')

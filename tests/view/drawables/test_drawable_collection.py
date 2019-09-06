@@ -69,10 +69,6 @@ class TestGLDrawableCollection:
         drawable_1 = GLDrawable(widget, element=self.element)
         drawable_2 = GLDrawable(widget, element=self.element)
 
-        with pytest.raises(Exception):
-            drawable_1.initialize()
-            drawable_2.initialize()
-
         collection.add(drawable_1)
         collection.add(drawable_2)
         collection.draw(widget.proj, widget.camera, widget.world)

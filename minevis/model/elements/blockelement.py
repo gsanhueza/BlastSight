@@ -52,18 +52,6 @@ class BlockElement(DFElement):
         return ['alpha', 'colormap', 'vmin', 'vmax', 'block_size']
 
     @property
-    def block_count(self):
-        return np.array([self.x.size, self.y.size, self.z.size])
-
-    @property
-    def block_min(self):
-        return np.array([self.x.min(), self.y.min(), self.z.min()])
-
-    @property
-    def block_max(self):
-        return np.array([self.x.max(), self.y.max(), self.z.max()])
-
-    @property
     def block_size(self) -> np.ndarray:
         return self.properties.get('size')
 

@@ -61,3 +61,7 @@ class TestH5MParser:
     def test_load_damaged(self):
         with pytest.raises(Exception):
             Parser.load_file(path=f'{TEST_FILES_FOLDER_PATH}/bad.h5m')
+
+    def test_save_empty(self):
+        with pytest.raises(Exception):
+            Parser.save_file()

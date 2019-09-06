@@ -31,7 +31,3 @@ class OFFParser(Parser):
             data.properties = properties
 
             return data
-
-    @staticmethod
-    def save_file(path: str, *args, **kwargs):
-        raise NotImplementedError

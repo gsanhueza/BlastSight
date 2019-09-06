@@ -44,7 +44,7 @@ class GLDrawable:
         self.is_initialized = True
 
     def setup_attributes(self) -> None:
-        raise NotImplementedError
+        pass
 
     def create_vao_vbos(self, vbo_count):
         if len(self.vaos) == 0:

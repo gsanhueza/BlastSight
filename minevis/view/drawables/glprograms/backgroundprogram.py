@@ -18,4 +18,5 @@ class BackgroundProgram(ShaderProgram):
         if not self.color_set:
             self.update_uniform('top_color', 0.1, 0.2, 0.3, 1.0)
             self.update_uniform('bot_color', 0.4, 0.5, 0.6, 1.0)
+            self.color_set = True
         super().draw()

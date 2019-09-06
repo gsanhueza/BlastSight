@@ -75,3 +75,62 @@ class TestElement:
         assert element.name == 'name123'
         assert element.extension == 'off'
         assert element.alpha == 0.8
+
+    def test_accessors(self):
+        element = Element(vertices=[[0, 1, 2]])
+        assert 'x' in element.data.keys()
+        assert 'y' in element.data.keys()
+        assert 'z' in element.data.keys()
+
+        element.data = {'a': 1, 'b': 2, 'c': 3}
+        assert 'a' in element.data.keys()
+        assert 'b' in element.data.keys()
+        assert 'c' in element.data.keys()
+        assert 'x' not in element.data.keys()
+        assert 'y' not in element.data.keys()
+        assert 'z' not in element.data.keys()
+
+        assert 'color' in element.properties.keys()
+        assert 'alpha' in element.properties.keys()
+
+        # We replace data, but we add properties
+        element.properties = {'d': 4, 'e': 5}
+        assert 'd' in element.properties.keys()
+        assert 'e' in element.properties.keys()
+        assert 'color' in element.properties.keys()
+        assert 'alpha' in element.properties.keys()
+
+    def test_color_rgba(self):
+        element = Element(vertices=[[0, 1, 2]])
+
+        assert element.color[0] == element.rgba[0]
+        assert element.color[1] == element.rgba[1]
+        assert element.color[2] == element.rgba[2]
+        assert element.alpha == element.rgba[3]
+
+        element.rgba = [1.0, 0.9, 0.8, 0.7]
+
+        assert element.color[0] == element.rgba[0] == 1.0
+        assert element.color[1] == element.rgba[1] == 0.9
+        assert element.color[2] == element.rgba[2] == 0.8
+        assert element.alpha == element.rgba[3] == 0.7
+
+    def test_enabled_properties(self):
+        element = Element(vertices=[[0, 1, 2]])
+        for prop in ['alpha', 'color']:
+            assert prop in element.enabled_properties
+
+    def test_hacky_utilities(self):
+        element = Element(vertices=[[0, 1, 2]])
+        assert element.alpha == 1.0
+        assert element.get_property('alpha') == 1.0
+
+        element.set_property('alpha', 0.8)
+        assert element.alpha == 0.8
+        assert element.get_property('alpha') == 0.8
+
+        with pytest.raises(Exception):
+            element.set_property('wrong', 0.0)
+
+        with pytest.raises(Exception):
+            element.get_property('wrong')
