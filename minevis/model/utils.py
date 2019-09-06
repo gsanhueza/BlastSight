@@ -3,23 +3,21 @@
 import numpy as np
 from functools import partial
 
-from .elements.meshelement import MeshElement
 
-
-def mesh_intersection(origin: np.ndarray, ray: np.ndarray, mesh: MeshElement) -> list:
+def mesh_intersection(origin: np.ndarray, ray: np.ndarray, mesh) -> list:
     # Early detection test
     if not aabb_intersection(origin, ray, mesh):
         return []
 
     curry_triangle = partial(partial(triangle_intersection, origin), ray)
 
-    triangles = mesh.vertices.view(np.ndarray)[mesh.indices]
+    triangles = mesh.vertices[mesh.indices]
     results = map(curry_triangle, triangles)
 
     return [x for x in results if x is not None]
 
 
-def aabb_intersection(origin: np.ndarray, ray: np.ndarray, mesh: MeshElement):
+def aabb_intersection(origin: np.ndarray, ray: np.ndarray, mesh):
     # Adapted from https://tavianator.com/fast-branchless-raybounding-box-intersections-part-2-nans/
     b_min, b_max = mesh.bounding_box
     b_diff = b_max - b_min
@@ -47,7 +45,7 @@ def aabb_intersection(origin: np.ndarray, ray: np.ndarray, mesh: MeshElement):
     return tmax > max(tmin, 0.0)
 
 
-def triangle_intersection(origin: np.ndarray, ray: np.ndarray, triangle: np.ndarray):
+def triangle_intersection(origin: np.ndarray, ray: np.ndarray, triangle: np.ndarray) -> list or None:
     # Idea taken from https://cadxfem.org/inf/Fast%20MinimumStorage%20RayTriangle%20Intersection.pdf
     # Code adapted from https://en.wikipedia.org/wiki/M%C3%B6ller%E2%80%93Trumbore_intersection_algorithm
     _EPSILON = 0.0000001
@@ -88,7 +86,7 @@ def triangle_intersection(origin: np.ndarray, ray: np.ndarray, triangle: np.ndar
     return None
 
 
-def slice_mesh(mesh: MeshElement, plane_origin: np.ndarray, plane_normal: np.ndarray) -> np.ndarray:
+def slice_mesh(mesh, plane_origin: np.ndarray, plane_normal: np.ndarray) -> np.ndarray:
     # Taken from https://pypi.org/project/meshcut/
     # Although we might want to have an improved version for real-time slicing
     import meshcut
@@ -106,7 +104,7 @@ def triangulate_slice(slice_vertices: np.ndarray) -> tuple:
     return vertices, indices
 
 
-def hsv_to_rgb(hsv):
+def hsv_to_rgb(hsv: list) -> np.ndarray:
     # Taken and adapted from matplotlib.colors
     hsv = np.asarray(hsv)
 
@@ -162,3 +160,37 @@ def hsv_to_rgb(hsv):
     rgb = np.stack([r, g, b], axis=-1)
 
     return rgb
+
+
+def mineral_density(mesh, blocks, mineral: str) -> tuple:
+    min_bound, max_bound = mesh.bounding_box
+    block_size = blocks.block_size
+
+    # Set value string to match what we're looking for
+    old_val = blocks.value_str
+    blocks.value_str = mineral
+
+    # Recreate bounds to allow a block to be partially inside a mesh
+    min_bound = min_bound - block_size
+    max_bound = max_bound + block_size
+
+    # Limit blocks by new bounding box of mesh and get their values
+    mask = np.all((blocks.vertices > min_bound) & (blocks.vertices < max_bound), axis=-1)
+    B = blocks.vertices[mask]
+    values = blocks.values[mask]
+
+    # Restore original value string
+    blocks.values_str = old_val
+
+    # With ray tracing, we'll detect which blocks are truly inside the mesh
+    ray = np.array([0.0, 0.0, 1.0])  # Arbitrary direction
+    idx_inside = []
+
+    # From the block, if we hit the mesh an odd number of times, we're inside the mesh
+    for origin in B:
+        intersections = mesh_intersection(origin, ray, mesh)
+        idx_inside.append(len(intersections) > 0 and (np.unique(intersections, axis=0).size // 3) % 2 == 1)
+
+    # TODO Detect blocks near the borders (partial value)
+
+    return B[idx_inside], values[idx_inside], values[idx_inside].sum()
