@@ -14,6 +14,8 @@ from qtpy.QtGui import QMatrix4x4
 from qtpy.QtGui import QVector3D
 from qtpy.QtGui import QVector4D
 
+from datetime import datetime
+
 from ..drawables.gldrawablecollection import GLDrawableCollection
 from ..drawables.glconstantcollection import GLConstantCollection
 
@@ -348,14 +350,10 @@ class IntegrableViewer(QOpenGLWidget):
     def set_fixed_camera_mode(self) -> None:
         self.set_controller_mode('fixed')
 
-    def take_screenshot(self):
-        save_path = 'minevis_screenshot.png'
-
+    def take_screenshot(self, save_path=f'MineVis Screenshot ({datetime.now().strftime("%Y-%m-%d %H:%M:%S")}).png'):
         pixmap = QPixmap(self.size())
         self.render(pixmap, QPoint(), QRegion(self.rect()))
         pixmap.save(save_path)
-
-        del pixmap
 
     # Movement/actions dependent on current mode
     def mouseMoveEvent(self, event, *args, **kwargs) -> None:

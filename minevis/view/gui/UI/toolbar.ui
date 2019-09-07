@@ -58,6 +58,18 @@
     <string>F1</string>
    </property>
   </action>
+  <action name="action_about">
+   <property name="icon">
+    <iconset>
+     <normaloff>icons/about.svg</normaloff>icons/about.svg</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;About</string>
+   </property>
+   <property name="shortcut">
+    <string>?</string>
+   </property>
+  </action>
   <action name="action_normal_mode">
    <property name="icon">
     <iconset>

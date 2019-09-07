@@ -20,11 +20,11 @@ class Container(QWidget):
         self.treeWidget.setWindowTitle('Drawables')
 
         self.verticalLayout = QVBoxLayout(self)
-        self.verticalLayout.addWidget(self.mainToolBar)
         self.verticalLayout.addWidget(self.openglwidget)
+        self.verticalLayout.addWidget(self.mainToolBar)
 
         self.setWindowTitle('MineVis (Container)')
-        self.setMinimumSize(400, 300)
+        self.setMinimumSize(600, 500)
 
         self.toolbar.insertAction(self.toolbar.action_plan_view, self.toolbar.action_camera_properties)
         self.toolbar.addAction(self.toolbar.action_quit)

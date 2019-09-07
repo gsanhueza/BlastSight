@@ -11,6 +11,8 @@ from qtpy.QtWidgets import QFileDialog
 from qtpy.QtWidgets import QMainWindow
 from qtpy.QtWidgets import QMessageBox
 
+from datetime import datetime
+
 from .cameradialog import CameraDialog
 from .propertiesdialog import PropertiesDialog
 from .colordialog import ColorDialog
@@ -57,7 +59,7 @@ class MainWindow(QMainWindow):
         self.menu_View.addAction(self.toolbar.action_take_screenshot)
 
         self.menu_Help.addAction(self.toolbar.action_help)
-        self.menu_Help.addSeparator()
+        self.menu_Help.addAction(self.toolbar.action_about)
 
     def connect_actions(self):
         self.toolbar.action_load_mesh.triggered.connect(self.load_mesh_slot)
@@ -73,10 +75,11 @@ class MainWindow(QMainWindow):
         self.toolbar.action_north_view.triggered.connect(self.viewer.north_view)
         self.toolbar.action_east_view.triggered.connect(self.viewer.east_view)
 
-        self.toolbar.action_take_screenshot.triggered.connect(self.viewer.take_screenshot)
+        self.toolbar.action_take_screenshot.triggered.connect(self.screenshot_dialog)
         self.toolbar.action_show_tree.triggered.connect(self.dockWidget.show)
+
         self.toolbar.action_help.triggered.connect(self.help_slot)
-        self.toolbar.action_quit.triggered.connect(self.close)
+        self.toolbar.action_about.triggered.connect(self.about_slot)
 
         # External widgets
         self.viewer.file_modified_signal.connect(self.fill_tree_widget)
@@ -116,6 +119,16 @@ class MainWindow(QMainWindow):
     def camera_dialog(self):
         dialog = CameraDialog(self.viewer)
         dialog.show()
+
+    def screenshot_dialog(self):
+        (path, selected_filter) = QFileDialog.getSaveFileName(
+            parent=self,
+            caption='Take screenshot',
+            directory=f'MineVis Screenshot ({datetime.now().strftime("%Y-%m-%d %H:%M:%S")})',
+            filter='PNG image (*.png);;')
+
+        if path != '':
+            self.viewer.take_screenshot(path)
 
     def export_mesh_dialog(self, id_):
         (path, selected_filter) = QFileDialog.getSaveFileName(
@@ -218,6 +231,17 @@ class MainWindow(QMainWindow):
         QMessageBox.information(self,
                                 'MineVis - Help',
                                 'TO-DO: Create help message box')
+
+    def about_slot(self) -> None:
+        QMessageBox.information(self,
+                                'MineVis - About',
+                                'TO-DO: Create about message box\n' +
+                                'We\'re currently using utilities from:\n' +
+                                '- pymesh (cylinder generation)\n' +
+                                '- matplotlib (hsv to rgb)\n' +
+                                '- flat color icons (from icons8.com)\n' +
+                                '- meshcut (slice mesh by a plane)\n'
+                                )
 
     def dragEnterEvent(self, event, *args, **kwargs) -> None:
         self.viewer.dragEnterEvent(event, *args, **kwargs)
