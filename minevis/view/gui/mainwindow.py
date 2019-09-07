@@ -108,11 +108,14 @@ class MainWindow(QMainWindow):
     def fill_tree_widget(self) -> None:
         self.treeWidget.fill_from_viewer(self.viewer)
 
-    def properties_dialog(self, id_):
+    def update_statusbar(self, id_: int):
+        self.statusBar.showMessage(f'Loaded (id: {id_}).')
+
+    def properties_dialog(self, id_: int):
         dialog = PropertiesDialog(self.viewer, id_)
         dialog.show()
 
-    def color_dialog(self, id_):
+    def color_dialog(self, id_: int):
         dialog = ColorDialog(self.viewer, id_)
         dialog.show()
 
@@ -123,45 +126,35 @@ class MainWindow(QMainWindow):
     def screenshot_dialog(self):
         (path, selected_filter) = QFileDialog.getSaveFileName(
             parent=self,
-            caption='Take screenshot',
             directory=f'MineVis Screenshot ({datetime.now().strftime("%Y-%m-%d %H:%M:%S")})',
             filter='PNG image (*.png);;')
 
         if path != '':
             self.viewer.take_screenshot(path)
 
-    def export_mesh_dialog(self, id_):
+    def _export_dialog(self, id_: int, filters: str, method: classmethod) -> None:
         (path, selected_filter) = QFileDialog.getSaveFileName(
             parent=self,
-            caption='Export mesh',
             directory=self.viewer.get_drawable(id_).element.name,
-            filter='MineVis mesh (*.h5m);;')
+            filter=filters)
 
         if path != '':
-            self.viewer.export_mesh(path, id_)
+            method(path, id_)
 
-    def export_blocks_dialog(self, id_):
-        (path, selected_filter) = QFileDialog.getSaveFileName(
-            parent=self,
-            caption='Export blocks',
-            directory=self.viewer.get_drawable(id_).element.name,
-            filter='MineVis blocks (*.h5p);;')
+    def export_mesh_dialog(self, id_: int) -> None:
+        self._export_dialog(id_=id_,
+                            filters='MineVis mesh (*.h5m);;',
+                            method=self.viewer.export_mesh)
 
-        if path != '':
-            self.viewer.export_blocks(path, id_)
+    def export_blocks_dialog(self, id_: int) -> None:
+        self._export_dialog(id_=id_,
+                            filters='MineVis blocks (*.h5p);;',
+                            method=self.viewer.export_blocks)
 
-    def export_points_dialog(self, id_):
-        (path, selected_filter) = QFileDialog.getSaveFileName(
-            parent=self,
-            caption='Export points',
-            directory=self.viewer.get_drawable(id_).element.name,
-            filter='MineVis points (*.h5p);;')
-
-        if path != '':
-            self.viewer.export_blocks(path, id_)
-
-    def update_statusbar(self, id_):
-        self.statusBar.showMessage(f'Loaded (id: {id_}).')
+    def export_points_dialog(self, id_: int) -> None:
+        self._export_dialog(id_=id_,
+                            filters='MineVis points (*.h5p);;',
+                            method=self.viewer.export_points)
 
     def _load_element(self, method: classmethod, path: str) -> None:
         self.statusBar.showMessage('Loading...')
