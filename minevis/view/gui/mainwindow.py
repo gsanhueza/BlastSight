@@ -38,6 +38,8 @@ class MainWindow(QMainWindow):
         self.generate_menubar()
         self.connect_actions()
 
+        self.viewer.mesh_clicked_signal.connect(lambda x: print(f'Detected meshes: {x}'))
+
         # self._title = self.windowTitle()
         # self.viewer.fps_signal.connect(lambda x: self.setWindowTitle(f'{self._title} (FPS: {x:.1f})'))
 

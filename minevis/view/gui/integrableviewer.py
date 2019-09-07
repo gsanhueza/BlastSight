@@ -41,7 +41,7 @@ class IntegrableViewer(QOpenGLWidget):
     # Signals
     file_modified_signal = Signal()
     fps_signal = Signal(float)
-    mesh_clicked_signal = Signal(int)
+    mesh_clicked_signal = Signal(object)
 
     def __init__(self, parent=None):
         QOpenGLWidget.__init__(self, parent)
@@ -321,10 +321,7 @@ class IntegrableViewer(QOpenGLWidget):
                 intersected_mesh_ids.append(mesh.id)
 
         # Emit signal with clicked mesh
-        if len(intersected_mesh_ids) > 0:
-            self.mesh_clicked_signal.emit(intersected_mesh_ids[-1])
-        else:
-            self.mesh_clicked_signal.emit(-1)
+        self.mesh_clicked_signal.emit(intersected_mesh_ids)
 
         # print('-------------------------------')
 

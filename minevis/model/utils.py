@@ -29,13 +29,10 @@ def aabb_intersection(origin: np.ndarray, ray: np.ndarray, mesh):
     with np.errstate(divide='ignore'):
         ray_inv = 1.0 / ray
 
-    t1 = (b_min[0] - origin[0]) * ray_inv[0]
-    t2 = (b_max[0] - origin[0]) * ray_inv[0]
+    tmin = -np.inf
+    tmax = +np.inf
 
-    tmin = min(t1, t2)
-    tmax = max(t1, t2)
-
-    for i in range(1, 3):
+    for i in range(3):
         t1 = (b_min[i] - origin[i]) * ray_inv[i]
         t2 = (b_max[i] - origin[i]) * ray_inv[i]
 
@@ -48,7 +45,7 @@ def aabb_intersection(origin: np.ndarray, ray: np.ndarray, mesh):
 def triangle_intersection(origin: np.ndarray, ray: np.ndarray, triangle: np.ndarray) -> list or None:
     # Idea taken from https://cadxfem.org/inf/Fast%20MinimumStorage%20RayTriangle%20Intersection.pdf
     # Code adapted from https://en.wikipedia.org/wiki/M%C3%B6ller%E2%80%93Trumbore_intersection_algorithm
-    _EPSILON = 0.0000001
+    _EPSILON = 1e-12
     vertex0 = triangle[0]
     vertex1 = triangle[1]
     vertex2 = triangle[2]
