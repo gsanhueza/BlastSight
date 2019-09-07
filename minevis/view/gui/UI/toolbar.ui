@@ -12,8 +12,8 @@
   </property>
   <action name="action_load_mesh">
    <property name="icon">
-    <iconset theme="fileopen">
-     <normaloff>.</normaloff>.</iconset>
+    <iconset>
+     <normaloff>icons/radar_plot.svg</normaloff>icons/radar_plot.svg</iconset>
    </property>
    <property name="text">
     <string>Load &amp;mesh</string>
@@ -24,8 +24,8 @@
   </action>
   <action name="action_quit">
    <property name="icon">
-    <iconset theme="application-exit">
-     <normaloff>.</normaloff>.</iconset>
+    <iconset>
+     <normaloff>icons/cancel.svg</normaloff>icons/cancel.svg</iconset>
    </property>
    <property name="text">
     <string>&amp;Quit</string>
@@ -36,8 +36,8 @@
   </action>
   <action name="action_show_tree">
    <property name="icon">
-    <iconset theme="view-list-tree">
-     <normaloff>.</normaloff>.</iconset>
+    <iconset>
+     <normaloff>icons/list.svg</normaloff>icons/list.svg</iconset>
    </property>
    <property name="text">
     <string>Show &amp;Tree</string>
@@ -48,8 +48,8 @@
   </action>
   <action name="action_help">
    <property name="icon">
-    <iconset theme="help">
-     <normaloff>.</normaloff>.</iconset>
+    <iconset>
+     <normaloff>icons/document.svg</normaloff>icons/document.svg</iconset>
    </property>
    <property name="text">
     <string>&amp;Help</string>
@@ -60,8 +60,8 @@
   </action>
   <action name="action_normal_mode">
    <property name="icon">
-    <iconset theme="draw-cuboid">
-     <normaloff>.</normaloff>.</iconset>
+    <iconset>
+     <normaloff>icons/rotate_camera.svg</normaloff>icons/rotate_camera.svg</iconset>
    </property>
    <property name="text">
     <string>&amp;Normal mode</string>
@@ -70,22 +70,10 @@
     <string>Ctrl+N</string>
    </property>
   </action>
-  <action name="action_toggle_wireframe">
-   <property name="icon">
-    <iconset theme="draw-triangle">
-     <normaloff>.</normaloff>.</iconset>
-   </property>
-   <property name="text">
-    <string>&amp;Toggle wireframe</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+W</string>
-   </property>
-  </action>
   <action name="action_load_block_model">
    <property name="icon">
-    <iconset theme="code-block">
-     <normaloff>.</normaloff>.</iconset>
+    <iconset>
+     <normaloff>icons/data_sheet.svg</normaloff>icons/data_sheet.svg</iconset>
    </property>
    <property name="text">
     <string>Load &amp;block model</string>
@@ -96,8 +84,8 @@
   </action>
   <action name="action_selection_mode">
    <property name="icon">
-    <iconset theme="edit-select">
-     <normaloff>.</normaloff>.</iconset>
+    <iconset>
+     <normaloff>icons/cursor.svg</normaloff>icons/cursor.svg</iconset>
    </property>
    <property name="text">
     <string>&amp;Selection mode</string>
@@ -108,8 +96,8 @@
   </action>
   <action name="action_camera_properties">
    <property name="icon">
-    <iconset theme="camera-video-symbolic">
-     <normaloff>.</normaloff>.</iconset>
+    <iconset>
+     <normaloff>icons/compact_camera.svg</normaloff>icons/compact_camera.svg</iconset>
    </property>
    <property name="text">
     <string>&amp;Camera properties</string>
@@ -120,8 +108,8 @@
   </action>
   <action name="action_load_points">
    <property name="icon">
-    <iconset theme="content-loading-symbolic">
-     <normaloff>.</normaloff>.</iconset>
+    <iconset>
+     <normaloff>icons/scatter_plot.svg</normaloff>icons/scatter_plot.svg</iconset>
    </property>
    <property name="text">
     <string>Load &amp;points</string>
@@ -132,8 +120,8 @@
   </action>
   <action name="action_plan_view">
    <property name="icon">
-    <iconset theme="draw-rectangle">
-     <normaloff>.</normaloff>.</iconset>
+    <iconset>
+     <normaloff>icons/upload.svg</normaloff>icons/upload.svg</iconset>
    </property>
    <property name="text">
     <string>&amp;Plan view</string>
@@ -144,8 +132,8 @@
   </action>
   <action name="action_north_view">
    <property name="icon">
-    <iconset theme="arrow-up">
-     <normaloff>.</normaloff>.</iconset>
+    <iconset>
+     <normaloff>icons/up.svg</normaloff>icons/up.svg</iconset>
    </property>
    <property name="text">
     <string>N&amp;orth view</string>
@@ -156,8 +144,8 @@
   </action>
   <action name="action_east_view">
    <property name="icon">
-    <iconset theme="arrow-right">
-     <normaloff>.</normaloff>.</iconset>
+    <iconset>
+     <normaloff>icons/right.svg</normaloff>icons/right.svg</iconset>
    </property>
    <property name="text">
     <string>&amp;East view</string>
@@ -168,8 +156,8 @@
   </action>
   <action name="action_take_screenshot">
    <property name="icon">
-    <iconset theme="snap">
-     <normaloff>.</normaloff>.</iconset>
+    <iconset>
+     <normaloff>icons/webcam.svg</normaloff>icons/webcam.svg</iconset>
    </property>
    <property name="text">
     <string>&amp;Take screenshot</string>
@@ -180,13 +168,11 @@
   </action>
   <addaction name="action_show_tree"/>
   <addaction name="separator"/>
-<!--   <addaction name="action_camera_properties"/> -->
   <addaction name="action_plan_view"/>
   <addaction name="action_north_view"/>
   <addaction name="action_east_view"/>
   <addaction name="separator"/>
   <addaction name="action_take_screenshot"/>
-<!--   <addaction name="action_quit"/> -->
  </widget>
  <resources/>
  <connections/>

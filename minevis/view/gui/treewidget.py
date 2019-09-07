@@ -1,8 +1,10 @@
 #!/usr/bin/env python
 
+import pathlib
+
 from qtpy.QtCore import Qt
 from qtpy.QtCore import Signal
-from qtpy.QtGui import QIcon
+from qtpy.QtGui import QIcon, QPixmap
 from qtpy.QtWidgets import QAction
 from qtpy.QtWidgets import QMenu
 from qtpy.QtWidgets import QTreeWidget
@@ -66,17 +68,19 @@ class TreeWidget(QTreeWidget):
         action_export_points = QAction('Export &points', self)
 
         # Icons
-        action_show.setIcon(QIcon.fromTheme('show-hidden'))
-        action_hide.setIcon(QIcon.fromTheme('object-hidden'))
-        action_delete.setIcon(QIcon.fromTheme('stock_close'))
-        action_highlight.setIcon(QIcon.fromTheme('camera-ready'))
-        action_wireframe.setIcon(QIcon.fromTheme('draw-triangle'))
-        action_properties.setIcon(QIcon.fromTheme('auto-type'))
-        action_center_camera.setIcon(QIcon.fromTheme('camera'))
-        action_colors.setIcon(QIcon.fromTheme('colormanagement'))
-        action_export_mesh.setIcon(QIcon.fromTheme('document-export'))
-        action_export_blocks.setIcon(QIcon.fromTheme('document-export'))
-        action_export_points.setIcon(QIcon.fromTheme('document-export'))
+        icons_path = f'{pathlib.Path(__file__).parent}/UI/icons'
+
+        action_show.setIcon(QIcon(QPixmap(f'{icons_path}/flash_on.svg')))
+        action_hide.setIcon(QIcon(QPixmap(f'{icons_path}/flash_off.svg')))
+        action_delete.setIcon(QIcon(QPixmap(f'{icons_path}/cancel.svg')))
+        action_highlight.setIcon(QIcon(QPixmap(f'{icons_path}/idea.svg')))
+        action_wireframe.setIcon(QIcon(QPixmap(f'{icons_path}/grid.svg')))
+        action_properties.setIcon(QIcon(QPixmap(f'{icons_path}/settings.svg')))
+        action_center_camera.setIcon(QIcon(QPixmap(f'{icons_path}/collect.svg')))
+        action_colors.setIcon(QIcon(QPixmap(f'{icons_path}/picture.svg')))
+        action_export_mesh.setIcon(QIcon(QPixmap(f'{icons_path}/export.svg')))
+        action_export_blocks.setIcon(QIcon(QPixmap(f'{icons_path}/export.svg')))
+        action_export_points.setIcon(QIcon(QPixmap(f'{icons_path}/export.svg')))
 
         # Action commands
         action_show.triggered.connect(item.show)

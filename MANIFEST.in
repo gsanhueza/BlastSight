@@ -1,2 +1,3 @@
 include minevis/view/drawables/shaders/*/*
 include minevis/view/gui/UI/*
+include minevis/view/gui/UI/icons/*
