@@ -56,8 +56,10 @@ class IntegrableViewer(QOpenGLWidget):
         self.constant_collection = GLConstantCollection(self)
         self.drawable_collection = GLDrawableCollection(self)
 
-        self.constant_collection.add(BackgroundGL(self, type('NullElement', (), {'id': 'BG'})))
-        self.constant_collection.add(AxisGL(self, type('NullElement', (), {'id': 'AXIS'})))
+        self.constant_collection.add(BackgroundGL(self, type(
+            'NullElement', (), {'id': 'BG', 'alpha': 1.0})))
+        self.constant_collection.add(AxisGL(self, type(
+            'NullElement', (), {'id': 'AXIS', 'alpha': 1.0})))
 
         # Camera/World/Projection
         self._camera = QMatrix4x4()
@@ -347,7 +349,7 @@ class IntegrableViewer(QOpenGLWidget):
     def set_fixed_camera_mode(self) -> None:
         self.set_controller_mode('fixed')
 
-    def take_screenshot(self, save_path=f'MineVis Screenshot ({datetime.now().strftime("%Y-%m-%d %H:%M:%S")}).png'):
+    def take_screenshot(self, save_path=f'MineVis Screenshot ({datetime.now().strftime("%Y%m%d-%H%M%S")}).png'):
         pixmap = QPixmap(self.size())
         self.render(pixmap, QPoint(), QRegion(self.rect()))
         pixmap.save(save_path)

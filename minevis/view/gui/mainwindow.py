@@ -128,7 +128,7 @@ class MainWindow(QMainWindow):
     def screenshot_dialog(self):
         (path, selected_filter) = QFileDialog.getSaveFileName(
             parent=self,
-            directory=f'MineVis Screenshot ({datetime.now().strftime("%Y-%m-%d %H:%M:%S")})',
+            directory=f'MineVis Screenshot ({datetime.now().strftime("%Y%m%d-%H%M%S")})',
             filter='PNG image (*.png);;')
 
         if path != '':

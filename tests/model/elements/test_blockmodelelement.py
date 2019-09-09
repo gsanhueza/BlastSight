@@ -116,43 +116,43 @@ class TestBlockModelElement:
                 assert abs(ed - d) < epsilon
 
     def test_insufficient_data(self):
-        data = {'x': ('0', '2', '4', '6', '8', '10'),
-                'y': ('0', '0', '0', '3', '3', '1'),
-                'z': ('0', '3', '3', '3', '3', '3')}
+        data = {'x': [0.0, 2.0, 4.0, 6.0, 8.0, 10.0],
+                'y': [0.0, 0.0, 0.0, 3.0, 3.0, 1.0],
+                'z': [0.0, 3.0, 3.0, 3.0, 3.0, 3.0]}
 
         with pytest.raises(Exception):
             BlockElement(data)
 
     def test_inconsistent_data(self):
-        data = {'x': ('0', '2', '4', '6', '8', '10'),
-                'y': ('0', '0', '0', '3', '3', '1'),
-                'z': ('0', '3', '3', '3', '3'),
-                'CuT': ('1', '0.4', '0.5', '0.8', '0.3', '0.2')}
+        data = {'x': [0.0, 2.0, 4.0, 6.0, 8.0, 10.0],
+                'y': [0.0, 0.0, 0.0, 3.0, 3.0, 1.0],
+                'z': [0.0, 3.0, 3.0, 3.0, 3.0],
+                'CuT': [1.0, 0.4, 0.5, 0.8, 0.3, 0.2]}
 
         with pytest.raises(Exception):
             BlockElement(data)
 
-        data = {'x': ('0', '2', '4', '6', '8', '10'),
-                'y': ('0', '0', '0', '3', '3', '1'),
-                'z': ('0', '3', '3', '3', '3', '3'),
-                'CuT': ('1', '0.4', '0.5', '0.8', '0.3')}
+        data = {'x': [0.0, 2.0, 4.0, 6.0, 8.0, 10.0],
+                'y': [0.0, 0.0, 0.0, 3.0, 3.0, 1.0],
+                'z': [0.0, 3.0, 3.0, 3.0, 3.0, 3.0],
+                'CuT': [1.0, 0.4, 0.5, 0.8, 0.3]}
 
         with pytest.raises(Exception):
             BlockElement(data)
 
-        data = {'x': ('0', '2', '4', '6', '8'),
-                'y': ('0', '0', '0', '3', '3'),
-                'z': ('0', '3', '3', '3', '3'),
-                'CuT': ('1', '0.4', '0.5', '0.8', '0.3', '0.2')}
+        data = {'x': [0.0, 2.0, 4.0, 6.0, 8.0],
+                'y': ['0', '0', '0', '3', '3'],
+                'z': [0.0, 3.0, 3.0, 3.0, 3.0],
+                'CuT': [1.0, 0.4, 0.5, 0.8, 0.3, 0.2]}
 
         with pytest.raises(Exception):
             BlockElement(data)
 
     def test_data_wrong_string(self):
-        data = {'x': ('0', '2', '4', '6', '8', '10'),
-                'y': ('0', '0', '0', '3', '3', '1'),
-                'z': ('0', '3', '3', '3', '3', '3'),
-                'CuT': ('1', '0.4', '0.5', '0.8', '0.3', '0.2')}
+        data = {'x': [0.0, 2.0, 4.0, 6.0, 8.0, 10.0],
+                'y': [0.0, 0.0, 0.0, 3.0, 3.0, 1.0],
+                'z': [0.0, 3.0, 3.0, 3.0, 3.0, 3.0],
+                'CuT': [1.0, 0.4, 0.5, 0.8, 0.3, 0.2]}
 
         element = BlockElement(data=data)
         element.x_str = 'x'
@@ -165,14 +165,11 @@ class TestBlockModelElement:
         assert element.z_str == 'z'
         assert element.value_str == 'value'
 
-        with pytest.raises(Exception):
-            element.update_values()
-
     def test_available_coordinates(self):
-        data = {'easting': ('0', '2', '4', '6', '8', '10'),
-                'northing': ('0', '0', '0', '3', '3', '1'),
-                'elevation': ('0', '3', '3', '3', '3', '3'),
-                'CuT': ('1', '0.4', '0.5', '0.8', '0.3', '0.2')}
+        data = {'easting': [0.0, 2.0, 4.0, 6.0, 8.0, 10.0],
+                'northing': [0.0, 0.0, 0.0, 3.0, 3.0, 1.0],
+                'elevation': [0.0, 3.0, 3.0, 3.0, 3.0, 3.0],
+                'CuT': [1.0, 0.4, 0.5, 0.8, 0.3, 0.2]}
 
         element = BlockElement(data=data)
         assert 'easting' in list(element.headers)
@@ -182,10 +179,10 @@ class TestBlockModelElement:
         assert 'random' not in list(element.headers)
 
     def test_set_multiple_coordinates(self):
-        data = {'x': ('0', '2', '4', '6', '8', '10'),
-                'y': ('0', '0', '0', '3', '3', '1'),
-                'z': ('0', '3', '3', '3', '3', '3'),
-                'CuT': ('1', '0.4', '0.5', '0.8', '0.3', '0.2')}
+        data = {'x': [0.0, 2.0, 4.0, 6.0, 8.0, 10.0],
+                'y': [0.0, 0.0, 0.0, 3.0, 3.0, 1.0],
+                'z': [0.0, 3.0, 3.0, 3.0, 3.0, 3.0],
+                'CuT': [1.0, 0.4, 0.5, 0.8, 0.3, 0.2]}
 
         element = BlockElement(data=data)
         element.headers = ['x', 'y', 'z', 'CuT']
@@ -210,6 +207,22 @@ class TestBlockModelElement:
         assert abs(element.block_size[0] - 2.3) < epsilon
         assert abs(element.block_size[1] - 4.2) < epsilon
         assert abs(element.block_size[2] - 7.1) < epsilon
+
+    def test_auto_size(self):
+        data = {'x': [0.0, 2.0, 4.0, 6.0, 8.0, 10.0],
+                'y': [0.0, 0.0, 0.0, 3.0, 3.0, 1.0],
+                'z': [0.0, 3.0, 3.0, 3.0, 3.0, 3.0],
+                'CuT': [1.0, 0.4, 0.5, 0.8, 0.3, 0.2]}
+
+        element = BlockElement(data=data, noautosize=True)
+        assert element.block_size[0] == 1.0
+        assert element.block_size[1] == 1.0
+        assert element.block_size[2] == 1.0
+
+        element = BlockElement(data=data, noautosize=False)
+        assert element.block_size[0] == 2.0
+        assert element.block_size[1] == 2.0
+        assert element.block_size[2] == 3.0
 
     def test_enabled_properties(self):
         element = BlockElement(vertices=[[0, 1, 2]], values=[8], block_size=[2.0, 4.0, 7.0])

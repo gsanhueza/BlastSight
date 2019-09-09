@@ -42,7 +42,18 @@ class BlockElement(DFElement):
 
     def _fill_properties(self, *args, **kwargs):
         super()._fill_properties(*args, **kwargs)
-        self.block_size = kwargs.get('block_size', [1.0, 1.0, 1.0])
+        self.block_size = kwargs.get('block_size', self._autosize(*args, **kwargs))
+
+    def _autosize(self, *args, **kwargs):
+        autosize = []
+        if kwargs.get('noautosize', False):
+            return [1.0, 1.0, 1.0]
+
+        for v in [self.x, self.y, self.z]:
+            delta = np.abs(np.diff(v))
+            autosize.append(float(min(delta[delta > 0.0], default=1.0)))
+
+        return autosize
 
     """
     Properties
