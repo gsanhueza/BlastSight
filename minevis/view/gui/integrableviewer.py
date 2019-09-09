@@ -108,19 +108,19 @@ class IntegrableViewer(QOpenGLWidget):
 
     @property
     def rotation_angle(self) -> np.ndarray:
-        return np.array([self.xCentroidRot, self.yCentroidRot, self.zCentroidRot])
+        return np.array([self.xCenterRot, self.yCenterRot, self.zCenterRot])
 
     @rotation_angle.setter
     def rotation_angle(self, rot: list) -> None:
-        self.xCentroidRot, self.yCentroidRot, self.zCentroidRot = rot
+        self.xCenterRot, self.yCenterRot, self.zCenterRot = rot
 
     @property
     def rotation_center(self) -> np.ndarray:
-        return np.array([self.xCentroidPos, self.yCentroidPos, self.zCentroidPos])
+        return np.array([self.xCenterPos, self.yCenterPos, self.zCenterPos])
 
     @rotation_center.setter
-    def rotation_center(self, _centroid: list) -> None:
-        self.xCentroidPos, self.yCentroidPos, self.zCentroidPos = _centroid
+    def rotation_center(self, _center: list) -> None:
+        self.xCenterPos, self.yCenterPos, self.zCenterPos = _center
 
     @property
     def last_id(self) -> int:
@@ -194,7 +194,7 @@ class IntegrableViewer(QOpenGLWidget):
         return self.drawable_collection[id_]
 
     def update_drawable(self, id_: int) -> None:
-        self.xCentroidPos, self.yCentroidPos, self.zCentroidPos = self.model.get(id_).centroid
+        self.xCenterPos, self.yCenterPos, self.zCenterPos = self.model.get(id_).center
         self.get_drawable(id_).setup_attributes()
         self.update()
 
@@ -210,27 +210,25 @@ class IntegrableViewer(QOpenGLWidget):
 
     def camera_at(self, id_: int) -> None:
         drawable = self.get_drawable(id_)
-        self.rotation_center = drawable.element.centroid
-        self.camera_position = drawable.element.centroid
-
-        min_bound, max_bound = drawable.element.bounding_box
-        dx, dy, dz = max_bound - min_bound
+        self.rotation_center = drawable.element.center
+        self.camera_position = drawable.element.center
 
         # Put the camera in a position that allow us to see the element
-        self.zCameraPos += 1.2 * max(dx, dy, dz) / math.tan(math.pi / 4)
+        max_diff = np.max(np.diff(drawable.element.bounding_box, axis=0))
+        self.zCameraPos += 1.2 * max_diff / math.tan(math.pi / 4)
 
         self.update()
 
     def plan_view(self):
-        self.xCentroidRot, self.yCentroidRot, self.zCentroidRot = [0.0, 0.0, 0.0]
+        self.xCenterRot, self.yCenterRot, self.zCenterRot = [0.0, 0.0, 0.0]
         self.update()
 
     def north_view(self):
-        self.xCentroidRot, self.yCentroidRot, self.zCentroidRot = [270.0, 0.0, 270.0]
+        self.xCenterRot, self.yCenterRot, self.zCenterRot = [270.0, 0.0, 270.0]
         self.update()
 
     def east_view(self):
-        self.xCentroidRot, self.yCentroidRot, self.zCentroidRot = [270.0, 0.0, 0.0]
+        self.xCenterRot, self.yCenterRot, self.zCenterRot = [270.0, 0.0, 0.0]
         self.update()
 
     """
@@ -251,13 +249,13 @@ class IntegrableViewer(QOpenGLWidget):
         self.world.setToIdentity()
         self.camera.setToIdentity()
 
-        # Translate by centroid (world position)
+        # Translate by rotation center (world position)
         self.world.translate(*self.rotation_center)
 
         # Allow rotation of the world
-        self.world.rotate(self.xCentroidRot, 1.0, 0.0, 0.0)
-        self.world.rotate(self.yCentroidRot, 0.0, 1.0, 0.0)
-        self.world.rotate(self.zCentroidRot, 0.0, 0.0, 1.0)
+        self.world.rotate(self.xCenterRot, 1.0, 0.0, 0.0)
+        self.world.rotate(self.yCenterRot, 0.0, 1.0, 0.0)
+        self.world.rotate(self.zCenterRot, 0.0, 0.0, 1.0)
 
         # Restore world
         self.world.translate(*-self.rotation_center)
@@ -283,8 +281,8 @@ class IntegrableViewer(QOpenGLWidget):
         self.proj.perspective(45.0, (w / h), 1.0, 10000.0)
 
         # Orthogonal
-        # w = w * (abs(self.zCentroidPos) - abs(self.zCameraPos)) * -0.001
-        # h = h * (abs(self.zCentroidPos) - abs(self.zCameraPos)) * -0.001
+        # w = w * (abs(self.zCenterPos) - abs(self.zCameraPos)) * -0.001
+        # h = h * (abs(self.zCenterPos) - abs(self.zCameraPos)) * -0.001
         # self.proj.ortho(-w, w, -h, h, 1.0, 10000.0)
 
     """

@@ -18,8 +18,8 @@ class FixedCameraMode(Mode):
 
         widget.world.setToIdentity()
         if event.buttons() == Qt.MiddleButton:
-            distance_x = abs(widget.zCameraPos + widget.zCentroidPos) / widget.width()
-            distance_y = abs(widget.zCameraPos + widget.zCentroidPos) / widget.height()
+            distance_x = abs(widget.zCameraPos + widget.zCenterPos) / widget.width()
+            distance_y = abs(widget.zCameraPos + widget.zCenterPos) / widget.height()
             self.set_x_movement(widget, widget.xCameraPos - (distance_x * dx))
             self.set_y_movement(widget, widget.yCameraPos + (distance_y * dy))
 

@@ -157,13 +157,13 @@ class TestIntegrableViewer:
         meshgl = widget.mesh(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], indices=[[0, 1, 2]])
 
         widget.camera_at(meshgl.id)
-        assert meshgl.element.centroid[0] == widget.rotation_center[0]
+        assert meshgl.element.center[0] == widget.rotation_center[0]
 
-        meshgl.element.x = [-10, 10, 10]
-        assert not meshgl.element.centroid[0] == widget.rotation_center[0]
+        meshgl.element.x = [-10, 5, 5]
+        assert not meshgl.element.center[0] == widget.rotation_center[0]
 
         widget.update_drawable(0)
-        assert meshgl.element.centroid[0] == widget.rotation_center[0]
+        assert meshgl.element.center[0] == widget.rotation_center[0]
 
     def test_delete_drawable(self):
         widget = IntegrableViewer()
