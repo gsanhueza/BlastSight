@@ -140,6 +140,27 @@ class TestDFElement:
         assert element.color[2] == element.rgba[2] == 0.8
         assert element.alpha == element.rgba[3] == 0.7
 
+    def test_autocolor(self):
+        data = {'x': [0.0, 2.0, 4.0, 6.0, 8.0, 10.0],
+                'y': [0.0, 0.0, 0.0, 3.0, 3.0, 1.0],
+                'z': [0.0, 3.0, 3.0, 3.0, 3.0, 3.0],
+                'val': [0.0, 2.0, 4.0, 6.0, 8.0, 10.0]}
+
+        element = DFElement(data=data, vmin=4.0, vmax=8.0, colormap='red-blue')
+
+        expected = [
+                    [1.0, 0.0, 0.0],  # Red if val < min
+                    [1.0, 0.0, 0.0],
+                    [1.0, 0.0, 0.0],
+                    [0.0, 1.0, 0.0],  # Green if vmin < val < vmax
+                    [0.0, 0.0, 1.0],  # Blue if val > max
+                    [0.0, 0.0, 1.0],
+                    ]
+
+        for i in range(len(expected)):
+            for j in range(len(expected[0])):
+                assert element.color[i][j] == expected[i][j]
+
     def test_enabled_properties(self):
         element = DFElement(vertices=[[0, 1, 2]])
         for prop in ['alpha', 'color']:

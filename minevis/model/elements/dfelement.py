@@ -215,11 +215,11 @@ class DFElement(Element):
     @staticmethod
     def values_to_rgb(values: np.ndarray, vmin: float, vmax: float, colormap: str):
         values = np.clip(values, vmin, vmax)
-        norm = values.max() - values.min()
+        norm = vmax - vmin
         if norm == 0:
             return np.ones(3 * values.size)
 
-        vals = (values - values.min()) / norm
+        vals = (values - vmin) / norm
         hsv = np.ones((vals.size, 3))
 
         hsv[:, 0] = DFElement.color_from_dict(colormap)(vals)
