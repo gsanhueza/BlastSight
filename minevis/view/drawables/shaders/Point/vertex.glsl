@@ -17,5 +17,8 @@ void main()
     gl_Position = proj_matrix * model_view_matrix * vec4(a_position, 1.0);
     v_color = a_color;
     v_alpha = a_alpha;
-    gl_PointSize = viewport.y * point_size / (proj_matrix[1][1] * gl_Position.w);
+    // The 1.21 factor was found by trial and error, with the goal of
+    // allowing a squared point's "point_size" of `x` to appear extremely
+    // similar to a cube's "block_size" of the same `x`.
+    gl_PointSize = 1.21 * viewport.y * point_size / gl_Position.w;
 }

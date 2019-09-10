@@ -204,7 +204,10 @@ class Element:
 
     @property
     def bounding_box(self) -> tuple:
-        return self.vertices.min(axis=0), self.vertices.max(axis=0)
+        # We could return self.vertices.min(axis=0), self.vertices.max(axis=0),
+        # but I found this to be noticeable faster (speedup of 5.2 approx.)
+        return (np.array([self.x.min(), self.y.min(), self.z.min()]),
+                np.array([self.x.max(), self.y.max(), self.z.max()]))
 
     """
     Metadata
