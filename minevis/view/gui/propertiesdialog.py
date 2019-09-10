@@ -7,6 +7,7 @@ import pathlib
 from qtpy.QtCore import Qt
 from qtpy.QtWidgets import QDialog
 from qtpy.QtWidgets import QDialogButtonBox
+from qtpy.QtWidgets import QTableWidgetItem
 from qtpy import uic
 
 
@@ -31,17 +32,16 @@ class PropertiesDialog(QDialog):
             self.comboBox_z.addItem(i)
             self.comboBox_values.addItem(i)
 
-        # Fill properties (FIXME Create rows, not textedits)
-        props = {}
+        # Fill properties in QTableWidget
+        self.tableWidget_properties.setRowCount(len(element.enabled_properties))
+        self.tableWidget_properties.setVerticalHeaderLabels(element.enabled_properties)
 
-        for k in element.enabled_properties:
+        for i, k in enumerate(element.enabled_properties):
             v = element.get_property(k)
-            if type(v) is np.ndarray:
-                props[k] = v.tolist()
-            else:
-                props[k] = v
-
-        self.textEdit_properties.setText(json.dumps(props, indent=4))
+            item = QTableWidgetItem()
+            text = str(v.tolist()) if type(v) is np.ndarray else str(v)
+            item.setText(text)
+            self.tableWidget_properties.setItem(i, 0, item)
 
     def accept(self):
         element = self.viewer.get_drawable(self.id).element
@@ -51,12 +51,18 @@ class PropertiesDialog(QDialog):
         element.z_str = self.comboBox_z.currentText()
         element.value_str = self.comboBox_values.currentText()
 
-        props = json.loads(self.textEdit_properties.toPlainText())
-
-        for k, v in props.items():
+        # Parse values in QTableWidget
+        for i in range(self.tableWidget_properties.rowCount()):
+            k = self.tableWidget_properties.verticalHeaderItem(i).text()
+            v = self.tableWidget_properties.item(i, 0).text()
             try:
-                element.set_property(k, v)
-            except KeyError:
+                element.set_property(k, float(v))
+            except ValueError:  # Element might be a list or string
+                try:
+                    element.set_property(k, json.loads(v))
+                except json.decoder.JSONDecodeError:  # Element is a string
+                    element.set_property(k, v)
+            except KeyError:  # Element clearly is not a property
                 print(f'{k} property does not exist.')
 
         # Recreate the BlockModelGL instance with the "new" data
