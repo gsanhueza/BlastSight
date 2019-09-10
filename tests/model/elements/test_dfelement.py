@@ -161,10 +161,34 @@ class TestDFElement:
             for j in range(len(expected[0])):
                 assert element.color[i][j] == expected[i][j]
 
-    def test_enabled_properties(self):
+    def test_headers(self):
+        data = {'x': [0.0, 2.0, 4.0, 6.0, 8.0, 10.0],
+                'y': [0.0, 0.0, 0.0, 3.0, 3.0, 1.0],
+                'z': [0.0, 3.0, 3.0, 3.0, 3.0, 3.0],
+                'val1': [0.0, 2.0, 4.0, 6.0, 8.0, 10.0],
+                'val2': [0.0, 2.0, 4.0, 6.0, 8.0, 10.0]}
+        element = DFElement(data=data)
+
+        # All headers
+        for header in data.keys():
+            assert header in element.all_headers
+
+        # Expected headers
+        for header in data.keys():
+            if header == 'val2':
+                assert header not in element.headers
+            else:
+                assert header in element.headers
+
+    def test_customizable_properties(self):
         element = DFElement(vertices=[[0, 1, 2]])
         for prop in ['alpha', 'color']:
-            assert prop in element.enabled_properties
+            assert prop in element.customizable_properties
+
+    def test_exportable_properties(self):
+        element = DFElement(vertices=[[0, 1, 2]])
+        for prop in ['alpha', 'color']:
+            assert prop in element.exportable_properties
 
     def test_hacky_utilities(self):
         element = DFElement(vertices=[[0, 1, 2]])

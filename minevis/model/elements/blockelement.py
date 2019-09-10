@@ -59,8 +59,12 @@ class BlockElement(DFElement):
     Properties
     """
     @property
-    def enabled_properties(self):
+    def customizable_properties(self):
         return ['alpha', 'colormap', 'vmin', 'vmax', 'block_size']
+
+    @property
+    def exportable_properties(self):
+        return ['alpha', 'colormap', 'headers', 'block_size']
 
     @property
     def block_size(self) -> np.ndarray:

@@ -163,7 +163,11 @@ class Element:
     Properties
     """
     @property
-    def enabled_properties(self):
+    def customizable_properties(self):
+        return ['color', 'alpha']
+
+    @property
+    def exportable_properties(self):
         return ['color', 'alpha']
 
     @property

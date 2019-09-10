@@ -347,7 +347,9 @@ class IntegrableViewer(QOpenGLWidget):
     def set_fixed_camera_mode(self) -> None:
         self.set_controller_mode('fixed')
 
-    def take_screenshot(self, save_path=f'MineVis Screenshot ({datetime.now().strftime("%Y%m%d-%H%M%S")}).png'):
+    def take_screenshot(self, save_path=None):
+        if not save_path:
+            save_path = f'MineVis Screenshot ({datetime.now().strftime("%Y%m%d-%H%M%S")}).png'
         pixmap = QPixmap(self.size())
         self.render(pixmap, QPoint(), QRegion(self.rect()))
         pixmap.save(save_path)

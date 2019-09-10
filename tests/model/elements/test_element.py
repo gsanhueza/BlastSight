@@ -115,10 +115,10 @@ class TestElement:
         assert element.color[2] == element.rgba[2] == 0.8
         assert element.alpha == element.rgba[3] == 0.7
 
-    def test_enabled_properties(self):
+    def test_customizable_properties(self):
         element = Element(vertices=[[0, 1, 2]])
         for prop in ['alpha', 'color']:
-            assert prop in element.enabled_properties
+            assert prop in element.customizable_properties
 
     def test_hacky_utilities(self):
         element = Element(vertices=[[0, 1, 2]])

@@ -179,8 +179,12 @@ class DFElement(Element):
         self.datasets['color'] = np.array(_colors)
 
     @property
-    def headers(self) -> list:
+    def all_headers(self) -> list:
         return list(self.data.keys())
+
+    @property
+    def headers(self) -> list:
+        return list(self.mapper.values())
 
     @colormap.setter
     def colormap(self, _colormap: str) -> None:

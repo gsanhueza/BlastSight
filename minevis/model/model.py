@@ -100,9 +100,12 @@ class Model:
         element = self.get(id_)
         ext = path.split('.')[-1]
 
-        self.get_parser(ext).save_file(path=path,
-                                       data=element.data,
-                                       properties=element.properties)
+        data = element.data
+        properties = {}
+        for k in element.exportable_properties:
+            properties[k] = element.get_property(k)
+
+        self.get_parser(ext).save_file(path=path, data=data, properties=properties)
 
     def export_mesh(self, path, id_):
         self.export(path, id_)

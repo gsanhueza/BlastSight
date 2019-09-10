@@ -26,22 +26,20 @@ class PropertiesDialog(QDialog):
         self.setWindowTitle(f'Set properties ({element.name}.{element.extension})')
 
         # Fill content
-        for i in element.headers:
+        for i in element.all_headers:
             self.comboBox_x.addItem(i)
             self.comboBox_y.addItem(i)
             self.comboBox_z.addItem(i)
             self.comboBox_values.addItem(i)
 
         # Fill properties in QTableWidget
-        self.tableWidget_properties.setRowCount(len(element.enabled_properties))
-        self.tableWidget_properties.setVerticalHeaderLabels(element.enabled_properties)
+        self.tableWidget_properties.setRowCount(len(element.customizable_properties))
+        self.tableWidget_properties.setVerticalHeaderLabels(element.customizable_properties)
 
-        for i, k in enumerate(element.enabled_properties):
+        for i, k in enumerate(element.customizable_properties):
             v = element.get_property(k)
-            item = QTableWidgetItem()
             text = str(v.tolist()) if type(v) is np.ndarray else str(v)
-            item.setText(text)
-            self.tableWidget_properties.setItem(i, 0, item)
+            self.tableWidget_properties.setItem(i, 0, QTableWidgetItem(text))
 
     def accept(self):
         element = self.viewer.get_drawable(self.id).element
