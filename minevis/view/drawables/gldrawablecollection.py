@@ -9,6 +9,7 @@ from .pointgl import PointGL
 from .tubegl import TubeGL
 
 from .glprograms.meshprogram import MeshProgram
+from .glprograms.wireprogram import WireProgram
 from .glprograms.blockprogram import BlockProgram
 from .glprograms.lineprogram import LineProgram
 from .glprograms.pointprogram import PointProgram
@@ -22,4 +23,5 @@ class GLDrawableCollection(GLCollection):
         self.programs[LineProgram(widget)] = lambda: self.filter(LineGL)
         self.programs[TubeProgram(widget)] = lambda: self.filter(TubeGL)
         self.programs[PointProgram(widget)] = lambda: self.filter(PointGL)
-        self.programs[MeshProgram(widget)] = lambda: self.filter(MeshGL)
+        self.programs[MeshProgram(widget)] = lambda: [x for x in self.filter(MeshGL) if not x.is_wireframed]
+        self.programs[WireProgram(widget)] = lambda: [x for x in self.filter(MeshGL) if x.is_wireframed]

@@ -10,43 +10,34 @@ class MeshProgram(ShaderProgram):
         self.base_name = 'Mesh'
 
     def draw(self):
-        wireframed = []
         highlighted = []
         normal_opaque = []
         normal_transparent = []
 
         # Prepare meshes
         for drawable in self.drawables:
-            # Wireframe
-            if drawable.is_wireframed:
-                wireframed.append(drawable)
+            # Normal
+            if drawable.element.alpha >= 0.99:
+                normal_opaque.append(drawable)
             else:
-                # Non-wireframe
-                if drawable.element.alpha >= 0.99:
-                    normal_opaque.append(drawable)
-                else:
-                    normal_transparent.append(drawable)
-                # Highlighted
-                if drawable.is_highlighted:
-                    highlighted.append(drawable)
-
-        # Wireframe
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
-        for drawable in wireframed:
-            drawable.draw()
+                normal_transparent.append(drawable)
+            # Highlighted
+            if drawable.is_highlighted:
+                highlighted.append(drawable)
 
         # Highlighted
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
         glLineWidth(3)
         for drawable in highlighted:
             drawable.draw()
         glLineWidth(1)
 
-        # Opaque/Normal
+        # Opaque
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)
         for drawable in normal_opaque:
             drawable.draw()
 
-        # Transparent/Normal
+        # Transparent
         glDepthMask(GL_FALSE)
         glEnable(GL_CULL_FACE)
 

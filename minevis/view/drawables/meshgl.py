@@ -40,16 +40,14 @@ class MeshGL(GLDrawable):
     def setup_attributes(self) -> None:
         _POSITION = 0
         _COLOR = 1
-        _WIREFRAME = 2
 
         # Generate VAO and VBOs (see GLDrawable)
-        self.create_vao_vbos(4)
+        self.create_vao_vbos(3)
 
         # Data
         vertices = self.element.vertices.astype(np.float32)
         indices = self.element.indices.astype(np.uint32)
         colors = self.element.rgba.astype(np.float32)
-        wireframe = np.array([self.is_wireframed], np.bool8)
 
         self.indices_size = indices.size
 
@@ -59,7 +57,6 @@ class MeshGL(GLDrawable):
         # buffer_properties = [(pointer, basesize, array, glsize, gltype)]
         buffer_properties = [(_POSITION, 3, vertices, GLfloat, GL_FLOAT),
                              (_COLOR, 4, colors, GLfloat, GL_FLOAT),
-                             (_WIREFRAME, 1, wireframe, GLboolean, GL_UNSIGNED_BYTE),
                              ]
 
         # Fill buffers (see GLDrawable)
@@ -71,7 +68,6 @@ class MeshGL(GLDrawable):
         # The attribute advances once per divisor instances of the set(s) of vertices being rendered
         # And guess what, we have just 1 instance, exactly what we wanted!
         glVertexAttribDivisor(_COLOR, 1)
-        glVertexAttribDivisor(_WIREFRAME, 1)
 
         glBindVertexArray(0)
 
