@@ -86,11 +86,11 @@ def triangle_intersection(origin: np.ndarray, ray: np.ndarray, triangle: np.ndar
     return None
 
 
-def slice_mesh(mesh, plane_origin: np.ndarray, plane_normal: np.ndarray) -> np.ndarray:
+def slice_mesh(mesh, plane_origin: np.ndarray, plane_normal: np.ndarray) -> list:
     # Taken from https://pypi.org/project/meshcut/
-    # Although we might want to have an improved version for real-time slicing
-    cut = meshcut.cross_section(mesh.vertices, mesh.indices, plane_origin, plane_normal)
-    return np.concatenate(cut) if len(cut) > 0 else np.empty(0)
+    # Although we might want to have an improved version.
+    # This returns a list with the slices (in case we have a concave mesh)
+    return meshcut.cross_section(mesh.vertices, mesh.indices, plane_origin, plane_normal)
 
 
 def triangulate_slice(slice_vertices: np.ndarray) -> tuple:

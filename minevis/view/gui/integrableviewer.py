@@ -321,13 +321,16 @@ class IntegrableViewer(QOpenGLWidget):
 
         # FIXME Which meshes are we really slicing?
         for mesh in self.model.mesh_collection:
-            slice_vertices = utils.slice_mesh(mesh, plane_origin, plane_normal)
+            try:
+                slices = utils.slice_mesh(mesh, plane_origin, plane_normal)
+            except AssertionError:  # Meshcut doesn't want to slice
+                print(f'WARNING: Mesh {mesh.name} (id = {mesh.id}) cannot be sliced, fix your mesh!')
+                continue
 
-            if slice_vertices.size > 0:
-                # FIXME We're creating new elements, is this what we want?
-                self.lines(vertices=slice_vertices,
+            for i, vert_slice in enumerate(slices):
+                self.lines(vertices=vert_slice,
                            color=mesh.color,
-                           name=f'SLICE_{mesh.name}',
+                           name=f'SLICE_{i}_{mesh.name}',
                            extension=mesh.extension,
                            loop=True)
 
