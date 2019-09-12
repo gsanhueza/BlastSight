@@ -334,6 +334,9 @@ class IntegrableViewer(QOpenGLWidget):
                            extension=mesh.extension,
                            loop=True)
 
+        # We'll auto-exit the slice mode for now
+        self.set_normal_mode()
+
     def detect_mesh_intersection(self, x: float, y: float, z: float) -> None:
         ray, origin = self.ray_from_click(x, y, z)
         intersected_mesh_ids = []

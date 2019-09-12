@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+from qtpy.QtGui import QFont
 from qtpy.QtWidgets import QTreeWidgetItem
 
 
@@ -8,8 +9,8 @@ class TreeWidgetItem(QTreeWidgetItem):
         super().__init__(parent)
         self._viewer = viewer
         self._id = _id
-
         self.setText(0, f'{self.name}.{self.ext}')
+        self.set_visible(self.drawable.is_visible)
 
     @property
     def name(self) -> str:
@@ -31,13 +32,20 @@ class TreeWidgetItem(QTreeWidgetItem):
     def drawable(self):
         return self.viewer.get_drawable(self._id)
 
-    # Shown in contextual menu
+    def set_visible(self, is_visible):
+        font = QFont()
+        font.setBold(is_visible)
+        font.setItalic(not is_visible)
+        self.setFont(0, font)
+
     def show(self) -> None:
         self.drawable.show()
+        self.set_visible(self.drawable.is_visible)
         self.viewer.update()
 
     def hide(self) -> None:
         self.drawable.hide()
+        self.set_visible(self.drawable.is_visible)
         self.viewer.update()
 
     def delete(self) -> None:
@@ -55,10 +63,8 @@ class TreeWidgetItem(QTreeWidgetItem):
 
     def toggle_visibility(self) -> None:
         self.drawable.toggle_visibility()
+        self.set_visible(self.drawable.is_visible)
         self.viewer.update()
 
     def center_camera(self) -> None:
-        try:
-            self.viewer.camera_at(self.drawable.id)
-        except ValueError:
-            pass
+        self.viewer.camera_at(self.drawable.id)
