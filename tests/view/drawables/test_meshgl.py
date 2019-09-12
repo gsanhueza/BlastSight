@@ -6,6 +6,7 @@ from minevis.model.elements.meshelement import MeshElement
 from minevis.view.gui.integrableviewer import IntegrableViewer
 from minevis.view.drawables.meshgl import MeshGL
 from minevis.view.drawables.glprograms.meshprogram import MeshProgram
+from minevis.view.drawables.glprograms.wireprogram import WireProgram
 
 
 class TestMeshGL:
@@ -99,6 +100,27 @@ class TestMeshGL:
     def test_program(self):
         widget = IntegrableViewer()
         program = MeshProgram(widget)
+        element = MeshElement(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], indices=[[0, 1, 2]], alpha=0.8)
+        program.setup()
+        program.bind()
+
+        drawable_normal = MeshGL(widget=widget, element=self.element)
+        drawable_alpha = MeshGL(widget=widget, element=element)
+        drawable_wireframe = MeshGL(widget=widget, element=self.element, wireframe=True)
+        drawable_highlight = MeshGL(widget=widget, element=self.element, highlight=True)
+
+        assert not drawable_highlight.toggle_highlighting()
+        assert drawable_highlight.toggle_highlighting()
+
+        program.set_drawables([drawable_normal,
+                               drawable_alpha,
+                               drawable_wireframe,
+                               drawable_highlight])
+        program.draw()
+
+    def test_wire_program(self):
+        widget = IntegrableViewer()
+        program = WireProgram(widget)
         element = MeshElement(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], indices=[[0, 1, 2]], alpha=0.8)
         program.setup()
         program.bind()

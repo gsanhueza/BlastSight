@@ -14,7 +14,7 @@ class GSLibParser(Parser):
         # Metadata
         properties = {
             'name': QFileInfo(path).completeBaseName(),
-            'ext': QFileInfo(path).suffix()
+            'extension': QFileInfo(path).suffix()
         }
 
         data = ParserData()

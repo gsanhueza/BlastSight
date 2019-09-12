@@ -152,19 +152,6 @@ class TestIntegrableViewer:
         assert widget.get_drawable(0).is_visible
         assert widget.get_drawable(1).is_visible
 
-    def test_update_drawable(self):
-        widget = IntegrableViewer()
-        meshgl = widget.mesh(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], indices=[[0, 1, 2]])
-
-        widget.camera_at(meshgl.id)
-        assert meshgl.element.center[0] == widget.rotation_center[0]
-
-        meshgl.element.x = [-10, 5, 5]
-        assert not meshgl.element.center[0] == widget.rotation_center[0]
-
-        widget.update_drawable(0)
-        assert meshgl.element.center[0] == widget.rotation_center[0]
-
     def test_delete_drawable(self):
         widget = IntegrableViewer()
         widget.mesh(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], indices=[[0, 1, 2]])
@@ -191,7 +178,7 @@ class TestIntegrableViewer:
                            indices=[[0, 1, 2]],
                            alpha=0.4,
                            name='mesh_name',
-                           ext='dxf')
+                           extension='dxf')
 
         assert viewer.last_id == 0
 

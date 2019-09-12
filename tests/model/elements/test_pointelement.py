@@ -67,7 +67,7 @@ class TestPointElement:
     def test_named_element(self):
         name = "NAME"
         extension = "EXT"
-        element = PointElement(x=[0], y=[1], z=[2], values=[0], name=name, ext=extension)
+        element = PointElement(x=[0], y=[1], z=[2], values=[0], name=name, extension=extension)
         assert element.name == name
         assert element.extension == extension
 

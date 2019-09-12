@@ -37,7 +37,7 @@ class TestElement:
     def test_named_element(self):
         name = "NAME"
         extension = "EXT"
-        element = Element(x=[0], y=[1], z=[2], name=name, ext=extension)
+        element = Element(x=[0], y=[1], z=[2], name=name, extension=extension)
         assert element.name == name
         assert element.extension == extension
 

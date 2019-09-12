@@ -19,8 +19,8 @@ class TestModel:
 
         x, y, z = zip(*vertices)
 
-        mesh_1 = model.mesh(vertices=vertices, indices=indices, name='caseron', ext='off')
-        mesh_2 = model.mesh(x=x, y=y, z=z, indices=indices, name='caseron', ext='off')
+        mesh_1 = model.mesh(vertices=vertices, indices=indices, name='caseron', extension='off')
+        mesh_2 = model.mesh(x=x, y=y, z=z, indices=indices, name='caseron', extension='off')
 
         assert mesh_1.id != mesh_2.id
 

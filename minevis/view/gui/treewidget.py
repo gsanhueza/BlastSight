@@ -9,9 +9,11 @@ from qtpy.QtWidgets import QAction
 from qtpy.QtWidgets import QMenu
 from qtpy.QtWidgets import QTreeWidget
 from .treewidgetitem import TreeWidgetItem
+
 from ..drawables.meshgl import MeshGL
 from ..drawables.blockgl import BlockGL
 from ..drawables.pointgl import PointGL
+from ..drawables.linegl import LineGL
 
 
 class TreeWidget(QTreeWidget):
@@ -73,11 +75,14 @@ class TreeWidget(QTreeWidget):
         action_show.setIcon(QIcon(QPixmap(f'{icons_path}/flash_on.svg')))
         action_hide.setIcon(QIcon(QPixmap(f'{icons_path}/flash_off.svg')))
         action_delete.setIcon(QIcon(QPixmap(f'{icons_path}/cancel.svg')))
+
         action_highlight.setIcon(QIcon(QPixmap(f'{icons_path}/idea.svg')))
         action_wireframe.setIcon(QIcon(QPixmap(f'{icons_path}/grid.svg')))
+
         action_properties.setIcon(QIcon(QPixmap(f'{icons_path}/settings.svg')))
-        action_center_camera.setIcon(QIcon(QPixmap(f'{icons_path}/collect.svg')))
         action_colors.setIcon(QIcon(QPixmap(f'{icons_path}/picture.svg')))
+        action_center_camera.setIcon(QIcon(QPixmap(f'{icons_path}/collect.svg')))
+
         action_export_mesh.setIcon(QIcon(QPixmap(f'{icons_path}/export.svg')))
         action_export_blocks.setIcon(QIcon(QPixmap(f'{icons_path}/export.svg')))
         action_export_points.setIcon(QIcon(QPixmap(f'{icons_path}/export.svg')))
@@ -86,12 +91,13 @@ class TreeWidget(QTreeWidget):
         action_show.triggered.connect(item.show)
         action_hide.triggered.connect(item.hide)
         action_delete.triggered.connect(item.delete)
+
         action_highlight.triggered.connect(item.toggle_highlighting)
         action_wireframe.triggered.connect(item.toggle_wireframe)
-        action_center_camera.triggered.connect(item.center_camera)
 
         action_properties.triggered.connect(lambda: self.headers_triggered_signal.emit(item.drawable.id))
         action_colors.triggered.connect(lambda: self.colors_triggered_signal.emit(item.drawable.id))
+        action_center_camera.triggered.connect(item.center_camera)
 
         action_export_mesh.triggered.connect(lambda: self.export_mesh_signal.emit(item.drawable.id))
         action_export_blocks.triggered.connect(lambda: self.export_blocks_signal.emit(item.drawable.id))
@@ -108,6 +114,9 @@ class TreeWidget(QTreeWidget):
             menu.addAction(action_colors)
             menu.addSeparator()
             menu.addAction(action_export_mesh)
+        elif item.type == LineGL:
+            menu.addAction(action_colors)
+            menu.addSeparator()
         elif item.type == BlockGL:
             menu.addAction(action_properties)
             menu.addSeparator()

@@ -194,7 +194,6 @@ class IntegrableViewer(QOpenGLWidget):
         return self.drawable_collection[id_]
 
     def update_drawable(self, id_: int) -> None:
-        self.xCenterPos, self.yCenterPos, self.zCenterPos = self.model.get(id_).center
         self.get_drawable(id_).setup_attributes()
         self.update()
 

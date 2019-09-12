@@ -15,7 +15,7 @@ class TestH5MParser:
         assert len(vertices) == 12
         assert len(indices) == 20
         assert properties.get('name', '') == 'caseron'
-        assert properties.get('ext', '') == 'h5m'
+        assert properties.get('extension', '') == 'h5m'
 
     def test_save_file(self):
         info = Parser.load_file(path=f'{TEST_FILES_FOLDER_PATH}/caseron.h5m')
@@ -40,7 +40,7 @@ class TestH5MParser:
                 assert e == e_s
 
         assert properties_s.get('name', '') == 'caseron_save'
-        assert properties_s.get('ext', '') == 'h5m'
+        assert properties_s.get('extension', '') == 'h5m'
         assert len(properties_s.get('color', [])) == 3
         assert properties_s.get('color', [])[0] == 1.0
         assert properties_s.get('color', [])[1] == 0.6

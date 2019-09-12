@@ -93,7 +93,7 @@ class Element:
 
     def _fill_metadata(self, *args, **kwargs):
         self.name = kwargs.get('name', None)
-        self.extension = kwargs.get('ext', None)
+        self.extension = kwargs.get('extension', None)
 
     def _check_integrity(self):
         msg = f'Coordinates have different lengths: ({self.x.size}, {self.y.size}, {self.z.size})'

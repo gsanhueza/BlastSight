@@ -18,7 +18,7 @@ class H5MParser(Parser):
 
         # Metadata
         properties['name'] = QFileInfo(path).completeBaseName()
-        properties['ext'] = QFileInfo(path).suffix()
+        properties['extension'] = QFileInfo(path).suffix()
 
         data = ParserData()
         data.vertices = vertices

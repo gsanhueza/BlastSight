@@ -14,7 +14,7 @@ class CSVParser(Parser):
         # Metadata
         properties = {
             'name': QFileInfo(path).completeBaseName(),
-            'ext': QFileInfo(path).suffix()
+            'extension': QFileInfo(path).suffix()
         }
 
         with open(path, 'r') as f:

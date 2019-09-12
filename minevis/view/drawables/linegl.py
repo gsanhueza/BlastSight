@@ -26,6 +26,7 @@ class LineGL(GLDrawable):
         # np.array([[0, 1, 2]], type) has size 3, despite having only 1 list there
         self.vertices_size = vertices.size // 3
 
+        self.widget.makeCurrent()
         glBindVertexArray(self.vao)
 
         # buffer_properties = [(pointer, basesize, array, glsize, gltype)]

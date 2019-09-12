@@ -15,6 +15,8 @@ class SliceMode(Mode):
 
         if event.buttons() == Qt.LeftButton:
             self.detect_rays(event, widget)
+        elif event.buttons() == Qt.RightButton:
+            self.rays.clear()
 
     def mouseMoveEvent(self, event, widget):
         dx = event.x() - self.lastPos.x()

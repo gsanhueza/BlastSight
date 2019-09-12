@@ -97,7 +97,7 @@ class DFElement(Element):
 
     def _fill_metadata(self, *args, **kwargs):
         self.name = kwargs.get('name', None)
-        self.extension = kwargs.get('ext', None)
+        self.extension = kwargs.get('extension', None)
 
     """
     Main accessors (Override)
