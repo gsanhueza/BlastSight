@@ -11,8 +11,8 @@ from minevis.view.drawables.pointgl import PointGL
 from minevis.view.gui.integrableviewer import IntegrableViewer
 
 from minevis.controller.normalmode import NormalMode
-from minevis.controller.fixedcameramode import FixedCameraMode
-from minevis.controller.selectionmode import SelectionMode
+from minevis.controller.slicemode import SliceMode
+from minevis.controller.detectionmode import DetectionMode
 
 from tests.globals import *
 
@@ -292,11 +292,11 @@ class TestIntegrableViewer:
         viewer = IntegrableViewer()
         assert type(viewer.current_mode) is NormalMode
 
-        viewer.set_fixed_camera_mode()
-        assert type(viewer.current_mode) is FixedCameraMode
+        viewer.set_slice_mode()
+        assert type(viewer.current_mode) is SliceMode
 
-        viewer.set_selection_mode()
-        assert type(viewer.current_mode) is SelectionMode
+        viewer.set_detection_mode()
+        assert type(viewer.current_mode) is DetectionMode
 
         viewer.set_normal_mode()
         assert type(viewer.current_mode) is NormalMode

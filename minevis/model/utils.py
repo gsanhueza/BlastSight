@@ -1,7 +1,10 @@
 #!/usr/bin/env python
 
+import meshcut
 import numpy as np
+
 from functools import partial
+from .polytri import triangulate
 
 
 def mesh_intersection(origin: np.ndarray, ray: np.ndarray, mesh) -> list:
@@ -86,13 +89,11 @@ def triangle_intersection(origin: np.ndarray, ray: np.ndarray, triangle: np.ndar
 def slice_mesh(mesh, plane_origin: np.ndarray, plane_normal: np.ndarray) -> np.ndarray:
     # Taken from https://pypi.org/project/meshcut/
     # Although we might want to have an improved version for real-time slicing
-    import meshcut
     cut = meshcut.cross_section(mesh.vertices, mesh.indices, plane_origin, plane_normal)
-    return np.concatenate(cut)
+    return np.concatenate(cut) if len(cut) > 0 else np.empty(0)
 
 
 def triangulate_slice(slice_vertices: np.ndarray) -> tuple:
-    from .polytri import triangulate
     generator = triangulate(slice_vertices)
     gen_list = list(generator)
     triangles = np.concatenate(gen_list)

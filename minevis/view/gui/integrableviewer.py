@@ -30,11 +30,11 @@ from ..drawables.axisgl import AxisGL
 from ..fpscounter import FPSCounter
 
 from ...controller.normalmode import NormalMode
-from ...controller.selectionmode import SelectionMode
-from ...controller.fixedcameramode import FixedCameraMode
+from ...controller.detectionmode import DetectionMode
+from ...controller.slicemode import SliceMode
 
 from ...model.model import Model
-from ...model.utils import mesh_intersection
+from ...model import utils
 
 
 class IntegrableViewer(QOpenGLWidget):
@@ -291,7 +291,7 @@ class IntegrableViewer(QOpenGLWidget):
     @staticmethod
     def print_fps(fps):
         print(f'               \r', end='')
-        print(f'FPS: {fps:.1f}\r', end='')
+        print(f'FPS: {fps:.1f} \r', end='')
 
     def unproject(self, _x, _y, _z, model, view, proj) -> QVector3D:
         # Adapted from http://antongerdelan.net/opengl/raycasting.html
@@ -304,18 +304,40 @@ class IntegrableViewer(QOpenGLWidget):
         ray_world = ((view * model).inverted()[0] * ray_eye).toVector3D()
         return ray_world.normalized()
 
-    def detect_intersection(self, x: float, y: float, z: float) -> None:
+    def ray_from_click(self, x: float, y: float, z: float) -> tuple:
+        # Generates a ray from a click on screen
         ray = self.unproject(x, y, z, self.world, self.camera, self.proj)
-        ray_origin = (self.camera * self.world).inverted()[0].column(3).toVector3D()
+        origin = (self.camera * self.world).inverted()[0].column(3).toVector3D()
 
         # To Numpy array
         ray = np.array([ray.x(), ray.y(), ray.z()])
-        ray_origin = np.array([ray_origin.x(), ray_origin.y(), ray_origin.z()])
+        origin = np.array([origin.x(), origin.y(), origin.z()])
 
+        return ray, origin
+
+    def slice_from_rays(self, ray_list: list):
+        origin = (self.camera * self.world).inverted()[0].column(3).toVector3D()
+        plane_origin = np.array([origin.x(), origin.y(), origin.z()])
+        plane_normal = np.cross(*ray_list)
+
+        # FIXME Which meshes are we really slicing?
+        for mesh in self.model.mesh_collection:
+            slice_vertices = utils.slice_mesh(mesh, plane_origin, plane_normal)
+
+            if slice_vertices.size > 0:
+                # FIXME We're creating new elements, is this what we want?
+                self.lines(vertices=slice_vertices,
+                           color=mesh.color,
+                           name=f'SLICE_{mesh.name}',
+                           extension=mesh.extension,
+                           loop=True)
+
+    def detect_mesh_intersection(self, x: float, y: float, z: float) -> None:
+        ray, origin = self.ray_from_click(x, y, z)
         intersected_mesh_ids = []
 
         for mesh in self.model.mesh_collection:
-            point_list = mesh_intersection(ray_origin, ray, mesh)
+            point_list = utils.mesh_intersection(origin, ray, mesh)
             # print(f'(Mesh {mesh.id}) Intersects: {point_list}')
             if len(point_list) > 0:
                 intersected_mesh_ids.append(mesh.id)
@@ -331,8 +353,8 @@ class IntegrableViewer(QOpenGLWidget):
     def set_controller_mode(self, mode: str):
         controllers = {
             'normal': NormalMode,
-            'select': SelectionMode,
-            'fixed': FixedCameraMode,
+            'detection': DetectionMode,
+            'slice': SliceMode,
         }
 
         self.current_mode = controllers[mode]()
@@ -341,11 +363,11 @@ class IntegrableViewer(QOpenGLWidget):
     def set_normal_mode(self) -> None:
         self.set_controller_mode('normal')
 
-    def set_selection_mode(self) -> None:
-        self.set_controller_mode('select')
+    def set_detection_mode(self) -> None:
+        self.set_controller_mode('detection')
 
-    def set_fixed_camera_mode(self) -> None:
-        self.set_controller_mode('fixed')
+    def set_slice_mode(self) -> None:
+        self.set_controller_mode('slice')
 
     def take_screenshot(self, save_path=None):
         if not save_path:

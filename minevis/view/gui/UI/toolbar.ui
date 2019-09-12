@@ -82,6 +82,18 @@
     <string>Ctrl+N</string>
    </property>
   </action>
+  <action name="action_slice_mode">
+   <property name="icon">
+    <iconset>
+     <normaloff>icons/flash_on.svg</normaloff>icons/flash_on.svg</iconset>
+   </property>
+   <property name="text">
+    <string>S&amp;lice mode</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
+  </action>
   <action name="action_load_block_model">
    <property name="icon">
     <iconset>
@@ -94,16 +106,16 @@
     <string>Ctrl+E</string>
    </property>
   </action>
-  <action name="action_selection_mode">
+  <action name="action_detection_mode">
    <property name="icon">
     <iconset>
      <normaloff>icons/cursor.svg</normaloff>icons/cursor.svg</iconset>
    </property>
    <property name="text">
-    <string>&amp;Selection mode</string>
+    <string>&amp;Detection mode</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+S</string>
+    <string>Ctrl+D</string>
    </property>
   </action>
   <action name="action_camera_properties">

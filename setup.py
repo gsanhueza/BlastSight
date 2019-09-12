@@ -24,6 +24,7 @@ setuptools.setup(
         'qtpy',
         'h5py',
         'tables',
+        'meshcut',
     ],
     tests_require=[
         'pytest',

@@ -4,13 +4,17 @@ from qtpy.QtCore import Qt, QPoint
 from .mode import Mode
 
 
-class FixedCameraMode(Mode):
+class SliceMode(Mode):
     def __init__(self):
-        print("MODE: Fixed Camera Mode")
+        self.rays = []
         self.lastPos = None
+        print("MODE: Slice Mode")
 
     def mousePressEvent(self, event, widget):
         self.lastPos = QPoint(event.pos())
+
+        if event.buttons() == Qt.LeftButton:
+            self.detect_rays(event, widget)
 
     def mouseMoveEvent(self, event, widget):
         dx = event.x() - self.lastPos.x()
@@ -24,3 +28,11 @@ class FixedCameraMode(Mode):
             self.set_y_movement(widget, widget.yCameraPos + (distance_y * dy))
 
         self.lastPos = QPoint(event.pos())
+
+    def detect_rays(self, event, widget):
+        ray, origin = widget.ray_from_click(event.pos().x(), event.pos().y(), 1.0)
+        self.rays.append(ray)
+
+        if len(self.rays) == 2:
+            widget.slice_from_rays(self.rays)
+            self.rays.clear()

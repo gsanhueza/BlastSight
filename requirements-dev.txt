@@ -8,3 +8,4 @@ pandas==0.25
 qtpy==1.8
 h5py==2.9
 tables==3.5.2
+meshcut==0.2.1

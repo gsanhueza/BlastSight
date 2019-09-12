@@ -51,7 +51,8 @@ class MainWindow(QMainWindow):
         self.menu_File.addAction(self.toolbar.action_quit)
 
         self.menu_View.addAction(self.toolbar.action_normal_mode)
-        self.menu_View.addAction(self.toolbar.action_selection_mode)
+        self.menu_View.addAction(self.toolbar.action_detection_mode)
+        self.menu_View.addAction(self.toolbar.action_slice_mode)
         self.menu_View.addSeparator()
         self.menu_View.addAction(self.toolbar.action_camera_properties)
         self.menu_View.addAction(self.toolbar.action_plan_view)
@@ -70,7 +71,8 @@ class MainWindow(QMainWindow):
         self.toolbar.action_quit.triggered.connect(self.close)
 
         self.toolbar.action_normal_mode.triggered.connect(self.normal_mode_slot)
-        self.toolbar.action_selection_mode.triggered.connect(self.selection_mode_slot)
+        self.toolbar.action_detection_mode.triggered.connect(self.detection_mode_slot)
+        self.toolbar.action_slice_mode.triggered.connect(self.slice_mode_slot)
 
         self.toolbar.action_camera_properties.triggered.connect(self.camera_dialog)
         self.toolbar.action_plan_view.triggered.connect(self.viewer.plan_view)
@@ -216,11 +218,11 @@ class MainWindow(QMainWindow):
     def normal_mode_slot(self) -> None:
         self.viewer.set_normal_mode()
 
-    def draw_mode_slot(self) -> None:
-        self.viewer.set_draw_mode()
+    def detection_mode_slot(self) -> None:
+        self.viewer.set_detection_mode()
 
-    def selection_mode_slot(self) -> None:
-        self.viewer.set_selection_mode()
+    def slice_mode_slot(self) -> None:
+        self.viewer.set_slice_mode()
 
     def help_slot(self) -> None:
         QMessageBox.information(self,
