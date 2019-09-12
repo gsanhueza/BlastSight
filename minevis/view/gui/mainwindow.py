@@ -58,6 +58,7 @@ class MainWindow(QMainWindow):
         self.menu_View.addAction(self.toolbar.action_plan_view)
         self.menu_View.addAction(self.toolbar.action_north_view)
         self.menu_View.addAction(self.toolbar.action_east_view)
+        self.menu_View.addAction(self.toolbar.action_show_all)
         self.menu_View.addSeparator()
         self.menu_View.addAction(self.toolbar.action_take_screenshot)
 
@@ -78,6 +79,7 @@ class MainWindow(QMainWindow):
         self.toolbar.action_plan_view.triggered.connect(self.viewer.plan_view)
         self.toolbar.action_north_view.triggered.connect(self.viewer.north_view)
         self.toolbar.action_east_view.triggered.connect(self.viewer.east_view)
+        self.toolbar.action_show_all.triggered.connect(self.viewer.show_all)
 
         self.toolbar.action_take_screenshot.triggered.connect(self.screenshot_dialog)
         self.toolbar.action_show_tree.triggered.connect(self.dockWidget.show)

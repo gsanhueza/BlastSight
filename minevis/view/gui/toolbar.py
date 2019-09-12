@@ -22,4 +22,5 @@ class ToolBar(QToolBar):
         self.action_plan_view.triggered.connect(viewer.plan_view)
         self.action_north_view.triggered.connect(viewer.north_view)
         self.action_east_view.triggered.connect(viewer.east_view)
+        self.action_show_all.triggered.connect(viewer.show_all)
         self.action_take_screenshot.triggered.connect(viewer.take_screenshot)

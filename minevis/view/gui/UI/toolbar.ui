@@ -88,7 +88,7 @@
      <normaloff>icons/flash_on.svg</normaloff>icons/flash_on.svg</iconset>
    </property>
    <property name="text">
-    <string>S&amp;lice mode</string>
+    <string>&amp;Slice mode</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+S</string>
@@ -154,6 +154,18 @@
     <string>Ctrl+1</string>
    </property>
   </action>
+  <action name="action_show_all">
+   <property name="icon">
+    <iconset>
+     <normaloff>icons/globe.svg</normaloff>icons/globe.svg</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Show all</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+R</string>
+   </property>
+  </action>
   <action name="action_north_view">
    <property name="icon">
     <iconset>
@@ -195,6 +207,7 @@
   <addaction name="action_plan_view"/>
   <addaction name="action_north_view"/>
   <addaction name="action_east_view"/>
+  <addaction name="action_show_all"/>
   <addaction name="separator"/>
   <addaction name="action_take_screenshot"/>
  </widget>

@@ -230,6 +230,28 @@ class IntegrableViewer(QOpenGLWidget):
         self.xCenterRot, self.yCenterRot, self.zCenterRot = [270.0, 0.0, 0.0]
         self.update()
 
+    def show_all(self):
+        if self.last_id == -1:
+            return
+
+        min_all = np.inf * np.ones(3)
+        max_all = -np.inf * np.ones(3)
+
+        for drawable in self.drawable_collection.values():
+            min_bound, max_bound = drawable.element.bounding_box
+            min_all = np.min((min_all, min_bound), axis=0)
+            max_all = np.max((max_all, max_bound), axis=0)
+
+        center_all = (min_all + max_all) / 2
+        self.rotation_center = center_all
+        self.camera_position = center_all
+
+        # Put the camera in a position that allow us to see the element
+        max_diff = np.max(np.diff([min_all, max_all], axis=0))
+        self.zCameraPos += 1.2 * max_diff / math.tan(math.pi / 4)
+
+        self.update()
+
     """
     Internal methods
     """
