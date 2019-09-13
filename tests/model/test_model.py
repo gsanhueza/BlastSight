@@ -295,8 +295,6 @@ class TestModel:
         assert model.last_id == 2
 
         assert len(model.element_collection) == 3
-        assert len(model.mesh_collection) == 2
-        assert len(model.block_model_collection) == 1
 
     def test_export(self):
         model = Model()

@@ -4,7 +4,6 @@ import meshcut
 import numpy as np
 
 from functools import partial
-from .polytri import triangulate
 
 
 def mesh_intersection(origin: np.ndarray, ray: np.ndarray, mesh) -> list:
@@ -103,15 +102,6 @@ def slice_mesh(mesh, plane_origin: np.ndarray, plane_normal: np.ndarray) -> list
         # Meshcut doesn't want to slice
         print(f'WARNING: Mesh {mesh.name} (id = {mesh.id}) cannot be sliced, fix your mesh!')
         return []
-
-
-def triangulate_slice(slice_vertices: np.ndarray) -> tuple:
-    generator = triangulate(slice_vertices)
-    gen_list = list(generator)
-    triangles = np.concatenate(gen_list)
-    vertices, indices = np.unique(triangles, axis=0, return_inverse=True)
-
-    return vertices, indices
 
 
 def hsv_to_rgb(hsv: list) -> np.ndarray:

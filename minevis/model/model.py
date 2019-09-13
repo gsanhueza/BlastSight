@@ -96,7 +96,7 @@ class Model:
     """
     Element exporting
     """
-    def export(self, path, id_):
+    def export(self, path: str, id_: int) -> None:
         element = self.get(id_)
         ext = path.split('.')[-1]
 
@@ -107,13 +107,13 @@ class Model:
 
         self.get_parser(ext).save_file(path=path, data=data, properties=properties)
 
-    def export_mesh(self, path, id_):
+    def export_mesh(self, path: str, id_: int) -> None:
         self.export(path, id_)
 
-    def export_blocks(self, path, id_):
+    def export_blocks(self, path: str, id_: int) -> None:
         self.export(path, id_)
 
-    def export_points(self, path, id_):
+    def export_points(self, path: str, id_: int) -> None:
         self.export(path, id_)
 
     """
@@ -132,11 +132,3 @@ class Model:
     @property
     def element_collection(self) -> ElementCollection:
         return self._element_collection
-
-    @property
-    def mesh_collection(self) -> list:
-        return list(filter(lambda x: isinstance(x, MeshElement), self.element_collection.values()))
-
-    @property
-    def block_model_collection(self) -> list:
-        return list(filter(lambda x: isinstance(x, BlockElement), self.element_collection.values()))
