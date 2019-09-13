@@ -337,17 +337,14 @@ class IntegrableViewer(QOpenGLWidget):
         return ray, origin
 
     def slice_from_rays(self, ray_list: list):
-        origin = (self.camera * self.world).inverted()[0].column(3).toVector3D()
-        plane_origin = np.array([origin.x(), origin.y(), origin.z()])
-        plane_normal = np.cross(*ray_list)
+        camera_origin = (self.camera * self.world).inverted()[0].column(3).toVector3D()
+        origin = np.array([camera_origin.x(), camera_origin.y(), camera_origin.z()])
 
-        # FIXME Which meshes are we really slicing?
-        for mesh in self.model.mesh_collection:
-            try:
-                slices = utils.slice_mesh(mesh, plane_origin, plane_normal)
-            except AssertionError:  # Meshcut doesn't want to slice
-                print(f'WARNING: Mesh {mesh.name} (id = {mesh.id}) cannot be sliced, fix your mesh!')
-                continue
+        mesh_drawables = [m for m in self.drawable_collection.filter(MeshGL) if m.is_visible]
+        mesh_elements = [m.element for m in mesh_drawables]
+
+        for mesh in mesh_elements:
+            slices = utils.slice_mesh_from_rays(mesh, origin, ray_list)
 
             for i, vert_slice in enumerate(slices):
                 self.lines(vertices=vert_slice,
@@ -363,7 +360,10 @@ class IntegrableViewer(QOpenGLWidget):
         ray, origin = self.ray_from_click(x, y, z)
         intersected_mesh_ids = []
 
-        for mesh in self.model.mesh_collection:
+        mesh_drawables = [m for m in self.drawable_collection.filter(MeshGL) if m.is_visible]
+        mesh_elements = [m.element for m in mesh_drawables]
+
+        for mesh in mesh_elements:
             point_list = utils.mesh_intersection(origin, ray, mesh)
             # print(f'(Mesh {mesh.id}) Intersects: {point_list}')
             if len(point_list) > 0:

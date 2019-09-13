@@ -86,11 +86,23 @@ def triangle_intersection(origin: np.ndarray, ray: np.ndarray, triangle: np.ndar
     return None
 
 
+def slice_mesh_from_rays(mesh, origin: np.ndarray, ray_list: list) -> list:
+    # A plane is created from `origin` and `ray_list`.
+    # We'll try to slice every mesh from `meshes` with our plane.
+    # Returns the slices that we get from the plane and this mesh.
+    return slice_mesh(mesh, origin, np.cross(*ray_list))
+
+
 def slice_mesh(mesh, plane_origin: np.ndarray, plane_normal: np.ndarray) -> list:
     # Taken from https://pypi.org/project/meshcut/
     # Although we might want to have an improved version.
     # This returns a list with the slices (in case we have a concave mesh)
-    return meshcut.cross_section(mesh.vertices, mesh.indices, plane_origin, plane_normal)
+    try:
+        return meshcut.cross_section(mesh.vertices, mesh.indices, plane_origin, plane_normal)
+    except AssertionError:
+        # Meshcut doesn't want to slice
+        print(f'WARNING: Mesh {mesh.name} (id = {mesh.id}) cannot be sliced, fix your mesh!')
+        return []
 
 
 def triangulate_slice(slice_vertices: np.ndarray) -> tuple:
