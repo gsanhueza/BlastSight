@@ -9,7 +9,7 @@ class TreeWidgetItem(QTreeWidgetItem):
         super().__init__(parent)
         self._viewer = viewer
         self._id = _id
-        self.setText(0, f'{self.name}.{self.ext}')
+        self.setText(0, f'{self.name}.{self.ext} (id: {self._id})')
         self.set_visible(self.drawable.is_visible)
 
     @property
