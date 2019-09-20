@@ -10,7 +10,7 @@ from minevis.view.gui.integrableviewer import IntegrableViewer
 from minevis.view.drawables.glprograms.shaderprogram import ShaderProgram
 
 
-class TestBaseDrawables:
+class TestAutoDrawable:
     qt_app = QApplication(sys.argv)
 
     # Needed to create OpenGLWidget.context()
@@ -22,10 +22,10 @@ class TestBaseDrawables:
     element.id = 0
 
     def test_base(self):
-        assert GLDrawable(widget=self.widget, element=self.element)
+        assert GLDrawable(self.element)
 
     def test_drawable_id(self):
-        drawable = GLDrawable(widget=self.widget, element=self.element)
+        drawable = GLDrawable(self.element)
         assert drawable.id == self.element.id
 
         drawable.id = 50
@@ -38,12 +38,12 @@ class TestBaseDrawables:
         program.bind()
         program.setup()  # Deliberately duplicated
 
-        drawable = GLDrawable(widget=self.widget, element=self.element)
+        drawable = GLDrawable(self.element)
         program.set_drawables([drawable])
         program.draw()
 
     def test_cleanup(self):
-        drawable = GLDrawable(widget=self.widget, element=self.element)
+        drawable = GLDrawable(self.element)
         drawable.cleanup()
         drawable.initialize()
         drawable.cleanup()
@@ -54,7 +54,7 @@ class TestBaseDrawables:
         program.setup()
         program.bind()
 
-        drawable = GLDrawable(widget=self.widget, element=self.element)
+        drawable = GLDrawable(self.element)
         drawable.setup_attributes()
 
         program.set_drawables([drawable])

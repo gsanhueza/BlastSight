@@ -8,13 +8,9 @@ from minevis.view.drawables.glprograms.axisprogram import AxisProgram
 
 
 class TestAxisGL:
-    def test_empty_line(self):
+    def test_empty_axis(self):
         with pytest.raises(Exception):
             AxisGL()
-
-    def test_line_no_widget(self):
-        with pytest.raises(Exception):
-            AxisGL(widget=None, element=type('NullElement', (), {}))
 
     def test_draw(self):
         widget = IntegrableViewer()
@@ -22,7 +18,7 @@ class TestAxisGL:
         program.setup()
         program.bind()
 
-        drawable = AxisGL(widget=IntegrableViewer(), element=type('NullElement', (), {}))
+        drawable = AxisGL(type('NullElement', (), {}))
         drawable.setup_attributes()
 
         drawable.hide()
@@ -42,6 +38,6 @@ class TestAxisGL:
         program.setup()
         program.bind()
 
-        drawable = AxisGL(widget=IntegrableViewer(), element=type('NullElement', (), {}))
+        drawable = AxisGL(type('NullElement', (), {}))
         program.set_drawables([drawable])
         program.draw()

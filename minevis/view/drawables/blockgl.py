@@ -7,8 +7,8 @@ from OpenGL.GL import *
 
 
 class BlockGL(GLDrawable):
-    def __init__(self, widget, element, *args, **kwargs):
-        super().__init__(widget, element)
+    def __init__(self, element, *args, **kwargs):
+        super().__init__(element)
         self.num_cubes = 0
 
     def setup_attributes(self) -> None:
@@ -26,7 +26,6 @@ class BlockGL(GLDrawable):
 
         self.num_cubes = vertices.size // 3
 
-        self.widget.makeCurrent()
         glBindVertexArray(self.vao)
 
         # buffer_properties = [(pointer, basesize, array, glsize, gltype)]

@@ -56,9 +56,9 @@ class IntegrableViewer(QOpenGLWidget):
         self.constant_collection = GLConstantCollection(self)
         self.drawable_collection = GLDrawableCollection(self)
 
-        self.constant_collection.add(BackgroundGL(self, type(
+        self.constant_collection.add(BackgroundGL(type(
             'NullElement', (), {'id': 'BG', 'alpha': 1.0})))
-        self.constant_collection.add(AxisGL(self, type(
+        self.constant_collection.add(AxisGL(type(
             'NullElement', (), {'id': 'AXIS', 'alpha': 1.0})))
 
         # Camera/World/Projection
@@ -132,7 +132,7 @@ class IntegrableViewer(QOpenGLWidget):
     def add_drawable(self, method: classmethod, drawable_type: type, *args, **kwargs):
         try:
             element = method(*args, **kwargs)
-            drawable = drawable_type(self, element, *args, **kwargs)
+            drawable = drawable_type(element, *args, **kwargs)
             self.drawable_collection.add(drawable)
 
             self.file_modified_signal.emit()
@@ -194,10 +194,12 @@ class IntegrableViewer(QOpenGLWidget):
         return self.drawable_collection[id_]
 
     def update_drawable(self, id_: int) -> None:
+        self.makeCurrent()
         self.get_drawable(id_).setup_attributes()
         self.update()
 
     def delete(self, id_: int) -> None:
+        self.makeCurrent()
         self.model.delete(id_)
         self.drawable_collection.delete(id_)
         self.file_modified_signal.emit()

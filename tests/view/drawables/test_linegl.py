@@ -16,21 +16,16 @@ class TestLineGL:
         with pytest.raises(Exception):
             LineGL()
 
-    def test_line_no_widget(self):
-        with pytest.raises(Exception):
-            LineGL(widget=None, element=self.element)
-
     def test_line_base(self):
-        drawable = LineGL(widget=IntegrableViewer(), element=self.element)
+        drawable = LineGL(self.element)
 
         assert drawable
         assert drawable.id == 0
-        assert isinstance(drawable.widget, IntegrableViewer)
 
         assert not drawable.is_initialized
 
     def test_line_initialize(self):
-        drawable = LineGL(widget=IntegrableViewer(), element=self.element)
+        drawable = LineGL(self.element)
         assert not drawable.is_initialized
 
         drawable.initialize()
@@ -43,7 +38,7 @@ class TestLineGL:
         program.setup()
         program.bind()
 
-        drawable = LineGL(widget=IntegrableViewer(), element=self.element)
+        drawable = LineGL(self.element)
         drawable.setup_attributes()
 
         drawable.hide()

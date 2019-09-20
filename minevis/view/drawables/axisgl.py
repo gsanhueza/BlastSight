@@ -7,8 +7,8 @@ from OpenGL.GL import *
 
 
 class AxisGL(GLDrawable):
-    def __init__(self, widget, element, *args, **kwargs):
-        super().__init__(widget, element)
+    def __init__(self, element, *args, **kwargs):
+        super().__init__(element)
 
     def setup_attributes(self) -> None:
         _POSITION = 0

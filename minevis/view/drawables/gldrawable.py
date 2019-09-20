@@ -4,10 +4,8 @@ from OpenGL.GL import *
 
 
 class GLDrawable:
-    def __init__(self, widget, element, *args, **kwargs):
-        assert widget
+    def __init__(self, element, *args, **kwargs):
         assert element
-        self._widget = widget
         self._element = element
 
         self.vaos = []
@@ -16,10 +14,6 @@ class GLDrawable:
         self.is_initialized = False
         self.is_highlighted = False
         self.is_visible = True
-
-    @property
-    def widget(self):
-        return self._widget
 
     @property
     def element(self):
@@ -67,7 +61,6 @@ class GLDrawable:
 
     def cleanup(self):
         if self.is_initialized:
-            self.widget.makeCurrent()
             glDeleteBuffers(len(self.vbos), self.vbos)
             glDeleteVertexArrays(len(self.vaos), self.vaos)
 

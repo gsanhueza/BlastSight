@@ -10,7 +10,7 @@ from minevis.view.gui.integrableviewer import IntegrableViewer
 class TestGLDrawableCollection:
     element = Element(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0])
     element.id = 0
-    drawable = GLDrawable(widget=IntegrableViewer(), element=element)
+    drawable = GLDrawable(element)
 
     def test_base(self):
         collection = GLDrawableCollection()
@@ -66,8 +66,8 @@ class TestGLDrawableCollection:
     def test_draw(self):
         widget = IntegrableViewer()
         collection = GLDrawableCollection(widget)
-        drawable_1 = GLDrawable(widget, element=self.element)
-        drawable_2 = GLDrawable(widget, element=self.element)
+        drawable_1 = GLDrawable(self.element)
+        drawable_2 = GLDrawable(self.element)
 
         collection.add(drawable_1)
         collection.add(drawable_2)

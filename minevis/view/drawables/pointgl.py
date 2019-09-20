@@ -7,8 +7,8 @@ from OpenGL.GL import *
 
 
 class PointGL(GLDrawable):
-    def __init__(self, widget, element, *args, **kwargs):
-        super().__init__(widget, element)
+    def __init__(self, element, *args, **kwargs):
+        super().__init__(element)
         self.num_points = 0
 
     def setup_attributes(self) -> None:
@@ -28,7 +28,6 @@ class PointGL(GLDrawable):
 
         self.num_points = sizes.size
 
-        self.widget.makeCurrent()
         glBindVertexArray(self.vao)
 
         # buffer_properties = [(pointer, basesize, array, glsize, gltype)]

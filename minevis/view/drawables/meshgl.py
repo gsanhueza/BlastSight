@@ -7,8 +7,8 @@ from .gldrawable import GLDrawable
 
 
 class MeshGL(GLDrawable):
-    def __init__(self, widget, element, *args, **kwargs):
-        super().__init__(widget, element)
+    def __init__(self, element, *args, **kwargs):
+        super().__init__(element)
         self.indices_size = 0
 
         self.is_highlighted = kwargs.get('highlight', False)
@@ -51,7 +51,6 @@ class MeshGL(GLDrawable):
 
         self.indices_size = indices.size
 
-        self.widget.makeCurrent()
         glBindVertexArray(self.vao)
 
         # buffer_properties = [(pointer, basesize, array, glsize, gltype)]

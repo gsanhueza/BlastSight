@@ -31,7 +31,7 @@ class Element:
         # Base data
         self._data: dict = {}
         self._properties: dict = {}
-        self._metadata: dict = {'id': -1}
+        self._metadata: dict = {}
 
         self._initialize(*args, **kwargs)
 
@@ -94,6 +94,7 @@ class Element:
     def _fill_metadata(self, *args, **kwargs):
         self.name = kwargs.get('name', None)
         self.extension = kwargs.get('extension', None)
+        self.id = kwargs.get('id', -1)
 
     def _check_integrity(self):
         msg = f'Coordinates have different lengths: ({self.x.size}, {self.y.size}, {self.z.size})'

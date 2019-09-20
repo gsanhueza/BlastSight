@@ -7,8 +7,8 @@ from OpenGL.GL import *
 
 
 class LineGL(GLDrawable):
-    def __init__(self, widget, element, *args, **kwargs):
-        super().__init__(widget, element)
+    def __init__(self, element, *args, **kwargs):
+        super().__init__(element)
 
         self.vertices_size = 0
 
@@ -26,7 +26,6 @@ class LineGL(GLDrawable):
         # np.array([[0, 1, 2]], type) has size 3, despite having only 1 list there
         self.vertices_size = vertices.size // 3
 
-        self.widget.makeCurrent()
         glBindVertexArray(self.vao)
 
         # buffer_properties = [(pointer, basesize, array, glsize, gltype)]

@@ -13,25 +13,20 @@ class TestMeshGL:
     element = MeshElement(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], indices=[[0, 1, 2]])
     element.id = 0
 
-    def test_empty_meshgl(self):
+    def test_empty_mesh(self):
         with pytest.raises(Exception):
             MeshGL()
 
-    def test_meshgl_no_widget(self):
-        with pytest.raises(Exception):
-            MeshGL(widget=None, element=self.element)
-
     def test_meshgl_base(self):
-        drawable = MeshGL(widget=IntegrableViewer(), element=self.element)
+        drawable = MeshGL(self.element)
 
         assert drawable
         assert drawable.id == 0
-        assert isinstance(drawable.widget, IntegrableViewer)
 
         assert not drawable.is_initialized
 
     def test_meshgl_initialize(self):
-        drawable = MeshGL(widget=IntegrableViewer(), element=self.element)
+        drawable = MeshGL(self.element)
         assert not drawable.is_initialized
 
         drawable.initialize()
@@ -39,7 +34,7 @@ class TestMeshGL:
         assert drawable.is_initialized
 
     def test_meshgl_wireframe_no_init(self):
-        drawable = MeshGL(widget=IntegrableViewer(), element=self.element)
+        drawable = MeshGL(self.element)
 
         assert not drawable.is_wireframed
         drawable.toggle_wireframe()
@@ -48,7 +43,7 @@ class TestMeshGL:
         assert not drawable.is_wireframed
 
     def test_meshgl_wireframe(self):
-        drawable = MeshGL(widget=IntegrableViewer(), element=self.element)
+        drawable = MeshGL(self.element)
         # The state should change regardless of initialization
 
         def auto_test():
@@ -80,7 +75,7 @@ class TestMeshGL:
         program.setup()
         program.bind()
 
-        drawable = MeshGL(widget=widget, element=self.element)
+        drawable = MeshGL(self.element)
         drawable.setup_attributes()
 
         program.set_drawables([drawable])
@@ -104,10 +99,10 @@ class TestMeshGL:
         program.setup()
         program.bind()
 
-        drawable_normal = MeshGL(widget=widget, element=self.element)
-        drawable_alpha = MeshGL(widget=widget, element=element)
-        drawable_wireframe = MeshGL(widget=widget, element=self.element, wireframe=True)
-        drawable_highlight = MeshGL(widget=widget, element=self.element, highlight=True)
+        drawable_normal = MeshGL(self.element)
+        drawable_alpha = MeshGL(element)
+        drawable_wireframe = MeshGL(self.element, wireframe=True)
+        drawable_highlight = MeshGL(self.element, highlight=True)
 
         assert not drawable_highlight.toggle_highlighting()
         assert drawable_highlight.toggle_highlighting()
@@ -125,10 +120,10 @@ class TestMeshGL:
         program.setup()
         program.bind()
 
-        drawable_normal = MeshGL(widget=widget, element=self.element)
-        drawable_alpha = MeshGL(widget=widget, element=element)
-        drawable_wireframe = MeshGL(widget=widget, element=self.element, wireframe=True)
-        drawable_highlight = MeshGL(widget=widget, element=self.element, highlight=True)
+        drawable_normal = MeshGL(self.element)
+        drawable_alpha = MeshGL(element)
+        drawable_wireframe = MeshGL(self.element, wireframe=True)
+        drawable_highlight = MeshGL(self.element, highlight=True)
 
         assert not drawable_highlight.toggle_highlighting()
         assert drawable_highlight.toggle_highlighting()

@@ -8,13 +8,9 @@ from minevis.view.drawables.glprograms.backgroundprogram import BackgroundProgra
 
 
 class TestBackgroundGL:
-    def test_empty_line(self):
+    def test_empty_bg(self):
         with pytest.raises(Exception):
             BackgroundGL()
-
-    def test_line_no_widget(self):
-        with pytest.raises(Exception):
-            BackgroundGL(widget=None, element=type('NullElement', (), {}))
 
     def test_draw(self):
         widget = IntegrableViewer()
@@ -22,7 +18,7 @@ class TestBackgroundGL:
         program.setup()
         program.bind()
 
-        drawable = BackgroundGL(widget=IntegrableViewer(), element=type('NullElement', (), {}))
+        drawable = BackgroundGL(element=type('NullElement', (), {}))
 
         drawable.hide()
         assert not drawable.is_visible
@@ -43,7 +39,7 @@ class TestBackgroundGL:
 
         assert not program.color_set
 
-        drawable = BackgroundGL(widget=IntegrableViewer(), element=type('NullElement', (), {}))
+        drawable = BackgroundGL(element=type('NullElement', (), {}))
         program.set_drawables([drawable])
         program.draw()
 

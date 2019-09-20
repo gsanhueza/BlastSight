@@ -6,8 +6,8 @@ from .gldrawable import GLDrawable
 
 
 class BackgroundGL(GLDrawable):
-    def __init__(self, widget, element, *args, **kwargs):
-        super().__init__(widget, element)
+    def __init__(self, element, *args, **kwargs):
+        super().__init__(element)
 
     def draw(self):
         glDisable(GL_DEPTH_TEST)
