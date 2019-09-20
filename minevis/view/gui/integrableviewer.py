@@ -4,37 +4,40 @@ import math
 import numpy as np
 import traceback
 
+from datetime import datetime
 from OpenGL.GL import *
-from qtpy.QtCore import Signal, QPoint
-from qtpy.QtCore import QFileInfo, QDirIterator
-from qtpy.QtCore import QThreadPool
-from qtpy.QtWidgets import QOpenGLWidget
-from qtpy.QtGui import QRegion, QPixmap
+
+from qtpy.QtCore import QPoint
+from qtpy.QtCore import Signal
+from qtpy.QtCore import QDirIterator
+from qtpy.QtCore import QFileInfo
 from qtpy.QtGui import QMatrix4x4
+from qtpy.QtGui import QPixmap
+from qtpy.QtGui import QRegion
 from qtpy.QtGui import QVector3D
 from qtpy.QtGui import QVector4D
+from qtpy.QtWidgets import QOpenGLWidget
 
-from datetime import datetime
-
-from ..drawables.gldrawablecollection import GLDrawableCollection
 from ..drawables.glconstantcollection import GLConstantCollection
+from ..drawables.gldrawablecollection import GLDrawableCollection
 
+from ..drawables.axisgl import AxisGL
+from ..drawables.backgroundgl import BackgroundGL
 from ..drawables.blockgl import BlockGL
+from ..drawables.linegl import LineGL
 from ..drawables.meshgl import MeshGL
 from ..drawables.pointgl import PointGL
-from ..drawables.linegl import LineGL
 from ..drawables.tubegl import TubeGL
-from ..drawables.backgroundgl import BackgroundGL
-from ..drawables.axisgl import AxisGL
 
 from ..fpscounter import FPSCounter
 
-from ...controller.normalmode import NormalMode
 from ...controller.detectionmode import DetectionMode
+from ...controller.normalmode import NormalMode
 from ...controller.slicemode import SliceMode
 
-from ...model.model import Model
 from ...model import utils
+from ...model.model import Model
+from ...model.elements.nullelement import NullElement
 
 
 class IntegrableViewer(QOpenGLWidget):
@@ -56,10 +59,8 @@ class IntegrableViewer(QOpenGLWidget):
         self.constant_collection = GLConstantCollection(self)
         self.drawable_collection = GLDrawableCollection(self)
 
-        self.constant_collection.add(BackgroundGL(type(
-            'NullElement', (), {'id': 'BG', 'alpha': 1.0})))
-        self.constant_collection.add(AxisGL(type(
-            'NullElement', (), {'id': 'AXIS', 'alpha': 1.0})))
+        self.constant_collection.add(BackgroundGL(NullElement(id='BG')))
+        self.constant_collection.add(AxisGL(NullElement(id='AXIS')))
 
         # Camera/World/Projection
         self._camera = QMatrix4x4()
@@ -74,9 +75,6 @@ class IntegrableViewer(QOpenGLWidget):
         # FPS Counter
         self.fps_counter = FPSCounter()
         self.fps_signal.connect(self.print_fps)
-
-        # Thread Pool
-        self.thread_pool = QThreadPool()
 
     @property
     def model(self):
