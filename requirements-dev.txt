@@ -1,11 +1,12 @@
+pytest==5.0
+pytest-cov==2.7
 numpy==1.16.4
 PyQt5==5.12
 dxfgrabber==1.0
 PyOpenGL==3.1
-pytest==5.0
-pytest-cov==2.7
 pandas==0.25
 qtpy==1.8
 h5py==2.9
 tables==3.5.2
 meshcut==0.2.1
+colour==0.1.5

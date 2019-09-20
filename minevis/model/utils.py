@@ -3,6 +3,7 @@
 import meshcut
 import numpy as np
 
+from colour import Color
 from functools import partial
 
 
@@ -102,6 +103,23 @@ def slice_mesh(mesh, plane_origin: np.ndarray, plane_normal: np.ndarray) -> list
         # Meshcut doesn't want to slice
         print(f'WARNING: Mesh {mesh.name} (id = {mesh.id}) cannot be sliced, fix your mesh!')
         return []
+
+
+def color_from_dict(colormap: str) -> type:
+    initial_str, final_str = colormap.split('-')
+
+    initial = Color(initial_str).get_hue()
+    final = Color(final_str).get_hue()
+
+    return lambda v: initial + (final - initial) * v
+
+
+def values_to_rgb(values: np.ndarray, vmin: float, vmax: float, colormap: str) -> np.ndarray:
+    vals = np.interp(np.clip(values, vmin, vmax), (vmin, vmax), (0.0, 1.0))
+    hsv = np.ones((vals.size, 3))
+
+    hsv[:, 0] = color_from_dict(colormap)(vals)
+    return hsv_to_rgb(hsv)
 
 
 def hsv_to_rgb(hsv: list) -> np.ndarray:

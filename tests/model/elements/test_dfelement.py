@@ -58,24 +58,6 @@ class TestDFElement:
         with pytest.raises(Exception):
             DFElement(data={})
 
-    def test_color_dict(self):
-        hsv_rb = DFElement.color_from_dict('red-blue')(np.array([0.0, 1.0]))
-        hsv_rg = DFElement.color_from_dict('red-green')(np.array([0.0, 1.0]))
-        hsv_br = DFElement.color_from_dict('blue-red')(np.array([0.0, 1.0]))
-        hsv_gr = DFElement.color_from_dict('green-red')(np.array([0.0, 1.0]))
-
-        assert hsv_rb[0] == 0.0 / 3.0
-        assert hsv_rb[1] == 2.0 / 3.0
-
-        assert hsv_rg[0] == 0.0 / 3.0
-        assert hsv_rg[1] == 1.0 / 3.0
-
-        assert hsv_br[0] == 2.0 / 3.0
-        assert hsv_br[1] == 0.0 / 3.0
-
-        assert hsv_gr[0] == 1.0 / 3.0
-        assert hsv_gr[1] == 0.0 / 3.0
-
     def test_colormap(self):
         element = DFElement(vertices=[[0, 1, 2], [3, 4, 5], [6, 7, 8]], values=[0, 1, 2])
         assert element.colormap == 'red-blue'
@@ -115,6 +97,17 @@ class TestDFElement:
         assert element.color[2][1] == 0.0
         assert element.color[2][2] == 1.0
 
+    def test_autocalculate_vmin_vmax(self):
+        element = DFElement(vertices=[[0, 1, 2], [3, 4, 5], [6, 7, 8]], values=[0, 1, 2], vmin=0.5, vmax=1.2)
+        assert element.vmin == 0.5
+        assert element.vmax == 1.2
+
+        element.vmin = None
+        element.vmax = None
+
+        assert element.vmin == 0.0
+        assert element.vmax == 2.0
+
     def test_setters(self):
         element = DFElement(vertices=[[0, 1, 2]])
         element.name = 'name123'
@@ -125,20 +118,13 @@ class TestDFElement:
         assert element.extension == 'off'
         assert element.alpha == 0.8
 
-    def test_color_rgba(self):
-        element = DFElement(vertices=[[0, 1, 2]])
+    def test_manual_color(self):
+        element = DFElement(vertices=[[0, 1, 2]], color=[[1.0, 0.0, 0.0]])
 
-        assert element.color[0] == element.rgba[0]
-        assert element.color[1] == element.rgba[1]
-        assert element.color[2] == element.rgba[2]
-        assert element.alpha == element.rgba[3]
-
-        element.rgba = [1.0, 0.9, 0.8, 0.7]
-
-        assert element.color[0] == element.rgba[0] == 1.0
-        assert element.color[1] == element.rgba[1] == 0.9
-        assert element.color[2] == element.rgba[2] == 0.8
-        assert element.alpha == element.rgba[3] == 0.7
+        assert element.color[0][0] == 1.0
+        assert element.color[0][1] == 0.0
+        assert element.color[0][2] == 0.0
+        assert element.alpha == 1.0
 
     def test_autocolor(self):
         data = {'x': [0.0, 2.0, 4.0, 6.0, 8.0, 10.0],

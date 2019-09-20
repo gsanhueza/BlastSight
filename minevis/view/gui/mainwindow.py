@@ -239,7 +239,9 @@ class MainWindow(QMainWindow):
                                 '- pymesh (cylinder generation)\n' +
                                 '- matplotlib (hsv to rgb)\n' +
                                 '- flat color icons (from icons8.com)\n' +
-                                '- meshcut (slice mesh by a plane)\n'
+                                '- meshcut (slice mesh by a plane)\n' +
+                                '- trimesh (volume of a mesh, adapted)\n' +
+                                '- colour (parse string to color)'
                                 )
 
     def dragEnterEvent(self, event, *args, **kwargs) -> None:

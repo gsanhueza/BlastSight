@@ -2,8 +2,9 @@
 
 import numpy as np
 import pandas as pd
+
 from .element import Element
-from ..utils import hsv_to_rgb
+from ...model import utils
 
 
 class DFElement(Element):
@@ -52,7 +53,7 @@ class DFElement(Element):
         self._properties: dict = {}
         self._metadata: dict = {'id': -1}
 
-        self._mapper: dict = {'x': 'x', 'y': 'y', 'z': 'z', 'values': 'values'}
+        self._mapper: dict = {k: k for k in ['x', 'y', 'z', 'values']}
         super()._initialize(*args, **kwargs)
 
     """
@@ -159,7 +160,7 @@ class DFElement(Element):
     @property
     def color(self):
         if self.datasets.get('color').size == 0:
-            return self.values_to_rgb(self.values, self.vmin, self.vmax, self.colormap)
+            return utils.values_to_rgb(self.values, self.vmin, self.vmax, self.colormap)
         return self.datasets.get('color')
 
     @property
@@ -194,57 +195,19 @@ class DFElement(Element):
     def vmin(self, _vmin: float) -> None:
         try:
             self.properties['vmin'] = float(_vmin)
-        except ValueError:
+        except Exception:
             self.properties['vmin'] = self.values.min()
 
     @vmax.setter
     def vmax(self, _vmax: float) -> None:
         try:
             self.properties['vmax'] = float(_vmax)
-        except ValueError:
+        except Exception:
             self.properties['vmax'] = self.values.max()
 
     @headers.setter
     def headers(self, _headers: list) -> None:
         self.mapper['x'], self.mapper['y'], self.mapper['z'], self.mapper['values'] = _headers
-
-    """
-    Utilities
-    """
-    @staticmethod
-    def color_from_dict(colormap: str):
-        # Declare
-        hsv_dict = {
-            'red': 0.0,
-            'orange': 30.0,
-            'yellow': 60.0,
-            'green': 120.0,
-            'blue': 240.0,
-            'violet': 270.0,
-            'pink': 300.0,
-        }
-
-        # Normalize
-        hsv_dict = {k: v / 360.0 for k, v in hsv_dict.items()}
-        initial_str, final_str = colormap.split('-')
-
-        initial = hsv_dict.get(initial_str, 0.0)
-        final = hsv_dict.get(final_str, 0.67)
-
-        return lambda v: initial + (final - initial) * v
-
-    @staticmethod
-    def values_to_rgb(values: np.ndarray, vmin: float, vmax: float, colormap: str):
-        values = np.clip(values, vmin, vmax)
-        norm = vmax - vmin
-        if norm == 0:
-            return np.ones(3 * values.size)
-
-        vals = (values - vmin) / norm
-        hsv = np.ones((vals.size, 3))
-
-        hsv[:, 0] = DFElement.color_from_dict(colormap)(vals)
-        return hsv_to_rgb(hsv)
 
     """
     Mapper handling
