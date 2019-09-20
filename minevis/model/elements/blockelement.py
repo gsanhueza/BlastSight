@@ -45,16 +45,16 @@ class BlockElement(DFElement):
         if kwargs.get('noautosize', False):
             self.block_size = kwargs.get('block_size', [1.0, 1.0, 1.0])
         else:
-            self.block_size = kwargs.get('block_size', self._autosize(*args, **kwargs))
+            self.block_size = kwargs.get('block_size', self._autosize())
 
-    def _autosize(self, *args, **kwargs):
-        autosize = []
+    def _autosize(self):
+        size = []
 
         for v in [self.x, self.y, self.z]:
             delta = np.abs(np.diff(v))
-            autosize.append(float(min(delta[delta > 0.0], default=1.0)))
+            size.append(float(min(delta[delta > 0.0], default=1.0)))
 
-        return autosize
+        return size
 
     """
     Properties
@@ -73,4 +73,4 @@ class BlockElement(DFElement):
 
     @block_size.setter
     def block_size(self, _size: list) -> None:
-        self.properties['size'] = np.array(_size)
+        self.properties['size'] = np.array(_size) if len(_size) == 3 else self._autosize()
