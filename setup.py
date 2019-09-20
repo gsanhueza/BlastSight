@@ -25,6 +25,7 @@ setuptools.setup(
         'h5py',
         'tables',
         'meshcut',
+        'colour',
     ],
     tests_require=[
         'pytest',
