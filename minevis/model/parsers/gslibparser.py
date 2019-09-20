@@ -23,7 +23,7 @@ class GSLibParser(Parser):
             with open(path, 'r') as f:
                 data.data = pd.read_csv(f, sep=' ', header=None, names=headers, skiprows=header_count + 2)
                 data.properties = properties
-        except ValueError:  # This "GSLib" file doesn't have headers
+        except Exception:  # This "GSLib" file doesn't have headers
             print(f'*** WARNING: We can read {path}, but keep in mind that this not a real GSLib file. ***')
             with open(path, 'r') as f:
                 data.data = pd.read_csv(f, sep=' ', header=None, prefix='col_')

@@ -192,11 +192,17 @@ class DFElement(Element):
 
     @vmin.setter
     def vmin(self, _vmin: float) -> None:
-        self.properties['vmin'] = _vmin
+        try:
+            self.properties['vmin'] = float(_vmin)
+        except ValueError:
+            self.properties['vmin'] = self.values.min()
 
     @vmax.setter
     def vmax(self, _vmax: float) -> None:
-        self.properties['vmax'] = _vmax
+        try:
+            self.properties['vmax'] = float(_vmax)
+        except ValueError:
+            self.properties['vmax'] = self.values.max()
 
     @headers.setter
     def headers(self, _headers: list) -> None:
@@ -207,14 +213,25 @@ class DFElement(Element):
     """
     @staticmethod
     def color_from_dict(colormap: str):
-        colormap_dict = {
-            'red-blue': lambda v: 2.0 / 3.0 * v,
-            'blue-red': lambda v: 2.0 / 3.0 * (1.0 - v),
-            'red-green': lambda v: 1.0 / 3.0 * v,
-            'green-red': lambda v: 1.0 / 3.0 * (1.0 - v),
+        # Declare
+        hsv_dict = {
+            'red': 0.0,
+            'orange': 30.0,
+            'yellow': 60.0,
+            'green': 120.0,
+            'blue': 240.0,
+            'violet': 270.0,
+            'pink': 300.0,
         }
 
-        return colormap_dict.get(colormap)
+        # Normalize
+        hsv_dict = {k: v / 360.0 for k, v in hsv_dict.items()}
+        initial_str, final_str = colormap.split('-')
+
+        initial = hsv_dict.get(initial_str, 0.0)
+        final = hsv_dict.get(final_str, 0.67)
+
+        return lambda v: initial + (final - initial) * v
 
     @staticmethod
     def values_to_rgb(values: np.ndarray, vmin: float, vmax: float, colormap: str):
