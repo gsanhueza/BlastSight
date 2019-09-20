@@ -33,15 +33,35 @@ class MeshElement(Element):
     Element filling
     """
     def _fill_element(self, *args, **kwargs):
-        super()._fill_element(*args, **kwargs)
+        # Vertices
+        msg = f'Data must contain ["x", "y", "z"] or "vertices", got {list(kwargs.keys())}.'
 
-        if 'indices' not in kwargs.keys():
-            raise KeyError('Data must have "indices".')
-        self.indices = kwargs.get('indices', [])
+        if 'vertices' in kwargs.keys():
+            self._fill_as_vertices(*args, **kwargs)
+            self._fill_indices(*args, **kwargs)
+        elif 'x' in kwargs.keys() and 'y' in kwargs.keys() and 'z' in kwargs.keys():
+            self._fill_as_xyz(*args, **kwargs)
+            self._fill_indices(*args, **kwargs)
+        elif 'data' in kwargs.keys():
+            self._fill_as_data(*args, **kwargs)
+        else:
+            raise KeyError(msg)
+
+    def _fill_indices(self, *args, **kwargs):
+        # Indices
+        msg = f'Data must contain "indices", got {list(kwargs.keys())}.'
+
+        if 'indices' in kwargs.keys() and 'data' not in kwargs.keys():
+            self.indices = kwargs.get('indices', [])
+        else:
+            raise KeyError(msg)
+
+    def _fill_as_data(self, *args, **kwargs):
+        self.vertices = kwargs.get('data', {}).get('vertices', [])
+        self.indices = kwargs.get('data', {}).get('indices', [])
 
     def _check_integrity(self):
         super()._check_integrity()
-
         if self.x.size != self.indices.max() + 1:
             raise ValueError('Wrong number of indices for mesh.')
 

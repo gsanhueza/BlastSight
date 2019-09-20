@@ -20,22 +20,13 @@ class MeshGL(GLDrawable):
 
     def toggle_wireframe(self) -> bool:
         self.is_wireframed = not self.is_wireframed
-
-        # Against our original idea, here we do not want to fill the
-        # buffers again until OpenGL is already rendering.
-        if self.is_initialized:
-            self.setup_attributes()
         return self.is_wireframed
 
     def disable_wireframe(self) -> None:
         self.is_wireframed = False
-        if self.is_initialized:
-            self.setup_attributes()
 
     def enable_wireframe(self):
         self.is_wireframed = True
-        if self.is_initialized:
-            self.setup_attributes()
 
     def setup_attributes(self) -> None:
         _POSITION = 0

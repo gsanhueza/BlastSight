@@ -44,6 +44,18 @@ class Model:
 
         return element
 
+    def _element_by_path(self, path: str, element_type: type, *args, **kwargs):
+        ext = path.split('.')[-1]
+        info = self.get_parser(ext).load_file(path)
+        data = info.data
+        properties = info.properties
+
+        kwargs['data'] = data
+        for k, v in properties.items():
+            kwargs[k] = v
+
+        return self._element(element_type, *args, **kwargs)
+
     def mesh(self, *args, **kwargs) -> MeshElement:
         return self._element(MeshElement, *args, **kwargs)
 
@@ -60,38 +72,13 @@ class Model:
         return self._element(TubeElement, *args, **kwargs)
 
     def mesh_by_path(self, path: str, *args, **kwargs) -> MeshElement:
-        ext = path.split('.')[-1]
-        info = self.get_parser(ext).load_file(path)
-        vertices = info.vertices
-        indices = info.indices
-        properties = info.properties
-
-        for k, v in properties.items():
-            kwargs[k] = v
-
-        return self.mesh(vertices=vertices, indices=indices, *args, **kwargs)
+        return self._element_by_path(path, MeshElement, *args, **kwargs)
 
     def blocks_by_path(self, path: str, *args, **kwargs) -> BlockElement:
-        ext = path.split('.')[-1]
-        info = self.get_parser(ext).load_file(path)
-        data = info.data
-        properties = info.properties
-
-        for k, v in properties.items():
-            kwargs[k] = v
-
-        return self.blocks(data=data, *args, **kwargs)
+        return self._element_by_path(path, BlockElement, *args, **kwargs)
 
     def points_by_path(self, path: str, *args, **kwargs) -> PointElement:
-        ext = path.split('.')[-1]
-        info = self.get_parser(ext).load_file(path)
-        data = info.data
-        properties = info.properties
-
-        for k, v in properties.items():
-            kwargs[k] = v
-
-        return self.points(data=data, *args, **kwargs)
+        return self._element_by_path(path, PointElement, *args, **kwargs)
 
     """
     Element exporting
