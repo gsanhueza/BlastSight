@@ -69,8 +69,8 @@ class TestDFElement:
         assert element.color[2][1] == 0.0
         assert element.color[2][2] == 1.0
 
-        element.colormap = 'green-red'
-        assert element.colormap == 'green-red'
+        element.colormap = 'lime-red'
+        assert element.colormap == 'lime-red'
         assert element.color[0][0] == 0.0
         assert element.color[0][1] == 1.0
         assert element.color[0][2] == 0.0

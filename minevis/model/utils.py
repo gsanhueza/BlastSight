@@ -105,20 +105,25 @@ def slice_mesh(mesh, plane_origin: np.ndarray, plane_normal: np.ndarray) -> list
         return []
 
 
-def color_from_dict(colormap: str) -> type:
-    initial_str, final_str = colormap.split('-')
-
-    initial = Color(initial_str).get_hue()
-    final = Color(final_str).get_hue()
-
-    return lambda v: initial + (final - initial) * v
+def hsl_to_hsv(h, s, l):
+    # Taken and adapted from https://gist.github.com/mathebox/e0805f72e7db3269ec22
+    v = (2 * l + s * (1 - abs(2 * l - 1))) / 2
+    s = 2 * (v - l) / max(v, 1e-12)
+    return h, s, v
 
 
 def values_to_rgb(values: np.ndarray, vmin: float, vmax: float, colormap: str) -> np.ndarray:
     vals = np.interp(np.clip(values, vmin, vmax), (vmin, vmax), (0.0, 1.0))
-    hsv = np.ones((vals.size, 3))
 
-    hsv[:, 0] = color_from_dict(colormap)(vals)
+    initial_str, final_str = colormap.split('-')
+    initial = np.array(hsl_to_hsv(*Color(initial_str).get_hsl()))
+    final = np.array(hsl_to_hsv(*Color(final_str).get_hsl()))
+
+    hsv = np.ones((vals.size, 3))
+    hsv[:, 0] = initial[0] + (final - initial)[0] * vals
+    hsv[:, 1] = initial[1] + (final - initial)[1] * vals
+    hsv[:, 2] = initial[2] + (final - initial)[2] * vals
+
     return hsv_to_rgb(hsv)
 
 
