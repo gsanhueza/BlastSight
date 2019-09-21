@@ -269,6 +269,7 @@ class IntegrableViewer(QOpenGLWidget):
 
         self.world.setToIdentity()
         self.camera.setToIdentity()
+        self.proj.setToIdentity()
 
         # Translate by rotation center (world position)
         self.world.translate(*self.rotation_center)
@@ -284,6 +285,9 @@ class IntegrableViewer(QOpenGLWidget):
         # Translate the camera
         self.camera.translate(*-self.camera_position)
 
+        # Project (Perspective/Orthographic)
+        self.resizeGL(self.width(), self.height())
+
         # Draw every GLDrawable (meshes, block models, etc)
         glEnable(GL_BLEND)
         self.constant_collection.draw(self.proj, self.camera, self.world)
@@ -296,14 +300,15 @@ class IntegrableViewer(QOpenGLWidget):
         self.fps_signal.emit(self.fps_counter.fps)
 
     def resizeGL(self, w: float, h: float) -> None:
-        # TODO Enable perspective/orthogonal in application
-        self.proj.setToIdentity()
+        # TODO Enable perspective/orthographic in application
         # Perspective
         self.proj.perspective(45.0, (w / h), 1.0, 10000.0)
 
-        # Orthogonal
-        # w = w * (abs(self.zCenterPos) - abs(self.zCameraPos)) * -0.001
-        # h = h * (abs(self.zCenterPos) - abs(self.zCameraPos)) * -0.001
+        # Orthographic
+        # off_center = max(self.zCameraPos - self.zCenterPos, 0.0)
+        # factor = 1.0 / 1000.0
+        # w = w * off_center * factor
+        # h = h * off_center * factor
         # self.proj.ortho(-w, w, -h, h, 1.0, 10000.0)
 
     """
