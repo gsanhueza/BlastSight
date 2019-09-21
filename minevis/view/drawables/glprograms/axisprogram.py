@@ -14,6 +14,6 @@ class AxisProgram(ShaderProgram):
                     self.widget.devicePixelRatio() * self.widget.height()]
         w, h = viewport
 
-        glViewport(w // 20, h // 20, h // 6, h // 6)
+        glViewport(w // 100, h // 100, h // 6, h // 6)
         super().draw()
         glViewport(0, 0, viewport[0], viewport[1])

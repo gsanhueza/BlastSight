@@ -13,7 +13,7 @@ class ColorDialog(QColorDialog):
         self.id = _id
 
         element = self.viewer.get_drawable(self.id).element
-        self.setWindowTitle(f'Set color ({element.name}.{element.extension})')
+        self.setWindowTitle(f'{self.windowTitle()} ({element.name}.{element.extension})')
         self.setCurrentColor(QColor.fromRgb(*[int(255 * x) for x in element.rgba.tolist()]))
 
     def accept(self):
