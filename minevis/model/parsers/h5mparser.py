@@ -39,7 +39,13 @@ class H5MParser(Parser):
 
         if vertices is None or indices is None:
             data = kwargs.get('data', {})
-            vertices = data.get('vertices', np.column_stack((data['x'], data['y'], data['z'])))
+            try:
+                vertices = data['vertices']
+            except Exception:
+                vertices = np.column_stack((data.get('x', []),
+                                            data.get('y', []),
+                                            data.get('z', []),
+                                            ))
             indices = data.get('indices', [])
 
         properties = kwargs.get('properties', {})
