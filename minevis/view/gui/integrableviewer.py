@@ -168,47 +168,47 @@ class IntegrableViewer(QOpenGLWidget):
     """
     Export methods
     """
-    def export_mesh(self, path, id_):
-        self.model.export_mesh(path, id_)
+    def export_mesh(self, path, _id):
+        self.model.export_mesh(path, _id)
 
-    def export_blocks(self, path, id_):
-        self.model.export_blocks(path, id_)
+    def export_blocks(self, path, _id):
+        self.model.export_blocks(path, _id)
 
-    def export_points(self, path, id_):
-        self.model.export_points(path, id_)
+    def export_points(self, path, _id):
+        self.model.export_points(path, _id)
 
     """
     Individual drawable manipulation
     """
-    def show_drawable(self, id_: int) -> None:
-        self.get_drawable(id_).show()
+    def show_drawable(self, _id: int) -> None:
+        self.get_drawable(_id).show()
         self.update()
 
-    def hide_drawable(self, id_: int) -> None:
-        self.get_drawable(id_).hide()
+    def hide_drawable(self, _id: int) -> None:
+        self.get_drawable(_id).hide()
         self.update()
 
-    def get_drawable(self, id_: int):
-        return self.drawable_collection[id_]
+    def get_drawable(self, _id: int):
+        return self.drawable_collection[_id]
 
-    def update_drawable(self, id_: int) -> None:
+    def update_drawable(self, _id: int) -> None:
         self.makeCurrent()
-        self.get_drawable(id_).setup_attributes()
+        self.get_drawable(_id).setup_attributes()
         self.update()
 
-    def delete(self, id_: int) -> None:
+    def delete(self, _id: int) -> None:
         self.makeCurrent()
-        self.model.delete(id_)
-        self.drawable_collection.delete(id_)
+        self.model.delete(_id)
+        self.drawable_collection.delete(_id)
         self.file_modified_signal.emit()
         self.update()
 
     def clear(self) -> None:
-        for id_ in list(self.drawable_collection.keys()):
-            self.delete(id_)
+        for _id in list(self.drawable_collection.keys()):
+            self.delete(_id)
 
-    def camera_at(self, id_: int) -> None:
-        self.fit_to_screen(*self.get_drawable(id_).element.bounding_box)
+    def camera_at(self, _id: int) -> None:
+        self.fit_to_screen(*self.get_drawable(_id).element.bounding_box)
         self.update()
 
     def plan_view(self) -> None:

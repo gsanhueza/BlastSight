@@ -115,15 +115,15 @@ class MainWindow(QMainWindow):
     def fill_tree_widget(self) -> None:
         self.treeWidget.fill_from_viewer(self.viewer)
 
-    def update_statusbar(self, id_: int):
-        self.statusBar.showMessage(f'Loaded (id: {id_}).')
+    def update_statusbar(self, _id: int):
+        self.statusBar.showMessage(f'Loaded (id: {_id}).')
 
-    def properties_dialog(self, id_: int):
-        dialog = PropertiesDialog(self.viewer, id_)
+    def properties_dialog(self, _id: int):
+        dialog = PropertiesDialog(self.viewer, _id)
         dialog.show()
 
-    def color_dialog(self, id_: int):
-        dialog = ColorDialog(self.viewer, id_)
+    def color_dialog(self, _id: int):
+        dialog = ColorDialog(self.viewer, _id)
         dialog.show()
 
     def camera_dialog(self):
@@ -139,27 +139,27 @@ class MainWindow(QMainWindow):
         if path != '':
             self.viewer.take_screenshot(path)
 
-    def _export_dialog(self, id_: int, filters: str, method: classmethod) -> None:
+    def _export_dialog(self, _id: int, filters: str, method: classmethod) -> None:
         (path, selected_filter) = QFileDialog.getSaveFileName(
             parent=self,
-            directory=self.viewer.get_drawable(id_).element.name,
+            directory=self.viewer.get_drawable(_id).element.name,
             filter=filters)
 
         if path != '':
-            method(path, id_)
+            method(path, _id)
 
-    def export_mesh_dialog(self, id_: int) -> None:
-        self._export_dialog(id_=id_,
+    def export_mesh_dialog(self, _id: int) -> None:
+        self._export_dialog(_id=_id,
                             filters='MineVis mesh (*.h5m);;',
                             method=self.viewer.export_mesh)
 
-    def export_blocks_dialog(self, id_: int) -> None:
-        self._export_dialog(id_=id_,
+    def export_blocks_dialog(self, _id: int) -> None:
+        self._export_dialog(_id=_id,
                             filters='MineVis blocks (*.h5p);;',
                             method=self.viewer.export_blocks)
 
-    def export_points_dialog(self, id_: int) -> None:
-        self._export_dialog(id_=id_,
+    def export_points_dialog(self, _id: int) -> None:
+        self._export_dialog(_id=_id,
                             filters='MineVis points (*.h5p);;',
                             method=self.viewer.export_points)
 

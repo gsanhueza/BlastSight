@@ -102,8 +102,8 @@ def demo():
     viewer.camera_position = [0.0, 2.0, 12.0]
     viewer.rotation_center = [0.0, 0.0, 0.0]
 
-    for id_, drawable in viewer.drawable_collection.items():
-        print(f'Drawable {id_}: Name = {drawable.element.name}, Type = {type(drawable)}')
+    for _id, drawable in viewer.drawable_collection.items():
+        print(f'Drawable {_id}: Name = {drawable.element.name}, Type = {type(drawable)}')
 
     viewer.show()
 

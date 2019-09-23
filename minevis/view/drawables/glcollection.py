@@ -12,9 +12,9 @@ class GLCollection(OrderedDict):
     def add(self, drawable: GLDrawable) -> None:
         self[drawable.id] = drawable
 
-    def delete(self, id_: int) -> None:
-        self[id_].cleanup()
-        del self[id_]
+    def delete(self, _id: int) -> None:
+        self[_id].cleanup()
+        del self[_id]
 
     def draw(self, proj_matrix, view_matrix, model_matrix) -> None:
         for gl_program, lambda_drawables in self.programs.items():

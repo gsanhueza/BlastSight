@@ -83,8 +83,8 @@ class Model:
     """
     Element exporting
     """
-    def export(self, path: str, id_: int) -> None:
-        element = self.get(id_)
+    def export(self, path: str, _id: int) -> None:
+        element = self.get(_id)
         ext = path.split('.')[-1]
 
         data = element.data
@@ -94,23 +94,23 @@ class Model:
 
         self.get_parser(ext).save_file(path=path, data=data, properties=properties)
 
-    def export_mesh(self, path: str, id_: int) -> None:
-        self.export(path, id_)
+    def export_mesh(self, path: str, _id: int) -> None:
+        self.export(path, _id)
 
-    def export_blocks(self, path: str, id_: int) -> None:
-        self.export(path, id_)
+    def export_blocks(self, path: str, _id: int) -> None:
+        self.export(path, _id)
 
-    def export_points(self, path: str, id_: int) -> None:
-        self.export(path, id_)
+    def export_points(self, path: str, _id: int) -> None:
+        self.export(path, _id)
 
     """
     Element handling
     """
-    def get(self, id_: int) -> Element:
-        return self.element_collection[id_]
+    def get(self, _id: int) -> Element:
+        return self.element_collection[_id]
 
-    def delete(self, id_: int) -> None:
-        self.element_collection.delete(id_)
+    def delete(self, _id: int) -> None:
+        self.element_collection.delete(_id)
 
     @property
     def last_id(self) -> int:

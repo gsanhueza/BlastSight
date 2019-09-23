@@ -62,11 +62,11 @@ class TestModel:
         indices = info.indices
 
         mesh = model.mesh(vertices=vertices, indices=indices)
-        id_ = mesh.id
-        model.delete(id_)
+        _id = mesh.id
+        model.delete(_id)
 
         with pytest.raises(Exception):
-            model.get(id_)
+            model.get(_id)
 
     # Block model
     def test_add_block_model(self):
@@ -114,11 +114,11 @@ class TestModel:
         data = info.data
 
         bm = model.blocks(data=data)
-        id_ = bm.id
-        model.delete(id_)
+        _id = bm.id
+        model.delete(_id)
 
         with pytest.raises(Exception):
-            model.get(id_)
+            model.get(_id)
 
     # Lines
     def test_add_lines(self):
@@ -157,11 +157,11 @@ class TestModel:
 
         lines = model.lines(vertices=vertices, color=color)
 
-        id_ = lines.id
-        model.delete(id_)
+        _id = lines.id
+        model.delete(_id)
 
         with pytest.raises(Exception):
-            model.get(id_)
+            model.get(_id)
 
     # Tubes
     def test_add_tubes(self):
@@ -200,11 +200,11 @@ class TestModel:
 
         tubes = model.tubes(vertices=vertices, color=color)
 
-        id_ = tubes.id
-        model.delete(id_)
+        _id = tubes.id
+        model.delete(_id)
 
         with pytest.raises(Exception):
-            model.get(id_)
+            model.get(_id)
 
     # Points
     def test_add_points(self):
@@ -252,11 +252,11 @@ class TestModel:
         data = info.data
 
         bm = model.points(data=data)
-        id_ = bm.id
-        model.delete(id_)
+        _id = bm.id
+        model.delete(_id)
 
         with pytest.raises(Exception):
-            model.get(id_)
+            model.get(_id)
 
     # Multiple
     def test_add_multiple(self):
