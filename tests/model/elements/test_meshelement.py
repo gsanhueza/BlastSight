@@ -72,7 +72,14 @@ class TestMeshElement:
         with pytest.raises(KeyError):
             MeshElement(x=[-1, 1], y=[0, 0], z=[0, 0])
 
-    def test_centro_idsingle(self):
+    def test_center(self):
+        element = MeshElement(x=[-1, 1, 0], y=[0, 0, 3], z=[0, 0, 0], indices=[[0, 1, 2]])
+
+        expected = [0.0, 1.5, 0.0]
+        for i in range(len(expected)):
+            assert element.center[i] == expected[i]
+
+    def test_centroid(self):
         element = MeshElement(x=[-1, 1, 0], y=[0, 0, 3], z=[0, 0, 0], indices=[[0, 1, 2]])
 
         expected = [0.0, 1.0, 0.0]
