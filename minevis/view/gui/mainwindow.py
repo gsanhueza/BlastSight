@@ -34,6 +34,7 @@ class MainWindow(QMainWindow):
         # Extra actions
         self.toolbar.insertAction(self.toolbar.action_plan_view, self.toolbar.action_camera_properties)
         self.toolbar.addAction(self.toolbar.action_quit)
+        self.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
 
         self.generate_menubar()
         self.connect_actions()
