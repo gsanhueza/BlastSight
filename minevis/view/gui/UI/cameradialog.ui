@@ -6,196 +6,132 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>535</width>
-    <height>208</height>
+    <width>532</width>
+    <height>172</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Camera properties</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0">
-    <widget class="QTabWidget" name="tabWidget">
-     <property name="currentIndex">
-      <number>0</number>
-     </property>
-     <widget class="QWidget" name="camera_position_tab">
-      <attribute name="title">
-       <string>Camera position</string>
-      </attribute>
-      <layout class="QGridLayout" name="gridLayout_2">
-       <item row="0" column="0">
-        <widget class="QLabel" name="label_x">
-         <property name="text">
-          <string>X (East)</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1">
-        <widget class="QDoubleSpinBox" name="doubleSpinBox_x">
-         <property name="minimum">
-          <double>-9999999.990000000223517</double>
-         </property>
-         <property name="maximum">
-          <double>9999999.990000000223517</double>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="0">
-        <widget class="QLabel" name="label_y">
-         <property name="text">
-          <string>Y (North)</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1">
-        <widget class="QDoubleSpinBox" name="doubleSpinBox_y">
-         <property name="minimum">
-          <double>-9999999.990000000223517</double>
-         </property>
-         <property name="maximum">
-          <double>9999999.990000000223517</double>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="0">
-        <widget class="QLabel" name="label_z">
-         <property name="text">
-          <string>Z (Elevation)</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="1">
-        <widget class="QDoubleSpinBox" name="doubleSpinBox_z">
-         <property name="minimum">
-          <double>-9999999.990000000223517</double>
-         </property>
-         <property name="maximum">
-          <double>9999999.990000000223517</double>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="rotation_angle_tab">
-      <attribute name="title">
-       <string>Rotation angle</string>
-      </attribute>
-      <layout class="QGridLayout" name="gridLayout_3">
-       <item row="0" column="0">
-        <widget class="QLabel" name="label_rot_x">
-         <property name="text">
-          <string>X (Angle in degrees)</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1">
-        <widget class="QDoubleSpinBox" name="doubleSpinBox_rot_x">
-         <property name="minimum">
-          <double>-360.000000000000000</double>
-         </property>
-         <property name="maximum">
-          <double>360.000000000000000</double>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="0">
-        <widget class="QLabel" name="label_rot_y">
-         <property name="text">
-          <string>Y (Angle in degrees)</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1">
-        <widget class="QDoubleSpinBox" name="doubleSpinBox_rot_y">
-         <property name="minimum">
-          <double>-360.000000000000000</double>
-         </property>
-         <property name="maximum">
-          <double>360.000000000000000</double>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="0">
-        <widget class="QLabel" name="label_rot_z">
-         <property name="text">
-          <string>Z (Angle in degrees)</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="1">
-        <widget class="QDoubleSpinBox" name="doubleSpinBox_rot_z">
-         <property name="minimum">
-          <double>-360.000000000000000</double>
-         </property>
-         <property name="maximum">
-          <double>360.000000000000000</double>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="rotation_center_tab">
-      <attribute name="title">
-       <string>Rotation center</string>
-      </attribute>
-      <layout class="QGridLayout" name="gridLayout_4">
-       <item row="0" column="0">
-        <widget class="QLabel" name="label_center_x">
-         <property name="text">
-          <string>X (Center)</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1">
-        <widget class="QDoubleSpinBox" name="doubleSpinBox_center_x">
-         <property name="minimum">
-          <double>-9999999.990000000223517</double>
-         </property>
-         <property name="maximum">
-          <double>9999999.990000000223517</double>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="0">
-        <widget class="QLabel" name="label_center_y">
-         <property name="text">
-          <string>Y (Center)</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1">
-        <widget class="QDoubleSpinBox" name="doubleSpinBox_center_y">
-         <property name="minimum">
-          <double>-9999999.990000000223517</double>
-         </property>
-         <property name="maximum">
-          <double>9999999.990000000223517</double>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="0">
-        <widget class="QLabel" name="label_center_z">
-         <property name="text">
-          <string>Z (Center)</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="1">
-        <widget class="QDoubleSpinBox" name="doubleSpinBox_center_z">
-         <property name="minimum">
-          <double>-9999999.990000000223517</double>
-         </property>
-         <property name="maximum">
-          <double>9999999.990000000223517</double>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QWidget" name="widget" native="true">
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_x">
+        <property name="text">
+         <string>Camera position (X, Y, Z)</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QDoubleSpinBox" name="doubleSpinBox_x">
+        <property name="minimum">
+         <double>-9999999.990000000223517</double>
+        </property>
+        <property name="maximum">
+         <double>9999999.990000000223517</double>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2">
+       <widget class="QDoubleSpinBox" name="doubleSpinBox_y">
+        <property name="minimum">
+         <double>-9999999.990000000223517</double>
+        </property>
+        <property name="maximum">
+         <double>9999999.990000000223517</double>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="3">
+       <widget class="QDoubleSpinBox" name="doubleSpinBox_z">
+        <property name="minimum">
+         <double>-9999999.990000000223517</double>
+        </property>
+        <property name="maximum">
+         <double>9999999.990000000223517</double>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_center_x">
+        <property name="text">
+         <string>Rotation center (X, Y, Z)</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QDoubleSpinBox" name="doubleSpinBox_center_x">
+        <property name="minimum">
+         <double>-9999999.990000000223517</double>
+        </property>
+        <property name="maximum">
+         <double>9999999.990000000223517</double>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2">
+       <widget class="QDoubleSpinBox" name="doubleSpinBox_center_y">
+        <property name="minimum">
+         <double>-9999999.990000000223517</double>
+        </property>
+        <property name="maximum">
+         <double>9999999.990000000223517</double>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="3">
+       <widget class="QDoubleSpinBox" name="doubleSpinBox_center_z">
+        <property name="minimum">
+         <double>-9999999.990000000223517</double>
+        </property>
+        <property name="maximum">
+         <double>9999999.990000000223517</double>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="label_rot_x">
+        <property name="text">
+         <string>Rotation angle (X°, Y°, Z°)</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QDoubleSpinBox" name="doubleSpinBox_rot_x">
+        <property name="minimum">
+         <double>-360.000000000000000</double>
+        </property>
+        <property name="maximum">
+         <double>360.000000000000000</double>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="2">
+       <widget class="QDoubleSpinBox" name="doubleSpinBox_rot_y">
+        <property name="minimum">
+         <double>-360.000000000000000</double>
+        </property>
+        <property name="maximum">
+         <double>360.000000000000000</double>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="3">
+       <widget class="QDoubleSpinBox" name="doubleSpinBox_rot_z">
+        <property name="minimum">
+         <double>-360.000000000000000</double>
+        </property>
+        <property name="maximum">
+         <double>360.000000000000000</double>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </widget>
    </item>
-   <item row="1" column="0">
+   <item>
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
