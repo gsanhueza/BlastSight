@@ -232,8 +232,10 @@ class IntegrableViewer(QOpenGLWidget):
         md = np.max(np.diff([min_bound, max_bound], axis=0))
         # A long trigonometric calculation got us this result.
         # The angle is hidden inside the projection matrix (only useful in Perspective)
-        dist = 0.5 * md * (1.0 + self.proj.row(1).y())
-        self.zCameraPos += 1.1 * dist
+        dist = 0.5 * md * (1.0 + self.proj[1, 1])
+        aspect = self.proj[1, 1] / self.proj[0, 0]
+
+        self.zCameraPos += 1.1 * dist / max(min(1.0, aspect), 1e-12)
         self.update()
 
     def show_all(self) -> None:
