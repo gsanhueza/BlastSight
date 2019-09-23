@@ -203,34 +203,40 @@ class IntegrableViewer(QOpenGLWidget):
         self.file_modified_signal.emit()
         self.update()
 
-    def clear(self):
+    def clear(self) -> None:
         for id_ in list(self.drawable_collection.keys()):
             self.delete(id_)
 
     def camera_at(self, id_: int) -> None:
-        drawable = self.get_drawable(id_)
-        self.rotation_center = drawable.element.center
-        self.camera_position = drawable.element.center
-
-        # Put the camera in a position that allow us to see the element
-        max_diff = np.max(np.diff(drawable.element.bounding_box, axis=0))
-        self.zCameraPos += 1.2 * max_diff / math.tan(math.pi / 4)
-
+        self.fit_to_screen(*self.get_drawable(id_).element.bounding_box)
         self.update()
 
-    def plan_view(self):
+    def plan_view(self) -> None:
         self.xCenterRot, self.yCenterRot, self.zCenterRot = [0.0, 0.0, 0.0]
         self.update()
 
-    def north_view(self):
+    def north_view(self) -> None:
         self.xCenterRot, self.yCenterRot, self.zCenterRot = [270.0, 0.0, 270.0]
         self.update()
 
-    def east_view(self):
+    def east_view(self) -> None:
         self.xCenterRot, self.yCenterRot, self.zCenterRot = [270.0, 0.0, 0.0]
         self.update()
 
-    def show_all(self):
+    def fit_to_screen(self, min_bound: np.ndarray, max_bound: np.ndarray) -> None:
+        center = (min_bound + max_bound) / 2
+        self.rotation_center = center
+        self.camera_position = center
+
+        # Put the camera in a position that allow us to see the element
+        md = np.max(np.diff([min_bound, max_bound], axis=0))
+        # A long trigonometric calculation got us this result.
+        # The angle is hidden inside the projection matrix (only useful in Perspective)
+        dist = 0.5 * md * (1.0 + self.proj.row(1).y())
+        self.zCameraPos += 1.1 * dist
+        self.update()
+
+    def show_all(self) -> None:
         if self.last_id == -1:
             return
 
@@ -242,14 +248,7 @@ class IntegrableViewer(QOpenGLWidget):
             min_all = np.min((min_all, min_bound), axis=0)
             max_all = np.max((max_all, max_bound), axis=0)
 
-        center_all = (min_all + max_all) / 2
-        self.rotation_center = center_all
-        self.camera_position = center_all
-
-        # Put the camera in a position that allow us to see the element
-        max_diff = np.max(np.diff([min_all, max_all], axis=0))
-        self.zCameraPos += 1.2 * max_diff / math.tan(math.pi / 4)
-
+        self.fit_to_screen(min_all, max_all)
         self.update()
 
     """
