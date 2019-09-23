@@ -112,12 +112,19 @@ def hsl_to_hsv(h, s, l):
     return h, s, v
 
 
-def values_to_rgb(values: np.ndarray, vmin: float, vmax: float, colormap: str) -> np.ndarray:
-    vals = np.interp(np.clip(values, vmin, vmax), (vmin, vmax), (0.0, 1.0))
+def parse_colormap(colormap: str) -> list:
+    try:
+        initial_str, final_str = colormap.split('-')
+        initial = np.array(hsl_to_hsv(*Color(initial_str).get_hsl()))
+        final = np.array(hsl_to_hsv(*Color(final_str).get_hsl()))
+        return [initial, final]
+    except Exception:
+        return []
 
-    initial_str, final_str = colormap.split('-')
-    initial = np.array(hsl_to_hsv(*Color(initial_str).get_hsl()))
-    final = np.array(hsl_to_hsv(*Color(final_str).get_hsl()))
+
+def values_to_rgb(values: np.ndarray, vmin: float, vmax: float, colormap: str) -> np.ndarray:
+    initial, final = parse_colormap(colormap)
+    vals = np.interp(np.clip(values, vmin, vmax), (vmin, vmax), (0.0, 1.0))
 
     hsv = np.ones((vals.size, 3))
     hsv[:, 0] = initial[0] + (final - initial)[0] * vals

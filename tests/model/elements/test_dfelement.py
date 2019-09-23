@@ -79,6 +79,28 @@ class TestDFElement:
         assert element.color[2][1] == 0.0
         assert element.color[2][2] == 0.0
 
+    def test_wrong_colormap(self):
+        element = DFElement(vertices=[[0, 1, 2], [3, 4, 5], [6, 7, 8]], values=[0, 1, 2])
+        assert element.colormap == 'red-blue'
+
+        element.colormap = 'red-green'
+        assert element.colormap == 'red-green'
+
+        element.colormap = 'pinnk-cyyan'
+        assert element.colormap == 'red-green'
+
+        element.colormap = 'turquoise-magenta'
+        assert element.colormap == 'turquoise-magenta'
+
+        element.colormap = 'blah'
+        assert element.colormap == 'turquoise-magenta'
+
+        element.colormap = 123
+        assert element.colormap == 'turquoise-magenta'
+
+        element.colormap = '12-34'
+        assert element.colormap == 'turquoise-magenta'
+
     def test_vmin_vmax(self):
         element = DFElement(vertices=[[0, 1, 2], [3, 4, 5], [6, 7, 8]], values=[0, 1, 2], vmin=0, vmax=1)
         assert element.vmin == 0

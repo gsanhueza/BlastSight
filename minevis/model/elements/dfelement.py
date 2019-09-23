@@ -189,7 +189,8 @@ class DFElement(Element):
 
     @colormap.setter
     def colormap(self, _colormap: str) -> None:
-        self.properties['colormap'] = _colormap
+        if utils.parse_colormap(_colormap):  # Empty list interpreted as False
+            self.properties['colormap'] = _colormap
 
     @vmin.setter
     def vmin(self, _vmin: float) -> None:
