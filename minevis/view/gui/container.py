@@ -27,7 +27,7 @@ class Container(QWidget):
         self.setWindowTitle('MineVis (Container)')
         self.setMinimumSize(600, 500)
 
-        self.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
+        self.toolbar.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
         self.toolbar.insertAction(self.toolbar.action_plan_view, self.toolbar.action_camera_properties)
         self.toolbar.addAction(self.toolbar.action_quit)
 
