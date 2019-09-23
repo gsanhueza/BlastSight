@@ -32,6 +32,9 @@ class TreeWidget(QTreeWidget):
         self.itemDoubleClicked.connect(self.double_click)
         self.customContextMenuRequested.connect(self.context_menu)
 
+        self.setWindowTitle('Element list')
+        self.headerItem().setText(0, 'Elements')
+
     def fill_from_viewer(self, viewer) -> None:
         self.clear()
 

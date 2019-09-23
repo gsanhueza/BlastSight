@@ -97,6 +97,7 @@ def demo():
                  color=[0.9, 0.2, 0.2],
                  radius=0.2,
                  resolution=150,
+                 loop=False,
                  name='Tubes')
 
     viewer.camera_position = [0.0, 2.0, 12.0]

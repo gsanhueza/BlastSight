@@ -22,7 +22,7 @@ class TestTubeElement:
                     [1.0, 0.0, 0.0]]
 
         for i in range(len(expected)):
-            for j in range(3):
+            for j in range(len(expected[0])):
                 assert element.vertices[i][j] == expected[i][j]
 
         # Color
@@ -50,6 +50,19 @@ class TestTubeElement:
         expected = [1.0, 1.0, 0.0]
         for i in range(len(expected)):
             assert element.color[i] == expected[i]
+
+    def test_loop_tubes(self):
+        element = TubeElement(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], color=[1.0, 1.0, 0.0], loop=True)
+        assert len(element.vertices) == 4
+
+        expected = [[-1.0, 0.0, 0.0],
+                    [1.0, 0.0, 0.0],
+                    [0.0, 1.0, 0.0],
+                    [-1.0, 0.0, 0.0]]
+
+        for i in range(len(expected)):
+            for j in range(len(expected[0])):
+                assert element.vertices[i][j] == expected[i][j]
 
     def test_wrong_tubes(self):
         with pytest.raises(Exception):

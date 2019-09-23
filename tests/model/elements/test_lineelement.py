@@ -34,6 +34,7 @@ class TestLineElement:
         element = LineElement(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], color=[1.0, 1.0, 0.0])
 
         assert len(element.vertices) == 3
+
         for v in element.vertices:
             assert type(v) == np.ndarray
 
