@@ -86,13 +86,6 @@ def triangle_intersection(origin: np.ndarray, ray: np.ndarray, triangle: np.ndar
     return None
 
 
-def slice_mesh_from_rays(mesh, origin: np.ndarray, ray_list: list) -> list:
-    # A plane is created from `origin` and `ray_list`.
-    # We'll try to slice every mesh from `meshes` with our plane.
-    # Returns the slices that we get from the plane and this mesh.
-    return slice_mesh(mesh, origin, np.cross(*ray_list))
-
-
 def slice_mesh(mesh, plane_origin: np.ndarray, plane_normal: np.ndarray) -> list:
     # Taken from https://pypi.org/project/meshcut/
     # Although we might want to have an improved version.

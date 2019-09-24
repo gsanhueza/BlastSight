@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-import math
 import numpy as np
 import traceback
 
@@ -350,7 +349,10 @@ class IntegrableViewer(QOpenGLWidget):
         mesh_elements = [m.element for m in mesh_drawables]
 
         for mesh in mesh_elements:
-            slices = utils.slice_mesh_from_rays(mesh, origin, ray_list)
+            # A plane is created from `origin` and `ray_list`.
+            # We'll try to slice every mesh from `meshes` with our plane.
+            plane_normal = np.cross(*ray_list)
+            slices = utils.slice_mesh(mesh, origin, plane_normal)
 
             for i, vert_slice in enumerate(slices):
                 self.lines(vertices=vert_slice,
@@ -364,19 +366,19 @@ class IntegrableViewer(QOpenGLWidget):
 
     def detect_mesh_intersection(self, x: float, y: float, z: float) -> None:
         ray, origin = self.ray_from_click(x, y, z)
-        intersected_mesh_ids = []
+        intersected_ids = []
 
-        mesh_drawables = [m for m in self.drawable_collection.filter(MeshGL) if m.is_visible]
-        mesh_elements = [m.element for m in mesh_drawables]
+        drawables = [m for m in self.drawable_collection.filter(MeshGL) if m.is_visible]
+        elements = [m.element for m in drawables]
 
-        for mesh in mesh_elements:
+        for mesh in elements:
             point_list = utils.mesh_intersection(origin, ray, mesh)
             # print(f'(Mesh {mesh.id}) Intersects: {point_list}')
             if len(point_list) > 0:
-                intersected_mesh_ids.append(mesh.id)
+                intersected_ids.append(mesh.id)
 
         # Emit signal with clicked mesh
-        self.mesh_clicked_signal.emit(intersected_mesh_ids)
+        self.mesh_clicked_signal.emit(intersected_ids)
 
         # print('-------------------------------')
 
