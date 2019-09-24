@@ -39,8 +39,6 @@ class MainWindow(QMainWindow):
         self.generate_menubar()
         self.connect_actions()
 
-        self.viewer.mesh_clicked_signal.connect(lambda x: print(f'Detected meshes: {x}'))
-
         # self._title = self.windowTitle()
         # self.viewer.fps_signal.connect(lambda x: self.setWindowTitle(f'{self._title} (FPS: {x:.1f})'))
 
@@ -54,6 +52,7 @@ class MainWindow(QMainWindow):
         self.menu_View.addAction(self.toolbar.action_normal_mode)
         self.menu_View.addAction(self.toolbar.action_detection_mode)
         self.menu_View.addAction(self.toolbar.action_slice_mode)
+        self.menu_View.addAction(self.toolbar.action_measurement_mode)
         self.menu_View.addSeparator()
         self.menu_View.addAction(self.toolbar.action_camera_properties)
         self.menu_View.addAction(self.toolbar.action_plan_view)
@@ -75,6 +74,7 @@ class MainWindow(QMainWindow):
         self.toolbar.action_normal_mode.triggered.connect(self.normal_mode_slot)
         self.toolbar.action_detection_mode.triggered.connect(self.detection_mode_slot)
         self.toolbar.action_slice_mode.triggered.connect(self.slice_mode_slot)
+        self.toolbar.action_measurement_mode.triggered.connect(self.measurement_mode_slot)
 
         self.toolbar.action_camera_properties.triggered.connect(self.camera_dialog)
         self.toolbar.action_plan_view.triggered.connect(self.viewer.plan_view)
@@ -88,8 +88,12 @@ class MainWindow(QMainWindow):
         self.toolbar.action_help.triggered.connect(self.help_slot)
         self.toolbar.action_about.triggered.connect(self.about_slot)
 
-        # External widgets
+        # Extra actions
+        self.viewer.mode_updated_signal.connect(self.update_mode_statusbar)
+        self.viewer.mesh_clicked_signal.connect(self.detected_meshes_dialog)
+        self.viewer.slice_distances_signal.connect(self.slice_distances_dialog)
         self.viewer.file_modified_signal.connect(self.fill_tree_widget)
+
         self.treeWidget.headers_triggered_signal.connect(self.properties_dialog)
         self.treeWidget.colors_triggered_signal.connect(self.color_dialog)
         self.treeWidget.export_mesh_signal.connect(self.export_mesh_dialog)
@@ -117,6 +121,24 @@ class MainWindow(QMainWindow):
 
     def update_statusbar(self, _id: int):
         self.statusBar.showMessage(f'Loaded (id: {_id}).')
+
+    def update_mode_statusbar(self, mode: str):
+        self.statusBar.showMessage(mode)
+
+    def slice_distances_dialog(self, distances: list):
+        string_builder = ''
+        for _id, distance in distances:
+            string_builder += f'(id: {_id}) Distance: {distance}'
+            string_builder += '\n'
+
+        QMessageBox.information(self,
+                                'Slice distances',
+                                string_builder)
+
+    def detected_meshes_dialog(self, meshes: list):
+        QMessageBox.information(self,
+                                f'Detected mesh ids',
+                                f'Detected mesh ids: {meshes}')
 
     def properties_dialog(self, _id: int):
         dialog = PropertiesDialog(self.viewer, _id)
@@ -226,6 +248,9 @@ class MainWindow(QMainWindow):
 
     def slice_mode_slot(self) -> None:
         self.viewer.set_slice_mode()
+
+    def measurement_mode_slot(self) -> None:
+        self.viewer.set_measurement_mode()
 
     def help_slot(self) -> None:
         QMessageBox.information(self,

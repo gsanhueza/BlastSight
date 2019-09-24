@@ -6,7 +6,8 @@ from .mode import Mode
 
 class NormalMode(Mode):
     def __init__(self):
-        print("MODE: Normal Mode")
+        super().__init__()
+        self.name = 'Normal Mode'
         self.lastPos = None
 
     def mousePressEvent(self, event, widget):

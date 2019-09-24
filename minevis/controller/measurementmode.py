@@ -4,10 +4,10 @@ from qtpy.QtCore import Qt
 from .mode import Mode
 
 
-class SliceMode(Mode):
+class MeasurementMode(Mode):
     def __init__(self):
         super().__init__()
-        self.name = 'Slice Mode'
+        self.name = 'Measurement Mode'
         self.rays = []
 
     def mousePressEvent(self, event, widget):
@@ -21,5 +21,5 @@ class SliceMode(Mode):
         self.rays.append(ray)
 
         if len(self.rays) == 2:
-            widget.slice_from_rays(self.rays)
+            widget.measure_from_rays(self.rays)
             self.rays.clear()

@@ -94,6 +94,18 @@
     <string>Ctrl+S</string>
    </property>
   </action>
+  <action name="action_measurement_mode">
+   <property name="icon">
+    <iconset>
+     <normaloff>icons/ruler.svg</normaloff>icons/ruler.svg</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Measurement mode</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+M</string>
+   </property>
+  </action>
   <action name="action_load_block_model">
    <property name="icon">
     <iconset>

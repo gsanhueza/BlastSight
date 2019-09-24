@@ -104,7 +104,7 @@ def demo():
     viewer.rotation_center = [0.0, 0.0, 0.0]
 
     for _id, drawable in viewer.drawable_collection.items():
-        print(f'Drawable {_id}: Name = {drawable.element.name}, Type = {type(drawable)}')
+        print(f'ID: {_id}\t Type: {type(drawable)}\t Name: {drawable.element.name}')
 
     viewer.show()
 

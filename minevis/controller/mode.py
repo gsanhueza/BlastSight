@@ -2,6 +2,9 @@
 
 
 class Mode:
+    def __init__(self):
+        self.name = 'Base mode'
+
     def mousePressEvent(self, event, widget):
         pass
 

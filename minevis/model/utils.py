@@ -45,6 +45,14 @@ def aabb_intersection(origin: np.ndarray, ray: np.ndarray, mesh):
     return tmax > max(tmin, 0.0)
 
 
+def plane_intersection(origin: np.ndarray, ray: np.ndarray,
+                       plane_normal: np.ndarray, plane_d: np.ndarray) -> np.ndarray:
+    # Taken from https://courses.cs.washington.edu/courses/cse457/09au/lectures/triangle_intersection.pdf
+    t = (plane_d - np.dot(plane_normal, origin)) / np.dot(plane_normal, ray)
+
+    return origin + t * ray
+
+
 def triangle_intersection(origin: np.ndarray, ray: np.ndarray, triangle: np.ndarray) -> list or None:
     # Idea taken from https://cadxfem.org/inf/Fast%20MinimumStorage%20RayTriangle%20Intersection.pdf
     # Code adapted from https://en.wikipedia.org/wiki/M%C3%B6ller%E2%80%93Trumbore_intersection_algorithm

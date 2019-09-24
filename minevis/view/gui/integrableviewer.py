@@ -33,6 +33,7 @@ from ..fpscounter import FPSCounter
 from ...controller.detectionmode import DetectionMode
 from ...controller.normalmode import NormalMode
 from ...controller.slicemode import SliceMode
+from ...controller.measurementmode import MeasurementMode
 
 from ...model import utils
 from ...model.model import Model
@@ -44,13 +45,18 @@ class IntegrableViewer(QOpenGLWidget):
     file_modified_signal = Signal()
     fps_signal = Signal(float)
     mesh_clicked_signal = Signal(object)
+    slice_distances_signal = Signal(object)
+    mode_updated_signal = Signal(str)
 
     def __init__(self, parent=None):
         QOpenGLWidget.__init__(self, parent)
         self.setAcceptDrops(True)
 
+        # Model
         self._model = Model()
+
         # Controller mode
+        self.mode_updated_signal.connect(lambda m: print(f'MODE: {m}'))
         self.current_mode = None
         self.set_normal_mode()
 
@@ -341,7 +347,7 @@ class IntegrableViewer(QOpenGLWidget):
 
         return ray, origin
 
-    def slice_from_rays(self, ray_list: list):
+    def slice_from_rays(self, ray_list: list) -> None:
         camera_origin = (self.camera * self.world).inverted()[0].column(3).toVector3D()
         origin = np.array([camera_origin.x(), camera_origin.y(), camera_origin.z()])
 
@@ -363,6 +369,30 @@ class IntegrableViewer(QOpenGLWidget):
 
         # We'll auto-exit the slice mode for now
         self.set_normal_mode()
+
+    def measure_from_rays(self, ray_list: list) -> None:
+        camera_origin = (self.camera * self.world).inverted()[0].column(3).toVector3D()
+        origin = np.array([camera_origin.x(), camera_origin.y(), camera_origin.z()])
+
+        drawables = [m for m in self.drawable_collection.filter(LineGL) if m.is_visible]
+        elements = [m.element for m in drawables if m.element.name.startswith('SLICE')]
+
+        distances = []
+
+        for _slice in elements:
+            a = _slice.vertices[1] - _slice.center
+            b = _slice.vertices[0] - _slice.center
+            plane_normal = np.cross(a, b)
+            plane_d = -(np.dot(plane_normal, _slice.center))
+
+            intersections = [utils.plane_intersection(origin, ray_list[0], plane_normal, plane_d),
+                             utils.plane_intersection(origin, ray_list[1], plane_normal, plane_d)]
+
+            distance = np.linalg.norm(np.diff(intersections, axis=0))
+            distances.append([_slice.id, distance])
+            # print(f'Distance: {distance} (id: {_slice.id})')
+
+        self.slice_distances_signal.emit(distances)
 
     def detect_mesh_intersection(self, x: float, y: float, z: float) -> None:
         ray, origin = self.ray_from_click(x, y, z)
@@ -390,9 +420,11 @@ class IntegrableViewer(QOpenGLWidget):
             'normal': NormalMode,
             'detection': DetectionMode,
             'slice': SliceMode,
+            'measurement': MeasurementMode,
         }
 
         self.current_mode = controllers[mode]()
+        self.mode_updated_signal.emit(self.current_mode.name)
         self.update()
 
     def set_normal_mode(self) -> None:
@@ -403,6 +435,9 @@ class IntegrableViewer(QOpenGLWidget):
 
     def set_slice_mode(self) -> None:
         self.set_controller_mode('slice')
+
+    def set_measurement_mode(self) -> None:
+        self.set_controller_mode('measurement')
 
     def take_screenshot(self, save_path=None):
         if not save_path:
