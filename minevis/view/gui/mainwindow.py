@@ -89,9 +89,9 @@ class MainWindow(QMainWindow):
         self.toolbar.action_about.triggered.connect(self.about_slot)
 
         # Extra actions
-        self.viewer.mode_updated_signal.connect(self.update_mode_statusbar)
-        self.viewer.mesh_clicked_signal.connect(self.detected_meshes_dialog)
-        self.viewer.slice_distances_signal.connect(self.slice_distances_dialog)
+        self.viewer.mode_updated_signal.connect(self.statusbar_update_mode)
+        self.viewer.mesh_clicked_signal.connect(self.statusbar_update_detected)
+        self.viewer.slice_distances_signal.connect(self.statusbar_update_distances)
         self.viewer.file_modified_signal.connect(self.fill_tree_widget)
 
         self.treeWidget.headers_triggered_signal.connect(self.properties_dialog)
@@ -119,26 +119,22 @@ class MainWindow(QMainWindow):
     def fill_tree_widget(self) -> None:
         self.treeWidget.fill_from_viewer(self.viewer)
 
-    def update_statusbar(self, _id: int):
+    def statusbar_update_loaded(self, _id: int):
         self.statusBar.showMessage(f'Loaded (id: {_id}).')
 
-    def update_mode_statusbar(self, mode: str):
+    def statusbar_update_mode(self, mode: str):
         self.statusBar.showMessage(mode)
 
-    def slice_distances_dialog(self, distances: list):
+    def statusbar_update_distances(self, distances: list):
         string_builder = ''
         for _id, distance in distances:
             string_builder += f'(id: {_id}) Distance: {distance}'
             string_builder += '\n'
 
-        QMessageBox.information(self,
-                                'Slice distances',
-                                string_builder)
+        self.statusBar.showMessage(string_builder)
 
-    def detected_meshes_dialog(self, meshes: list):
-        QMessageBox.information(self,
-                                f'Detected mesh ids',
-                                f'Detected mesh ids: {meshes}')
+    def statusbar_update_detected(self, meshes: list):
+        self.statusBar.showMessage(f'Detected mesh ids: {meshes}')
 
     def properties_dialog(self, _id: int):
         dialog = PropertiesDialog(self.viewer, _id)
@@ -189,7 +185,7 @@ class MainWindow(QMainWindow):
         self.statusBar.showMessage('Loading...')
 
         worker = LoadWorker(method, path)
-        worker.signals.loaded.connect(self.update_statusbar)
+        worker.signals.loaded.connect(self.statusbar_update_loaded)
 
         self.threadPool.start(worker)
         self.last_dir = QFileInfo(path).absoluteDir().absolutePath()

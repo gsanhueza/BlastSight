@@ -14,6 +14,9 @@ class NormalMode(Mode):
         self.lastPos = QPoint(event.pos())
 
     def mouseMoveEvent(self, event, widget):
+        if self.lastPos is None:
+            return
+
         dx = event.x() - self.lastPos.x()
         dy = event.y() - self.lastPos.y()
 
