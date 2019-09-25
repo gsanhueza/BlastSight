@@ -106,6 +106,39 @@ def slice_mesh(mesh, plane_origin: np.ndarray, plane_normal: np.ndarray) -> list
         return []
 
 
+def slice_blocks(blocks, plane_origin: np.ndarray, plane_normal: np.ndarray) -> list:
+    """
+    Plane Equation: ax + by + cz + d = 0
+    Where [a, b, c] = plane_normal
+    Where [x, y, z] = plane_origin (or any point that we know belongs to the plane)
+
+    With this, we can get `d`:
+    dot([a, b, c], [x, y, z]) + d = 0
+    d = -dot([a, b, c], [x, y, z])
+
+    Since we have multiple vertices, it's easier to multiply plane_normal with
+    each vertex, and manually sum them to get an array of dot products.
+
+    But our points are blocks (they have 3D dimensions in `block_size`).
+    That means we have to tolerate more points, so we create a threshold.
+    Plane Inequation: abs(ax + by + cz + d) < threshold
+
+    Where threshold will be the half of largest diagonal a cube can have to
+    realistically touch a plane.
+    For example: sqrt(x^2 + x^2 + x^2) = x * sqrt(3.0) / 2.0
+
+    I should get a better threshold, but this will have to suffice for now.
+    """
+    block_size = blocks.block_size
+    vertices = blocks.vertices
+    threshold = np.sqrt(np.power(block_size / 2, 2).sum())  # Half a cube's diagonal
+
+    plane_d = -np.dot(plane_normal, plane_origin)
+    mask = np.abs((plane_normal * vertices).sum(axis=1) + plane_d) < threshold
+
+    return vertices[mask]
+
+
 def hsl_to_hsv(h, s, l):
     # Taken and adapted from https://gist.github.com/mathebox/e0805f72e7db3269ec22
     v = (2 * l + s * (1 - abs(2 * l - 1))) / 2
