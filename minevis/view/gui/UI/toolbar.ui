@@ -166,13 +166,13 @@
     <string>Ctrl+1</string>
    </property>
   </action>
-  <action name="action_show_all">
+  <action name="action_fit_to_screen">
    <property name="icon">
     <iconset>
      <normaloff>icons/globe.svg</normaloff>icons/globe.svg</iconset>
    </property>
    <property name="text">
-    <string>&amp;Show all</string>
+    <string>&amp;Fit to screen</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+R</string>
@@ -219,7 +219,7 @@
   <addaction name="action_plan_view"/>
   <addaction name="action_north_view"/>
   <addaction name="action_east_view"/>
-  <addaction name="action_show_all"/>
+  <addaction name="action_fit_to_screen"/>
   <addaction name="separator"/>
   <addaction name="action_take_screenshot"/>
  </widget>

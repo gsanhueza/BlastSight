@@ -100,8 +100,8 @@ def demo():
                  loop=False,
                  name='Tubes')
 
-    viewer.camera_position = [0.0, 2.0, 12.0]
-    viewer.rotation_center = [0.0, 0.0, 0.0]
+    viewer.fit_to_screen()
+    viewer.camera_position += [0.0, 0.0, 5.0]
 
     for _id, drawable in viewer.drawable_collection.items():
         print(f'ID: {_id}\t Type: {type(drawable)}\t Name: {drawable.element.name}')

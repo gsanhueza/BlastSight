@@ -213,7 +213,7 @@ class IntegrableViewer(QOpenGLWidget):
             self.delete(_id)
 
     def camera_at(self, _id: int) -> None:
-        self.fit_to_screen(*self.get_drawable(_id).element.bounding_box)
+        self.fit_boundaries_to_screen(*self.get_drawable(_id).element.bounding_box)
         self.update()
 
     def plan_view(self) -> None:
@@ -228,7 +228,7 @@ class IntegrableViewer(QOpenGLWidget):
         self.xCenterRot, self.yCenterRot, self.zCenterRot = [270.0, 0.0, 0.0]
         self.update()
 
-    def fit_to_screen(self, min_bound: np.ndarray, max_bound: np.ndarray) -> None:
+    def fit_boundaries_to_screen(self, min_bound: np.ndarray, max_bound: np.ndarray) -> None:
         center = (min_bound + max_bound) / 2
         self.rotation_center = center
         self.camera_position = center
@@ -243,19 +243,21 @@ class IntegrableViewer(QOpenGLWidget):
         self.zCameraPos += 1.1 * dist / max(min(1.0, aspect), 1e-12)
         self.update()
 
-    def show_all(self) -> None:
-        if self.last_id == -1:
+    def fit_to_screen(self) -> None:
+        drawables = [d for d in self.drawable_collection.values() if d.is_visible]
+
+        if len(drawables) == 0:
             return
 
         min_all = np.inf * np.ones(3)
         max_all = -np.inf * np.ones(3)
 
-        for drawable in self.drawable_collection.values():
+        for drawable in drawables:
             min_bound, max_bound = drawable.element.bounding_box
             min_all = np.min((min_all, min_bound), axis=0)
             max_all = np.max((max_all, max_bound), axis=0)
 
-        self.fit_to_screen(min_all, max_all)
+        self.fit_boundaries_to_screen(min_all, max_all)
         self.update()
 
     """
