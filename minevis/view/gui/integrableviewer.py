@@ -354,18 +354,37 @@ class IntegrableViewer(QOpenGLWidget):
         mesh_drawables = [m for m in self.drawable_collection.filter(MeshGL) if m.is_visible]
         mesh_elements = [m.element for m in mesh_drawables]
 
+        block_drawables = [m for m in self.drawable_collection.filter(BlockGL) if m.is_visible]
+        block_elements = [m.element for m in block_drawables]
+
+        # A plane is created from `origin` and `ray_list`.
+        # In perspective projection, the origin is the same.
+        # We'll try to slice every mesh from `mesh_elements` with our plane.
+        plane_normal = np.cross(*ray_list)
+        plane_normal /= np.linalg.norm(plane_normal)
+
         for mesh in mesh_elements:
-            # A plane is created from `origin` and `ray_list`.
-            # We'll try to slice every mesh from `meshes` with our plane.
-            plane_normal = np.cross(*ray_list)
             slices = utils.slice_mesh(mesh, origin, plane_normal)
 
             for i, vert_slice in enumerate(slices):
                 self.lines(vertices=vert_slice,
                            color=mesh.color,
-                           name=f'SLICE_{i}_{mesh.name}',
+                           name=f'MESHSLICE_{i}_{mesh.name}',
                            extension=mesh.extension,
                            loop=True)
+
+        for block in block_elements:
+            slices, values = utils.slice_blocks(block, origin, plane_normal)
+            print(origin, plane_normal)
+            self.blocks(vertices=slices,
+                        values=values,
+                        vmin=block.vmin,
+                        vmax=block.vmax,
+                        name=f'BLOCKSLICE_{block.name}',
+                        extension=block.extension,
+                        block_size=block.block_size,
+                        alpha=1.0,
+                        )
 
         # We'll auto-exit the slice mode for now
         self.set_normal_mode()
@@ -375,7 +394,7 @@ class IntegrableViewer(QOpenGLWidget):
         origin = np.array([camera_origin.x(), camera_origin.y(), camera_origin.z()])
 
         drawables = [m for m in self.drawable_collection.filter(LineGL) if m.is_visible]
-        elements = [m.element for m in drawables if m.element.name.startswith('SLICE')]
+        elements = [m.element for m in drawables if m.element.name.startswith('MESHSLICE')]
 
         distances = []
 

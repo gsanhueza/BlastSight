@@ -106,7 +106,7 @@ def slice_mesh(mesh, plane_origin: np.ndarray, plane_normal: np.ndarray) -> list
         return []
 
 
-def slice_blocks(blocks, plane_origin: np.ndarray, plane_normal: np.ndarray) -> list:
+def slice_blocks(blocks, plane_origin: np.ndarray, plane_normal: np.ndarray) -> tuple:
     """
     Plane Equation: ax + by + cz + d = 0
     Where [a, b, c] = plane_normal
@@ -123,20 +123,21 @@ def slice_blocks(blocks, plane_origin: np.ndarray, plane_normal: np.ndarray) -> 
     That means we have to tolerate more points, so we create a threshold.
     Plane Inequation: abs(ax + by + cz + d) < threshold
 
-    Where threshold will be the half of largest diagonal a cube can have to
-    realistically touch a plane.
-    For example: sqrt(x^2 + x^2 + x^2) = x * sqrt(3.0) / 2.0
+    Where threshold will be half of the largest diagonal a cube can have to
+    realistically touch our plane.
+    For example: sqrt((x/2)^2 + (x/2)^2 + (x/2)^2)) = x * sqrt(3.0) / 2.0
 
     I should get a better threshold, but this will have to suffice for now.
     """
     block_size = blocks.block_size
     vertices = blocks.vertices
+    values = blocks.values
     threshold = np.sqrt(np.power(block_size / 2, 2).sum())  # Half a cube's diagonal
 
     plane_d = -np.dot(plane_normal, plane_origin)
     mask = np.abs((plane_normal * vertices).sum(axis=1) + plane_d) < threshold
 
-    return vertices[mask]
+    return vertices[mask], values[mask]
 
 
 def hsl_to_hsv(h, s, l):
