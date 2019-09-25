@@ -108,7 +108,8 @@ def slice_mesh(mesh, plane_origin: np.ndarray, plane_normal: np.ndarray) -> list
 
 def slice_blocks(blocks, plane_origin: np.ndarray, plane_normal: np.ndarray) -> tuple:
     """
-    Plane Equation: ax + by + cz + d = 0
+    *** Plane Equation: ax + by + cz + d = 0 ***
+
     Where [a, b, c] = plane_normal
     Where [x, y, z] = plane_origin (or any point that we know belongs to the plane)
 
@@ -121,21 +122,33 @@ def slice_blocks(blocks, plane_origin: np.ndarray, plane_normal: np.ndarray) -> 
 
     But our points are blocks (they have 3D dimensions in `block_size`).
     That means we have to tolerate more points, so we create a threshold.
-    Plane Inequation: abs(ax + by + cz + d) < threshold
 
-    Where threshold will be half of the largest diagonal a cube can have to
-    realistically touch our plane.
-    For example: sqrt((x/2)^2 + (x/2)^2 + (x/2)^2)) = x * sqrt(3.0) / 2.0
+    *** Plane Inequation: abs(ax + by + cz + d) < threshold ***
 
-    I should get a better threshold, but this will have to suffice for now.
+    We need to know how inclined is the plane normal to know our threshold.
+    Let's say our block_size is [10, 10, 10] (half_block is [5, 5, 5]).
+
+    A plane_normal = [0.0, 0.0, 1.0] means our threshold is [-5, +5] * np.sqrt(1.0).
+    A plane_normal = [0.0, 1.0, 1.0] means our threshold is [-5, +5] * np.sqrt(2.0).
+    A plane_normal = [1.0, 1.0, 1.0] means our threshold is [-5, +5] * np.sqrt(3.0).
+
+    Do you see where are we headed?
+    Since a cube is symmetrical by axes, we don't really care about the plane normal's signs.
+    Then, we'll calculate np.dot(abs(plane_normal), half_block) to know the maximum
+    distance between the center of the cube and the plane we'll collide (or not).
+
+    The projection idea comes from
+    https://gdbooks.gitbooks.io/3dcollisions/content/Chapter2/static_aabb_plane.html
     """
-    block_size = blocks.block_size
+    plane_normal /= np.linalg.norm(plane_normal)
+    half_block = blocks.block_size / 2
     vertices = blocks.vertices
     values = blocks.values
-    threshold = np.sqrt(np.power(block_size / 2, 2).sum())  # Half a cube's diagonal
 
     plane_d = -np.dot(plane_normal, plane_origin)
-    mask = np.abs((plane_normal * vertices).sum(axis=1) + plane_d) < threshold
+    threshold = np.dot(np.abs(plane_normal), half_block)
+
+    mask = np.abs((plane_normal * vertices).sum(axis=1) + plane_d) <= threshold
 
     return vertices[mask], values[mask]
 
