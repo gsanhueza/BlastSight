@@ -72,8 +72,8 @@ class MainWindow(QMainWindow):
         self.menu_File.addAction(self.toolbar.action_quit)
 
         self.menu_View.addAction(self.toolbar.action_normal_mode)
-        self.menu_View.addAction(self.toolbar.action_detection_mode)
         self.menu_View.addAction(self.toolbar.action_slice_mode)
+        self.menu_View.addAction(self.toolbar.action_detection_mode)
         self.menu_View.addAction(self.toolbar.action_measurement_mode)
         self.menu_View.addSeparator()
         self.menu_View.addAction(self.toolbar.action_camera_properties)

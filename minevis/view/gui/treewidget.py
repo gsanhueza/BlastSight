@@ -44,7 +44,7 @@ class TreeWidget(QTreeWidget):
         for drawable in viewer.drawable_collection.values():
             item = TreeWidgetItem(self, viewer, drawable.id)
             self.addTopLevelItem(item)
-        self.select_item(self.topLevelItemCount(), 0)
+        self.select_item(self.topLevelItemCount() - 1, 0)
 
     def context_menu(self, event) -> None:
         """
@@ -94,9 +94,9 @@ class TreeWidget(QTreeWidget):
         action_export_points.setIcon(QIcon(QPixmap(f'{icons_path}/export.svg')))
 
         # Action commands
-        action_show.triggered.connect(item.show)
-        action_hide.triggered.connect(item.hide)
-        action_delete.triggered.connect(item.delete)
+        action_show.triggered.connect(self.show_items)
+        action_hide.triggered.connect(self.hide_items)
+        action_delete.triggered.connect(self.delete_items)
 
         action_highlight.triggered.connect(item.toggle_highlighting)
         action_wireframe.triggered.connect(item.toggle_wireframe)
@@ -108,6 +108,16 @@ class TreeWidget(QTreeWidget):
         action_export_mesh.triggered.connect(lambda: self.export_mesh_signal.emit(item.drawable.id))
         action_export_blocks.triggered.connect(lambda: self.export_blocks_signal.emit(item.drawable.id))
         action_export_points.triggered.connect(lambda: self.export_points_signal.emit(item.drawable.id))
+
+        # If multiple elements are selected, we'll only show a basic menu
+        if len(self.selectedItems()) > 1:
+            menu.addAction(action_show)
+            menu.addAction(action_hide)
+            menu.addSeparator()
+            menu.addAction(action_delete)
+            menu.exec_(global_pos)
+
+            return
 
         # Add actions depending on item type
         menu.addAction(action_show)
@@ -162,7 +172,7 @@ class TreeWidget(QTreeWidget):
         rows = [self.indexOfTopLevelItem(x) for x in self.selectedItems()]
         for item in self.selectedItems():
             item.delete()
-        self.select_item(min(rows, default=0), 0)
+            self.select_item(min(rows, default=0), 0)
 
     def keyPressEvent(self, event):
         if self.topLevelItemCount() == 0:
