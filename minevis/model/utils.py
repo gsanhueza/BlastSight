@@ -128,14 +128,13 @@ def slice_blocks(blocks, plane_origin: np.ndarray, plane_normal: np.ndarray) -> 
     We need to know how inclined is the plane normal to know our threshold.
     Let's say our block_size is [10, 10, 10] (half_block is [5, 5, 5]).
 
-    A plane_normal = [0.0, 0.0, 1.0] means our threshold is [-5, +5] * np.sqrt(1.0).
-    A plane_normal = [0.0, 1.0, 1.0] means our threshold is [-5, +5] * np.sqrt(2.0).
-    A plane_normal = [1.0, 1.0, 1.0] means our threshold is [-5, +5] * np.sqrt(3.0).
+    If the plane touches one face of the cube, our threshold is [-5, +5] * np.sqrt(1.0).
+    If the plane touches one edge of the cube, our threshold is [-5, +5] * np.sqrt(2.0).
+    If the plane touches one vertex of the cube, our threshold is [-5, +5] * np.sqrt(3.0).
 
-    Do you see where are we headed?
     Since a cube is symmetrical by axes, we don't really care about the plane normal's signs.
     Then, we'll calculate np.dot(abs(plane_normal), half_block) to know the maximum
-    distance between the center of the cube and the plane we'll collide (or not).
+    tolerable distance between the cube center and its projection on the plane.
 
     The projection idea comes from
     https://gdbooks.gitbooks.io/3dcollisions/content/Chapter2/static_aabb_plane.html
