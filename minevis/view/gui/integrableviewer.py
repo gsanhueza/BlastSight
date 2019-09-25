@@ -311,11 +311,9 @@ class IntegrableViewer(QOpenGLWidget):
         self.proj.perspective(45.0, (w / h), 1.0, 10000.0)
 
         # Orthographic
-        # off_center = max(self.zCameraPos - self.zCenterPos, 0.0)
-        # factor = 1.0 / 1000.0
-        # w = w * off_center * factor
-        # h = h * off_center * factor
-        # self.proj.ortho(-w, w, -h, h, 1.0, 10000.0)
+        # z = max(self.zCameraPos - self.zCenterPos, 0.0)
+        # aspect = w / h
+        # self.proj.ortho(-z, z, -z / aspect, z / aspect, 1.0, 10000.0)
 
     """
     Utilities
@@ -352,10 +350,10 @@ class IntegrableViewer(QOpenGLWidget):
         origin = np.array([camera_origin.x(), camera_origin.y(), camera_origin.z()])
 
         mesh_drawables = [m for m in self.drawable_collection.filter(MeshGL) if m.is_visible]
-        mesh_elements = [m.element for m in mesh_drawables]
+        mesh_elements = [m.element for m in mesh_drawables if 'SLICE' not in m.element.name]
 
         block_drawables = [m for m in self.drawable_collection.filter(BlockGL) if m.is_visible]
-        block_elements = [m.element for m in block_drawables]
+        block_elements = [m.element for m in block_drawables if 'SLICE' not in m.element.name]
 
         # A plane is created from `origin` and `ray_list`.
         # In perspective projection, the origin is the same.
@@ -375,7 +373,6 @@ class IntegrableViewer(QOpenGLWidget):
 
         for block in block_elements:
             slices, values = utils.slice_blocks(block, origin, plane_normal)
-            print(origin, plane_normal)
             self.blocks(vertices=slices,
                         values=values,
                         vmin=block.vmin,
