@@ -4,6 +4,7 @@ import pathlib
 
 from qtpy import uic
 from qtpy.QtCore import Qt
+from qtpy.QtCore import QDirIterator
 from qtpy.QtCore import QFileInfo
 from qtpy.QtCore import QSettings
 from qtpy.QtCore import QThreadPool
@@ -24,7 +25,24 @@ class MainWindow(QMainWindow):
         QMainWindow.__init__(self, parent)
         uic.loadUi(f'{pathlib.Path(__file__).parent}/UI/mainwindow.ui', self)
 
-        self._settings = QSettings('AMTC', application='MineVis', parent=self)
+        self.settings = QSettings('AMTC', application='MineVis', parent=self)
+        self.filters_dict = {
+            'mesh': 'Mesh Files (*.dxf *.off *.h5m);;'
+                    'DXF Files (*.dxf);;'
+                    'OFF Files (*.off);;'
+                    'H5M Files (*.h5m);;'
+                    'All Files (*.*)',
+            'block': 'Data Files (*.csv *.h5p *.out);;'
+                     'CSV Files (*.csv);;'
+                     'H5P Files (*.h5p);;'
+                     'GSLib Files (*.out);;'
+                     'All Files (*.*)',
+            'point': 'Data Files (*.csv *.h5p *.out);;'
+                     'CSV Files (*.csv);;'
+                     'H5P Files (*.h5p);;'
+                     'GSLib Files (*.out);;'
+                     'All Files (*.*)',
+        }
 
         self.setFocusPolicy(Qt.StrongFocus)
         self.setAcceptDrops(True)
@@ -44,8 +62,12 @@ class MainWindow(QMainWindow):
 
     def generate_menubar(self):
         self.menu_File.addAction(self.toolbar.action_load_mesh)
-        self.menu_File.addAction(self.toolbar.action_load_block_model)
+        self.menu_File.addAction(self.toolbar.action_load_blocks)
         self.menu_File.addAction(self.toolbar.action_load_points)
+        self.menu_File.addSeparator()
+        self.menu_File.addAction(self.toolbar.action_load_mesh_folder)
+        self.menu_File.addAction(self.toolbar.action_load_blocks_folder)
+        self.menu_File.addAction(self.toolbar.action_load_points_folder)
         self.menu_File.addSeparator()
         self.menu_File.addAction(self.toolbar.action_quit)
 
@@ -67,8 +89,12 @@ class MainWindow(QMainWindow):
 
     def connect_actions(self):
         self.toolbar.action_load_mesh.triggered.connect(self.load_mesh_slot)
-        self.toolbar.action_load_block_model.triggered.connect(self.load_block_model_slot)
+        self.toolbar.action_load_blocks.triggered.connect(self.load_blocks_slot)
         self.toolbar.action_load_points.triggered.connect(self.load_points_slot)
+
+        self.toolbar.action_load_mesh_folder.triggered.connect(self.load_mesh_folder_slot)
+        self.toolbar.action_load_blocks_folder.triggered.connect(self.load_blocks_folder_slot)
+        self.toolbar.action_load_points_folder.triggered.connect(self.load_points_folder_slot)
         self.toolbar.action_quit.triggered.connect(self.close)
 
         self.toolbar.action_normal_mode.triggered.connect(self.normal_mode_slot)
@@ -110,11 +136,11 @@ class MainWindow(QMainWindow):
 
     @property
     def last_dir(self) -> str:
-        return self._settings.value('last_directory', '.')
+        return self.settings.value('last_directory', '.')
 
     @last_dir.setter
-    def last_dir(self, last_dir: str) -> None:
-        self._settings.setValue('last_directory', last_dir)
+    def last_dir(self, _last_dir: str) -> None:
+        self.settings.setValue('last_directory', _last_dir)
 
     def fill_tree_widget(self) -> None:
         self.treeWidget.fill_from_viewer(self.viewer)
@@ -181,26 +207,25 @@ class MainWindow(QMainWindow):
                             filters='MineVis points (*.h5p);;',
                             method=self.viewer.export_points)
 
-    def _load_element(self, method: classmethod, path: str) -> None:
+    def _load_element(self, method: classmethod, path: str, dir_path: str = '') -> None:
         self.statusBar.showMessage('Loading...')
 
         worker = LoadWorker(method, path)
         worker.signals.loaded.connect(self.statusbar_update_loaded)
 
         self.threadPool.start(worker)
-        self.last_dir = QFileInfo(path).absoluteDir().absolutePath()
 
     def load_mesh(self, path: str) -> None:
         self._load_element(method=self.viewer.mesh_by_path, path=path)
 
-    def load_block_model(self, path: str) -> None:
+    def load_blocks(self, path: str) -> None:
         self._load_element(method=self.viewer.blocks_by_path, path=path)
 
     def load_points(self, path: str) -> None:
         self._load_element(method=self.viewer.points_by_path, path=path)
 
     """
-    Slots. Unless explicitly otherwise, slots are connected via Qt Designer
+    Slots for loading files
     """
     def _load_element_slot(self, method: classmethod, filters: str) -> None:
         (paths, selected_filter) = QFileDialog.getOpenFileNames(
@@ -208,34 +233,56 @@ class MainWindow(QMainWindow):
             directory=self.last_dir,
             filter=filters)
 
-        for path in paths:
-            if path != '':
-                self._load_element(method, path)
+        path_list = [p for p in paths if p != '']
+        for path in sorted(path_list):
+            self._load_element(method, path)
+            self.last_dir = QFileInfo(path).absoluteDir().absolutePath()
+
+    def _load_folder_slot(self, method: classmethod) -> None:
+        dir_path = QFileDialog.getExistingDirectory(
+            parent=self,
+            directory=self.last_dir,
+            options=QFileDialog.ShowDirsOnly)
+
+        if dir_path == '':
+            return
+
+        it = QDirIterator(dir_path, QDirIterator.Subdirectories)
+        path_list = []
+
+        while it.hasNext():
+            next_path = it.next()
+            if QFileInfo(next_path).isFile():
+                path_list.append(next_path)
+
+        for path in sorted(path_list):
+            self._load_element(method, path)
+            self.last_dir = dir_path
 
     def load_mesh_slot(self) -> None:
         self._load_element_slot(method=self.load_mesh,
-                                filters='Mesh Files (*.dxf *.off *.h5m);;'
-                                        'DXF Files (*.dxf);;'
-                                        'OFF Files (*.off);;'
-                                        'H5M Files (*.h5m);;'
-                                        'All Files (*.*)')
+                                filters=self.filters_dict.get('mesh'))
 
-    def load_block_model_slot(self) -> None:
-        self._load_element_slot(method=self.load_block_model,
-                                filters='Data Files (*.csv *.h5p *.out);;'
-                                        'CSV Files (*.csv);;'
-                                        'H5P Files (*.h5p);;'
-                                        'GSLib Files (*.out);;'
-                                        'All Files (*.*)')
+    def load_blocks_slot(self) -> None:
+        self._load_element_slot(method=self.load_blocks,
+                                filters=self.filters_dict.get('block'))
 
     def load_points_slot(self) -> None:
         self._load_element_slot(method=self.load_points,
-                                filters='Data Files (*.csv *.h5p *.out);;'
-                                        'CSV Files (*.csv);;'
-                                        'H5P Files (*.h5p);;'
-                                        'GSLib Files (*.out);;'
-                                        'All Files (*.*)')
+                                filters=self.filters_dict.get('point'))
 
+    def load_mesh_folder_slot(self) -> None:
+        self._load_folder_slot(method=self.load_mesh)
+
+    def load_blocks_folder_slot(self) -> None:
+        self._load_folder_slot(method=self.load_blocks)
+
+    def load_points_folder_slot(self) -> None:
+        self._load_folder_slot(method=self.load_points)
+
+    """
+    Slots for modifying controller modes
+    """
     def normal_mode_slot(self) -> None:
         self.viewer.set_normal_mode()
 
@@ -248,6 +295,9 @@ class MainWindow(QMainWindow):
     def measurement_mode_slot(self) -> None:
         self.viewer.set_measurement_mode()
 
+    """
+    Slots for showing help dialogs
+    """
     def help_slot(self) -> None:
         QMessageBox.information(self,
                                 'MineVis - Help',

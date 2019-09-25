@@ -497,8 +497,11 @@ class IntegrableViewer(QOpenGLWidget):
     def _load_as_dir(self, path):
         it = QDirIterator(path, QDirIterator.Subdirectories)
         path_list = []
+
         while it.hasNext():
-            path_list.append(it.next())
+            next_path = it.next()
+            if QFileInfo(next_path).isFile():
+                path_list.append(next_path)
 
         for path in sorted(path_list):
             self.mesh_by_path(path)

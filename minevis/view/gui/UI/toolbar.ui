@@ -22,6 +22,42 @@
     <string>Ctrl+A</string>
    </property>
   </action>
+  <action name="action_load_mesh_folder">
+   <property name="icon">
+    <iconset>
+     <normaloff>icons/radar_plot.svg</normaloff>icons/radar_plot.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Load mesh folder</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+A</string>
+   </property>
+  </action>
+  <action name="action_load_blocks_folder">
+   <property name="icon">
+    <iconset>
+     <normaloff>icons/data_sheet.svg</normaloff>icons/data_sheet.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Load blocks folder</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+E</string>
+   </property>
+  </action>
+  <action name="action_load_points_folder">
+   <property name="icon">
+    <iconset>
+     <normaloff>icons/scatter_plot.svg</normaloff>icons/scatter_plot.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Load points folder</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+P</string>
+   </property>
+  </action>
   <action name="action_quit">
    <property name="icon">
     <iconset>
@@ -106,13 +142,13 @@
     <string>Ctrl+M</string>
    </property>
   </action>
-  <action name="action_load_block_model">
+  <action name="action_load_blocks">
    <property name="icon">
     <iconset>
      <normaloff>icons/data_sheet.svg</normaloff>icons/data_sheet.svg</iconset>
    </property>
    <property name="text">
-    <string>Load &amp;block model</string>
+    <string>Load &amp;blocks</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+E</string>
