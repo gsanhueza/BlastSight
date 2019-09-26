@@ -112,7 +112,7 @@
      <normaloff>icons/rotate_camera.svg</normaloff>icons/rotate_camera.svg</iconset>
    </property>
    <property name="text">
-    <string>&amp;Normal mode</string>
+    <string>Return to &amp;normal</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+N</string>
@@ -124,7 +124,7 @@
      <normaloff>icons/flash_on.svg</normaloff>icons/flash_on.svg</iconset>
    </property>
    <property name="text">
-    <string>&amp;Slice mode</string>
+    <string>&amp;Slice meshes</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+S</string>
@@ -136,7 +136,7 @@
      <normaloff>icons/ruler.svg</normaloff>icons/ruler.svg</iconset>
    </property>
    <property name="text">
-    <string>&amp;Measurement mode</string>
+    <string>&amp;Measure slices</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+M</string>
@@ -160,7 +160,7 @@
      <normaloff>icons/cursor.svg</normaloff>icons/cursor.svg</iconset>
    </property>
    <property name="text">
-    <string>&amp;Detection mode</string>
+    <string>&amp;Detect meshes</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+D</string>

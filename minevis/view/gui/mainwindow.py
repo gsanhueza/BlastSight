@@ -25,7 +25,7 @@ class MainWindow(QMainWindow):
         QMainWindow.__init__(self, parent)
         uic.loadUi(f'{pathlib.Path(__file__).parent}/UI/mainwindow.ui', self)
 
-        self.settings = QSettings('AMTC', application='MineVis', parent=self)
+        self.settings = QSettings('MineVis', application='minevis', parent=self)
         self.filters_dict = {
             'mesh': 'Mesh Files (*.dxf *.off *.h5m);;'
                     'DXF Files (*.dxf);;'
@@ -71,11 +71,12 @@ class MainWindow(QMainWindow):
         self.menu_File.addSeparator()
         self.menu_File.addAction(self.toolbar.action_quit)
 
-        self.menu_View.addAction(self.toolbar.action_normal_mode)
-        self.menu_View.addAction(self.toolbar.action_slice_mode)
-        self.menu_View.addAction(self.toolbar.action_detection_mode)
-        self.menu_View.addAction(self.toolbar.action_measurement_mode)
-        self.menu_View.addSeparator()
+        self.menu_Tools.addAction(self.toolbar.action_slice_mode)
+        self.menu_Tools.addAction(self.toolbar.action_detection_mode)
+        self.menu_Tools.addAction(self.toolbar.action_measurement_mode)
+        self.menu_Tools.addSeparator()
+        self.menu_Tools.addAction(self.toolbar.action_normal_mode)
+
         self.menu_View.addAction(self.toolbar.action_camera_properties)
         self.menu_View.addAction(self.toolbar.action_plan_view)
         self.menu_View.addAction(self.toolbar.action_north_view)
