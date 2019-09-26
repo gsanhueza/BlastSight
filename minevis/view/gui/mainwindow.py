@@ -88,31 +88,32 @@ class MainWindow(QMainWindow):
         self.menu_Help.addAction(self.toolbar.action_about)
 
     def connect_actions(self):
-        self.toolbar.action_load_mesh.triggered.connect(self.load_mesh_slot)
-        self.toolbar.action_load_blocks.triggered.connect(self.load_blocks_slot)
-        self.toolbar.action_load_points.triggered.connect(self.load_points_slot)
+        # Main actions
+        self.toolbar.action_load_mesh.triggered.connect(self.dialog_load_mesh)
+        self.toolbar.action_load_blocks.triggered.connect(self.dialog_load_blocks)
+        self.toolbar.action_load_points.triggered.connect(self.dialog_load_points)
 
-        self.toolbar.action_load_mesh_folder.triggered.connect(self.load_mesh_folder_slot)
-        self.toolbar.action_load_blocks_folder.triggered.connect(self.load_blocks_folder_slot)
-        self.toolbar.action_load_points_folder.triggered.connect(self.load_points_folder_slot)
+        self.toolbar.action_load_mesh_folder.triggered.connect(self.dialog_load_mesh_folder)
+        self.toolbar.action_load_blocks_folder.triggered.connect(self.dialog_load_blocks_folder)
+        self.toolbar.action_load_points_folder.triggered.connect(self.dialog_load_points_folder)
         self.toolbar.action_quit.triggered.connect(self.close)
 
-        self.toolbar.action_normal_mode.triggered.connect(self.normal_mode_slot)
-        self.toolbar.action_detection_mode.triggered.connect(self.detection_mode_slot)
-        self.toolbar.action_slice_mode.triggered.connect(self.slice_mode_slot)
-        self.toolbar.action_measurement_mode.triggered.connect(self.measurement_mode_slot)
+        self.toolbar.action_normal_mode.triggered.connect(self.slot_normal_mode)
+        self.toolbar.action_detection_mode.triggered.connect(self.slot_detection_mode)
+        self.toolbar.action_slice_mode.triggered.connect(self.slot_slice_mode)
+        self.toolbar.action_measurement_mode.triggered.connect(self.slot_measurement_mode)
 
-        self.toolbar.action_camera_properties.triggered.connect(self.camera_dialog)
+        self.toolbar.action_camera_properties.triggered.connect(self.dialog_camera)
         self.toolbar.action_plan_view.triggered.connect(self.viewer.plan_view)
         self.toolbar.action_north_view.triggered.connect(self.viewer.north_view)
         self.toolbar.action_east_view.triggered.connect(self.viewer.east_view)
         self.toolbar.action_fit_to_screen.triggered.connect(self.viewer.fit_to_screen)
 
-        self.toolbar.action_take_screenshot.triggered.connect(self.screenshot_dialog)
+        self.toolbar.action_take_screenshot.triggered.connect(self.dialog_screenshot)
         self.toolbar.action_show_tree.triggered.connect(self.dockWidget.show)
 
-        self.toolbar.action_help.triggered.connect(self.help_slot)
-        self.toolbar.action_about.triggered.connect(self.about_slot)
+        self.toolbar.action_help.triggered.connect(self.slot_help)
+        self.toolbar.action_about.triggered.connect(self.slot_about)
 
         # Extra actions
         self.viewer.mode_updated_signal.connect(self.statusbar_update_mode)
@@ -120,11 +121,11 @@ class MainWindow(QMainWindow):
         self.viewer.slice_distances_signal.connect(self.statusbar_update_distances)
         self.viewer.file_modified_signal.connect(self.fill_tree_widget)
 
-        self.treeWidget.headers_triggered_signal.connect(self.properties_dialog)
-        self.treeWidget.colors_triggered_signal.connect(self.color_dialog)
-        self.treeWidget.export_mesh_signal.connect(self.export_mesh_dialog)
-        self.treeWidget.export_blocks_signal.connect(self.export_blocks_dialog)
-        self.treeWidget.export_points_signal.connect(self.export_points_dialog)
+        self.treeWidget.headers_triggered_signal.connect(self.dialog_properties)
+        self.treeWidget.colors_triggered_signal.connect(self.dialog_color)
+        self.treeWidget.export_mesh_signal.connect(self.dialog_export_mesh)
+        self.treeWidget.export_blocks_signal.connect(self.dialog_export_blocks)
+        self.treeWidget.export_points_signal.connect(self.dialog_export_points)
 
     @property
     def viewer(self):
@@ -145,6 +146,9 @@ class MainWindow(QMainWindow):
     def fill_tree_widget(self) -> None:
         self.treeWidget.fill_from_viewer(self.viewer)
 
+    """
+    Status bar updates
+    """
     def statusbar_update_loaded(self, _id: int):
         self.statusBar.showMessage(f'Loaded (id: {_id}).')
 
@@ -162,19 +166,22 @@ class MainWindow(QMainWindow):
     def statusbar_update_detected(self, meshes: list):
         self.statusBar.showMessage(f'Detected mesh ids: {meshes}')
 
-    def properties_dialog(self, _id: int):
+    """
+    Utilities dialogs
+    """
+    def dialog_properties(self, _id: int):
         dialog = PropertiesDialog(self.viewer, _id)
         dialog.show()
 
-    def color_dialog(self, _id: int):
+    def dialog_color(self, _id: int):
         dialog = ColorDialog(self.viewer, _id)
         dialog.show()
 
-    def camera_dialog(self):
+    def dialog_camera(self):
         dialog = CameraDialog(self.viewer)
         dialog.show()
 
-    def screenshot_dialog(self):
+    def dialog_screenshot(self):
         (path, selected_filter) = QFileDialog.getSaveFileName(
             parent=self,
             directory=f'MineVis Screenshot ({datetime.now().strftime("%Y%m%d-%H%M%S")})',
@@ -183,31 +190,10 @@ class MainWindow(QMainWindow):
         if path != '':
             self.viewer.take_screenshot(path)
 
-    def _export_dialog(self, _id: int, filters: str, method: classmethod) -> None:
-        (path, selected_filter) = QFileDialog.getSaveFileName(
-            parent=self,
-            directory=self.viewer.get_drawable(_id).element.name,
-            filter=filters)
-
-        if path != '':
-            method(path, _id)
-
-    def export_mesh_dialog(self, _id: int) -> None:
-        self._export_dialog(_id=_id,
-                            filters='MineVis mesh (*.h5m);;',
-                            method=self.viewer.export_mesh)
-
-    def export_blocks_dialog(self, _id: int) -> None:
-        self._export_dialog(_id=_id,
-                            filters='MineVis blocks (*.h5p);;',
-                            method=self.viewer.export_blocks)
-
-    def export_points_dialog(self, _id: int) -> None:
-        self._export_dialog(_id=_id,
-                            filters='MineVis points (*.h5p);;',
-                            method=self.viewer.export_points)
-
-    def _load_element(self, method: classmethod, path: str, dir_path: str = '') -> None:
+    """
+    Common functionality for loading/exporting
+    """
+    def _load_element(self, method: classmethod, path: str) -> None:
         self.statusBar.showMessage('Loading...')
 
         worker = LoadWorker(method, path)
@@ -215,19 +201,16 @@ class MainWindow(QMainWindow):
 
         self.threadPool.start(worker)
 
-    def load_mesh(self, path: str) -> None:
+    def _load_mesh(self, path: str) -> None:
         self._load_element(method=self.viewer.mesh_by_path, path=path)
 
-    def load_blocks(self, path: str) -> None:
+    def _load_blocks(self, path: str) -> None:
         self._load_element(method=self.viewer.blocks_by_path, path=path)
 
-    def load_points(self, path: str) -> None:
+    def _load_points(self, path: str) -> None:
         self._load_element(method=self.viewer.points_by_path, path=path)
 
-    """
-    Slots for loading files
-    """
-    def _load_element_slot(self, method: classmethod, filters: str) -> None:
+    def _dialog_load_element(self, method: classmethod, filters: str) -> None:
         (paths, selected_filter) = QFileDialog.getOpenFileNames(
             parent=self,
             directory=self.last_dir,
@@ -238,7 +221,7 @@ class MainWindow(QMainWindow):
             self._load_element(method, path)
             self.last_dir = QFileInfo(path).absoluteDir().absolutePath()
 
-    def _load_folder_slot(self, method: classmethod) -> None:
+    def _dialog_load_folder(self, method: classmethod) -> None:
         dir_path = QFileDialog.getExistingDirectory(
             parent=self,
             directory=self.last_dir,
@@ -259,51 +242,81 @@ class MainWindow(QMainWindow):
             self._load_element(method, path)
             self.last_dir = dir_path
 
-    def load_mesh_slot(self) -> None:
-        self._load_element_slot(method=self.load_mesh,
-                                filters=self.filters_dict.get('mesh'))
+    def _dialog_export_element(self, _id: int, filters: str, method: classmethod) -> None:
+        (path, selected_filter) = QFileDialog.getSaveFileName(
+            parent=self,
+            directory=self.viewer.get_drawable(_id).element.name,
+            filter=filters)
 
-    def load_blocks_slot(self) -> None:
-        self._load_element_slot(method=self.load_blocks,
-                                filters=self.filters_dict.get('block'))
+        if path != '':
+            method(path, _id)
 
-    def load_points_slot(self) -> None:
-        self._load_element_slot(method=self.load_points,
-                                filters=self.filters_dict.get('point'))
+    """
+    Slots for loading files
+    """
+    def dialog_load_mesh(self) -> None:
+        self._dialog_load_element(method=self._load_mesh,
+                                  filters=self.filters_dict.get('mesh'))
 
-    def load_mesh_folder_slot(self) -> None:
-        self._load_folder_slot(method=self.load_mesh)
+    def dialog_load_blocks(self) -> None:
+        self._dialog_load_element(method=self._load_blocks,
+                                  filters=self.filters_dict.get('block'))
 
-    def load_blocks_folder_slot(self) -> None:
-        self._load_folder_slot(method=self.load_blocks)
+    def dialog_load_points(self) -> None:
+        self._dialog_load_element(method=self._load_points,
+                                  filters=self.filters_dict.get('point'))
 
-    def load_points_folder_slot(self) -> None:
-        self._load_folder_slot(method=self.load_points)
+    def dialog_load_mesh_folder(self) -> None:
+        self._dialog_load_folder(method=self._load_mesh)
+
+    def dialog_load_blocks_folder(self) -> None:
+        self._dialog_load_folder(method=self._load_blocks)
+
+    def dialog_load_points_folder(self) -> None:
+        self._dialog_load_folder(method=self._load_points)
+
+    """
+    Slots for exporting files
+    """
+    def dialog_export_mesh(self, _id: int) -> None:
+        self._dialog_export_element(_id=_id,
+                                    filters='MineVis mesh (*.h5m);;',
+                                    method=self.viewer.export_mesh)
+
+    def dialog_export_blocks(self, _id: int) -> None:
+        self._dialog_export_element(_id=_id,
+                                    filters='MineVis blocks (*.h5p);;',
+                                    method=self.viewer.export_blocks)
+
+    def dialog_export_points(self, _id: int) -> None:
+        self._dialog_export_element(_id=_id,
+                                    filters='MineVis points (*.h5p);;',
+                                    method=self.viewer.export_points)
 
     """
     Slots for modifying controller modes
     """
-    def normal_mode_slot(self) -> None:
+    def slot_normal_mode(self) -> None:
         self.viewer.set_normal_mode()
 
-    def detection_mode_slot(self) -> None:
+    def slot_detection_mode(self) -> None:
         self.viewer.set_detection_mode()
 
-    def slice_mode_slot(self) -> None:
+    def slot_slice_mode(self) -> None:
         self.viewer.set_slice_mode()
 
-    def measurement_mode_slot(self) -> None:
+    def slot_measurement_mode(self) -> None:
         self.viewer.set_measurement_mode()
 
     """
     Slots for showing help dialogs
     """
-    def help_slot(self) -> None:
+    def slot_help(self) -> None:
         QMessageBox.information(self,
                                 'MineVis - Help',
                                 'TO-DO: Create help message box')
 
-    def about_slot(self) -> None:
+    def slot_about(self) -> None:
         QMessageBox.information(self,
                                 'MineVis - About',
                                 'TO-DO: Create about message box\n' +
@@ -316,6 +329,9 @@ class MainWindow(QMainWindow):
                                 '- colour (parse string to color)'
                                 )
 
+    """
+    Events pass-through
+    """
     def dragEnterEvent(self, event, *args, **kwargs) -> None:
         self.viewer.dragEnterEvent(event, *args, **kwargs)
 

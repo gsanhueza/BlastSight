@@ -28,7 +28,7 @@
      <normaloff>icons/radar_plot.svg</normaloff>icons/radar_plot.svg</iconset>
    </property>
    <property name="text">
-    <string>Load mesh folder</string>
+    <string>Load m&amp;esh folder</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+A</string>
@@ -40,7 +40,7 @@
      <normaloff>icons/data_sheet.svg</normaloff>icons/data_sheet.svg</iconset>
    </property>
    <property name="text">
-    <string>Load blocks folder</string>
+    <string>Load b&amp;locks folder</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+E</string>
@@ -52,7 +52,7 @@
      <normaloff>icons/scatter_plot.svg</normaloff>icons/scatter_plot.svg</iconset>
    </property>
    <property name="text">
-    <string>Load points folder</string>
+    <string>Load p&amp;oints folder</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+P</string>

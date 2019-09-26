@@ -88,13 +88,6 @@
    <class>IntegrableViewer</class>
    <extends>QOpenGLWidget</extends>
    <header>minevis/view/gui/integrableviewer.h</header>
-   <slots>
-    <signal>file_dropped_signal()</signal>
-    <slot>plan_view()</slot>
-    <slot>take_screenshot()</slot>
-    <slot>north_view()</slot>
-    <slot>east_view()</slot>
-   </slots>
   </customwidget>
   <customwidget>
    <class>TreeWidget</class>
@@ -109,14 +102,4 @@
  </customwidgets>
  <resources/>
  <connections/>
- <slots>
-  <slot>normal_mode_slot()</slot>
-  <slot>draw_mode_slot()</slot>
-  <slot>selection_mode_slot()</slot>
-  <slot>load_mesh_slot()</slot>
-  <slot>help_slot()</slot>
-  <slot>load_block_model_slot()</slot>
-  <slot>dialog_camera_position()</slot>
-  <slot>fill_tree_widget()</slot>
- </slots>
 </ui>
