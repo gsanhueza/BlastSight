@@ -2,7 +2,7 @@
 
 import pytest
 import numpy as np
-from minevis.model.elements.element import Element
+from caseron.model.elements.element import Element
 
 
 class TestElement:

@@ -7,8 +7,8 @@ show_missing = True
 # Elements from GUI and Controller are being omitted in the coverage report
 omit = 
     *__init__.py*
-    minevis/__main__.py
-    minevis/view/gui/*.py
-    minevis/view/viewer.py
-    minevis/controller/*.py
+    caseron/__main__.py
+    caseron/view/gui/*.py
+    caseron/view/viewer.py
+    caseron/controller/*.py
 

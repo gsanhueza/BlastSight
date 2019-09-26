@@ -4,10 +4,10 @@ import sys
 
 from qtpy.QtWidgets import QApplication
 
-from minevis.model.elements.element import Element
-from minevis.view.drawables.gldrawable import GLDrawable
-from minevis.view.gui.integrableviewer import IntegrableViewer
-from minevis.view.drawables.glprograms.shaderprogram import ShaderProgram
+from caseron.model.elements.element import Element
+from caseron.view.drawables.gldrawable import GLDrawable
+from caseron.view.gui.integrableviewer import IntegrableViewer
+from caseron.view.drawables.glprograms.shaderprogram import ShaderProgram
 
 
 class TestAutoDrawable:

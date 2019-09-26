@@ -11,7 +11,7 @@ class Viewer(IntegrableViewer):
     def __init__(self):
         self.app = QApplication(sys.argv)
         super().__init__()
-        self.setWindowTitle('MineVis (Viewer)')
+        self.setWindowTitle('Caseron (Viewer)')
 
     def show(self):
         super().show()

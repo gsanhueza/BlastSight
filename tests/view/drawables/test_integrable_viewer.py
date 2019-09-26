@@ -3,16 +3,16 @@
 import os
 import pytest
 
-from minevis.model.elements.element import Element
-from minevis.model.model import Model
-from minevis.view.drawables.meshgl import MeshGL
-from minevis.view.drawables.blockgl import BlockGL
-from minevis.view.drawables.pointgl import PointGL
-from minevis.view.gui.integrableviewer import IntegrableViewer
+from caseron.model.elements.element import Element
+from caseron.model.model import Model
+from caseron.view.drawables.meshgl import MeshGL
+from caseron.view.drawables.blockgl import BlockGL
+from caseron.view.drawables.pointgl import PointGL
+from caseron.view.gui.integrableviewer import IntegrableViewer
 
-from minevis.controller.normalmode import NormalMode
-from minevis.controller.slicemode import SliceMode
-from minevis.controller.detectionmode import DetectionMode
+from caseron.controller.normalmode import NormalMode
+from caseron.controller.slicemode import SliceMode
+from caseron.controller.detectionmode import DetectionMode
 
 from tests.globals import *
 

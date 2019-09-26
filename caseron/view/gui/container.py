@@ -24,7 +24,7 @@ class Container(QWidget):
         self.verticalLayout.addWidget(self.openglwidget)
         self.verticalLayout.addWidget(self.mainToolBar)
 
-        self.setWindowTitle('MineVis (Container)')
+        self.setWindowTitle('Caseron (Container)')
         self.setMinimumSize(600, 500)
 
         self.toolbar.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)

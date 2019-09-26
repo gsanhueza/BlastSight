@@ -2,9 +2,9 @@
 
 import pytest
 
-from minevis.view.gui.integrableviewer import IntegrableViewer
-from minevis.view.drawables.backgroundgl import BackgroundGL
-from minevis.view.drawables.glprograms.backgroundprogram import BackgroundProgram
+from caseron.view.gui.integrableviewer import IntegrableViewer
+from caseron.view.drawables.backgroundgl import BackgroundGL
+from caseron.view.drawables.glprograms.backgroundprogram import BackgroundProgram
 
 
 class TestBackgroundGL:

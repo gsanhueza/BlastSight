@@ -2,7 +2,7 @@
 
 import os
 import pytest
-from minevis.model.parsers.csvparser import CSVParser as Parser
+from caseron.model.parsers.csvparser import CSVParser as Parser
 from tests.globals import *
 
 

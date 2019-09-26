@@ -2,7 +2,7 @@
 
 import numpy as np
 import pytest
-from minevis.model.elements.blockelement import BlockElement
+from caseron.model.elements.blockelement import BlockElement
 
 
 class TestBlockModelElement:

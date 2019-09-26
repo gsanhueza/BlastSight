@@ -1,4 +1,4 @@
 #!/usr/bin/env sh
 
-pytest --cov=minevis
+pytest --cov=caseron
 

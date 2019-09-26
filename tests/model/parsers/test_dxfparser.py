@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import pytest
-from minevis.model.parsers.dxfparser import DXFParser as Parser
+from caseron.model.parsers.dxfparser import DXFParser as Parser
 from tests.globals import *
 
 

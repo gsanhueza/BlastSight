@@ -1,12 +1,12 @@
-# MineVis
+# Caseron
 
-MineVis is a 3D visualization software designed to aid in Mining research.
+Caseron is a 3D visualization software designed to aid in Mining research.
 
 ## Installation
 
-You can install MineVis with the following command:
+You can install Caseron with the following command:
 
-`pip install git+https://github.com/gsanhueza/MineVis.git`
+`pip install git+https://github.com/gsanhueza/Caseron.git`
 
 ## Usage
 
@@ -15,7 +15,7 @@ so you can use it as a viewer, or integrate it to an application you're developi
 
 ### App Mode
 
-Start the application with `python -m minevis`.
+Start the application with `python -m caseron`.
 
 From there you can load elements with File > Load [element].
 
@@ -27,7 +27,7 @@ Insert the following lines in your code:
 
 ```python
 from qtpy.QtWidgets import QWidget
-from minevis.view.integrableviewer import IntegrableViewer
+from caseron.view.integrableviewer import IntegrableViewer
 
 class EmbeddedViewer(QWidget):
     def __init__(self), parent=None:
@@ -43,7 +43,7 @@ class EmbeddedViewer(QWidget):
 Insert the following lines in your script:
 
 ```python
-from minevis.view.viewer import Viewer
+from caseron.view.viewer import Viewer
 viewer = Viewer()
 
 # Your code
@@ -62,11 +62,11 @@ Run the following command to create a pip-installable package:
 Alternatively, run `./wheelbuild.sh`.
 
 Your package will be in `dist`.
-You can install it with `pip install dist/minevis*`.
+You can install it with `pip install dist/caseron*`.
 
 ## Testing
 
-Run the following command: `pytest --cov=minevis`.
+Run the following command: `pytest --cov=caseron`.
 
 Alternatively, run `./run_tests.sh`.
 

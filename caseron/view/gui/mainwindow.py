@@ -25,7 +25,7 @@ class MainWindow(QMainWindow):
         QMainWindow.__init__(self, parent)
         uic.loadUi(f'{pathlib.Path(__file__).parent}/UI/mainwindow.ui', self)
 
-        self.settings = QSettings('MineVis', application='minevis', parent=self)
+        self.settings = QSettings('Caseron', application='caseron', parent=self)
         self.filters_dict = {
             'mesh': 'Mesh Files (*.dxf *.off *.h5m);;'
                     'DXF Files (*.dxf);;'
@@ -185,7 +185,7 @@ class MainWindow(QMainWindow):
     def dialog_screenshot(self):
         (path, selected_filter) = QFileDialog.getSaveFileName(
             parent=self,
-            directory=f'MineVis Screenshot ({datetime.now().strftime("%Y%m%d-%H%M%S")})',
+            directory=f'Caseron Screenshot ({datetime.now().strftime("%Y%m%d-%H%M%S")})',
             filter='PNG image (*.png);;')
 
         if path != '':
@@ -281,17 +281,17 @@ class MainWindow(QMainWindow):
     """
     def dialog_export_mesh(self, _id: int) -> None:
         self._dialog_export_element(_id=_id,
-                                    filters='MineVis mesh (*.h5m);;',
+                                    filters='Caseron mesh (*.h5m);;',
                                     method=self.viewer.export_mesh)
 
     def dialog_export_blocks(self, _id: int) -> None:
         self._dialog_export_element(_id=_id,
-                                    filters='MineVis blocks (*.h5p);;',
+                                    filters='Caseron blocks (*.h5p);;',
                                     method=self.viewer.export_blocks)
 
     def dialog_export_points(self, _id: int) -> None:
         self._dialog_export_element(_id=_id,
-                                    filters='MineVis points (*.h5p);;',
+                                    filters='Caseron points (*.h5p);;',
                                     method=self.viewer.export_points)
 
     """
@@ -314,12 +314,12 @@ class MainWindow(QMainWindow):
     """
     def slot_help(self) -> None:
         QMessageBox.information(self,
-                                'MineVis - Help',
+                                'Caseron - Help',
                                 'TO-DO: Create help message box')
 
     def slot_about(self) -> None:
         QMessageBox.information(self,
-                                'MineVis - About',
+                                'Caseron - About',
                                 'TO-DO: Create about message box\n' +
                                 'We\'re currently using utilities from:\n' +
                                 '- pymesh (cylinder generation)\n' +

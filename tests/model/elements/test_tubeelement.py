@@ -2,7 +2,7 @@
 
 import numpy as np
 import pytest
-from minevis.model.elements.tubeelement import TubeElement
+from caseron.model.elements.tubeelement import TubeElement
 
 
 class TestTubeElement:

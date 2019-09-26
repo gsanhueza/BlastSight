@@ -2,9 +2,9 @@
 
 import pytest
 
-from minevis.view.gui.integrableviewer import IntegrableViewer
-from minevis.view.drawables.axisgl import AxisGL
-from minevis.view.drawables.glprograms.axisprogram import AxisProgram
+from caseron.view.gui.integrableviewer import IntegrableViewer
+from caseron.view.drawables.axisgl import AxisGL
+from caseron.view.drawables.glprograms.axisprogram import AxisProgram
 
 
 class TestAxisGL:

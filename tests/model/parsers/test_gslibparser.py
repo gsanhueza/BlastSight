@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import pytest
-from minevis.model.parsers.gslibparser import GSLibParser as Parser
+from caseron.model.parsers.gslibparser import GSLibParser as Parser
 from tests.globals import *
 
 

@@ -2,10 +2,10 @@
 
 import pytest
 
-from minevis.model.elements.lineelement import LineElement
-from minevis.view.gui.integrableviewer import IntegrableViewer
-from minevis.view.drawables.linegl import LineGL
-from minevis.view.drawables.glprograms.lineprogram import LineProgram
+from caseron.model.elements.lineelement import LineElement
+from caseron.view.gui.integrableviewer import IntegrableViewer
+from caseron.view.drawables.linegl import LineGL
+from caseron.view.drawables.glprograms.lineprogram import LineProgram
 
 
 class TestLineGL:

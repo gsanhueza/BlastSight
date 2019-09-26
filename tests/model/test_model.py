@@ -2,9 +2,9 @@
 
 import os
 import pytest
-from minevis.model.parsers.offparser import OFFParser
-from minevis.model.parsers.csvparser import CSVParser
-from minevis.model.model import Model
+from caseron.model.parsers.offparser import OFFParser
+from caseron.model.parsers.csvparser import CSVParser
+from caseron.model.model import Model
 from tests.globals import *
 
 

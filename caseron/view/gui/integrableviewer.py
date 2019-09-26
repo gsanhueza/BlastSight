@@ -459,7 +459,7 @@ class IntegrableViewer(QOpenGLWidget):
 
     def take_screenshot(self, save_path=None):
         if not save_path:
-            save_path = f'MineVis Screenshot ({datetime.now().strftime("%Y%m%d-%H%M%S")}).png'
+            save_path = f'Caseron Screenshot ({datetime.now().strftime("%Y%m%d-%H%M%S")}).png'
         pixmap = QPixmap(self.size())
         self.render(pixmap, QPoint(), QRegion(self.rect()))
         pixmap.save(save_path)

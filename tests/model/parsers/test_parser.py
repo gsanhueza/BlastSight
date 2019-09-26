@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import pytest
-from minevis.model.parsers.parser import Parser
+from caseron.model.parsers.parser import Parser
 from tests.globals import *
 
 

@@ -2,10 +2,10 @@
 
 import pytest
 
-from minevis.model.elements.pointelement import PointElement
-from minevis.view.gui.integrableviewer import IntegrableViewer
-from minevis.view.drawables.pointgl import PointGL
-from minevis.view.drawables.glprograms.pointprogram import PointProgram
+from caseron.model.elements.pointelement import PointElement
+from caseron.view.gui.integrableviewer import IntegrableViewer
+from caseron.view.drawables.pointgl import PointGL
+from caseron.view.drawables.glprograms.pointprogram import PointProgram
 
 
 class TestPointGL:

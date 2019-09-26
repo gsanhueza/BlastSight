@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from minevis.model.parsers.parserdata import ParserData
+from caseron.model.parsers.parserdata import ParserData
 
 
 class TestParserData:

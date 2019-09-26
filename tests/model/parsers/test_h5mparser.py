@@ -2,7 +2,7 @@
 
 import pytest
 import os
-from minevis.model.parsers.h5mparser import H5MParser as Parser
+from caseron.model.parsers.h5mparser import H5MParser as Parser
 from tests.globals import *
 
 

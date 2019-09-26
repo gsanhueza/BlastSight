@@ -2,7 +2,7 @@
 
 import numpy as np
 import pytest
-from minevis.model.elements.lineelement import LineElement
+from caseron.model.elements.lineelement import LineElement
 
 
 class TestLineElement:

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-from minevis.model.utils import *
-from minevis.model.elements.meshelement import MeshElement
+from caseron.model.utils import *
+from caseron.model.elements.meshelement import MeshElement
 
 
 class TestUtils:

@@ -2,10 +2,10 @@
 
 import pytest
 
-from minevis.model.elements.tubeelement import TubeElement
-from minevis.view.gui.integrableviewer import IntegrableViewer
-from minevis.view.drawables.tubegl import TubeGL
-from minevis.view.drawables.glprograms.tubeprogram import TubeProgram
+from caseron.model.elements.tubeelement import TubeElement
+from caseron.view.gui.integrableviewer import IntegrableViewer
+from caseron.view.drawables.tubegl import TubeGL
+from caseron.view.drawables.glprograms.tubeprogram import TubeProgram
 
 
 class TestTubeGL:

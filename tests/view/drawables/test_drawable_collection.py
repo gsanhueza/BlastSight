@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
 import pytest
-from minevis.model.elements.element import Element
-from minevis.view.drawables.gldrawablecollection import GLDrawableCollection
-from minevis.view.drawables.gldrawable import GLDrawable
-from minevis.view.gui.integrableviewer import IntegrableViewer
+from caseron.model.elements.element import Element
+from caseron.view.drawables.gldrawablecollection import GLDrawableCollection
+from caseron.view.drawables.gldrawable import GLDrawable
+from caseron.view.gui.integrableviewer import IntegrableViewer
 
 
 class TestGLDrawableCollection:

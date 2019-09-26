@@ -2,11 +2,11 @@
 
 import pytest
 
-from minevis.model.elements.meshelement import MeshElement
-from minevis.view.gui.integrableviewer import IntegrableViewer
-from minevis.view.drawables.meshgl import MeshGL
-from minevis.view.drawables.glprograms.meshprogram import MeshProgram
-from minevis.view.drawables.glprograms.wireprogram import WireProgram
+from caseron.model.elements.meshelement import MeshElement
+from caseron.view.gui.integrableviewer import IntegrableViewer
+from caseron.view.drawables.meshgl import MeshGL
+from caseron.view.drawables.glprograms.meshprogram import MeshProgram
+from caseron.view.drawables.glprograms.wireprogram import WireProgram
 
 
 class TestMeshGL:

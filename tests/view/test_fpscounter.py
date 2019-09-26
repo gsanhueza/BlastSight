@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from minevis.view.fpscounter import FPSCounter
+from caseron.view.fpscounter import FPSCounter
 
 
 class TestFPSCounter:

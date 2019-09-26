@@ -6,7 +6,7 @@ import sys
 
 def application():
     from qtpy.QtWidgets import QApplication
-    from minevis.view.gui.mainwindow import MainWindow
+    from caseron.view.gui.mainwindow import MainWindow
 
     qt_app = QApplication(sys.argv)
 
@@ -18,7 +18,7 @@ def application():
 
 def container():
     from qtpy.QtWidgets import QApplication
-    from minevis.view.gui.container import Container
+    from caseron.view.gui.container import Container
 
     qt_app = QApplication(sys.argv)
 
@@ -29,16 +29,16 @@ def container():
 
 
 def standalone():
-    from minevis.view.viewer import Viewer
+    from caseron.view.viewer import Viewer
     viewer = Viewer()
 
     viewer.show()
 
 
 def demo():
-    from minevis.view.viewer import Viewer
+    from caseron.view.viewer import Viewer
     viewer = Viewer()
-    viewer.setWindowTitle('MineVis (Demo)')
+    viewer.setWindowTitle('Caseron (Demo)')
 
     viewer.mesh(x=[1, 3, 2], y=[0, 0, 1], z=[-3, -3, -3],
                 color=[0.0, 0.0, 1.0],
@@ -110,11 +110,11 @@ def demo():
 
 
 def main():
-    parser = argparse.ArgumentParser(description='Starts MineVis in App/Container/Viewer mode.')
+    parser = argparse.ArgumentParser(description='Starts Caseron in App/Container/Viewer mode.')
     parser.add_argument('-a', '--app', action='store_true', help='Starts in App mode.')
     parser.add_argument('-c', '--container', action='store_true', help='Starts in Container mode.')
     parser.add_argument('-v', '--viewer', action='store_true', help='Starts in Viewer mode.')
-    parser.add_argument('-d', '--demo', action='store_true', help='Shows a demo of MineVis.')
+    parser.add_argument('-d', '--demo', action='store_true', help='Shows a demo of Caseron.')
 
     args = parser.parse_args()
 
