@@ -242,10 +242,9 @@ class IntegrableViewer(QOpenGLWidget):
         # A long trigonometric calculation got us this result.
         md = np.max(np.diff([min_bound, max_bound], axis=0))
         aspect = self.width() / self.height()
+        fov_rad = self.fov * np.pi / 180.0
 
-        if self.projection_mode == 'perspective':
-            fov_rad = self.fov * np.pi / 180.0
-        else:
+        if self.projection_mode == 'orthographic':
             fov_rad = np.pi / 2.0
 
         dist = (md / np.tan(fov_rad / 2) + md) / 2.0
@@ -324,7 +323,7 @@ class IntegrableViewer(QOpenGLWidget):
         elif self.projection_mode == 'orthographic':
             z = max(self.zCameraPos - self.zCenterPos, 0.0)
             aspect = w / h
-            self.proj.ortho(-z, z, -z / aspect, z / aspect, 1.0, 10000.0)
+            self.proj.ortho(-z, z, -z / aspect, z / aspect, 0.0, 10000.0)
 
     """
     Utilities
@@ -334,16 +333,17 @@ class IntegrableViewer(QOpenGLWidget):
         print(f'               \r', end='')
         print(f'FPS: {fps:.1f} \r', end='')
 
-    def pixel_to_clip(self, _x, _y):
+    def pixel_to_clip(self, _x, _y, _z):
         # Click at bottom-left of screen => (-1.0, -1.0)
         # Click at top-right of screen => (1.0, 1.0)
         x = (2.0 * _x / self.width()) - 1.0
         y = 1.0 - (2.0 * _y / self.height())
-        return x, y
+        z = 1.0
+        return x, y, z
 
     def unproject(self, _x, _y, _z, model, view, proj) -> QVector3D:
         # Adapted from http://antongerdelan.net/opengl/raycasting.html
-        x, y = self.pixel_to_clip(_x, _y)
+        x, y, z = self.pixel_to_clip(_x, _y, _z)
 
         ray_eye = proj.inverted()[0] * QVector4D(x, y, -1.0, 1.0)
         ray_eye = QVector4D(ray_eye.x(), ray_eye.y(), -1.0, 0.0)
@@ -361,8 +361,15 @@ class IntegrableViewer(QOpenGLWidget):
             ray = self.unproject(self.width() / 2, self.height() / 2, z,
                                  self.world, self.camera, self.proj)
 
-            # FIXME Of course the origin can't be the same in orthographic projection
+            # FIXME This only works when the world is not rotated
+            aspect = self.width() / self.height()
+            off_x, off_y, off_z = origin.z() * np.array([*self.pixel_to_clip(x, y, z)])
+            offs = np.array([off_x, off_y / aspect, 0.0])
+
+            # Hack to get the origins when the click is not exactly at center of screen
+            self.camera.translate(*-offs)
             origin = (self.camera * self.world).inverted()[0].column(3).toVector3D()
+            self.camera.translate(*offs)
 
         # To Numpy array
         ray = np.array([ray.x(), ray.y(), ray.z()])
