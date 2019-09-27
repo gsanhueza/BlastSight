@@ -3,7 +3,6 @@
 import numpy as np
 import traceback
 
-from datetime import datetime
 from OpenGL.GL import *
 
 from qtpy.QtCore import QPoint
@@ -328,16 +327,18 @@ class IntegrableViewer(QOpenGLWidget):
     Utilities
     """
     @staticmethod
-    def print_fps(fps):
+    def print_fps(fps) -> None:
         print(f'               \r', end='')
         print(f'FPS: {fps:.1f} \r', end='')
 
-    def take_screenshot(self, save_path=None):
-        if not save_path:
-            save_path = f'Caseron Screenshot ({datetime.now().strftime("%Y%m%d-%H%M%S")}).png'
+    def get_pixmap(self) -> QPixmap:
         pixmap = QPixmap(self.size())
         self.render(pixmap, QPoint(), QRegion(self.rect()))
-        pixmap.save(save_path)
+        return pixmap
+
+    def take_screenshot(self, save_path=None) -> None:
+        if save_path is not None:
+            self.get_pixmap().save(save_path)
 
     def pixel_to_clip(self, _x, _y, _z):
         # Click at bottom-left of screen => (-1.0, -1.0)

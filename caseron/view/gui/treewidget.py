@@ -31,8 +31,7 @@ class TreeWidget(QTreeWidget):
         self.setWindowFlags(Qt.WindowStaysOnTopHint)
         self.setSelectionMode(QAbstractItemView.ExtendedSelection)
 
-        self.itemClicked.connect(self.single_click)
-        self.itemDoubleClicked.connect(self.double_click)
+        self.itemDoubleClicked.connect(self.center_camera)
         self.customContextMenuRequested.connect(self.context_menu)
 
         self.setWindowTitle('Element list')
@@ -146,10 +145,7 @@ class TreeWidget(QTreeWidget):
 
         menu.exec_(global_pos)
 
-    def single_click(self, item, col):
-        pass
-
-    def double_click(self, item):
+    def center_camera(self, item):
         item.show()
         item.center_camera()
 
@@ -164,33 +160,28 @@ class TreeWidget(QTreeWidget):
         for item in self.selectedItems():
             item.hide()
 
-    def toggle_visibility_items(self):
+    def toggle_items_visibility(self):
         for item in self.selectedItems():
             item.toggle_visibility()
 
     def delete_items(self):
-        rows = [self.indexOfTopLevelItem(x) for x in self.selectedItems()]
+        closest_row = min([self.indexOfTopLevelItem(x) for x in self.selectedItems()], default=0)
         for item in self.selectedItems():
             item.delete()
-            self.select_item(min(rows, default=0), 0)
+        self.select_item(closest_row, 0)
 
     def keyPressEvent(self, event):
+        super().keyPressEvent(event)
         if self.topLevelItemCount() == 0:
             return
 
-        last_pos = self.indexOfTopLevelItem(self.currentItem())
-
         shortcut_commands_dict = {
-            Qt.Key_S: lambda: self.show_items(),
-            Qt.Key_H: lambda: self.hide_items(),
-            Qt.Key_T: lambda: self.toggle_visibility_items(),
-            Qt.Key_Delete: lambda: self.delete_items(),
-            Qt.Key_Enter: lambda: self.currentItem().center_camera(),
-            Qt.Key_Return: lambda: self.currentItem().center_camera(),
-            Qt.Key_Up: lambda: self.select_item(last_pos - 1, 0),
-            Qt.Key_Down: lambda: self.select_item(last_pos + 1, 0),
-            Qt.Key_Home: lambda: self.select_item(0, 0),
-            Qt.Key_End: lambda: self.select_item(self.topLevelItemCount() - 1, 0),
+            Qt.Key_S: self.show_items,
+            Qt.Key_H: self.hide_items,
+            Qt.Key_T: self.toggle_items_visibility,
+            Qt.Key_Delete: self.delete_items,
+            Qt.Key_Enter: lambda: self.center_camera(self.currentItem()),
+            Qt.Key_Return: lambda: self.center_camera(self.currentItem()),
         }
 
         # Execute command based on event.key()
