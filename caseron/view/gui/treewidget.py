@@ -19,11 +19,11 @@ from ..drawables.linegl import LineGL
 
 
 class TreeWidget(QTreeWidget):
-    headers_triggered_signal = Signal(int)
-    colors_triggered_signal = Signal(int)
-    export_mesh_signal = Signal(int)
-    export_blocks_signal = Signal(int)
-    export_points_signal = Signal(int)
+    signal_headers_triggered = Signal(int)
+    signal_colors_triggered = Signal(int)
+    signal_export_mesh = Signal(int)
+    signal_export_blocks = Signal(int)
+    signal_export_points = Signal(int)
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -101,13 +101,13 @@ class TreeWidget(QTreeWidget):
         action_highlight.triggered.connect(item.toggle_highlighting)
         action_wireframe.triggered.connect(item.toggle_wireframe)
 
-        action_properties.triggered.connect(lambda: self.headers_triggered_signal.emit(item.drawable.id))
-        action_colors.triggered.connect(lambda: self.colors_triggered_signal.emit(item.drawable.id))
+        action_properties.triggered.connect(lambda: self.signal_headers_triggered.emit(item.drawable.id))
+        action_colors.triggered.connect(lambda: self.signal_colors_triggered.emit(item.drawable.id))
         action_center_camera.triggered.connect(item.center_camera)
 
-        action_export_mesh.triggered.connect(lambda: self.export_mesh_signal.emit(item.drawable.id))
-        action_export_blocks.triggered.connect(lambda: self.export_blocks_signal.emit(item.drawable.id))
-        action_export_points.triggered.connect(lambda: self.export_points_signal.emit(item.drawable.id))
+        action_export_mesh.triggered.connect(lambda: self.signal_export_mesh.emit(item.drawable.id))
+        action_export_blocks.triggered.connect(lambda: self.signal_export_blocks.emit(item.drawable.id))
+        action_export_points.triggered.connect(lambda: self.signal_export_points.emit(item.drawable.id))
 
         # If multiple elements are selected, we'll only show a basic menu
         if len(self.selectedItems()) > 1:

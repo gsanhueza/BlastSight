@@ -42,11 +42,11 @@ from ...model.elements.nullelement import NullElement
 
 class IntegrableViewer(QOpenGLWidget):
     # Signals
-    file_modified_signal = Signal()
-    fps_signal = Signal(float)
-    mesh_clicked_signal = Signal(object)
-    slice_distances_signal = Signal(object)
-    mode_updated_signal = Signal(str)
+    signal_file_modified = Signal()
+    signal_fps_updated = Signal(float)
+    signal_mesh_clicked = Signal(object)
+    signal_mesh_distances = Signal(object)
+    signal_mode_updated = Signal(str)
 
     def __init__(self, parent=None):
         QOpenGLWidget.__init__(self, parent)
@@ -56,7 +56,7 @@ class IntegrableViewer(QOpenGLWidget):
         self._model = Model()
 
         # Controller mode
-        self.mode_updated_signal.connect(lambda m: print(f'MODE: {m}'))
+        self.signal_mode_updated.connect(lambda m: print(f'MODE: {m}'))
         self.current_mode = None
         self.set_normal_mode()
 
@@ -79,7 +79,7 @@ class IntegrableViewer(QOpenGLWidget):
 
         # FPS Counter
         self.fps_counter = FPSCounter()
-        self.fps_signal.connect(self.print_fps)
+        self.signal_fps_updated.connect(self.print_fps)
 
         # Extra information
         self.fov = 45.0
@@ -107,32 +107,32 @@ class IntegrableViewer(QOpenGLWidget):
         return self._proj
 
     @property
+    def last_id(self) -> int:
+        return self.drawable_collection.last_id
+
+    @property
     def camera_position(self) -> np.ndarray:
         return np.array([self.xCameraPos, self.yCameraPos, self.zCameraPos])
-
-    @camera_position.setter
-    def camera_position(self, pos: list) -> None:
-        self.xCameraPos, self.yCameraPos, self.zCameraPos = pos
 
     @property
     def rotation_angle(self) -> np.ndarray:
         return np.array([self.xCenterRot, self.yCenterRot, self.zCenterRot])
 
-    @rotation_angle.setter
-    def rotation_angle(self, rot: list) -> None:
-        self.xCenterRot, self.yCenterRot, self.zCenterRot = rot
-
     @property
     def rotation_center(self) -> np.ndarray:
         return np.array([self.xCenterPos, self.yCenterPos, self.zCenterPos])
 
+    @camera_position.setter
+    def camera_position(self, pos: list) -> None:
+        self.xCameraPos, self.yCameraPos, self.zCameraPos = pos
+
+    @rotation_angle.setter
+    def rotation_angle(self, rot: list) -> None:
+        self.xCenterRot, self.yCenterRot, self.zCenterRot = rot
+
     @rotation_center.setter
     def rotation_center(self, _center: list) -> None:
         self.xCenterPos, self.yCenterPos, self.zCenterPos = _center
-
-    @property
-    def last_id(self) -> int:
-        return self.drawable_collection.last_id
 
     """
     Load methods
@@ -143,7 +143,7 @@ class IntegrableViewer(QOpenGLWidget):
             drawable = drawable_type(element, *args, **kwargs)
             self.drawable_collection.add(drawable)
 
-            self.file_modified_signal.emit()
+            self.signal_file_modified.emit()
             self.update()
 
             return drawable
@@ -210,7 +210,7 @@ class IntegrableViewer(QOpenGLWidget):
         self.makeCurrent()
         self.model.delete(_id)
         self.drawable_collection.delete(_id)
-        self.file_modified_signal.emit()
+        self.signal_file_modified.emit()
         self.update()
 
     def clear(self) -> None:
@@ -315,7 +315,7 @@ class IntegrableViewer(QOpenGLWidget):
         self.current_mode.overpaint(self)
 
         self.fps_counter.tick()
-        self.fps_signal.emit(self.fps_counter.fps)
+        self.signal_fps_updated.emit(self.fps_counter.fps)
 
     def resizeGL(self, w: float, h: float) -> None:
         # TODO Enable perspective/orthographic in application
@@ -433,7 +433,7 @@ class IntegrableViewer(QOpenGLWidget):
             distances.append([mesh.id, distance])
             print(f'Distance: {distance} (id: {mesh.id})')
 
-        self.slice_distances_signal.emit(distances)
+        self.signal_mesh_distances.emit(distances)
 
     def detect_mesh_intersection(self, x: float, y: float, z: float) -> None:
         ray, origin = self.ray_from_click(x, y, z)
@@ -449,7 +449,7 @@ class IntegrableViewer(QOpenGLWidget):
                 intersected_ids.append(mesh.id)
 
         # Emit signal with clicked mesh
-        self.mesh_clicked_signal.emit(intersected_ids)
+        self.signal_mesh_clicked.emit(intersected_ids)
 
         # print('-------------------------------')
 
@@ -465,7 +465,7 @@ class IntegrableViewer(QOpenGLWidget):
         }
 
         self.current_mode = controllers[mode]()
-        self.mode_updated_signal.emit(self.current_mode.name)
+        self.signal_mode_updated.emit(self.current_mode.name)
         self.update()
 
     def set_normal_mode(self) -> None:

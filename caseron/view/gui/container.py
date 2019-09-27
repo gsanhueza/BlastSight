@@ -47,7 +47,7 @@ class Container(QWidget):
     def connect_actions(self):
         self.toolbar.action_camera_properties.triggered.connect(self.dialog_camera_properties)
         self.toolbar.action_quit.triggered.connect(self.close)
-        self.viewer.file_modified_signal.connect(self.fill_tree_widget)
+        self.viewer.signal_file_modified.connect(self.fill_tree_widget)
 
     def dialog_camera_properties(self):
         dialog = CameraDialog(self.viewer)

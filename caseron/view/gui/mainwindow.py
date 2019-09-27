@@ -58,7 +58,7 @@ class MainWindow(QMainWindow):
         self.connect_actions()
 
         # self._title = self.windowTitle()
-        # self.viewer.fps_signal.connect(lambda x: self.setWindowTitle(f'{self._title} (FPS: {x:.1f})'))
+        # self.viewer.signal_fps_updated.connect(lambda x: self.setWindowTitle(f'{self._title} (FPS: {x:.1f})'))
 
     def generate_menubar(self):
         self.menu_File.addAction(self.toolbar.action_load_mesh)
@@ -117,16 +117,16 @@ class MainWindow(QMainWindow):
         self.toolbar.action_about.triggered.connect(self.slot_about)
 
         # Extra actions
-        self.viewer.mode_updated_signal.connect(self.statusbar_update_mode)
-        self.viewer.mesh_clicked_signal.connect(self.statusbar_update_detected)
-        self.viewer.slice_distances_signal.connect(self.statusbar_update_distances)
-        self.viewer.file_modified_signal.connect(self.fill_tree_widget)
+        self.viewer.signal_mode_updated.connect(self.statusbar_update_mode)
+        self.viewer.signal_mesh_clicked.connect(self.statusbar_update_detected)
+        self.viewer.signal_mesh_distances.connect(self.statusbar_update_distances)
+        self.viewer.signal_file_modified.connect(self.fill_tree_widget)
 
-        self.treeWidget.headers_triggered_signal.connect(self.dialog_properties)
-        self.treeWidget.colors_triggered_signal.connect(self.dialog_color)
-        self.treeWidget.export_mesh_signal.connect(self.dialog_export_mesh)
-        self.treeWidget.export_blocks_signal.connect(self.dialog_export_blocks)
-        self.treeWidget.export_points_signal.connect(self.dialog_export_points)
+        self.treeWidget.signal_headers_triggered.connect(self.dialog_properties)
+        self.treeWidget.signal_colors_triggered.connect(self.dialog_color)
+        self.treeWidget.signal_export_mesh.connect(self.dialog_export_mesh)
+        self.treeWidget.signal_export_blocks.connect(self.dialog_export_blocks)
+        self.treeWidget.signal_export_points.connect(self.dialog_export_points)
 
     @property
     def viewer(self):
