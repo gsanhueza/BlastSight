@@ -37,14 +37,14 @@ class TestUtils:
     ray_perpendicular = np.array([1.0, 0.0, 0.0])
 
     def test_mesh_intersection(self):
-        assert mesh_intersection(self.origin, self.ray, self.mesh_element).__len__() > 0
-        assert mesh_intersection(self.origin, self.ray_reversed, self.mesh_element).__len__() == 0
-        assert mesh_intersection(self.origin, self.ray_low, self.mesh_element).__len__() == 0
-        assert mesh_intersection(self.origin, self.ray_perpendicular, self.mesh_element).__len__() == 0
-        assert mesh_intersection(self.origin_translated, self.ray, self.mesh_element).__len__() == 0
-        assert mesh_intersection(self.origin_translated, self.ray_oblique, self.mesh_element).__len__() == 0
-        assert mesh_intersection(self.origin, self.ray_oblique, self.mesh_element).__len__() == 0
-        assert mesh_intersection(self.origin_translated, self.ray, self.tetrahedron).__len__() == 0
+        assert mesh_intersection(self.origin, self.ray, self.mesh_element) is not None
+        assert mesh_intersection(self.origin, self.ray_reversed, self.mesh_element) is None
+        assert mesh_intersection(self.origin, self.ray_low, self.mesh_element) is None
+        assert mesh_intersection(self.origin, self.ray_perpendicular, self.mesh_element) is None
+        assert mesh_intersection(self.origin_translated, self.ray, self.mesh_element) is None
+        assert mesh_intersection(self.origin_translated, self.ray_oblique, self.mesh_element) is None
+        assert mesh_intersection(self.origin, self.ray_oblique, self.mesh_element) is None
+        assert mesh_intersection(self.origin_translated, self.ray, self.tetrahedron) is None
 
     def test_triangle_intersection(self):
         assert triangle_intersection(self.origin, self.ray, self.triangle) is not None

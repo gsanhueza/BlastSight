@@ -101,7 +101,6 @@ def demo():
                  name='Tubes')
 
     viewer.fit_to_screen()
-    viewer.camera_position += [0.0, 0.0, 5.0]
 
     for _id, drawable in viewer.drawable_collection.items():
         print(f'ID: {_id}\t Type: {type(drawable)}\t Name: {drawable.element.name}')
