@@ -347,10 +347,7 @@ class IntegrableViewer(QOpenGLWidget):
 
         return ray, origin
 
-    def slice_from_rays(self, ray_list: list) -> None:
-        camera_origin = (self.camera * self.world).inverted()[0].column(3).toVector3D()
-        origin = np.array([camera_origin.x(), camera_origin.y(), camera_origin.z()])
-
+    def slice_from_rays(self, origin_list: list, ray_list: list) -> None:
         mesh_drawables = [m for m in self.drawable_collection.filter(MeshGL) if m.is_visible]
         mesh_elements = [m.element for m in mesh_drawables if 'SLICE' not in m.element.name]
 
@@ -359,13 +356,12 @@ class IntegrableViewer(QOpenGLWidget):
 
         # A plane is created from `origin` and `ray_list`.
         # In perspective projection, the origin is the same.
-        # We'll try to slice every mesh from `mesh_elements` with our plane.
+        origin = origin_list[0]
         plane_normal = np.cross(*ray_list)
         plane_normal /= np.linalg.norm(plane_normal)
 
         for mesh in mesh_elements:
             slices = utils.slice_mesh(mesh, origin, plane_normal)
-
             for i, vert_slice in enumerate(slices):
                 self.lines(vertices=vert_slice,
                            color=mesh.color,
@@ -388,27 +384,23 @@ class IntegrableViewer(QOpenGLWidget):
         # We'll auto-exit the slice mode for now
         self.set_normal_mode()
 
-    def measure_from_rays(self, ray_list: list) -> None:
-        camera_origin = (self.camera * self.world).inverted()[0].column(3).toVector3D()
-        origin = np.array([camera_origin.x(), camera_origin.y(), camera_origin.z()])
-
-        drawables = [m for m in self.drawable_collection.filter(LineGL) if m.is_visible]
-        elements = [m.element for m in drawables if m.element.name.startswith('MESHSLICE')]
+    def measure_from_rays(self, origin_list: list, ray_list: list) -> None:
+        drawables = [m for m in self.drawable_collection.filter(MeshGL) if m.is_visible]
+        elements = [m.element for m in drawables]
 
         distances = []
 
-        for _slice in elements:
-            a = _slice.vertices[1] - _slice.center
-            b = _slice.vertices[0] - _slice.center
-            plane_normal = np.cross(a, b)
-            plane_d = -(np.dot(plane_normal, _slice.center))
+        for mesh in elements:
+            points = []
+            for i in range(len(origin_list)):
+                points.append(utils.mesh_intersection(origin_list[i], ray_list[i], mesh))
 
-            intersections = [utils.plane_intersection(origin, ray_list[0], plane_normal, plane_d),
-                             utils.plane_intersection(origin, ray_list[1], plane_normal, plane_d)]
+            if points[0] is None or points[1] is None:
+                continue
 
-            distance = np.linalg.norm(np.diff(intersections, axis=0))
-            distances.append([_slice.id, distance])
-            # print(f'Distance: {distance} (id: {_slice.id})')
+            distance = np.linalg.norm(np.diff(points, axis=0))
+            distances.append([mesh.id, distance])
+            print(f'Distance: {distance} (id: {mesh.id})')
 
         self.slice_distances_signal.emit(distances)
 
@@ -420,9 +412,9 @@ class IntegrableViewer(QOpenGLWidget):
         elements = [m.element for m in drawables]
 
         for mesh in elements:
-            point_list = utils.mesh_intersection(origin, ray, mesh)
-            # print(f'(Mesh {mesh.id}) Intersects: {point_list}')
-            if len(point_list) > 0:
+            point = utils.mesh_intersection(origin, ray, mesh)
+            # print(f'(Mesh {mesh.id}): Closest intersection: {point}')
+            if point is not None:
                 intersected_ids.append(mesh.id)
 
         # Emit signal with clicked mesh

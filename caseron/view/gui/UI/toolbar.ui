@@ -136,7 +136,7 @@
      <normaloff>icons/ruler.svg</normaloff>icons/ruler.svg</iconset>
    </property>
    <property name="text">
-    <string>&amp;Measure slices</string>
+    <string>&amp;Measure distance (in mesh)</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+M</string>

@@ -7,17 +7,27 @@ from colour import Color
 from functools import partial
 
 
-def mesh_intersection(origin: np.ndarray, ray: np.ndarray, mesh) -> list:
+def mesh_intersection(origin: np.ndarray, ray: np.ndarray, mesh) -> np.ndarray or None:
     # Early detection test
     if not aabb_intersection(origin, ray, mesh):
-        return []
+        return None
 
     curry_triangle = partial(partial(triangle_intersection, origin), ray)
 
     triangles = mesh.vertices[mesh.indices]
-    results = map(curry_triangle, triangles)
+    intersections = map(curry_triangle, triangles)
+    results = [x for x in intersections if x is not None]
 
-    return [x for x in results if x is not None]
+    closest = None
+    dist = np.inf
+
+    for point in results:
+        d = np.linalg.norm(origin - point)
+        if d < dist:
+            dist = d
+            closest = point
+
+    return closest
 
 
 def aabb_intersection(origin: np.ndarray, ray: np.ndarray, mesh):
