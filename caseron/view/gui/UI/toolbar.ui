@@ -220,7 +220,7 @@
      <normaloff>icons/up.svg</normaloff>icons/up.svg</iconset>
    </property>
    <property name="text">
-    <string>N&amp;orth view</string>
+    <string>&amp;North view</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+2</string>
@@ -236,6 +236,30 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+3</string>
+   </property>
+  </action>
+  <action name="action_perspective_projection">
+   <property name="icon">
+    <iconset>
+     <normaloff>icons/ruler.svg</normaloff>icons/ruler.svg</iconset>
+   </property>
+   <property name="text">
+    <string>P&amp;erspective projection</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+4</string>
+   </property>
+  </action>
+  <action name="action_orthographic_projection">
+   <property name="icon">
+    <iconset>
+     <normaloff>icons/ruler.svg</normaloff>icons/ruler.svg</iconset>
+   </property>
+   <property name="text">
+    <string>O&amp;rthographic projection</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+5</string>
    </property>
   </action>
   <action name="action_take_screenshot">

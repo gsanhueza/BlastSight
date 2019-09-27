@@ -71,25 +71,28 @@ class MainWindow(QMainWindow):
         self.menu_File.addSeparator()
         self.menu_File.addAction(self.toolbar.action_quit)
 
-        self.menu_Tools.addAction(self.toolbar.action_slice_mode)
-        self.menu_Tools.addAction(self.toolbar.action_detection_mode)
-        self.menu_Tools.addAction(self.toolbar.action_measurement_mode)
-        self.menu_Tools.addSeparator()
-        self.menu_Tools.addAction(self.toolbar.action_normal_mode)
-
         self.menu_View.addAction(self.toolbar.action_camera_properties)
         self.menu_View.addAction(self.toolbar.action_plan_view)
         self.menu_View.addAction(self.toolbar.action_north_view)
         self.menu_View.addAction(self.toolbar.action_east_view)
         self.menu_View.addAction(self.toolbar.action_fit_to_screen)
         self.menu_View.addSeparator()
+        self.menu_View.addAction(self.toolbar.action_perspective_projection)
+        self.menu_View.addAction(self.toolbar.action_orthographic_projection)
+        self.menu_View.addSeparator()
         self.menu_View.addAction(self.toolbar.action_take_screenshot)
+
+        self.menu_Tools.addAction(self.toolbar.action_slice_mode)
+        self.menu_Tools.addAction(self.toolbar.action_detection_mode)
+        self.menu_Tools.addAction(self.toolbar.action_measurement_mode)
+        self.menu_Tools.addSeparator()
+        self.menu_Tools.addAction(self.toolbar.action_normal_mode)
 
         self.menu_Help.addAction(self.toolbar.action_help)
         self.menu_Help.addAction(self.toolbar.action_about)
 
     def connect_actions(self):
-        # Main actions
+        # File
         self.toolbar.action_load_mesh.triggered.connect(self.dialog_load_mesh)
         self.toolbar.action_load_blocks.triggered.connect(self.dialog_load_blocks)
         self.toolbar.action_load_points.triggered.connect(self.dialog_load_points)
@@ -99,24 +102,29 @@ class MainWindow(QMainWindow):
         self.toolbar.action_load_points_folder.triggered.connect(self.dialog_load_points_folder)
         self.toolbar.action_quit.triggered.connect(self.close)
 
-        self.toolbar.action_normal_mode.triggered.connect(self.slot_normal_mode)
-        self.toolbar.action_detection_mode.triggered.connect(self.slot_detection_mode)
-        self.toolbar.action_slice_mode.triggered.connect(self.slot_slice_mode)
-        self.toolbar.action_measurement_mode.triggered.connect(self.slot_measurement_mode)
-
+        # View
         self.toolbar.action_camera_properties.triggered.connect(self.dialog_camera)
         self.toolbar.action_plan_view.triggered.connect(self.viewer.plan_view)
         self.toolbar.action_north_view.triggered.connect(self.viewer.north_view)
         self.toolbar.action_east_view.triggered.connect(self.viewer.east_view)
         self.toolbar.action_fit_to_screen.triggered.connect(self.viewer.fit_to_screen)
-
+        self.toolbar.action_perspective_projection.triggered.connect(self.viewer.perspective_projection)
+        self.toolbar.action_orthographic_projection.triggered.connect(self.viewer.orthographic_projection)
         self.toolbar.action_take_screenshot.triggered.connect(self.dialog_screenshot)
-        self.toolbar.action_show_tree.triggered.connect(self.dockWidget.show)
 
+        # Tools
+        self.toolbar.action_detection_mode.triggered.connect(self.slot_detection_mode)
+        self.toolbar.action_slice_mode.triggered.connect(self.slot_slice_mode)
+        self.toolbar.action_measurement_mode.triggered.connect(self.slot_measurement_mode)
+        self.toolbar.action_normal_mode.triggered.connect(self.slot_normal_mode)
+
+        # Help
         self.toolbar.action_help.triggered.connect(self.slot_help)
         self.toolbar.action_about.triggered.connect(self.slot_about)
 
         # Extra actions
+        self.toolbar.action_show_tree.triggered.connect(self.dockWidget.show)
+
         self.viewer.signal_mode_updated.connect(self.statusbar_update_mode)
         self.viewer.signal_mesh_clicked.connect(self.statusbar_update_detected)
         self.viewer.signal_mesh_distances.connect(self.statusbar_update_distances)

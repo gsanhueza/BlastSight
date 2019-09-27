@@ -317,7 +317,6 @@ class IntegrableViewer(QOpenGLWidget):
         self.signal_fps_updated.emit(self.fps_counter.fps)
 
     def resizeGL(self, w: float, h: float) -> None:
-        # TODO Enable perspective/orthographic in application
         if self.projection_mode == 'perspective':
             self.proj.perspective(self.fov, (w / h), 1.0, 10000.0)
         elif self.projection_mode == 'orthographic':
@@ -332,6 +331,13 @@ class IntegrableViewer(QOpenGLWidget):
     def print_fps(fps):
         print(f'               \r', end='')
         print(f'FPS: {fps:.1f} \r', end='')
+
+    def take_screenshot(self, save_path=None):
+        if not save_path:
+            save_path = f'Caseron Screenshot ({datetime.now().strftime("%Y%m%d-%H%M%S")}).png'
+        pixmap = QPixmap(self.size())
+        self.render(pixmap, QPoint(), QRegion(self.rect()))
+        pixmap.save(save_path)
 
     def pixel_to_clip(self, _x, _y, _z):
         # Click at bottom-left of screen => (-1.0, -1.0)
@@ -366,7 +372,7 @@ class IntegrableViewer(QOpenGLWidget):
             off_x, off_y, off_z = origin.z() * np.array([*self.pixel_to_clip(x, y, z)])
             offs = np.array([off_x, off_y / aspect, 0.0])
 
-            # Hack to get the origins when the click is not exactly at center of screen
+            # Hack to get the origin when the click is not exactly at center of screen
             self.camera.translate(*-offs)
             origin = (self.camera * self.world).inverted()[0].column(3).toVector3D()
             self.camera.translate(*offs)
@@ -487,12 +493,13 @@ class IntegrableViewer(QOpenGLWidget):
     def set_measurement_mode(self) -> None:
         self.set_controller_mode('measurement')
 
-    def take_screenshot(self, save_path=None):
-        if not save_path:
-            save_path = f'Caseron Screenshot ({datetime.now().strftime("%Y%m%d-%H%M%S")}).png'
-        pixmap = QPixmap(self.size())
-        self.render(pixmap, QPoint(), QRegion(self.rect()))
-        pixmap.save(save_path)
+    def perspective_projection(self):
+        self.projection_mode = 'perspective'
+        self.update()
+
+    def orthographic_projection(self):
+        self.projection_mode = 'orthographic'
+        self.update()
 
     # Movement/actions dependent on current mode
     def mouseMoveEvent(self, event, *args, **kwargs) -> None:
