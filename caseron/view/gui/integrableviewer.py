@@ -81,6 +81,11 @@ class IntegrableViewer(QOpenGLWidget):
         self.fps_counter = FPSCounter()
         self.fps_signal.connect(self.print_fps)
 
+        # Extra information
+        self.fov = 45.0
+        self.projection_mode = 'perspective'
+        # self.projection_mode = 'orthographic'
+
     @property
     def model(self):
         return self._model
@@ -234,11 +239,16 @@ class IntegrableViewer(QOpenGLWidget):
         self.camera_position = center
 
         # Put the camera in a position that allow us to see the element
-        md = np.max(np.diff([min_bound, max_bound], axis=0))
         # A long trigonometric calculation got us this result.
-        # The angle is hidden inside the projection matrix (only useful in Perspective)
-        dist = 0.5 * md * (1.0 + self.proj[1, 1])
-        aspect = self.proj[1, 1] / self.proj[0, 0]
+        md = np.max(np.diff([min_bound, max_bound], axis=0))
+        aspect = self.width() / self.height()
+
+        if self.projection_mode == 'perspective':
+            fov_rad = self.fov * np.pi / 180.0
+        else:
+            fov_rad = np.pi / 2.0
+
+        dist = (md / np.tan(fov_rad / 2) + md) / 2.0
 
         self.zCameraPos += 1.1 * dist / max(min(1.0, aspect), 1e-12)
         self.update()
@@ -309,13 +319,12 @@ class IntegrableViewer(QOpenGLWidget):
 
     def resizeGL(self, w: float, h: float) -> None:
         # TODO Enable perspective/orthographic in application
-        # Perspective
-        self.proj.perspective(45.0, (w / h), 1.0, 10000.0)
-
-        # Orthographic
-        # z = max(self.zCameraPos - self.zCenterPos, 0.0)
-        # aspect = w / h
-        # self.proj.ortho(-z, z, -z / aspect, z / aspect, 1.0, 10000.0)
+        if self.projection_mode == 'perspective':
+            self.proj.perspective(self.fov, (w / h), 1.0, 10000.0)
+        elif self.projection_mode == 'orthographic':
+            z = max(self.zCameraPos - self.zCenterPos, 0.0)
+            aspect = w / h
+            self.proj.ortho(-z, z, -z / aspect, z / aspect, 1.0, 10000.0)
 
     """
     Utilities
@@ -325,10 +334,16 @@ class IntegrableViewer(QOpenGLWidget):
         print(f'               \r', end='')
         print(f'FPS: {fps:.1f} \r', end='')
 
-    def unproject(self, _x, _y, _z, model, view, proj) -> QVector3D:
-        # Adapted from http://antongerdelan.net/opengl/raycasting.html
+    def pixel_to_clip(self, _x, _y):
+        # Click at bottom-left of screen => (-1.0, -1.0)
+        # Click at top-right of screen => (1.0, 1.0)
         x = (2.0 * _x / self.width()) - 1.0
         y = 1.0 - (2.0 * _y / self.height())
+        return x, y
+
+    def unproject(self, _x, _y, _z, model, view, proj) -> QVector3D:
+        # Adapted from http://antongerdelan.net/opengl/raycasting.html
+        x, y = self.pixel_to_clip(_x, _y)
 
         ray_eye = proj.inverted()[0] * QVector4D(x, y, -1.0, 1.0)
         ray_eye = QVector4D(ray_eye.x(), ray_eye.y(), -1.0, 0.0)
@@ -338,8 +353,16 @@ class IntegrableViewer(QOpenGLWidget):
 
     def ray_from_click(self, x: float, y: float, z: float) -> tuple:
         # Generates a ray from a click on screen
+        # Assume perspective first
         ray = self.unproject(x, y, z, self.world, self.camera, self.proj)
         origin = (self.camera * self.world).inverted()[0].column(3).toVector3D()
+
+        if self.projection_mode == 'orthographic':
+            ray = self.unproject(self.width() / 2, self.height() / 2, z,
+                                 self.world, self.camera, self.proj)
+
+            # FIXME Of course the origin can't be the same in orthographic projection
+            origin = (self.camera * self.world).inverted()[0].column(3).toVector3D()
 
         # To Numpy array
         ray = np.array([ray.x(), ray.y(), ray.z()])
@@ -357,7 +380,15 @@ class IntegrableViewer(QOpenGLWidget):
         # A plane is created from `origin` and `ray_list`.
         # In perspective projection, the origin is the same.
         origin = origin_list[0]
-        plane_normal = np.cross(*ray_list)
+        origin_diff = np.diff(origin_list, axis=0)[0]
+
+        if np.linalg.norm(origin_diff) < 1e-12:
+            # Perspective: Same origins, different rays
+            plane_normal = np.cross(*ray_list)
+        else:
+            # Orthographic: Same rays, different origins
+            plane_normal = np.cross(ray_list[0], origin_diff)
+
         plane_normal /= np.linalg.norm(plane_normal)
 
         for mesh in mesh_elements:
