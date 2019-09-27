@@ -25,11 +25,11 @@ void AddQuad(vec4 center, vec4 shift, vec4 dy, vec4 dx, vec3 n)
     vec4 v4 = (center + shift) + (-dx + dy);
 
     // Emit a primitive only if the sign of the dot product is positive
-    vec3 normal = (model_view_matrix * vec4(n, 0.0)).xyz;
+    vec4 normal = (model_view_matrix * vec4(n, 0.0));
 
-    if (dot(-center.xyz, normal) > 0.0)
+    if (dot(-center.xyz, normal.xyz) > 0.0)
     {
-        v_normal = normal;
+        v_normal = normal.xyz;
         f_color = v_color[0];
         f_alpha = v_alpha[0];
 

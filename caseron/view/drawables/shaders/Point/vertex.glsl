@@ -20,5 +20,14 @@ void main()
     // The 1.21 factor was found by trial and error, with the goal of
     // allowing a squared point's "point_size" of `x` to appear extremely
     // similar to a cube's "block_size" of the same `x`.
-    gl_PointSize = 1.21 * viewport.y * point_size / gl_Position.w;
+    if (proj_matrix[3][3] == 0.0)
+    {
+        gl_PointSize = 1.21 * viewport.y * point_size / gl_Position.w;
+    }
+    else
+    {
+        // This is needed if the user selected an orthographic matrix.
+        // We wouldn't want him to see mega-points in the screen.
+        gl_PointSize = 0.5 * viewport.y * point_size * proj_matrix[1][1];
+    }
 }
