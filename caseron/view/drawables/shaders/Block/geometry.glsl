@@ -24,6 +24,13 @@ void AddQuad(vec4 center, vec4 shift, vec4 dy, vec4 dx, vec3 n)
     vec4 v3 = (center + shift) + (dx + dy);
     vec4 v4 = (center + shift) + (-dx + dy);
 
+    // In orthographic projection we have to fix our origin (center),
+    // because every ray has the same direction
+    if (proj_matrix[3][3] == 1.0)
+    {
+        center = vec4(0.0, 0.0, -1.0, 1.0);
+    }
+
     // Emit a primitive only if the sign of the dot product is positive
     vec4 normal = (model_view_matrix * vec4(n, 0.0));
 
