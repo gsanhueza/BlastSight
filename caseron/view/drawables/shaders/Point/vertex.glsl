@@ -26,8 +26,8 @@ void main()
     }
     else
     {
-        // This is needed if the user selected an orthographic matrix.
-        // We wouldn't want him to see mega-points in the screen.
+        // This is needed if an orthographic projection was selected.
+        // We wouldn't want to see mega-points in the screen.
         gl_PointSize = 0.5 * viewport.y * point_size * proj_matrix[1][1];
     }
 }

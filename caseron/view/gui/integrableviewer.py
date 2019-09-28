@@ -364,24 +364,33 @@ class IntegrableViewer(QOpenGLWidget):
         ray = self.unproject(x, y, z, self.world, self.camera, self.proj)
         origin = (self.camera * self.world).inverted()[0].column(3).toVector3D()
 
+        # Orthographic projection needs a bit more of vector arithmetic.
         if self.projection_mode == 'orthographic':
+            # A click in the center of the screen gives us the perfect ray,
+            # by recycling the perspective's un-project method.
             ray = self.unproject(self.width() / 2, self.height() / 2, z,
                                  self.world, self.camera, self.proj)
 
-            # FIXME This only works when the world is not rotated
+            # But if we don't click in the exact center of screen,
+            # we need to trick the origin calculation.
+            ptc = np.array([*self.pixel_to_clip(x, y, z)])
             aspect = self.width() / self.height()
-            off_x, off_y, off_z = origin.z() * np.array([*self.pixel_to_clip(x, y, z)])
-            offs = np.array([off_x, off_y / aspect, 0.0])
+            aspect_bias = np.array([1.0, 1.0 / aspect, 0.0])
 
-            # Hack to get the origin when the click is not exactly at center of screen
-            self.camera.translate(*-offs)
+            # The idea is to strategically move the camera by an offset, so that
+            # clicking anywhere in the screen will give us the same result as
+            # clicking at the exact center of the screen from a shifted camera.
+            off_center = max(self.zCameraPos - self.zCenterPos, 0.0)
+            offset = off_center * ptc * aspect_bias
+
+            # Hack to get the origin when the click is not exactly at center of screen.
+            self.camera.translate(*-offset)
             origin = (self.camera * self.world).inverted()[0].column(3).toVector3D()
-            self.camera.translate(*offs)
+            self.camera.translate(*offset)
 
         # To Numpy array
         ray = np.array([ray.x(), ray.y(), ray.z()])
         origin = np.array([origin.x(), origin.y(), origin.z()])
-
         return ray, origin
 
     def slice_from_rays(self, origin_list: list, ray_list: list) -> None:
