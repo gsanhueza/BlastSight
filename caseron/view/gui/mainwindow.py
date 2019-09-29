@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 
-import pathlib
+from datetime import datetime
 
-from qtpy import uic
 from qtpy.QtCore import Qt
 from qtpy.QtCore import QDirIterator
 from qtpy.QtCore import QFileInfo
@@ -12,19 +11,61 @@ from qtpy.QtWidgets import QFileDialog
 from qtpy.QtWidgets import QMainWindow
 from qtpy.QtWidgets import QMessageBox
 from qtpy.QtWidgets import QTreeWidgetItemIterator
-
-from datetime import datetime
+from qtpy.QtWidgets import QHBoxLayout
+from qtpy.QtWidgets import QVBoxLayout
+from qtpy.QtWidgets import QWidget
+from qtpy.QtWidgets import QMenu
+from qtpy.QtWidgets import QMenuBar
+from qtpy.QtWidgets import QStatusBar
+from qtpy.QtWidgets import QDockWidget
 
 from .cameradialog import CameraDialog
 from .propertiesdialog import PropertiesDialog
 from .colordialog import ColorDialog
 from .loadworker import LoadWorker
 
+from .integrableviewer import IntegrableViewer
+from .toolbar import ToolBar
+from .treewidget import TreeWidget
+
 
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):
         QMainWindow.__init__(self, parent)
-        uic.loadUi(f'{pathlib.Path(__file__).parent}/UI/mainwindow.ui', self)
+
+        self.resize(1000, 500)
+        self.centralWidget = QWidget(self)
+        self.horizontalLayout = QHBoxLayout(self.centralWidget)
+        self.viewer = IntegrableViewer(self.centralWidget)
+        self.horizontalLayout.addWidget(self.viewer)
+        self.setCentralWidget(self.centralWidget)
+        self.menuBar = QMenuBar(self)
+        self.menu_File = QMenu('&File', self.menuBar)
+        self.menu_Help = QMenu('&Help', self.menuBar)
+        self.menu_View = QMenu('&View', self.menuBar)
+        self.menu_Tools = QMenu('&Tools', self.menuBar)
+        self.setMenuBar(self.menuBar)
+        self.toolbar = ToolBar(self)
+        self.addToolBar(Qt.TopToolBarArea, self.toolbar)
+        self.statusBar = QStatusBar(self)
+        self.setStatusBar(self.statusBar)
+        self.dockWidget = QDockWidget(self)
+        self.dockWidgetContents = QWidget()
+        self.verticalLayout = QVBoxLayout(self.dockWidgetContents)
+        self.treeWidget = TreeWidget(self.dockWidgetContents)
+        self.verticalLayout.addWidget(self.treeWidget)
+        self.dockWidget.setWidget(self.dockWidgetContents)
+        self.addDockWidget(Qt.DockWidgetArea(1), self.dockWidget)
+
+        self.menuBar.addAction(self.menu_File.menuAction())
+        self.menuBar.addAction(self.menu_View.menuAction())
+        self.menuBar.addAction(self.menu_Tools.menuAction())
+        self.menuBar.addAction(self.menu_Help.menuAction())
+
+        self.setWindowTitle('Caseron')
+        self.toolbar.setWindowTitle('Show toolbar')
+        self.dockWidget.setWindowTitle('Element list')
+        self.treeWidget.headerItem().setText(0, 'Elements')
 
         self.settings = QSettings('Caseron', application='caseron', parent=self)
         self.filters_dict = {
@@ -58,8 +99,8 @@ class MainWindow(QMainWindow):
         self.generate_menubar()
         self.connect_actions()
 
-        # self._title = self.windowTitle()
-        # self.viewer.signal_fps_updated.connect(lambda x: self.setWindowTitle(f'{self._title} (FPS: {x:.1f})'))
+        # self.title = self.windowTitle()
+        # self.viewer.signal_fps_updated.connect(lambda x: self.setWindowTitle(f'{self.title} (FPS: {x:.1f})'))
 
     def generate_menubar(self):
         self.menu_File.addAction(self.toolbar.actions.action_load_mesh)
@@ -136,14 +177,6 @@ class MainWindow(QMainWindow):
         self.treeWidget.signal_export_mesh.connect(self.dialog_export_mesh)
         self.treeWidget.signal_export_blocks.connect(self.dialog_export_blocks)
         self.treeWidget.signal_export_points.connect(self.dialog_export_points)
-
-    @property
-    def viewer(self):
-        return self.openglwidget
-
-    @property
-    def toolbar(self):
-        return self.mainToolBar
 
     @property
     def last_dir(self) -> str:

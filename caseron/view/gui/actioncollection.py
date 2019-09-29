@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 import pathlib
-from qtpy.QtCore import QCoreApplication
 from qtpy.QtWidgets import QAction
 from qtpy.QtGui import QIcon
 from qtpy.QtGui import QPixmap
@@ -87,26 +86,25 @@ class ActionCollection:
         self.action_take_screenshot.setIcon(QIcon(QPixmap(f'{self.icons_path}/webcam.svg')))
 
         # Shortcuts
-        _translate = QCoreApplication.translate
-        self.action_load_mesh.setShortcut(_translate("self", "Ctrl+A"))
-        self.action_load_mesh_folder.setShortcut(_translate("self", "Ctrl+Shift+A"))
-        self.action_load_blocks_folder.setShortcut(_translate("self", "Ctrl+Shift+E"))
-        self.action_load_points_folder.setShortcut(_translate("self", "Ctrl+Shift+P"))
-        self.action_quit.setShortcut(_translate("self", "Ctrl+Q"))
-        self.action_show_tree.setShortcut(_translate("self", "Ctrl+W"))
-        self.action_help.setShortcut(_translate("self", "F1"))
-        self.action_about.setShortcut(_translate("self", "?"))
-        self.action_normal_mode.setShortcut(_translate("self", "Ctrl+N"))
-        self.action_slice_mode.setShortcut(_translate("self", "Ctrl+S"))
-        self.action_measurement_mode.setShortcut(_translate("self", "Ctrl+M"))
-        self.action_load_blocks.setShortcut(_translate("self", "Ctrl+E"))
-        self.action_detection_mode.setShortcut(_translate("self", "Ctrl+D"))
-        self.action_camera_properties.setShortcut(_translate("self", "Ctrl+C"))
-        self.action_load_points.setShortcut(_translate("self", "Ctrl+P"))
-        self.action_plan_view.setShortcut(_translate("self", "Ctrl+1"))
-        self.action_north_view.setShortcut(_translate("self", "Ctrl+2"))
-        self.action_east_view.setShortcut(_translate("self", "Ctrl+3"))
-        self.action_fit_to_screen.setShortcut(_translate("self", "Ctrl+R"))
-        self.action_perspective_projection.setShortcut(_translate("self", "Ctrl+4"))
-        self.action_orthographic_projection.setShortcut(_translate("self", "Ctrl+5"))
-        self.action_take_screenshot.setShortcut(_translate("self", "Ctrl+T"))
+        self.action_load_mesh.setShortcut('Ctrl+A')
+        self.action_load_mesh_folder.setShortcut('Ctrl+Shift+A')
+        self.action_load_blocks_folder.setShortcut('Ctrl+Shift+E')
+        self.action_load_points_folder.setShortcut('Ctrl+Shift+P')
+        self.action_quit.setShortcut('Ctrl+Q')
+        self.action_show_tree.setShortcut('Ctrl+W')
+        self.action_help.setShortcut('F1')
+        self.action_about.setShortcut('?')
+        self.action_normal_mode.setShortcut('Ctrl+N')
+        self.action_slice_mode.setShortcut('Ctrl+S')
+        self.action_measurement_mode.setShortcut('Ctrl+M')
+        self.action_load_blocks.setShortcut('Ctrl+E')
+        self.action_detection_mode.setShortcut('Ctrl+D')
+        self.action_camera_properties.setShortcut('Ctrl+C')
+        self.action_load_points.setShortcut('Ctrl+P')
+        self.action_plan_view.setShortcut('Ctrl+1')
+        self.action_north_view.setShortcut('Ctrl+2')
+        self.action_east_view.setShortcut('Ctrl+3')
+        self.action_fit_to_screen.setShortcut('Ctrl+R')
+        self.action_perspective_projection.setShortcut('Ctrl+4')
+        self.action_orthographic_projection.setShortcut('Ctrl+5')
+        self.action_take_screenshot.setShortcut('Ctrl+T')
