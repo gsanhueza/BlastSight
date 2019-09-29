@@ -1,16 +1,13 @@
 #!/usr/bin/env python
 
-import pathlib
-
 from qtpy.QtCore import Qt
 from qtpy.QtCore import Signal
-from qtpy.QtGui import QIcon, QPixmap
-from qtpy.QtWidgets import QAction
 from qtpy.QtWidgets import QMenu
 from qtpy.QtWidgets import QTreeWidget
 from qtpy.QtWidgets import QAbstractItemView
 
 from .treewidgetitem import TreeWidgetItem
+from .actioncollection import ActionCollection
 
 from ..drawables.meshgl import MeshGL
 from ..drawables.blockgl import BlockGL
@@ -60,88 +57,58 @@ class TreeWidget(QTreeWidget):
 
     def show_context_menu(self, item, global_pos):
         menu = QMenu()
-
-        # Actions
-        action_show = QAction('&Show', self)
-        action_hide = QAction('&Hide', self)
-        action_delete = QAction('&Delete', self)
-        action_center_camera = QAction('&Center camera', self)
-        action_highlight = QAction('T&oggle highlighting', self)
-        action_wireframe = QAction('&Toggle wireframe', self)
-        action_properties = QAction('&Properties', self)
-        action_colors = QAction('C&olors', self)
-        action_export_mesh = QAction('&Export mesh', self)
-        action_export_blocks = QAction('Export &blocks', self)
-        action_export_points = QAction('Export &points', self)
-
-        # Icons
-        icons_path = f'{pathlib.Path(__file__).parent}/UI/icons'
-
-        action_show.setIcon(QIcon(QPixmap(f'{icons_path}/flash_on.svg')))
-        action_hide.setIcon(QIcon(QPixmap(f'{icons_path}/flash_off.svg')))
-        action_delete.setIcon(QIcon(QPixmap(f'{icons_path}/cancel.svg')))
-
-        action_highlight.setIcon(QIcon(QPixmap(f'{icons_path}/idea.svg')))
-        action_wireframe.setIcon(QIcon(QPixmap(f'{icons_path}/grid.svg')))
-
-        action_properties.setIcon(QIcon(QPixmap(f'{icons_path}/settings.svg')))
-        action_colors.setIcon(QIcon(QPixmap(f'{icons_path}/picture.svg')))
-        action_center_camera.setIcon(QIcon(QPixmap(f'{icons_path}/collect.svg')))
-
-        action_export_mesh.setIcon(QIcon(QPixmap(f'{icons_path}/export.svg')))
-        action_export_blocks.setIcon(QIcon(QPixmap(f'{icons_path}/export.svg')))
-        action_export_points.setIcon(QIcon(QPixmap(f'{icons_path}/export.svg')))
+        actions = ActionCollection(self)
 
         # Action commands
-        action_show.triggered.connect(self.show_items)
-        action_hide.triggered.connect(self.hide_items)
-        action_delete.triggered.connect(self.delete_items)
+        actions.action_show.triggered.connect(self.show_items)
+        actions.action_hide.triggered.connect(self.hide_items)
+        actions.action_delete.triggered.connect(self.delete_items)
 
-        action_highlight.triggered.connect(item.toggle_highlighting)
-        action_wireframe.triggered.connect(item.toggle_wireframe)
+        actions.action_highlight.triggered.connect(item.toggle_highlighting)
+        actions.action_wireframe.triggered.connect(item.toggle_wireframe)
 
-        action_properties.triggered.connect(lambda: self.signal_headers_triggered.emit(item.drawable.id))
-        action_colors.triggered.connect(lambda: self.signal_colors_triggered.emit(item.drawable.id))
-        action_center_camera.triggered.connect(item.center_camera)
+        actions.action_properties.triggered.connect(lambda: self.signal_headers_triggered.emit(item.id))
+        actions.action_colors.triggered.connect(lambda: self.signal_colors_triggered.emit(item.id))
+        actions.action_center_camera.triggered.connect(item.center_camera)
 
-        action_export_mesh.triggered.connect(lambda: self.signal_export_mesh.emit(item.drawable.id))
-        action_export_blocks.triggered.connect(lambda: self.signal_export_blocks.emit(item.drawable.id))
-        action_export_points.triggered.connect(lambda: self.signal_export_points.emit(item.drawable.id))
+        actions.action_export_mesh.triggered.connect(lambda: self.signal_export_mesh.emit(item.id))
+        actions.action_export_blocks.triggered.connect(lambda: self.signal_export_blocks.emit(item.id))
+        actions.action_export_points.triggered.connect(lambda: self.signal_export_points.emit(item.id))
 
         # If multiple elements are selected, we'll only show a basic menu
         if len(self.selectedItems()) > 1:
-            menu.addAction(action_show)
-            menu.addAction(action_hide)
+            menu.addAction(actions.action_show)
+            menu.addAction(actions.action_hide)
             menu.addSeparator()
-            menu.addAction(action_delete)
+            menu.addAction(actions.action_delete)
             menu.exec_(global_pos)
 
             return
 
         # Add actions depending on item type
-        menu.addAction(action_show)
-        menu.addAction(action_hide)
-        menu.addAction(action_center_camera)
+        menu.addAction(actions.action_show)
+        menu.addAction(actions.action_hide)
+        menu.addAction(actions.action_center_camera)
 
         if item.type == MeshGL:
-            menu.addAction(action_highlight)
-            menu.addAction(action_wireframe)
-            menu.addAction(action_colors)
+            menu.addAction(actions.action_highlight)
+            menu.addAction(actions.action_wireframe)
+            menu.addAction(actions.action_colors)
             menu.addSeparator()
-            menu.addAction(action_export_mesh)
+            menu.addAction(actions.action_export_mesh)
         elif item.type == LineGL:
-            menu.addAction(action_colors)
+            menu.addAction(actions.action_colors)
             menu.addSeparator()
         elif item.type == BlockGL:
-            menu.addAction(action_properties)
+            menu.addAction(actions.action_properties)
             menu.addSeparator()
-            menu.addAction(action_export_blocks)
+            menu.addAction(actions.action_export_blocks)
         elif item.type == PointGL:
-            menu.addAction(action_properties)
+            menu.addAction(actions.action_properties)
             menu.addSeparator()
-            menu.addAction(action_export_points)
+            menu.addAction(actions.action_export_points)
 
-        menu.addAction(action_delete)
+        menu.addAction(actions.action_delete)
 
         menu.exec_(global_pos)
 

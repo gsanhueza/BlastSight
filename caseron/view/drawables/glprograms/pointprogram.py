@@ -16,8 +16,8 @@ class PointProgram(ShaderProgram):
     def draw(self):
         for drawable in self.drawables:
             # We need DPI awareness for the size of the impostors
-            viewport = [self.widget.devicePixelRatio() * self.widget.width(),
-                        self.widget.devicePixelRatio() * self.widget.height()]
+            viewport = [float(self.widget.devicePixelRatio() * self.widget.width()),
+                        float(self.widget.devicePixelRatio() * self.widget.height())]
             self.update_uniform('viewport', *viewport)
             self.update_uniform('marker', drawable.element.marker_num)
             drawable.draw()
