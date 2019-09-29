@@ -150,7 +150,9 @@ class TreeWidget(QTreeWidget):
         item.center_camera()
 
     def select_item(self, row, col):
-        self.setCurrentItem(self.topLevelItem(max(min(row, self.topLevelItemCount() - 1), 0)), col)
+        row = max(min(row, self.topLevelItemCount() - 1), 0)
+        self.setCurrentItem(self.itemAt(row, col))
+        self.scrollToItem(self.currentItem(), QAbstractItemView.PositionAtCenter)
 
     def show_items(self):
         for item in self.selectedItems():

@@ -11,6 +11,7 @@ from qtpy.QtCore import QThreadPool
 from qtpy.QtWidgets import QFileDialog
 from qtpy.QtWidgets import QMainWindow
 from qtpy.QtWidgets import QMessageBox
+from qtpy.QtWidgets import QTreeWidgetItemIterator
 
 from datetime import datetime
 
@@ -125,9 +126,9 @@ class MainWindow(QMainWindow):
         # Extra actions
         self.toolbar.action_show_tree.triggered.connect(self.dockWidget.show)
 
-        self.viewer.signal_mode_updated.connect(self.statusbar_update_mode)
-        self.viewer.signal_mesh_clicked.connect(self.statusbar_update_detected)
-        self.viewer.signal_mesh_distances.connect(self.statusbar_update_distances)
+        self.viewer.signal_mode_updated.connect(self.slot_mode_updated)
+        self.viewer.signal_mesh_clicked.connect(self.slot_detected_meshes)
+        self.viewer.signal_mesh_distances.connect(self.slot_mesh_distances)
         self.viewer.signal_file_modified.connect(self.fill_tree_widget)
 
         self.treeWidget.signal_headers_triggered.connect(self.dialog_properties)
@@ -158,13 +159,13 @@ class MainWindow(QMainWindow):
     """
     Status bar updates
     """
-    def statusbar_update_loaded(self, _id: int):
+    def slot_element_loaded(self, _id: int):
         self.statusBar.showMessage(f'Loaded (id: {_id}).')
 
-    def statusbar_update_mode(self, mode: str):
+    def slot_mode_updated(self, mode: str):
         self.statusBar.showMessage(mode)
 
-    def statusbar_update_distances(self, distances: list):
+    def slot_mesh_distances(self, distances: list):
         string_builder = ''
         for _id, distance in distances:
             string_builder += f'(id: {_id}) Distance: {distance}'
@@ -172,8 +173,19 @@ class MainWindow(QMainWindow):
 
         self.statusBar.showMessage(string_builder)
 
-    def statusbar_update_detected(self, meshes: list):
-        self.statusBar.showMessage(f'Detected mesh ids: {meshes}')
+    def slot_detected_meshes(self, mesh_ids: list):
+        self.treeWidget.clearSelection()
+        it = QTreeWidgetItemIterator(self.treeWidget)
+
+        while it.value():
+            item = it.value()
+            for _id in mesh_ids:
+                if _id == item.id:
+                    item.setSelected(True)
+
+            it += 1
+
+        self.statusBar.showMessage(f'Detected mesh ids: {mesh_ids}')
 
     """
     Utilities dialogs
@@ -206,7 +218,7 @@ class MainWindow(QMainWindow):
         self.statusBar.showMessage('Loading...')
 
         worker = LoadWorker(method, path)
-        worker.signals.loaded.connect(self.statusbar_update_loaded)
+        worker.signals.loaded.connect(self.slot_element_loaded)
 
         self.threadPool.start(worker)
 
