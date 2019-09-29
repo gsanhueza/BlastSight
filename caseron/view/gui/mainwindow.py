@@ -9,7 +9,6 @@ from qtpy.QtCore import QSettings
 from qtpy.QtCore import QThreadPool
 from qtpy.QtWidgets import QFileDialog
 from qtpy.QtWidgets import QMainWindow
-from qtpy.QtWidgets import QMessageBox
 from qtpy.QtWidgets import QTreeWidgetItemIterator
 from qtpy.QtWidgets import QHBoxLayout
 from qtpy.QtWidgets import QVBoxLayout
@@ -23,6 +22,8 @@ from qtpy.QtWidgets import QApplication
 from .cameradialog import CameraDialog
 from .propertiesdialog import PropertiesDialog
 from .colordialog import ColorDialog
+from .helpdialog import HelpDialog
+from .aboutdialog import AboutDialog
 from .loadworker import LoadWorker
 
 from .integrableviewer import IntegrableViewer
@@ -364,25 +365,13 @@ class MainWindow(QMainWindow):
         self.viewer.set_measurement_mode()
 
     """
-    Slots for showing help dialogs
+    Slots for showing help/about dialogs
     """
     def slot_help(self) -> None:
-        QMessageBox.information(self,
-                                'Caseron - Help',
-                                'TO-DO: Create help message box')
+        HelpDialog(self).exec_()
 
     def slot_about(self) -> None:
-        QMessageBox.information(self,
-                                'Caseron - About',
-                                'TO-DO: Create about message box\n' +
-                                'We\'re currently using utilities from:\n' +
-                                '- pymesh (cylinder generation)\n' +
-                                '- matplotlib (hsv to rgb)\n' +
-                                '- flat color icons (from icons8.com)\n' +
-                                '- meshcut (slice mesh by a plane)\n' +
-                                '- trimesh (volume of a mesh, adapted)\n' +
-                                '- colour (parse string to color)'
-                                )
+        AboutDialog(self).exec_()
 
     """
     Events pass-through
