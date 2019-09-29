@@ -30,7 +30,7 @@ def mesh_intersection(origin: np.ndarray, ray: np.ndarray, mesh) -> np.ndarray o
     return closest
 
 
-def aabb_intersection(origin: np.ndarray, ray: np.ndarray, mesh):
+def aabb_intersection(origin: np.ndarray, ray: np.ndarray, mesh) -> bool:
     # Adapted from https://tavianator.com/fast-branchless-raybounding-box-intersections-part-2-nans/
     b_min, b_max = mesh.bounding_box
     b_diff = b_max - b_min
@@ -162,7 +162,7 @@ def slice_blocks(blocks, plane_origin: np.ndarray, plane_normal: np.ndarray) -> 
     return vertices[mask], values[mask]
 
 
-def hsl_to_hsv(h, s, l):
+def hsl_to_hsv(h: float, s: float, l: float) -> tuple:
     # Taken and adapted from https://gist.github.com/mathebox/e0805f72e7db3269ec22
     v = (2 * l + s * (1 - abs(2 * l - 1))) / 2
     s = 2 * (v - l) / max(v, 1e-12)

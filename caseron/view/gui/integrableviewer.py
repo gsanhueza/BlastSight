@@ -88,23 +88,23 @@ class IntegrableViewer(QOpenGLWidget):
         # self.projection_mode = 'orthographic'
 
     @property
-    def model(self):
+    def model(self) -> Model:
         return self._model
 
     @model.setter
-    def model(self, _model):
+    def model(self, _model) -> None:
         self._model = _model
 
     @property
-    def camera(self):
+    def camera(self) -> QMatrix4x4:
         return self._camera
 
     @property
-    def world(self):
+    def world(self) -> QMatrix4x4:
         return self._world
 
     @property
-    def proj(self):
+    def proj(self) -> QMatrix4x4:
         return self._proj
 
     @property
@@ -179,13 +179,13 @@ class IntegrableViewer(QOpenGLWidget):
     """
     Export methods
     """
-    def export_mesh(self, path, _id):
+    def export_mesh(self, path, _id) -> None:
         self.model.export_mesh(path, _id)
 
-    def export_blocks(self, path, _id):
+    def export_blocks(self, path, _id) -> None:
         self.model.export_blocks(path, _id)
 
-    def export_points(self, path, _id):
+    def export_points(self, path, _id) -> None:
         self.model.export_points(path, _id)
 
     """
@@ -345,9 +345,10 @@ class IntegrableViewer(QOpenGLWidget):
         if save_path is not None:
             self.get_pixmap().save(save_path)
 
-    def pixel_to_clip(self, _x, _y, _z):
-        # Click at bottom-left of screen => (-1.0, -1.0)
-        # Click at top-right of screen => (1.0, 1.0)
+    def screen_to_ndc(self, _x, _y, _z) -> tuple:
+        # Click at bottom-left of screen => (-1.0, -1.0, z)
+        # Click at top-right of screen => (1.0, 1.0, z)
+        # But we can't really know where's z, so we just return 1.0
         x = (2.0 * _x / self.width()) - 1.0
         y = 1.0 - (2.0 * _y / self.height())
         z = 1.0
@@ -355,7 +356,7 @@ class IntegrableViewer(QOpenGLWidget):
 
     def unproject(self, _x, _y, _z, model, view, proj) -> QVector3D:
         # Adapted from http://antongerdelan.net/opengl/raycasting.html
-        x, y, z = self.pixel_to_clip(_x, _y, _z)
+        x, y, z = self.screen_to_ndc(_x, _y, _z)
 
         ray_eye = proj.inverted()[0] * QVector4D(x, y, -1.0, 1.0)
         ray_eye = QVector4D(ray_eye.x(), ray_eye.y(), -1.0, 0.0)
@@ -378,7 +379,7 @@ class IntegrableViewer(QOpenGLWidget):
 
             # But if we don't click in the exact center of screen,
             # we need to trick the origin calculation.
-            ptc = np.array([*self.pixel_to_clip(x, y, z)])
+            ndc = np.array([*self.screen_to_ndc(x, y, z)])
             aspect = self.width() / self.height()
             aspect_bias = np.array([1.0, 1.0 / aspect, 0.0])
 
@@ -386,7 +387,7 @@ class IntegrableViewer(QOpenGLWidget):
             # clicking anywhere in the screen will give us the same result as
             # clicking at the exact center of the screen from a shifted camera.
             off_center = max(self.zCameraPos - self.zCenterPos, 0.0)
-            offset = off_center * ptc * aspect_bias
+            offset = off_center * ndc * aspect_bias
 
             # Hack to get the origin when the click is not exactly at center of screen.
             self.camera.translate(*-offset)
@@ -485,7 +486,7 @@ class IntegrableViewer(QOpenGLWidget):
     """
     Controller
     """
-    def set_controller_mode(self, mode: str):
+    def set_controller_mode(self, mode: str) -> None:
         controllers = {
             'normal': NormalMode,
             'detection': DetectionMode,
@@ -509,11 +510,11 @@ class IntegrableViewer(QOpenGLWidget):
     def set_measurement_mode(self) -> None:
         self.set_controller_mode('measurement')
 
-    def perspective_projection(self):
+    def perspective_projection(self) -> None:
         self.projection_mode = 'perspective'
         self.update()
 
-    def orthographic_projection(self):
+    def orthographic_projection(self) -> None:
         self.projection_mode = 'orthographic'
         self.update()
 
@@ -547,7 +548,7 @@ class IntegrableViewer(QOpenGLWidget):
             else:
                 self.mesh_by_path(path)
 
-    def _load_as_dir(self, path):
+    def _load_as_dir(self, path: str) -> None:
         it = QDirIterator(path, QDirIterator.Subdirectories)
         path_list = []
 
