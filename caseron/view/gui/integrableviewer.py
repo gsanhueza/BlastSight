@@ -217,7 +217,7 @@ class IntegrableViewer(QOpenGLWidget):
             self.delete(_id)
 
     def camera_at(self, _id: int) -> None:
-        self.fit_boundaries_to_screen(*self.get_drawable(_id).element.bounding_box)
+        self.fit_boundaries(*self.get_drawable(_id).element.bounding_box)
         self.update()
 
     def plan_view(self) -> None:
@@ -232,23 +232,25 @@ class IntegrableViewer(QOpenGLWidget):
         self.xCenterRot, self.yCenterRot, self.zCenterRot = [270.0, 0.0, 0.0]
         self.update()
 
-    def fit_boundaries_to_screen(self, min_bound: np.ndarray, max_bound: np.ndarray) -> None:
+    def fit_boundaries(self, min_bound: np.ndarray, max_bound: np.ndarray) -> None:
         center = (min_bound + max_bound) / 2
         self.rotation_center = center
         self.camera_position = center
 
-        # Put the camera in a position that allow us to see the element
-        # A long trigonometric calculation got us this result.
+        # Put the camera in a position that allow us to see between the boundaries.
+        # In perspective projection, we need a clever trigonometric calculation.
         md = np.max(np.diff([min_bound, max_bound], axis=0))
         aspect = self.width() / self.height()
         fov_rad = self.fov * np.pi / 180.0
-
-        if self.projection_mode == 'orthographic':
-            fov_rad = np.pi / 2.0
-
         dist = (md / np.tan(fov_rad / 2) + md) / 2.0
+        camera_shift = dist * max(1.0, 1.0 / aspect)
 
-        self.zCameraPos += 1.1 * dist / max(min(1.0, aspect), 1e-12)
+        # But in orthographic projection, it's more direct.
+        if self.projection_mode == 'orthographic':
+            dist = md / 2
+            camera_shift = dist * max(1.0, aspect)
+
+        self.zCameraPos += 1.1 * camera_shift
         self.update()
 
     def fit_to_screen(self) -> None:
@@ -265,7 +267,7 @@ class IntegrableViewer(QOpenGLWidget):
             min_all = np.min((min_all, min_bound), axis=0)
             max_all = np.max((max_all, max_bound), axis=0)
 
-        self.fit_boundaries_to_screen(min_all, max_all)
+        self.fit_boundaries(min_all, max_all)
         self.update()
 
     """
@@ -429,6 +431,7 @@ class IntegrableViewer(QOpenGLWidget):
                         values=values,
                         vmin=block.vmin,
                         vmax=block.vmax,
+                        colormap=block.colormap,
                         name=f'BLOCKSLICE_{block.name}',
                         extension=block.extension,
                         block_size=block.block_size,
