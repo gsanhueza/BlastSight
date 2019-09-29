@@ -18,6 +18,7 @@ from qtpy.QtWidgets import QMenu
 from qtpy.QtWidgets import QMenuBar
 from qtpy.QtWidgets import QStatusBar
 from qtpy.QtWidgets import QDockWidget
+from qtpy.QtWidgets import QApplication
 
 from .cameradialog import CameraDialog
 from .propertiesdialog import PropertiesDialog
@@ -32,8 +33,8 @@ from .treewidget import TreeWidget
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):
         QMainWindow.__init__(self, parent)
+        self.resize(QApplication.desktop().width() / 2, QApplication.desktop().height() / 2)
 
-        self.resize(1000, 500)
         self.centralWidget = QWidget(self)
         self.horizontalLayout = QHBoxLayout(self.centralWidget)
         self.viewer = IntegrableViewer(self.centralWidget)
