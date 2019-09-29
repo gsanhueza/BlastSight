@@ -16,7 +16,8 @@ from qtpy.QtGui import QVector3D
 from qtpy.QtGui import QVector4D
 from qtpy.QtWidgets import QOpenGLWidget
 
-from ..drawables.glconstantcollection import GLConstantCollection
+from ..drawables.glaxiscollection import GLAxisCollection
+from ..drawables.glbackgroundcollection import GLBackgroundCollection
 from ..drawables.gldrawablecollection import GLDrawableCollection
 
 from ..drawables.axisgl import AxisGL
@@ -60,11 +61,12 @@ class IntegrableViewer(QOpenGLWidget):
         self.set_normal_mode()
 
         # Drawable elements
-        self.constant_collection = GLConstantCollection(self)
+        self.axis_collection = GLAxisCollection(self)
+        self.background_collection = GLBackgroundCollection(self)
         self.drawable_collection = GLDrawableCollection(self)
 
-        self.constant_collection.add(BackgroundGL(NullElement(id='BG')))
-        self.constant_collection.add(AxisGL(NullElement(id='AXIS')))
+        self.axis_collection.add(AxisGL(NullElement(id='AXIS')))
+        self.background_collection.add(BackgroundGL(NullElement(id='BG')))
 
         # Camera/World/Projection
         self._camera = QMatrix4x4()
@@ -308,8 +310,9 @@ class IntegrableViewer(QOpenGLWidget):
 
         # Draw every GLDrawable (meshes, block models, etc)
         glEnable(GL_BLEND)
-        self.constant_collection.draw(self.proj, self.camera, self.world)
+        self.background_collection.draw(self.proj, self.camera, self.world)
         self.drawable_collection.draw(self.proj, self.camera, self.world)
+        self.axis_collection.draw(self.proj, self.camera, self.world)
 
         # QPainter can draw *after* OpenGL finishes
         self.current_mode.overpaint(self)
