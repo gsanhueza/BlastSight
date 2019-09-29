@@ -4,7 +4,6 @@ from qtpy.QtCore import Qt
 from qtpy.QtWidgets import QVBoxLayout
 from qtpy.QtWidgets import QWidget
 
-from .actioncollection import ActionCollection
 from .toolbar import ToolBar
 from .integrableviewer import IntegrableViewer
 from .cameradialog import CameraDialog
@@ -16,8 +15,8 @@ class Container(QWidget):
         QWidget.__init__(self, parent)
         self.setAcceptDrops(True)
 
-        self.actions = ActionCollection(self)
         self.toolbar = ToolBar(self)
+        self.actions = self.toolbar.action_collection
         self.viewer = IntegrableViewer(self)
         self.treeWidget = TreeWidget()
         self.treeWidget.setWindowTitle('Drawables')
