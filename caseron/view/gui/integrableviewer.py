@@ -82,7 +82,6 @@ class IntegrableViewer(QOpenGLWidget):
 
         # FPS Counter
         self.fps_counter = FPSCounter()
-        self.signal_fps_updated.connect(self.print_fps)
 
         # Extra information
         self.fov = 45.0
@@ -335,11 +334,6 @@ class IntegrableViewer(QOpenGLWidget):
     """
     Utilities
     """
-    @staticmethod
-    def print_fps(fps) -> None:
-        print(f'               \r', end='')
-        print(f'FPS: {fps:.1f} \r', end='')
-
     def get_pixmap(self) -> QPixmap:
         pixmap = QPixmap(self.size())
         self.render(pixmap, QPoint(), QRegion(self.rect()))

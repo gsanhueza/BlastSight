@@ -169,6 +169,7 @@ class MainWindow(QMainWindow):
         # Extra actions
         self.toolbar.action_collection.action_show_tree.triggered.connect(self.dockWidget.show)
 
+        self.viewer.signal_fps_updated.connect(self.print_fps)
         self.viewer.signal_mode_updated.connect(self.slot_mode_updated)
         self.viewer.signal_mesh_clicked.connect(self.slot_detected_meshes)
         self.viewer.signal_mesh_distances.connect(self.slot_mesh_distances)
@@ -192,6 +193,11 @@ class MainWindow(QMainWindow):
 
     def fill_tree_widget(self) -> None:
         self.treeWidget.fill_from_viewer(self.viewer)
+
+    @staticmethod
+    def print_fps(fps) -> None:
+        print(f'               \r', end='')
+        print(f'FPS: {fps:.1f} \r', end='')
 
     """
     Status bar updates
