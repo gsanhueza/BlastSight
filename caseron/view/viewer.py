@@ -3,7 +3,9 @@
 import sys
 
 from qtpy.QtCore import Qt
+from qtpy.QtCore import QTimer
 from qtpy.QtWidgets import QApplication
+
 from .gui.integrableviewer import IntegrableViewer
 
 
@@ -13,8 +15,14 @@ class Viewer(IntegrableViewer):
         super().__init__()
         self.setWindowTitle('Caseron (Viewer)')
 
-    def show(self):
+    def show(self, detached: bool = False) -> None:
         super().show()
+
+        if detached:
+            timer = QTimer()
+            timer.timeout.connect(lambda: self.app.quit())
+            timer.start(100)
+
         self.app.exec_()
 
     def dragEnterEvent(self, event, *args, **kwargs) -> None:
@@ -24,8 +32,11 @@ class Viewer(IntegrableViewer):
         super().dropEvent(event, *args, **kwargs)
         self.camera_at(self.last_id)
 
-    def keyPressEvent(self, event):
-        if event.key() == Qt.Key_Delete and self.last_id >= 0:
-            self.delete(self.last_id)
-        elif event.key() == Qt.Key_T:
-            self.take_screenshot()
+    def keyPressEvent(self, event) -> None:
+        shortcut_commands_dict = {
+            Qt.Key_Delete: lambda: self.delete(self.last_id),
+            Qt.Key_Return: lambda: self.fit_to_screen(),
+        }
+
+        # Execute command based on event.key()
+        shortcut_commands_dict.get(event.key(), lambda: None)()
