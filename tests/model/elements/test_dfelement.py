@@ -198,17 +198,17 @@ class TestDFElement:
         for prop in ['alpha', 'color']:
             assert prop in element.exportable_properties
 
-    def test_hacky_utilities(self):
+    def test_getattr_setattr(self):
         element = DFElement(vertices=[[0, 1, 2]])
         assert element.alpha == 1.0
-        assert element.get_property('alpha') == 1.0
+        assert getattr(element, 'alpha') == 1.0
 
-        element.set_property('alpha', 0.8)
+        setattr(element, 'alpha', 0.8)
         assert element.alpha == 0.8
-        assert element.get_property('alpha') == 0.8
+        assert getattr(element, 'alpha') == 0.8
 
         with pytest.raises(Exception):
-            element.set_property('wrong', 0.0)
+            setattr(element, 'wrong', 0.0)
 
         with pytest.raises(Exception):
-            element.get_property('wrong')
+            getattr(element, 'wrong')

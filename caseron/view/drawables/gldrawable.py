@@ -18,11 +18,13 @@ class GLDrawable(object):
     def __dir__(self):
         # Hack to expose GLDrawable's attributes AND self.element's attributes
         # as if they were GLDrawable's attributes.
+        # https://stackoverflow.com/q/15507848
         return sorted(set(dir(type(self)) + list(self.__dict__.keys()) + dir(self.element)))
 
     def __getattribute__(self, attr):
         # Hack to search our attributes.
         # If not found, search self.element's attributes.
+        # https://stackoverflow.com/a/2405617
         try:
             return object.__getattribute__(self, attr)
         except AttributeError:

@@ -37,7 +37,7 @@ class PropertiesDialog(QDialog):
         self.tableWidget_properties.setVerticalHeaderLabels(element.customizable_properties)
 
         for i, k in enumerate(element.customizable_properties):
-            v = element.get_property(k)
+            v = getattr(element, k)
             text = str(v.tolist()) if type(v) is np.ndarray else str(v)
             self.tableWidget_properties.setItem(i, 0, QTableWidgetItem(text))
 
@@ -54,12 +54,12 @@ class PropertiesDialog(QDialog):
             k = self.tableWidget_properties.verticalHeaderItem(i).text()
             v = self.tableWidget_properties.item(i, 0).text()
             try:
-                element.set_property(k, float(v))
+                setattr(element, k, float(v))
             except ValueError:  # Element might be a list or string
-                try:
-                    element.set_property(k, json.loads(v))
+                try:  # Element is a list
+                    setattr(element, k, json.loads(v))
                 except json.decoder.JSONDecodeError:  # Element is a string
-                    element.set_property(k, v)
+                    setattr(element, k, v)
             except KeyError:  # Element clearly is not a property
                 print(f'{k} property does not exist.')
 
@@ -85,15 +85,3 @@ class PropertiesDialog(QDialog):
         )
 
         super().show()
-
-    def comboBoxChanged(self, _):
-        # We'll disable the OK button unless all the values are set
-
-        x_ready = bool(self.comboBox_x.currentText())
-        y_ready = bool(self.comboBox_y.currentText())
-        z_ready = bool(self.comboBox_z.currentText())
-        val_ready = bool(self.comboBox_values.currentText())
-
-        enable_ok = x_ready and y_ready and z_ready and val_ready
-
-        self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(enable_ok)

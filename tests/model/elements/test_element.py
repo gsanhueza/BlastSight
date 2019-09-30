@@ -120,21 +120,6 @@ class TestElement:
         for prop in ['alpha', 'color']:
             assert prop in element.customizable_properties
 
-    def test_hacky_utilities(self):
-        element = Element(vertices=[[0, 1, 2]])
-        assert element.alpha == 1.0
-        assert element.get_property('alpha') == 1.0
-
-        element.set_property('alpha', 0.8)
-        assert element.alpha == 0.8
-        assert element.get_property('alpha') == 0.8
-
-        with pytest.raises(Exception):
-            element.set_property('wrong', 0.0)
-
-        with pytest.raises(Exception):
-            element.get_property('wrong')
-
     def test_center_centroid(self):
         element = Element(vertices=[[0, 1, 2], [3, 4, 5], [3, 4, 5]])
         assert element.center[0] == 1.5
@@ -144,3 +129,18 @@ class TestElement:
         assert element.centroid[0] == 2.0
         assert element.centroid[1] == 3.0
         assert element.centroid[2] == 4.0
+
+    def test_getattr_setattr(self):
+        element = Element(vertices=[[0, 1, 2]])
+        assert element.alpha == 1.0
+        assert getattr(element, 'alpha') == 1.0
+
+        setattr(element, 'alpha', 0.8)
+        assert element.alpha == 0.8
+        assert getattr(element, 'alpha') == 0.8
+
+        with pytest.raises(Exception):
+            setattr(element, 'wrong', 0.0)
+
+        with pytest.raises(Exception):
+            getattr(element, 'wrong')

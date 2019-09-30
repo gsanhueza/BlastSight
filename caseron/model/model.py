@@ -90,7 +90,7 @@ class Model:
         data = element.data
         properties = {}
         for k in element.exportable_properties:
-            properties[k] = element.get_property(k)
+            properties[k] = getattr(element, k)
 
         self.get_parser(ext).save_file(path=path, data=data, properties=properties)
 

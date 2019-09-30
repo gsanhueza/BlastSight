@@ -133,7 +133,7 @@ def slice_blocks(blocks, plane_origin: np.ndarray, plane_normal: np.ndarray) -> 
     But our points are blocks (they have 3D dimensions in `block_size`).
     That means we have to tolerate more points, so we create a threshold.
 
-    *** Plane Inequation: abs(ax + by + cz + d) < threshold ***
+    *** Plane Inequation: abs(ax + by + cz + d) <= threshold ***
 
     We need to know how inclined is the plane normal to know our threshold.
     Let's say our block_size is [10, 10, 10] (half_block is [5, 5, 5]).
