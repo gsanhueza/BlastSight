@@ -80,6 +80,7 @@ class MeshElement(Element):
     """
     Utilities
     """
+    @property
     def volume(self):
         # Idea from https://www.geometrictools.com/Documentation/PolyhedralMassProperties.pdf
         # Optimizations taken from https://github.com/mikedh/trimesh/blob/master/trimesh/triangles.py
