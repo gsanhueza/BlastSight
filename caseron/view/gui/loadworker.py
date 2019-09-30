@@ -1,11 +1,6 @@
 #!/usr/bin/env python
 
-from qtpy.QtCore import QRunnable, Signal, QObject
-
-
-class WorkerSignals(QObject):
-    success = Signal(int)
-    failure = Signal()
+from qtpy.QtCore import QRunnable
 
 
 class LoadWorker(QRunnable):
@@ -13,11 +8,6 @@ class LoadWorker(QRunnable):
         super().__init__()
         self.method = method
         self.path = path
-        self.signals = WorkerSignals()
 
     def run(self):
-        drawable = self.method(self.path)
-        if drawable:
-            self.signals.success.emit(drawable.id)
-        else:
-            self.signals.failure.emit()
+        self.method(self.path)

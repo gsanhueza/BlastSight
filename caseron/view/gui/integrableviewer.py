@@ -42,6 +42,8 @@ from ...model.elements.nullelement import NullElement
 
 class IntegrableViewer(QOpenGLWidget):
     # Signals
+    signal_load_success = Signal(int)
+    signal_load_failure = Signal()
     signal_file_modified = Signal()
     signal_fps_updated = Signal(float)
     signal_mesh_clicked = Signal(object)
@@ -144,11 +146,13 @@ class IntegrableViewer(QOpenGLWidget):
             drawable = drawable_type(element, *args, **kwargs)
             self.drawable_collection.add(drawable)
 
+            self.signal_load_success.emit(drawable.id)
             self.signal_file_modified.emit()
             self.update()
 
             return drawable
         except Exception:
+            self.signal_load_failure.emit()
             traceback.print_exc()
             return None
 

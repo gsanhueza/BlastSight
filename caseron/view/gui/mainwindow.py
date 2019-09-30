@@ -173,6 +173,8 @@ class MainWindow(QMainWindow):
         self.viewer.signal_mesh_clicked.connect(self.slot_detected_meshes)
         self.viewer.signal_mesh_distances.connect(self.slot_mesh_distances)
         self.viewer.signal_file_modified.connect(self.fill_tree_widget)
+        self.viewer.signal_load_success.connect(self.slot_element_loaded)
+        self.viewer.signal_load_failure.connect(self.slot_element_failed)
 
         self.treeWidget.signal_headers_triggered.connect(self.dialog_properties)
         self.treeWidget.signal_colors_triggered.connect(self.dialog_color)
@@ -256,9 +258,6 @@ class MainWindow(QMainWindow):
         self.statusBar.showMessage('Loading...')
 
         worker = LoadWorker(method, path)
-        worker.signals.success.connect(self.slot_element_loaded)
-        worker.signals.failure.connect(self.slot_element_failed)
-
         self.threadPool.start(worker)
 
     def _load_mesh(self, path: str) -> None:

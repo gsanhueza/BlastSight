@@ -118,7 +118,7 @@ class ActionCollection:
 
         self.action_fit_to_screen = QAction('&Fit to screen', parent)
         self.action_fit_to_screen.setIcon(QIcon(f'{self.icons_path}/globe.svg'))
-        self.action_fit_to_screen.setShortcut('Ctrl+R')
+        self.action_fit_to_screen.setShortcut('Ctrl+F')
 
         self.action_perspective_projection = QAction('P&erspective projection', parent)
         self.action_perspective_projection.setIcon(QIcon(f'{self.icons_path}/ruler.svg'))
