@@ -22,7 +22,14 @@ class TestAutoDrawable:
     element.id = 0
 
     def test_base(self):
-        assert GLDrawable(self.element)
+        drawable = GLDrawable(self.element)
+        assert drawable
+
+        # This is a hack in GLDrawable.
+        # Check its source code to understand what and why we're testing this.
+        assert len(dir(drawable)) >= len(dir(self.element))
+        for dir_e in dir(self.element):
+            assert dir_e in dir(drawable)
 
     def test_drawable_id(self):
         drawable = GLDrawable(self.element)

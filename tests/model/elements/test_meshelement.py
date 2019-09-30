@@ -131,6 +131,6 @@ class TestMeshElement:
                                        ])
 
         epsilon = 0.00001
-        volume = element.volume()
+        volume = element.volume
 
         assert abs(volume - 8.0) < epsilon

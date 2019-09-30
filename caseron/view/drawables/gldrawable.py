@@ -3,10 +3,10 @@
 from OpenGL.GL import *
 
 
-class GLDrawable:
+class GLDrawable(object):
     def __init__(self, element, *args, **kwargs):
         assert element
-        self._element = element
+        self.element = element
 
         self.vaos = []
         self.vbos = []
@@ -15,23 +15,24 @@ class GLDrawable:
         self.is_highlighted = False
         self.is_visible = True
 
-    @property
-    def element(self):
-        return self._element
+    def __dir__(self):
+        # Hack to expose GLDrawable's attributes AND self.element's attributes
+        # as if they were GLDrawable's attributes.
+        return sorted(set(dir(type(self)) + list(self.__dict__.keys()) + dir(self.element)))
+
+    def __getattribute__(self, attr):
+        # Hack to search our attributes.
+        # If not found, search self.element's attributes.
+        try:
+            return object.__getattribute__(self, attr)
+        except AttributeError:
+            return self.element.__getattribute__(attr)
 
     @property
     def vao(self) -> int:
         # We already know that we have only one VAO.
         # But cleanup is easier if we have the VAO in a list.
         return self.vaos[-1]
-
-    @property
-    def id(self) -> int:
-        return self.element.id
-
-    @id.setter
-    def id(self, _id: int) -> None:
-        self.element.id = _id
 
     def initialize(self) -> None:
         self.setup_attributes()
