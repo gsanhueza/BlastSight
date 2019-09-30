@@ -197,6 +197,9 @@ class MainWindow(QMainWindow):
     def slot_element_loaded(self, _id: int):
         self.statusBar.showMessage(f'Loaded (id: {_id}).')
 
+    def slot_element_failed(self):
+        self.statusBar.showMessage(f'Failed to load.')
+
     def slot_mode_updated(self, mode: str):
         self.statusBar.showMessage(mode)
 
@@ -253,7 +256,8 @@ class MainWindow(QMainWindow):
         self.statusBar.showMessage('Loading...')
 
         worker = LoadWorker(method, path)
-        worker.signals.loaded.connect(self.slot_element_loaded)
+        worker.signals.success.connect(self.slot_element_loaded)
+        worker.signals.failure.connect(self.slot_element_failed)
 
         self.threadPool.start(worker)
 
