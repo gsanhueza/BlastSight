@@ -145,9 +145,7 @@ class TreeWidget(QTreeWidget):
             return
 
         shortcut_commands_dict = {
-            Qt.Key_S: self.show_items,
-            Qt.Key_H: self.hide_items,
-            Qt.Key_T: self.toggle_items_visibility,
+            Qt.Key_Space: self.toggle_items_visibility,
             Qt.Key_Delete: self.delete_items,
             Qt.Key_Enter: lambda: self.center_camera(self.currentItem()),
             Qt.Key_Return: lambda: self.center_camera(self.currentItem()),

@@ -65,7 +65,7 @@ class MainWindow(QMainWindow):
         self.menuBar.addAction(self.menu_Help.menuAction())
 
         self.setWindowTitle('Caseron')
-        self.toolbar.setWindowTitle('Show toolbar')
+        self.toolbar.setWindowTitle('Toolbar')
         self.dockWidget.setWindowTitle('Element list')
         self.treeWidget.headerItem().setText(0, 'Elements')
 
