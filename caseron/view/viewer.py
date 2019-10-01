@@ -15,15 +15,24 @@ class Viewer(IntegrableViewer):
         super().__init__()
         self.setWindowTitle('Caseron (Viewer)')
 
-    def show(self, detached: bool = False) -> None:
+    def show(self, detached: bool = False, timer: int = 0) -> None:
         super().show()
 
         if detached:
-            timer = QTimer()
-            timer.timeout.connect(lambda: self.app.quit())
-            timer.start(100)
+            # This allow us to detach the widget (convenient if running
+            # the viewer in an interactive console).
+            # WARNING: On PySide2, the viewer WILL freeze, but as it's detached,
+            # you can manually close it with `viewer.close()`.
+            QTimer.singleShot(timer, self.app.quit)
 
         self.app.exec_()
+
+    def take_screenshot(self, save_path=None, width=None, height=None) -> None:
+        width = width or self.width()
+        height = height or self.height()
+
+        self.resize(width, height)
+        super().take_screenshot(save_path)
 
     def dragEnterEvent(self, event, *args, **kwargs) -> None:
         super().dragEnterEvent(event, *args, **kwargs)
