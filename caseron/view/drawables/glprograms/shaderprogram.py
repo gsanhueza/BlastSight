@@ -32,23 +32,20 @@ class ShaderProgram:
 
         self.shader_program.link()
 
-    def enable_vertex_shader(self, filename='vertex.glsl'):
-        shader = QOpenGLShader(QOpenGLShader.Vertex)
+    def _enable_shader(self, shader_type, filename: str):
+        shader = QOpenGLShader(shader_type)
         shader.compileSourceFile(f'{self.shader_dir}/{self.base_name}/{filename}')
         self.shader_program.addShader(shader)
         return shader
+
+    def enable_vertex_shader(self, filename='vertex.glsl'):
+        return self._enable_shader(QOpenGLShader.Vertex, filename)
 
     def enable_fragment_shader(self, filename='fragment.glsl'):
-        shader = QOpenGLShader(QOpenGLShader.Fragment)
-        shader.compileSourceFile(f'{self.shader_dir}/{self.base_name}/{filename}')
-        self.shader_program.addShader(shader)
-        return shader
+        return self._enable_shader(QOpenGLShader.Fragment, filename)
 
     def enable_geometry_shader(self, filename='geometry.glsl'):
-        shader = QOpenGLShader(QOpenGLShader.Geometry)
-        shader.compileSourceFile(f'{self.shader_dir}/{self.base_name}/{filename}')
-        self.shader_program.addShader(shader)
-        return shader
+        return self._enable_shader(QOpenGLShader.Geometry, filename)
 
     def add_uniform_loc(self, loc_str) -> None:
         self.uniform_locs[loc_str] = self.shader_program.uniformLocation(loc_str)
