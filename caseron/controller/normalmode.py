@@ -19,14 +19,15 @@ class NormalMode(Mode):
 
         dx = event.x() - self.lastPos.x()
         dy = event.y() - self.lastPos.y()
+        smoothness = max(widget.smoothness, 0.1)
 
         widget.world.setToIdentity()
         if event.buttons() == Qt.LeftButton:
-            self.set_x_rotation(widget, widget.xCenterRot + dy)
-            self.set_z_rotation(widget, widget.zCenterRot + dx)
+            self.set_x_rotation(widget, widget.xCenterRot + dy / smoothness)
+            self.set_z_rotation(widget, widget.zCenterRot + dx / smoothness)
         elif event.buttons() == Qt.RightButton:
-            self.set_x_rotation(widget, widget.xCenterRot + dy)
-            self.set_y_rotation(widget, widget.yCenterRot + dx)
+            self.set_x_rotation(widget, widget.xCenterRot + dy / smoothness)
+            self.set_y_rotation(widget, widget.yCenterRot + dx / smoothness)
         elif event.buttons() == Qt.MiddleButton:
             off_center = max(widget.zCameraPos - widget.zCenterPos, 0.0)
             distance_x = off_center / widget.width()

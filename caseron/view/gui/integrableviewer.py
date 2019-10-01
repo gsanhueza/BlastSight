@@ -12,7 +12,6 @@ from qtpy.QtCore import QFileInfo
 from qtpy.QtGui import QMatrix4x4
 from qtpy.QtGui import QPixmap
 from qtpy.QtGui import QRegion
-from qtpy.QtGui import QVector3D
 from qtpy.QtGui import QVector4D
 from qtpy.QtWidgets import QOpenGLWidget
 
@@ -55,7 +54,7 @@ class IntegrableViewer(QOpenGLWidget):
         self.setAcceptDrops(True)
 
         # Model
-        self._model = Model()
+        self.model = Model()
 
         # Controller mode
         self.signal_mode_updated.connect(lambda m: print(f'MODE: {m}'))
@@ -71,46 +70,33 @@ class IntegrableViewer(QOpenGLWidget):
         self.background_collection.add(BackgroundGL(NullElement(id='BG')))
 
         # Camera/World/Projection
-        self._camera = QMatrix4x4()
-        self._world = QMatrix4x4()
-        self._proj = QMatrix4x4()
+        self.camera = QMatrix4x4()
+        self.world = QMatrix4x4()
+        self.proj = QMatrix4x4()
+
+        # FPS Counter
+        self.fps_counter = FPSCounter()
 
         # Initial positions and rotations
         self.rotation_center = [0.0, 0.0, 0.0]
         self.rotation_angle = [0.0, 0.0, 0.0]
         self.camera_position = [0.0, 0.0, 200.0]
 
-        # FPS Counter
-        self.fps_counter = FPSCounter()
-
         # Extra information
         self.fov = 45.0
-        self.projection_mode = 'perspective'
-        # self.projection_mode = 'orthographic'
+        self.smoothness = 1.0  # Bigger => smoother (but slower) rotations
+        self.projection_mode = 'perspective'  # 'perspective'/'orthographic'
 
-    @property
-    def model(self) -> Model:
-        return self._model
-
-    @model.setter
-    def model(self, _model) -> None:
-        self._model = _model
-
-    @property
-    def camera(self) -> QMatrix4x4:
-        return self._camera
-
-    @property
-    def world(self) -> QMatrix4x4:
-        return self._world
-
-    @property
-    def proj(self) -> QMatrix4x4:
-        return self._proj
-
+    """
+    Properties
+    """
     @property
     def last_id(self) -> int:
         return self.drawable_collection.last_id
+
+    @property
+    def off_center(self) -> np.ndarray:
+        return self.camera_position - self.rotation_center
 
     @property
     def camera_position(self) -> np.ndarray:
@@ -133,8 +119,19 @@ class IntegrableViewer(QOpenGLWidget):
         self.xCenterRot, self.yCenterRot, self.zCenterRot = rot
 
     @rotation_center.setter
-    def rotation_center(self, _center: list) -> None:
-        self.xCenterPos, self.yCenterPos, self.zCenterPos = _center
+    def rotation_center(self, center: list) -> None:
+        self.xCenterPos, self.yCenterPos, self.zCenterPos = center
+
+    """
+    Axis/Background
+    """
+    @property
+    def axis(self):
+        return self.axis_collection.get('AXIS')
+
+    @property
+    def background(self):
+        return self.background_collection.get('BG')
 
     """
     Load methods
@@ -244,15 +241,15 @@ class IntegrableViewer(QOpenGLWidget):
         self.update()
 
     def plan_view(self) -> None:
-        self.xCenterRot, self.yCenterRot, self.zCenterRot = [0.0, 0.0, 0.0]
+        self.rotation_angle = [0.0, 0.0, 0.0]
         self.update()
 
     def north_view(self) -> None:
-        self.xCenterRot, self.yCenterRot, self.zCenterRot = [270.0, 0.0, 270.0]
+        self.rotation_angle = [270.0, 0.0, 270.0]
         self.update()
 
     def east_view(self) -> None:
-        self.xCenterRot, self.yCenterRot, self.zCenterRot = [270.0, 0.0, 0.0]
+        self.rotation_angle = [270.0, 0.0, 0.0]
         self.update()
 
     def fit_boundaries(self, min_bound: np.ndarray, max_bound: np.ndarray) -> None:
@@ -345,7 +342,7 @@ class IntegrableViewer(QOpenGLWidget):
         if self.projection_mode == 'perspective':
             self.proj.perspective(self.fov, (w / h), 1.0, 10000.0)
         elif self.projection_mode == 'orthographic':
-            z = max(self.zCameraPos - self.zCenterPos, 0.0)
+            z = self.off_center[2]
             aspect = w / h
             self.proj.ortho(-z, z, -z / aspect, z / aspect, 0.0, 10000.0)
 
@@ -361,16 +358,16 @@ class IntegrableViewer(QOpenGLWidget):
         if save_path is not None:
             self.get_pixmap().save(save_path)
 
-    def screen_to_ndc(self, _x, _y, _z) -> tuple:
+    def screen_to_ndc(self, _x, _y, _z) -> np.ndarray:
         # Click at bottom-left of screen => (-1.0, -1.0, z)
         # Click at top-right of screen => (1.0, 1.0, z)
         # But we can't really know where's z, so we just return 1.0
         x = (2.0 * _x / self.width()) - 1.0
         y = 1.0 - (2.0 * _y / self.height())
         z = 1.0
-        return x, y, z
+        return np.array([x, y, z])
 
-    def unproject(self, _x, _y, _z, model, view, proj) -> QVector3D:
+    def unproject(self, _x, _y, _z, model, view, proj) -> np.ndarray:
         # Adapted from http://antongerdelan.net/opengl/raycasting.html
         x, y, z = self.screen_to_ndc(_x, _y, _z)
 
@@ -378,13 +375,18 @@ class IntegrableViewer(QOpenGLWidget):
         ray_eye = QVector4D(ray_eye.x(), ray_eye.y(), -1.0, 0.0)
 
         ray_world = ((view * model).inverted()[0] * ray_eye).toVector3D()
-        return ray_world.normalized()
+        ray = ray_world.normalized()
+        return np.array([ray.x(), ray.y(), ray.z()])
+
+    def get_origin(self, model, view) -> np.ndarray:
+        origin = (view * model).inverted()[0].column(3).toVector3D()
+        return np.array([origin.x(), origin.y(), origin.z()])
 
     def ray_from_click(self, x: float, y: float, z: float) -> tuple:
         # Generates a ray from a click on screen
         # Assume perspective first
         ray = self.unproject(x, y, z, self.world, self.camera, self.proj)
-        origin = (self.camera * self.world).inverted()[0].column(3).toVector3D()
+        origin = self.get_origin(self.world, self.camera)
 
         # Orthographic projection needs a bit more of vector arithmetic.
         if self.projection_mode == 'orthographic':
@@ -395,24 +397,20 @@ class IntegrableViewer(QOpenGLWidget):
 
             # But if we don't click in the exact center of screen,
             # we need to trick the origin calculation.
-            ndc = np.array([*self.screen_to_ndc(x, y, z)])
+            ndc = self.screen_to_ndc(x, y, z)
             aspect = self.width() / self.height()
             aspect_bias = np.array([1.0, 1.0 / aspect, 0.0])
 
             # The idea is to strategically move the camera by an offset, so that
             # clicking anywhere in the screen will give us the same result as
             # clicking at the exact center of the screen from a shifted camera.
-            off_center = max(self.zCameraPos - self.zCenterPos, 0.0)
-            offset = off_center * ndc * aspect_bias
+            offset = self.off_center[2] * ndc * aspect_bias
 
             # Hack to get the origin when the click is not exactly at center of screen.
             self.camera.translate(*-offset)
-            origin = (self.camera * self.world).inverted()[0].column(3).toVector3D()
+            origin = self.get_origin(self.world, self.camera)
             self.camera.translate(*offset)
 
-        # To Numpy array
-        ray = np.array([ray.x(), ray.y(), ray.z()])
-        origin = np.array([origin.x(), origin.y(), origin.z()])
         return ray, origin
 
     def slice_from_rays(self, origin_list: list, ray_list: list) -> None:
@@ -536,17 +534,6 @@ class IntegrableViewer(QOpenGLWidget):
     def orthographic_projection(self) -> None:
         self.projection_mode = 'orthographic'
         self.update()
-
-    """
-    Axis/Background
-    """
-    @property
-    def axis(self):
-        return self.axis_collection.get('AXIS')
-
-    @property
-    def background(self):
-        return self.background_collection.get('BG')
 
     """
     Events (dependent on current controller)
