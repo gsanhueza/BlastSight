@@ -34,6 +34,11 @@ class Viewer(IntegrableViewer):
 
     def keyPressEvent(self, event) -> None:
         shortcut_commands_dict = {
+            Qt.Key_1: lambda: self.plan_view(),
+            Qt.Key_2: lambda: self.north_view(),
+            Qt.Key_3: lambda: self.east_view(),
+            Qt.Key_4: lambda: self.perspective_projection(),
+            Qt.Key_5: lambda: self.orthographic_projection(),
             Qt.Key_Delete: lambda: self.delete(self.last_id),
             Qt.Key_Return: lambda: self.fit_to_screen(),
         }

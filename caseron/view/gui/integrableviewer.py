@@ -211,6 +211,9 @@ class IntegrableViewer(QOpenGLWidget):
         self.update()
 
     def delete(self, _id: int) -> None:
+        if _id < 0:
+            return
+
         self.makeCurrent()
         self.model.delete(_id)
         self.drawable_collection.delete(_id)
