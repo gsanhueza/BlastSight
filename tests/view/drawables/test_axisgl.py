@@ -14,6 +14,9 @@ class TestAxisGL:
         with pytest.raises(Exception):
             AxisGL()
 
+    def test_dir(self):
+        assert len(dir(AxisGL(NullElement()))) > 0
+
     def test_draw(self):
         widget = IntegrableViewer()
         program = AxisProgram(widget)

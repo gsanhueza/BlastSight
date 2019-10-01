@@ -179,6 +179,18 @@ class IntegrableViewer(QOpenGLWidget):
     def points_by_path(self, path: str, *args, **kwargs) -> PointGL:
         return self.add_drawable(self.model.points_by_path, PointGL, path, *args, **kwargs)
 
+    def _load_mesh_dir(self, path: str) -> None:
+        it = QDirIterator(path, QDirIterator.Subdirectories)
+        path_list = []
+
+        while it.hasNext():
+            next_path = it.next()
+            if QFileInfo(next_path).isFile():
+                path_list.append(next_path)
+
+        for path in sorted(path_list):
+            self.mesh_by_path(path)
+
     """
     Export methods
     """
@@ -224,6 +236,9 @@ class IntegrableViewer(QOpenGLWidget):
         for _id in list(self.drawable_collection.keys()):
             self.delete(_id)
 
+    """
+    Camera handling
+    """
     def camera_at(self, _id: int) -> None:
         self.fit_boundaries(*self.get_drawable(_id).element.bounding_box)
         self.update()
@@ -511,6 +526,9 @@ class IntegrableViewer(QOpenGLWidget):
     def set_measurement_mode(self) -> None:
         self.set_controller_mode('measurement')
 
+    """
+    Projections
+    """
     def perspective_projection(self) -> None:
         self.projection_mode = 'perspective'
         self.update()
@@ -519,7 +537,20 @@ class IntegrableViewer(QOpenGLWidget):
         self.projection_mode = 'orthographic'
         self.update()
 
-    # Movement/actions dependent on current mode
+    """
+    Axis/Background
+    """
+    @property
+    def axis(self):
+        return self.axis_collection.get('AXIS')
+
+    @property
+    def background(self):
+        return self.background_collection.get('BG')
+
+    """
+    Events (dependent on current controller)
+    """
     def mouseMoveEvent(self, event, *args, **kwargs) -> None:
         self.current_mode.mouseMoveEvent(event, self)
         self.update()
@@ -545,18 +576,6 @@ class IntegrableViewer(QOpenGLWidget):
             path = url.toLocalFile()
 
             if QFileInfo(path).isDir():
-                self._load_as_dir(path)
+                self._load_mesh_dir(path)
             else:
                 self.mesh_by_path(path)
-
-    def _load_as_dir(self, path: str) -> None:
-        it = QDirIterator(path, QDirIterator.Subdirectories)
-        path_list = []
-
-        while it.hasNext():
-            next_path = it.next()
-            if QFileInfo(next_path).isFile():
-                path_list.append(next_path)
-
-        for path in sorted(path_list):
-            self.mesh_by_path(path)

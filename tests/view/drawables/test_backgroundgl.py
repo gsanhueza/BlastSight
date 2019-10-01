@@ -14,6 +14,9 @@ class TestBackgroundGL:
         with pytest.raises(Exception):
             BackgroundGL()
 
+    def test_dir(self):
+        assert len(dir(BackgroundGL(NullElement()))) > 0
+
     def test_draw(self):
         widget = IntegrableViewer()
         program = BackgroundProgram(widget)
