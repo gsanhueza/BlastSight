@@ -6,6 +6,8 @@ from caseron.view.gui.integrableviewer import IntegrableViewer
 from caseron.view.drawables.axisgl import AxisGL
 from caseron.view.drawables.glprograms.axisprogram import AxisProgram
 
+from caseron.model.elements.nullelement import NullElement
+
 
 class TestAxisGL:
     def test_empty_axis(self):
@@ -18,7 +20,7 @@ class TestAxisGL:
         program.setup()
         program.bind()
 
-        drawable = AxisGL(type('NullElement', (), {}))
+        drawable = AxisGL(NullElement())
         drawable.setup_attributes()
 
         drawable.hide()
@@ -38,6 +40,6 @@ class TestAxisGL:
         program.setup()
         program.bind()
 
-        drawable = AxisGL(type('NullElement', (), {}))
+        drawable = AxisGL(NullElement())
         program.set_drawables([drawable])
         program.draw()

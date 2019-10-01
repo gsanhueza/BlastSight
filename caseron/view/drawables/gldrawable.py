@@ -6,7 +6,7 @@ from OpenGL.GL import *
 class GLDrawable(object):
     def __init__(self, element, *args, **kwargs):
         assert element
-        self.element = element
+        super().__setattr__('element', element)  # self.element = element
 
         self.vaos = []
         self.vbos = []
@@ -22,13 +22,22 @@ class GLDrawable(object):
         return sorted(set(dir(type(self)) + list(self.__dict__.keys()) + dir(self.element)))
 
     def __getattribute__(self, attr):
-        # Hack to search our attributes.
+        # Hack to get our attributes.
         # If not found, search self.element's attributes.
         # https://stackoverflow.com/a/2405617
         try:
             return object.__getattribute__(self, attr)
         except AttributeError:
             return self.element.__getattribute__(attr)
+
+    def __setattr__(self, key, value):
+        # Hack to set our attributes.
+        # We'll try to set our element's attribute first, then ourselves.
+        # https://stackoverflow.com/a/7042247
+        if key in dir(self.element):
+            self.element.__setattr__(key, value)
+        else:
+            super().__setattr__(key, value)
 
     @property
     def vao(self) -> int:

@@ -6,6 +6,8 @@ from caseron.view.gui.integrableviewer import IntegrableViewer
 from caseron.view.drawables.backgroundgl import BackgroundGL
 from caseron.view.drawables.glprograms.backgroundprogram import BackgroundProgram
 
+from caseron.model.elements.nullelement import NullElement
+
 
 class TestBackgroundGL:
     def test_empty_bg(self):
@@ -18,7 +20,7 @@ class TestBackgroundGL:
         program.setup()
         program.bind()
 
-        drawable = BackgroundGL(element=type('NullElement', (), {}))
+        drawable = BackgroundGL(NullElement())
 
         drawable.hide()
         assert not drawable.is_visible
@@ -39,7 +41,7 @@ class TestBackgroundGL:
 
         assert not program.color_set
 
-        drawable = BackgroundGL(element=type('NullElement', (), {}))
+        drawable = BackgroundGL(NullElement())
         program.set_drawables([drawable])
         program.draw()
 
