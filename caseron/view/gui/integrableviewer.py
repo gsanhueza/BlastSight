@@ -136,7 +136,7 @@ class IntegrableViewer(QOpenGLWidget):
     """
     Load methods
     """
-    def add_drawable(self, method: classmethod, drawable_type: type, *args, **kwargs):
+    def _load_drawable(self, method: classmethod, drawable_type: type, *args, **kwargs):
         try:
             element = method(*args, **kwargs)
             drawable = drawable_type(element, *args, **kwargs)
@@ -152,33 +152,10 @@ class IntegrableViewer(QOpenGLWidget):
             traceback.print_exc()
             return None
 
-    def mesh(self, *args, **kwargs) -> MeshGL:
-        return self.add_drawable(self.model.mesh, MeshGL, *args, **kwargs)
-
-    def blocks(self, *args, **kwargs) -> BlockGL:
-        return self.add_drawable(self.model.blocks, BlockGL, *args, **kwargs)
-
-    def points(self, *args, **kwargs) -> PointGL:
-        return self.add_drawable(self.model.points, PointGL, *args, **kwargs)
-
-    def lines(self, *args, **kwargs) -> LineGL:
-        return self.add_drawable(self.model.lines, LineGL, *args, **kwargs)
-
-    def tubes(self, *args, **kwargs) -> TubeGL:
-        return self.add_drawable(self.model.tubes, TubeGL, *args, **kwargs)
-
-    def mesh_by_path(self, path: str, *args, **kwargs) -> MeshGL:
-        return self.add_drawable(self.model.mesh_by_path, MeshGL, path, *args, **kwargs)
-
-    def blocks_by_path(self, path: str, *args, **kwargs) -> BlockGL:
-        return self.add_drawable(self.model.blocks_by_path, BlockGL, path, *args, **kwargs)
-
-    def points_by_path(self, path: str, *args, **kwargs) -> PointGL:
-        return self.add_drawable(self.model.points_by_path, PointGL, path, *args, **kwargs)
-
-    def _load_mesh_dir(self, path: str) -> None:
+    def _load_folder(self, method: classmethod, path: str, *args, **kwargs) -> list:
         it = QDirIterator(path, QDirIterator.Subdirectories)
         path_list = []
+        drawables = []
 
         while it.hasNext():
             next_path = it.next()
@@ -186,7 +163,48 @@ class IntegrableViewer(QOpenGLWidget):
                 path_list.append(next_path)
 
         for path in sorted(path_list):
-            self.mesh_by_path(path)
+            drawables.append(method(path, *args, **kwargs))
+
+        return [d for d in drawables if d is not None]
+
+    """
+    Load methods by kwargs
+    """
+    def mesh(self, *args, **kwargs) -> MeshGL:
+        return self._load_drawable(self.model.mesh, MeshGL, *args, **kwargs)
+
+    def blocks(self, *args, **kwargs) -> BlockGL:
+        return self._load_drawable(self.model.blocks, BlockGL, *args, **kwargs)
+
+    def points(self, *args, **kwargs) -> PointGL:
+        return self._load_drawable(self.model.points, PointGL, *args, **kwargs)
+
+    def lines(self, *args, **kwargs) -> LineGL:
+        return self._load_drawable(self.model.lines, LineGL, *args, **kwargs)
+
+    def tubes(self, *args, **kwargs) -> TubeGL:
+        return self._load_drawable(self.model.tubes, TubeGL, *args, **kwargs)
+
+    """
+    Load methods by path
+    """
+    def mesh_by_path(self, path: str, *args, **kwargs) -> MeshGL:
+        return self._load_drawable(self.model.mesh_by_path, MeshGL, path, *args, **kwargs)
+
+    def blocks_by_path(self, path: str, *args, **kwargs) -> BlockGL:
+        return self._load_drawable(self.model.blocks_by_path, BlockGL, path, *args, **kwargs)
+
+    def points_by_path(self, path: str, *args, **kwargs) -> PointGL:
+        return self._load_drawable(self.model.points_by_path, PointGL, path, *args, **kwargs)
+
+    def meshes_by_folder_path(self, path: str, *args, **kwargs) -> list:
+        return self._load_folder(self.mesh_by_path, path, *args, **kwargs)
+
+    def blocks_by_folder_path(self, path: str, *args, **kwargs) -> list:
+        return self._load_folder(self.blocks_by_path, path, *args, **kwargs)
+
+    def points_by_folder_path(self, path: str, *args, **kwargs) -> list:
+        return self._load_folder(self.points_by_path, path, *args, **kwargs)
 
     """
     Export methods
@@ -576,6 +594,6 @@ class IntegrableViewer(QOpenGLWidget):
             path = url.toLocalFile()
 
             if QFileInfo(path).isDir():
-                self._load_mesh_dir(path)
+                self.meshes_by_folder_path(path)
             else:
                 self.mesh_by_path(path)
