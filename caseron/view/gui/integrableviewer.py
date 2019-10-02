@@ -47,10 +47,10 @@ class IntegrableViewer(QOpenGLWidget):
     signal_export_failure = Signal()
 
     signal_file_modified = Signal()
-    signal_fps_updated = Signal(float)
     signal_mesh_clicked = Signal(object)
     signal_mesh_distances = Signal(object)
     signal_mode_updated = Signal(str)
+    signal_fps_updated = Signal(float)
 
     def __init__(self, parent=None):
         QOpenGLWidget.__init__(self, parent)
@@ -231,6 +231,9 @@ class IntegrableViewer(QOpenGLWidget):
     """
     Drawable manipulation
     """
+    def get_drawable(self, _id: int):
+        return self.drawable_collection[_id]
+
     def show_drawable(self, _id: int) -> None:
         self.get_drawable(_id).show()
         self.update()
@@ -238,9 +241,6 @@ class IntegrableViewer(QOpenGLWidget):
     def hide_drawable(self, _id: int) -> None:
         self.get_drawable(_id).hide()
         self.update()
-
-    def get_drawable(self, _id: int):
-        return self.drawable_collection[_id]
 
     def update_drawable(self, _id: int) -> None:
         self.makeCurrent()
@@ -358,15 +358,13 @@ class IntegrableViewer(QOpenGLWidget):
         # Project (Perspective/Orthographic)
         self.resizeGL(self.width(), self.height())
 
-        # Draw every GLDrawable (meshes, block models, etc)
+        # Draw every GLDrawable (meshes, blocks, points, etc)
         glEnable(GL_BLEND)
         self.background_collection.draw(self.proj, self.camera, self.world)
         self.drawable_collection.draw(self.proj, self.camera, self.world)
         self.axis_collection.draw(self.proj, self.camera, self.world)
 
-        # QPainter can draw *after* OpenGL finishes
-        self.current_mode.overpaint(self)
-
+        # Tick FPS counter
         self.fps_counter.tick()
         self.signal_fps_updated.emit(self.fps_counter.fps)
 

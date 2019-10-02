@@ -3,7 +3,7 @@
 from OpenGL.GL import *
 
 
-class GLDrawable(object):
+class GLDrawable:
     def __init__(self, element, *args, **kwargs):
         assert element
         super().__setattr__('element', element)  # self.element = element
@@ -15,6 +15,12 @@ class GLDrawable(object):
         self.is_highlighted = False
         self.is_visible = True
 
+    # Note: The following "hacks" are shortened versions of Delegator Pattern.
+    # They're convenient, but optional.
+    #
+    # Example:
+    # d = GLDrawable(element, *args, **kwargs)
+    # assert d.alpha is d.element.alpha  => True
     def __dir__(self):
         # Hack to expose GLDrawable's attributes AND self.element's attributes
         # as if they were GLDrawable's attributes.
@@ -26,7 +32,7 @@ class GLDrawable(object):
         # If not found, search self.element's attributes.
         # https://stackoverflow.com/a/2405617
         try:
-            return object.__getattribute__(self, attr)
+            return super().__getattribute__(attr)
         except AttributeError:
             return self.element.__getattribute__(attr)
 

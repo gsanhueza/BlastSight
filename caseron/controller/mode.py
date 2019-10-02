@@ -27,9 +27,6 @@ class Mode:
 
         self.set_z_movement(widget, widget.zCameraPos + shift)
 
-    def overpaint(self, widget):
-        pass
-
     @staticmethod
     def set_x_rotation(widget, angle: float) -> None:
         widget.xCenterRot = angle % 360
