@@ -7,7 +7,6 @@ from OpenGL.GL import *
 
 from qtpy.QtCore import QPoint
 from qtpy.QtCore import Signal
-from qtpy.QtCore import QDirIterator
 from qtpy.QtCore import QFileInfo
 from qtpy.QtGui import QMatrix4x4
 from qtpy.QtGui import QPixmap
@@ -156,16 +155,10 @@ class IntegrableViewer(QOpenGLWidget):
             return None
 
     def _load_folder(self, method: classmethod, path: str, *args, **kwargs) -> list:
-        it = QDirIterator(path, QDirIterator.Subdirectories)
-        path_list = []
+        path_list = self.model.get_paths_from_directory(path)
         drawables = []
 
-        while it.hasNext():
-            next_path = it.next()
-            if QFileInfo(next_path).isFile():
-                path_list.append(next_path)
-
-        for path in sorted(path_list):
+        for path in path_list:
             drawables.append(method(path, *args, **kwargs))
 
         return [d for d in drawables if d is not None]

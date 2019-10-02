@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+from qtpy.QtCore import QDirIterator
+from qtpy.QtCore import QFileInfo
 from qtpy.QtCore import QMutex
 from qtpy.QtCore import QMutexLocker
 
@@ -34,11 +36,30 @@ class Model:
         self.add_parser('csv', CSVParser)
         self.add_parser('out', GSLibParser)
 
+    @property
+    def last_id(self) -> int:
+        return self.element_collection.last_id
+
+    """
+    Utilities
+    """
     def add_parser(self, extension: str, handler: type) -> None:
         self._parser_dict[extension] = handler
 
     def get_parser(self, ext: str) -> Parser:
         return self._parser_dict.get(ext.lower(), None)
+
+    @staticmethod
+    def get_paths_from_directory(path: str) -> list:
+        it = QDirIterator(path, QDirIterator.Subdirectories)
+        path_list = []
+
+        while it.hasNext():
+            next_path = it.next()
+            if QFileInfo(next_path).isFile():
+                path_list.append(next_path)
+
+        return sorted(path_list)
 
     """
     Element loading
@@ -120,7 +141,3 @@ class Model:
 
     def delete(self, _id: int) -> None:
         self.element_collection.delete(_id)
-
-    @property
-    def last_id(self) -> int:
-        return self.element_collection.last_id
