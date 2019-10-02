@@ -201,7 +201,7 @@ class IntegrableViewer(QOpenGLWidget):
         self.model.export_points(path, _id)
 
     """
-    Individual drawable manipulation
+    Drawable manipulation
     """
     def show_drawable(self, _id: int) -> None:
         self.get_drawable(_id).show()
@@ -228,6 +228,10 @@ class IntegrableViewer(QOpenGLWidget):
         self.drawable_collection.delete(_id)
         self.signal_file_modified.emit()
         self.update()
+
+    def update_all(self) -> None:
+        for _id in list(self.drawable_collection.keys()):
+            self.update_drawable(_id)
 
     def clear(self) -> None:
         for _id in list(self.drawable_collection.keys()):

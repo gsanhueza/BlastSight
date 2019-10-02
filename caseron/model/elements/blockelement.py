@@ -45,9 +45,9 @@ class BlockElement(DFElement):
         if kwargs.get('noautosize', False):
             self.block_size = kwargs.get('block_size', [1.0, 1.0, 1.0])
         else:
-            self.block_size = kwargs.get('block_size', self._autosize())
+            self.block_size = kwargs.get('block_size', self.get_autosize())
 
-    def _autosize(self):
+    def get_autosize(self) -> list:
         size = []
 
         for v in [self.x, self.y, self.z]:
@@ -73,4 +73,4 @@ class BlockElement(DFElement):
 
     @block_size.setter
     def block_size(self, _size: list) -> None:
-        self.properties['size'] = np.array(_size) if len(_size) == 3 else self._autosize()
+        self.properties['size'] = np.array(_size) if len(_size) == 3 else self.get_autosize()

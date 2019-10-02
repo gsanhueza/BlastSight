@@ -5,7 +5,7 @@ import pytest
 from caseron.model.elements.blockelement import BlockElement
 
 
-class TestBlockModelElement:
+class TestBlockElement:
     def test_empty_bm(self):
         with pytest.raises(Exception):
             BlockElement()
@@ -218,6 +218,10 @@ class TestBlockModelElement:
         assert element.block_size[0] == 1.0
         assert element.block_size[1] == 1.0
         assert element.block_size[2] == 1.0
+
+        expected = [2.0, 2.0, 3.0]
+        for i, j in zip(element.get_autosize(), expected):
+            assert i == j
 
         element = BlockElement(data=data, noautosize=False)
         assert element.block_size[0] == 2.0
