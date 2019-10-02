@@ -3,7 +3,6 @@
 from datetime import datetime
 
 from qtpy.QtCore import Qt
-from qtpy.QtCore import QDirIterator
 from qtpy.QtCore import QFileInfo
 from qtpy.QtCore import QSettings
 from qtpy.QtCore import QThreadPool
@@ -25,6 +24,7 @@ from .colordialog import ColorDialog
 from .helpdialog import HelpDialog
 from .aboutdialog import AboutDialog
 from .loadworker import LoadWorker
+from .exportworker import ExportWorker
 
 from .integrableviewer import IntegrableViewer
 from .toolbar import ToolBar
@@ -91,7 +91,7 @@ class MainWindow(QMainWindow):
         self.setFocusPolicy(Qt.StrongFocus)
         self.setAcceptDrops(True)
         self.statusBar.showMessage('Ready')
-        self.threadPool = QThreadPool()
+        self.thread_pool = QThreadPool()
 
         # Extra actions
         self.toolbar.insertAction(self.toolbar.action_collection.action_plan_view, self.toolbar.action_collection.action_camera_properties)
@@ -174,8 +174,10 @@ class MainWindow(QMainWindow):
         self.viewer.signal_mesh_clicked.connect(self.slot_detected_meshes)
         self.viewer.signal_mesh_distances.connect(self.slot_mesh_distances)
         self.viewer.signal_file_modified.connect(self.fill_tree_widget)
-        self.viewer.signal_load_success.connect(self.slot_element_loaded)
-        self.viewer.signal_load_failure.connect(self.slot_element_failed)
+        self.viewer.signal_load_success.connect(self.slot_element_load_success)
+        self.viewer.signal_load_failure.connect(self.slot_element_load_failure)
+        self.viewer.signal_export_success.connect(self.slot_element_export_success)
+        self.viewer.signal_export_failure.connect(self.slot_element_export_failure)
 
         self.treeWidget.signal_headers_triggered.connect(self.dialog_properties)
         self.treeWidget.signal_colors_triggered.connect(self.dialog_color)
@@ -202,11 +204,17 @@ class MainWindow(QMainWindow):
     """
     Status bar updates
     """
-    def slot_element_loaded(self, _id: int):
-        self.statusBar.showMessage(f'Loaded (id: {_id}).')
+    def slot_element_load_success(self, _id: int):
+        self.statusBar.showMessage(f'Load successful (id: {_id}).')
 
-    def slot_element_failed(self):
+    def slot_element_load_failure(self):
         self.statusBar.showMessage(f'Failed to load.')
+
+    def slot_element_export_success(self, _id: int):
+        self.statusBar.showMessage(f'Export successful (id: {_id}).')
+
+    def slot_element_export_failure(self):
+        self.statusBar.showMessage(f'Failed to export.')
 
     def slot_mode_updated(self, mode: str):
         self.statusBar.showMessage(mode)
@@ -260,20 +268,17 @@ class MainWindow(QMainWindow):
     """
     Common functionality for loading/exporting
     """
-    def _load_element(self, method: classmethod, path: str) -> None:
+    def _threaded_load(self, method: classmethod, path: str) -> None:
         self.statusBar.showMessage('Loading...')
 
         worker = LoadWorker(method, path)
-        self.threadPool.start(worker)
+        self.thread_pool.start(worker)
 
-    def _load_mesh(self, path: str) -> None:
-        self._load_element(method=self.viewer.mesh_by_path, path=path)
+    def _threaded_export(self, method: classmethod, path: str, _id: int) -> None:
+        self.statusBar.showMessage('Exporting...')
 
-    def _load_blocks(self, path: str) -> None:
-        self._load_element(method=self.viewer.blocks_by_path, path=path)
-
-    def _load_points(self, path: str) -> None:
-        self._load_element(method=self.viewer.points_by_path, path=path)
+        worker = ExportWorker(method, path, _id)
+        self.thread_pool.start(worker)
 
     def _dialog_load_element(self, method: classmethod, filters: str) -> None:
         (paths, selected_filter) = QFileDialog.getOpenFileNames(
@@ -283,29 +288,18 @@ class MainWindow(QMainWindow):
 
         path_list = [p for p in paths if p != '']
         for path in sorted(path_list):
-            self._load_element(method, path)
+            self._threaded_load(method, path)
             self.last_dir = QFileInfo(path).absoluteDir().absolutePath()
 
     def _dialog_load_folder(self, method: classmethod) -> None:
-        dir_path = QFileDialog.getExistingDirectory(
+        path = QFileDialog.getExistingDirectory(
             parent=self,
             directory=self.last_dir,
             options=QFileDialog.ShowDirsOnly)
 
-        if dir_path == '':
-            return
-
-        it = QDirIterator(dir_path, QDirIterator.Subdirectories)
-        path_list = []
-
-        while it.hasNext():
-            next_path = it.next()
-            if QFileInfo(next_path).isFile():
-                path_list.append(next_path)
-
-        for path in sorted(path_list):
-            self._load_element(method, path)
-            self.last_dir = dir_path
+        # Execute method
+        self._threaded_load(method, path)
+        self.last_dir = QFileInfo(path).absoluteDir().absolutePath()
 
     def _dialog_export_element(self, _id: int, filters: str, method: classmethod) -> None:
         (path, selected_filter) = QFileDialog.getSaveFileName(
@@ -314,31 +308,32 @@ class MainWindow(QMainWindow):
             filter=filters)
 
         if path != '':
-            method(path, _id)
+            # Execute method
+            self._threaded_export(method, path, _id)
 
     """
     Slots for loading files
     """
     def dialog_load_mesh(self) -> None:
-        self._dialog_load_element(method=self._load_mesh,
+        self._dialog_load_element(method=self.viewer.mesh_by_path,
                                   filters=self.filters_dict.get('mesh'))
 
     def dialog_load_blocks(self) -> None:
-        self._dialog_load_element(method=self._load_blocks,
+        self._dialog_load_element(method=self.viewer.blocks_by_path,
                                   filters=self.filters_dict.get('block'))
 
     def dialog_load_points(self) -> None:
-        self._dialog_load_element(method=self._load_points,
+        self._dialog_load_element(method=self.viewer.points_by_path,
                                   filters=self.filters_dict.get('point'))
 
     def dialog_load_mesh_folder(self) -> None:
-        self._dialog_load_folder(method=self._load_mesh)
+        self._dialog_load_folder(method=self.viewer.meshes_by_folder_path)
 
     def dialog_load_blocks_folder(self) -> None:
-        self._dialog_load_folder(method=self._load_blocks)
+        self._dialog_load_folder(method=self.viewer.blocks_by_folder_path)
 
     def dialog_load_points_folder(self) -> None:
-        self._dialog_load_folder(method=self._load_points)
+        self._dialog_load_folder(method=self.viewer.points_by_folder_path)
 
     """
     Slots for exporting files

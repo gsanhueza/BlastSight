@@ -43,6 +43,9 @@ class IntegrableViewer(QOpenGLWidget):
     # Signals
     signal_load_success = Signal(int)
     signal_load_failure = Signal()
+    signal_export_success = Signal(int)
+    signal_export_failure = Signal()
+
     signal_file_modified = Signal()
     signal_fps_updated = Signal(float)
     signal_mesh_clicked = Signal(object)
@@ -168,7 +171,7 @@ class IntegrableViewer(QOpenGLWidget):
         return [d for d in drawables if d is not None]
 
     """
-    Load methods by kwargs
+    Load methods by arguments
     """
     def mesh(self, *args, **kwargs) -> MeshGL:
         return self._load_drawable(self.model.mesh, MeshGL, *args, **kwargs)
@@ -209,14 +212,21 @@ class IntegrableViewer(QOpenGLWidget):
     """
     Export methods
     """
+    def _export_element(self, method: classmethod, path: str, _id: int) -> None:
+        try:
+            method(path, _id)
+            self.signal_export_success.emit(_id)
+        except Exception:
+            self.signal_export_failure.emit()
+
     def export_mesh(self, path, _id) -> None:
-        self.model.export_mesh(path, _id)
+        self._export_element(self.model.export_mesh, path, _id)
 
     def export_blocks(self, path, _id) -> None:
-        self.model.export_blocks(path, _id)
+        self._export_element(self.model.export_blocks, path, _id)
 
     def export_points(self, path, _id) -> None:
-        self.model.export_points(path, _id)
+        self._export_element(self.model.export_points, path, _id)
 
     """
     Drawable manipulation
@@ -259,7 +269,7 @@ class IntegrableViewer(QOpenGLWidget):
     Camera handling
     """
     def camera_at(self, _id: int) -> None:
-        self.fit_boundaries(*self.get_drawable(_id).element.bounding_box)
+        self.fit_to_bounds(*self.get_drawable(_id).element.bounding_box)
         self.update()
 
     def plan_view(self) -> None:
@@ -274,7 +284,7 @@ class IntegrableViewer(QOpenGLWidget):
         self.rotation_angle = [270.0, 0.0, 0.0]
         self.update()
 
-    def fit_boundaries(self, min_bound: np.ndarray, max_bound: np.ndarray) -> None:
+    def fit_to_bounds(self, min_bound: np.ndarray, max_bound: np.ndarray) -> None:
         center = (min_bound + max_bound) / 2
         self.rotation_center = center
         self.camera_position = center
@@ -309,7 +319,7 @@ class IntegrableViewer(QOpenGLWidget):
             min_all = np.min((min_all, min_bound), axis=0)
             max_all = np.max((max_all, max_bound), axis=0)
 
-        self.fit_boundaries(min_all, max_all)
+        self.fit_to_bounds(min_all, max_all)
         self.update()
 
     """
