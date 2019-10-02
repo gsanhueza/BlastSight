@@ -88,7 +88,7 @@ class ActionCollection:
         self.action_normal_mode.setIcon(QIcon(f'{self.icons_path}/rotate_camera.svg'))
         self.action_normal_mode.setShortcut('Ctrl+N')
 
-        self.action_slice_mode = QAction('&Slice meshes', parent)
+        self.action_slice_mode = QAction('&Slice meshes/blocks', parent)
         self.action_slice_mode.setIcon(QIcon(f'{self.icons_path}/flash_on.svg'))
         self.action_slice_mode.setShortcut('Ctrl+S')
 

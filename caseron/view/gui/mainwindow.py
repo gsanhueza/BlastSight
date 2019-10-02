@@ -66,7 +66,7 @@ class MainWindow(QMainWindow):
 
         self.setWindowTitle('Caseron')
         self.toolbar.setWindowTitle('Toolbar')
-        self.dockWidget.setWindowTitle('Element list')
+        self.dockWidget.setWindowTitle('Element tree')
         self.treeWidget.headerItem().setText(0, 'Elements')
 
         self.settings = QSettings('Caseron', application='caseron', parent=self)

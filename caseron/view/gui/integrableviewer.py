@@ -97,6 +97,10 @@ class IntegrableViewer(QOpenGLWidget):
         return self.drawable_collection.last_id
 
     @property
+    def last_drawable(self):
+        return self.get_drawable(self.last_id)
+
+    @property
     def off_center(self) -> np.ndarray:
         return self.camera_position - self.rotation_center
 
