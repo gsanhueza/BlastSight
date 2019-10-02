@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 
+from qtpy.QtCore import QMutex
+from qtpy.QtCore import QMutexLocker
+
 from .elements.element import Element
 from .elements.elementcollection import ElementCollection
 from .elements.blockelement import BlockElement
@@ -19,8 +22,10 @@ from .parsers.gslibparser import GSLibParser
 
 class Model:
     def __init__(self):
-        self._element_collection = ElementCollection()
-        self.parser_dict = {}  # Example: {"dxf": DXFParser}
+        self._parser_dict = {}  # Example: {"dxf": DXFParser}
+        self._mutex = QMutex()
+
+        self.element_collection = ElementCollection()
 
         self.add_parser('dxf', DXFParser)
         self.add_parser('off', OFFParser)
@@ -30,17 +35,21 @@ class Model:
         self.add_parser('out', GSLibParser)
 
     def add_parser(self, extension: str, handler: type) -> None:
-        self.parser_dict[extension] = handler
+        self._parser_dict[extension] = handler
 
     def get_parser(self, ext: str) -> Parser:
-        return self.parser_dict.get(ext.lower(), None)
+        return self._parser_dict.get(ext.lower(), None)
 
     """
     Element loading
     """
     def _load_element(self, element_type: type, *args, **kwargs):
         element = element_type(*args, **kwargs)
-        self.element_collection.add(element)
+
+        # In a multi-threaded application, we can't risk assigning
+        # the same ID to different elements, so we use a mutex here.
+        with QMutexLocker(self._mutex):
+            self.element_collection.add(element)
 
         return element
 
@@ -115,7 +124,3 @@ class Model:
     @property
     def last_id(self) -> int:
         return self.element_collection.last_id
-
-    @property
-    def element_collection(self) -> ElementCollection:
-        return self._element_collection
