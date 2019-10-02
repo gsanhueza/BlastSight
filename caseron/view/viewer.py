@@ -21,8 +21,8 @@ class Viewer(IntegrableViewer):
         if detached:
             # This allow us to detach the widget (convenient if running
             # the viewer in an interactive console).
-            # WARNING: On PySide2, the viewer WILL freeze, but as it's detached,
-            # you can manually close it with `viewer.close()`.
+            # WARNING: On PySide2, the viewer WILL freeze when the timer
+            # runs out, but you can manually close it with `viewer.close()`.
             QTimer.singleShot(timer, self.app.quit)
 
         self.app.exec_()

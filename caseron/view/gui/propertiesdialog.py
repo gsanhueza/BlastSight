@@ -6,7 +6,6 @@ import pathlib
 
 from qtpy.QtCore import Qt
 from qtpy.QtWidgets import QDialog
-from qtpy.QtWidgets import QDialogButtonBox
 from qtpy.QtWidgets import QTableWidgetItem
 from qtpy import uic
 

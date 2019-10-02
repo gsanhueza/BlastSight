@@ -506,7 +506,7 @@ class IntegrableViewer(QOpenGLWidget):
             for i in range(len(origin_list)):
                 points.append(utils.mesh_intersection(origin_list[i], ray_list[i], mesh))
 
-            if points[0] is None or points[1] is None:
+            if any(x is None for x in points):
                 continue
 
             distance = np.linalg.norm(np.diff(points, axis=0))

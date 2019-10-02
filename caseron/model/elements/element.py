@@ -42,7 +42,7 @@ class Element:
         self._check_integrity()
 
     """
-    Element filling    
+    Element filling
     """
     def _fill_element(self, *args, **kwargs):
         msg = f'Data must contain ["x", "y", "z"] or "vertices", got {list(kwargs.keys())}.'
@@ -172,7 +172,7 @@ class Element:
         self.alpha = val[-1]
 
     """
-    Utilities    
+    Utilities
     """
     @property
     def centroid(self) -> np.ndarray:

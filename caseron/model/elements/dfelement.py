@@ -57,7 +57,7 @@ class DFElement(Element):
         super()._initialize(*args, **kwargs)
 
     """
-    Element filling    
+    Element filling
     """
     def _fill_element(self, *args, **kwargs):
         # Base data
