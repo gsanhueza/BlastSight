@@ -417,26 +417,9 @@ class IntegrableViewer(QOpenGLWidget):
 
         return ray, origin
 
-    def slice_from_rays(self, origin_list: list, ray_list: list) -> None:
+    def slice_visible_meshes(self, origin: np.ndarray, plane_normal: np.ndarray) -> None:
         mesh_drawables = [m for m in self.drawable_collection.filter(MeshGL) if m.is_visible]
         mesh_elements = [m.element for m in mesh_drawables if 'SLICE' not in m.element.name]
-
-        block_drawables = [m for m in self.drawable_collection.filter(BlockGL) if m.is_visible]
-        block_elements = [m.element for m in block_drawables if 'SLICE' not in m.element.name]
-
-        # A plane is created from `origin` and `ray_list`.
-        # In perspective projection, the origin is the same.
-        origin = origin_list[0]
-        origin_diff = np.diff(origin_list, axis=0)[0]
-
-        if np.linalg.norm(origin_diff) < 1e-12:
-            # Perspective: Same origins, different rays
-            plane_normal = np.cross(*ray_list)
-        else:
-            # Orthographic: Same rays, different origins
-            plane_normal = np.cross(ray_list[0], origin_diff)
-
-        plane_normal /= np.linalg.norm(plane_normal)
 
         for mesh in mesh_elements:
             slices = utils.slice_mesh(mesh, origin, plane_normal)
@@ -446,6 +429,10 @@ class IntegrableViewer(QOpenGLWidget):
                            name=f'MESHSLICE_{i}_{mesh.name}',
                            extension=mesh.extension,
                            loop=True)
+
+    def slice_visible_blocks(self, origin: np.ndarray, plane_normal: np.ndarray) -> None:
+        block_drawables = [m for m in self.drawable_collection.filter(BlockGL) if m.is_visible]
+        block_elements = [m.element for m in block_drawables if 'SLICE' not in m.element.name]
 
         for block in block_elements:
             slices, values = utils.slice_blocks(block, origin, plane_normal)
@@ -460,7 +447,29 @@ class IntegrableViewer(QOpenGLWidget):
                         alpha=1.0,
                         )
 
-        # We'll auto-exit the slice mode for now
+    def slice_visible_drawables(self, origin: np.ndarray, plane_normal: np.ndarray) -> None:
+        self.slice_visible_meshes(origin, plane_normal)
+        self.slice_visible_blocks(origin, plane_normal)
+
+    def slice_from_rays(self, origin_list: list, ray_list: list) -> None:
+        # A plane is created from `origin` and `ray_list`.
+        # In perspective projection, the origin is the same.
+        origin = origin_list[0]
+
+        if self.projection_mode == 'perspective':
+            # Perspective: Same origins, different rays
+            plane_normal = np.cross(*ray_list)
+        else:
+            # Orthographic: Same rays, different origins
+            origin_diff = np.diff(origin_list, axis=0)[0]
+            plane_normal = np.cross(ray_list[0], origin_diff)
+
+        plane_normal /= np.linalg.norm(plane_normal)
+
+        # Slice drawables
+        self.slice_visible_drawables(origin, plane_normal)
+
+        # Auto-exit the slice mode for now
         self.set_normal_mode()
 
     def measure_from_rays(self, origin_list: list, ray_list: list) -> None:
