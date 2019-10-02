@@ -137,7 +137,7 @@ class Model:
     Element handling
     """
     def get(self, _id: int) -> Element:
-        return self.element_collection[_id]
+        return self.element_collection.get(_id, None)
 
     def delete(self, _id: int) -> None:
         self.element_collection.delete(_id)

@@ -9,6 +9,12 @@ from tests.globals import *
 
 
 class TestModel:
+    def test_paths_from_directory(self):
+        model = Model()
+        paths = model.get_paths_from_directory(f'{TEST_FILES_FOLDER_PATH}')
+
+        assert len(paths) > 0
+
     # Mesh
     def test_add_mesh(self):
         model = Model()
@@ -65,8 +71,7 @@ class TestModel:
         _id = mesh.id
         model.delete(_id)
 
-        with pytest.raises(Exception):
-            model.get(_id)
+        assert model.get(_id) is None
 
     # Block model
     def test_add_block_model(self):
@@ -117,8 +122,7 @@ class TestModel:
         _id = bm.id
         model.delete(_id)
 
-        with pytest.raises(Exception):
-            model.get(_id)
+        assert model.get(_id) is None
 
     # Lines
     def test_add_lines(self):
@@ -160,8 +164,7 @@ class TestModel:
         _id = lines.id
         model.delete(_id)
 
-        with pytest.raises(Exception):
-            model.get(_id)
+        assert model.get(_id) is None
 
     # Tubes
     def test_add_tubes(self):
@@ -203,8 +206,7 @@ class TestModel:
         _id = tubes.id
         model.delete(_id)
 
-        with pytest.raises(Exception):
-            model.get(_id)
+        assert model.get(_id) is None
 
     # Points
     def test_add_points(self):
@@ -255,8 +257,7 @@ class TestModel:
         _id = bm.id
         model.delete(_id)
 
-        with pytest.raises(Exception):
-            model.get(_id)
+        assert model.get(_id) is None
 
     # Multiple
     def test_add_multiple(self):

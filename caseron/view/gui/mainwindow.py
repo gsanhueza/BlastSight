@@ -36,6 +36,7 @@ class MainWindow(QMainWindow):
         QMainWindow.__init__(self, parent)
         self.resize(QApplication.desktop().width() / 2, QApplication.desktop().height() / 2)
 
+        # Widget definition
         self.centralWidget = QWidget(self)
         self.horizontalLayout = QHBoxLayout(self.centralWidget)
         self.viewer = IntegrableViewer(self.centralWidget)
@@ -69,6 +70,11 @@ class MainWindow(QMainWindow):
         self.dockWidget.setWindowTitle('Element tree')
         self.treeWidget.headerItem().setText(0, 'Elements')
 
+        self.setFocusPolicy(Qt.StrongFocus)
+        self.setAcceptDrops(True)
+        self.statusBar.showMessage('Ready')
+
+        # Attributes
         self.settings = QSettings('Caseron', application='caseron', parent=self)
         self.filters_dict = {
             'mesh': 'Mesh Files (*.dxf *.off *.h5m);;'
@@ -87,11 +93,6 @@ class MainWindow(QMainWindow):
                      'GSLib Files (*.out);;'
                      'All Files (*.*)',
         }
-
-        self.setFocusPolicy(Qt.StrongFocus)
-        self.setAcceptDrops(True)
-        self.statusBar.showMessage('Ready')
-        self.thread_pool = QThreadPool()
 
         # Extra actions
         self.toolbar.insertAction(self.toolbar.action_collection.action_plan_view, self.toolbar.action_collection.action_camera_properties)
@@ -271,14 +272,14 @@ class MainWindow(QMainWindow):
     def _threaded_load(self, method: classmethod, path: str) -> None:
         self.statusBar.showMessage('Loading...')
 
-        worker = LoadWorker(method, path)
-        self.thread_pool.start(worker)
+        worker = LoadWorker(method=method, path=path)
+        QThreadPool.globalInstance().start(worker)
 
     def _threaded_export(self, method: classmethod, path: str, _id: int) -> None:
         self.statusBar.showMessage('Exporting...')
 
         worker = ExportWorker(method, path, _id)
-        self.thread_pool.start(worker)
+        QThreadPool.globalInstance().start(worker)
 
     def _dialog_load_element(self, method: classmethod, filters: str) -> None:
         (paths, selected_filter) = QFileDialog.getOpenFileNames(

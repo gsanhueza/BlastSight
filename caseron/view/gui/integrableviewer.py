@@ -229,7 +229,7 @@ class IntegrableViewer(QOpenGLWidget):
     Drawable manipulation
     """
     def get_drawable(self, _id: int):
-        return self.drawable_collection[_id]
+        return self.drawable_collection.get(_id, None)
 
     def show_drawable(self, _id: int) -> None:
         self.get_drawable(_id).show()
