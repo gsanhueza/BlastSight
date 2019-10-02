@@ -23,8 +23,7 @@ from .propertiesdialog import PropertiesDialog
 from .colordialog import ColorDialog
 from .helpdialog import HelpDialog
 from .aboutdialog import AboutDialog
-from .loadworker import LoadWorker
-from .exportworker import ExportWorker
+from .threadworker import ThreadWorker
 
 from .integrableviewer import IntegrableViewer
 from .toolbar import ToolBar
@@ -272,13 +271,13 @@ class MainWindow(QMainWindow):
     def _threaded_load(self, method: classmethod, path: str) -> None:
         self.statusBar.showMessage('Loading...')
 
-        worker = LoadWorker(method=method, path=path)
+        worker = ThreadWorker(path, method=method)
         QThreadPool.globalInstance().start(worker)
 
     def _threaded_export(self, method: classmethod, path: str, _id: int) -> None:
         self.statusBar.showMessage('Exporting...')
 
-        worker = ExportWorker(method, path, _id)
+        worker = ThreadWorker(path, _id, method=method)
         QThreadPool.globalInstance().start(worker)
 
     def _dialog_load_element(self, method: classmethod, filters: str) -> None:
