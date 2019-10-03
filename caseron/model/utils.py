@@ -6,27 +6,29 @@ import numpy as np
 from colour import Color
 
 
-def closest_point_to(origin: np.ndarray, points: list) -> np.ndarray or None:
-    distances = distances_between(origin, points)
-    if len(distances) == 0:
+def closest_point_to(origin: np.ndarray, points: np.ndarray) -> np.ndarray or None:
+    if points.size == 0:
         return None
+
+    distances = distances_between(origin, points)
     mask = np.abs(distances - distances.min()) <= 1e-12
 
     return points[mask][0]
 
 
-def distances_between(origin: np.ndarray, points: list) -> np.ndarray:
+def distances_between(origin: np.ndarray, points: np.ndarray) -> np.ndarray or None:
+    if points.size == 0:
+        return None
+
     return np.linalg.norm(origin - points, axis=1)
 
 
-def mesh_intersection(origin: np.ndarray, ray: np.ndarray, mesh) -> np.ndarray or None:
+def mesh_intersection(origin: np.ndarray, ray: np.ndarray, mesh) -> np.ndarray:
     # Early AABB detection test
     if not aabb_intersection(origin, ray, *mesh.bounding_box):
-        return None
+        return np.empty(0)
 
-    results = vectorized_triangles_intersection(origin, ray, mesh.vertices[mesh.indices])
-
-    return closest_point_to(origin, results)
+    return vectorized_triangles_intersection(origin, ray, mesh.vertices[mesh.indices])
 
 
 def aabb_intersection(origin: np.ndarray, ray: np.ndarray, b_min: np.ndarray, b_max: np.ndarray) -> bool:
@@ -59,18 +61,18 @@ def plane_intersection(origin: np.ndarray, ray: np.ndarray,
     return origin + t * ray
 
 
-def triangle_intersection(origin: np.ndarray, ray: np.ndarray, triangle: np.ndarray) -> list or None:
+def triangle_intersection(origin: np.ndarray, ray: np.ndarray, triangle: np.ndarray) -> np.ndarray or None:
     try:
         intersection = vectorized_triangles_intersection(origin, ray, triangle)
     except IndexError:
         intersection = vectorized_triangles_intersection(origin, ray, np.array([triangle]))
 
-    return intersection[0] if len(intersection) > 0 else None
+    return intersection[0] if intersection.size > 0 else None
 
 
 def vectorized_triangles_intersection(origin: np.ndarray,
                                       ray: np.ndarray,
-                                      triangles: np.ndarray) -> list:
+                                      triangles: np.ndarray) -> np.ndarray:
     # Idea taken from https://cadxfem.org/inf/Fast%20MinimumStorage%20RayTriangle%20Intersection.pdf
     # Code adapted from https://en.wikipedia.org/wiki/M%C3%B6ller%E2%80%93Trumbore_intersection_algorithm
     # Manually vectorized to benefit from numpy's performance.
@@ -83,6 +85,9 @@ def vectorized_triangles_intersection(origin: np.ndarray,
     edge1 = vertex1 - vertex0
     edge2 = vertex2 - vertex0
 
+    # Note: Both np.inner(a, b).diagonal() and np.dot(a, b.T)
+    # run out of memory, but (a * b).sum(axis=1) does not,
+    # so we're using that one instead.
     h = np.cross(ray, edge2)
     a = (edge1 * h).sum(axis=1)
 
@@ -104,7 +109,7 @@ def vectorized_triangles_intersection(origin: np.ndarray,
         # At this stage we can compute t to find out where the intersection point is on the line.
         t = f * (edge2 * q).sum(axis=1)
 
-        mask = (t > 1e-12) & mask  # ray intersection
+        mask = (t > 1e-12) & mask  # Ray intersections
     return origin + ray * t[mask].reshape(-1, 1)  # Here are the intersections.
 
 
@@ -161,7 +166,8 @@ def slice_blocks(blocks, plane_origin: np.ndarray, plane_normal: np.ndarray) -> 
     plane_d = -np.dot(plane_normal, plane_origin)
     threshold = np.dot(np.abs(plane_normal), half_block)
 
-    # np.inner(a, b) in this context is like (a * b).sum(axis=1), but faster.
+    # In this context, np.inner(a, b) returns the same as (a * b).sum(axis=1), but it's faster.
+    # Luckily, we don't run out of memory like in vectorized_triangles_intersection.
     mask = np.abs(np.inner(plane_normal, vertices) + plane_d) <= threshold
 
     return vertices[mask], values[mask]

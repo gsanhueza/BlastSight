@@ -217,15 +217,10 @@ class MainWindow(QMainWindow):
         self.statusBar.showMessage(f'Failed to export.')
 
     def slot_mode_updated(self, mode: str):
-        self.statusBar.showMessage(mode)
+        self.statusBar.showMessage(f'Mode: {mode}')
 
-    def slot_mesh_distances(self, distances: list):
-        string_builder = ''
-        for _id, distance in distances:
-            string_builder += f'(id: {_id}) Distance: {distance}'
-            string_builder += '\n'
-
-        self.statusBar.showMessage(string_builder)
+    def slot_mesh_distances(self, distance: list or None):
+        self.statusBar.showMessage(f'Distance: {distance}')
 
     def slot_detected_meshes(self, mesh_ids: list):
         self.treeWidget.clearSelection()

@@ -499,21 +499,31 @@ class IntegrableViewer(QOpenGLWidget):
         drawables = [m for m in self.drawable_collection.filter(MeshGL) if m.is_visible]
         elements = [m.element for m in drawables]
 
-        distances = []
+        points_A = []
+        points_B = []
 
         for mesh in elements:
-            points = []
-            for i in range(len(origin_list)):
-                points.append(utils.mesh_intersection(origin_list[i], ray_list[i], mesh))
+            int_A = utils.mesh_intersection(origin_list[0], ray_list[0], mesh)
+            int_B = utils.mesh_intersection(origin_list[1], ray_list[1], mesh)
 
-            if any(x is None for x in points):
-                continue
+            # Discard non-intersections
+            if int_A.size > 0:
+               points_A.append(utils.closest_point_to(origin_list[0], int_A))
 
-            distance = np.linalg.norm(np.diff(points, axis=0))
-            distances.append([mesh.id, distance])
-            print(f'Distance: {distance} (id: {mesh.id})')
+            if int_B.size > 0:
+               points_B.append(utils.closest_point_to(origin_list[1], int_B))
 
-        self.signal_mesh_distances.emit(distances)
+        distance = None
+        if len(points_A) > 0 and len(points_B) > 0:
+            points_A = np.vstack(points_A)
+            points_B = np.vstack(points_B)
+
+            closest_A = utils.closest_point_to(origin_list[0], points_A)
+            closest_B = utils.closest_point_to(origin_list[1], points_B)
+
+            distance = np.linalg.norm(closest_B - closest_A)
+
+        self.signal_mesh_distances.emit(distance)
 
     def detect_mesh_intersection(self, x: float, y: float, z: float) -> None:
         ray, origin = self.ray_from_click(x, y, z)
@@ -523,7 +533,9 @@ class IntegrableViewer(QOpenGLWidget):
         elements = [m.element for m in drawables]
 
         for mesh in elements:
-            point = utils.mesh_intersection(origin, ray, mesh)
+            intersections = utils.mesh_intersection(origin, ray, mesh)
+            point = utils.closest_point_to(origin, intersections)
+            # print(f'(Mesh {mesh.id}): Intersections: {intersections}')
             # print(f'(Mesh {mesh.id}): Closest intersection: {point}')
             if point is not None:
                 intersected_ids.append(mesh.id)
