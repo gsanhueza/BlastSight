@@ -8,8 +8,8 @@ from functools import partial
 
 
 def mesh_intersection(origin: np.ndarray, ray: np.ndarray, mesh) -> np.ndarray or None:
-    # Early detection test
-    if not aabb_intersection(origin, ray, mesh):
+    # Early AABB detection test
+    if not aabb_intersection(origin, ray, *mesh.bounding_box):
         return None
 
     curry_triangle = partial(partial(triangle_intersection, origin), ray)
@@ -30,12 +30,9 @@ def mesh_intersection(origin: np.ndarray, ray: np.ndarray, mesh) -> np.ndarray o
     return closest
 
 
-def aabb_intersection(origin: np.ndarray, ray: np.ndarray, mesh) -> bool:
+def aabb_intersection(origin: np.ndarray, ray: np.ndarray, b_min: np.ndarray, b_max: np.ndarray) -> bool:
     # Adapted from https://tavianator.com/fast-branchless-raybounding-box-intersections-part-2-nans/
-    b_min, b_max = mesh.bounding_box
-    b_diff = b_max - b_min
-
-    if b_diff.min() < 1e-12:  # Flat mesh means AABB unreliable
+    if (b_max - b_min).min() < 1e-12:  # Flat mesh means AABB unreliable
         return True
 
     # Result of division by zero used deliberately
@@ -157,7 +154,8 @@ def slice_blocks(blocks, plane_origin: np.ndarray, plane_normal: np.ndarray) -> 
     plane_d = -np.dot(plane_normal, plane_origin)
     threshold = np.dot(np.abs(plane_normal), half_block)
 
-    mask = np.abs((plane_normal * vertices).sum(axis=1) + plane_d) <= threshold
+    # np.inner(a, b) == (a * b).sum(axis=1), but faster.
+    mask = np.abs(np.inner(plane_normal, vertices) + plane_d) <= threshold
 
     return vertices[mask], values[mask]
 
