@@ -4,7 +4,19 @@ import meshcut
 import numpy as np
 
 from colour import Color
-from functools import partial
+
+
+def closest_point_to(origin: np.ndarray, points: list) -> np.ndarray or None:
+    distances = distances_between(origin, points)
+    if len(distances) == 0:
+        return None
+    mask = np.abs(distances - distances.min()) <= 1e-12
+
+    return points[mask][0]
+
+
+def distances_between(origin: np.ndarray, points: list) -> np.ndarray:
+    return np.linalg.norm(origin - points, axis=1)
 
 
 def mesh_intersection(origin: np.ndarray, ray: np.ndarray, mesh) -> np.ndarray or None:
@@ -12,22 +24,9 @@ def mesh_intersection(origin: np.ndarray, ray: np.ndarray, mesh) -> np.ndarray o
     if not aabb_intersection(origin, ray, *mesh.bounding_box):
         return None
 
-    curry_triangle = partial(partial(triangle_intersection, origin), ray)
+    results = vectorized_triangles_intersection(origin, ray, mesh.vertices[mesh.indices])
 
-    triangles = mesh.vertices[mesh.indices]
-    intersections = map(curry_triangle, triangles)
-    results = [x for x in intersections if x is not None]
-
-    closest = None
-    dist = np.inf
-
-    for point in results:
-        d = np.linalg.norm(origin - point)
-        if d < dist:
-            dist = d
-            closest = point
-
-    return closest
+    return closest_point_to(origin, results)
 
 
 def aabb_intersection(origin: np.ndarray, ray: np.ndarray, b_min: np.ndarray, b_max: np.ndarray) -> bool:
@@ -61,44 +60,52 @@ def plane_intersection(origin: np.ndarray, ray: np.ndarray,
 
 
 def triangle_intersection(origin: np.ndarray, ray: np.ndarray, triangle: np.ndarray) -> list or None:
+    try:
+        intersection = vectorized_triangles_intersection(origin, ray, triangle)
+    except IndexError:
+        intersection = vectorized_triangles_intersection(origin, ray, np.array([triangle]))
+
+    return intersection[0] if len(intersection) > 0 else None
+
+
+def vectorized_triangles_intersection(origin: np.ndarray,
+                                      ray: np.ndarray,
+                                      triangles: np.ndarray) -> list:
     # Idea taken from https://cadxfem.org/inf/Fast%20MinimumStorage%20RayTriangle%20Intersection.pdf
     # Code adapted from https://en.wikipedia.org/wiki/M%C3%B6ller%E2%80%93Trumbore_intersection_algorithm
-    _EPSILON = 1e-12
-    vertex0 = triangle[0]
-    vertex1 = triangle[1]
-    vertex2 = triangle[2]
+    # Manually vectorized to benefit from numpy's performance.
+
+    # Get individual vertices of each triangle
+    vertex0 = triangles[:, 0, :]
+    vertex1 = triangles[:, 1, :]
+    vertex2 = triangles[:, 2, :]
 
     edge1 = vertex1 - vertex0
     edge2 = vertex2 - vertex0
 
     h = np.cross(ray, edge2)
-    a = np.dot(edge1, h)
+    a = (edge1 * h).sum(axis=1)
 
-    if -_EPSILON < a < _EPSILON:
-        return None  # This ray is parallel to this triangle.
+    mask = abs(a) > 1e-12  # False => Ray is parallel to triangle.
 
-    f = 1.0 / a
-    s = origin - vertex0
-    u = f * np.dot(s, h)
+    # Result of division by zero used deliberately
+    with np.errstate(divide='ignore', invalid='ignore'):
+        f = 1.0 / a  # Can this be solved in a more elegant way?
+        s = origin - vertex0
+        u = f * (s * h).sum(axis=1)
 
-    if u < 0.0 or u > 1.0:
-        return None
+        mask = (0.0 <= u) & (u <= 1.0) & mask
 
-    q = np.cross(s, edge1)
-    v = f * np.dot(ray, q)
+        q = np.cross(s, edge1)
+        v = f * (ray * q).sum(axis=1)
 
-    if v < 0.0 or u + v > 1.0:
-        return None
+        mask = (v >= 0.0) & (u + v <= 1.0) & mask
 
-    # At this stage we can compute t to find out where the intersection point is on the line.
-    t = f * np.dot(edge2, q)
+        # At this stage we can compute t to find out where the intersection point is on the line.
+        t = f * (edge2 * q).sum(axis=1)
 
-    if t > _EPSILON:  # ray intersection
-        intersection_point = origin + ray * t  # Here is the intersection point
-        return intersection_point
-
-    # This means that there is a line intersection but not a ray intersection.
-    return None
+        mask = (t > 1e-12) & mask  # ray intersection
+    return origin + ray * t[mask].reshape(-1, 1)  # Here are the intersections.
 
 
 def slice_mesh(mesh, plane_origin: np.ndarray, plane_normal: np.ndarray) -> list:
@@ -154,7 +161,7 @@ def slice_blocks(blocks, plane_origin: np.ndarray, plane_normal: np.ndarray) -> 
     plane_d = -np.dot(plane_normal, plane_origin)
     threshold = np.dot(np.abs(plane_normal), half_block)
 
-    # np.inner(a, b) == (a * b).sum(axis=1), but faster.
+    # np.inner(a, b) in this context is like (a * b).sum(axis=1), but faster.
     mask = np.abs(np.inner(plane_normal, vertices) + plane_d) <= threshold
 
     return vertices[mask], values[mask]

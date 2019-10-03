@@ -57,9 +57,9 @@ class TestUtils:
         assert triangle_intersection(self.origin_low, self.ray, self.triangle) is None
 
     def test_aabb_intersection(self):
-        assert aabb_intersection(self.origin, self.ray, self.tetrahedron)
-        assert not aabb_intersection(self.origin, self.ray_low, self.tetrahedron)
-        assert not aabb_intersection(self.origin, self.ray_perpendicular, self.tetrahedron)
-        assert not aabb_intersection(self.origin_translated, self.ray, self.tetrahedron)
-        assert not aabb_intersection(self.origin_translated, self.ray_oblique, self.tetrahedron)
-        assert not aabb_intersection(self.origin, self.ray_oblique, self.tetrahedron)
+        assert aabb_intersection(self.origin, self.ray, *self.tetrahedron.bounding_box)
+        assert not aabb_intersection(self.origin, self.ray_low, *self.tetrahedron.bounding_box)
+        assert not aabb_intersection(self.origin, self.ray_perpendicular, *self.tetrahedron.bounding_box)
+        assert not aabb_intersection(self.origin_translated, self.ray, *self.tetrahedron.bounding_box)
+        assert not aabb_intersection(self.origin_translated, self.ray_oblique, *self.tetrahedron.bounding_box)
+        assert not aabb_intersection(self.origin, self.ray_oblique, *self.tetrahedron.bounding_box)
