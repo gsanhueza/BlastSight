@@ -13,6 +13,9 @@ class NormalMode(Mode):
     def mousePressEvent(self, event, widget):
         self.lastPos = QPoint(event.pos())
 
+    def mouseDoubleClickEvent(self, event, widget):
+        widget.detect_mesh_intersection(event.pos().x(), event.pos().y(), 1.0)
+
     def mouseMoveEvent(self, event, widget):
         if self.lastPos is None:
             return

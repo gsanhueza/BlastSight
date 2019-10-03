@@ -594,6 +594,10 @@ class IntegrableViewer(QOpenGLWidget):
         self.current_mode.mousePressEvent(event, self)
         self.update()
 
+    def mouseDoubleClickEvent(self, event, *args, **kwargs):
+        self.current_mode.mouseDoubleClickEvent(event, self)
+        self.update()
+
     def mouseReleaseEvent(self, event, *args, **kwargs) -> None:
         self.current_mode.mouseReleaseEvent(event, self)
         self.update()

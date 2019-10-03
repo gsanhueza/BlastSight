@@ -173,21 +173,41 @@ def slice_blocks(blocks, plane_origin: np.ndarray, plane_normal: np.ndarray) -> 
     return vertices[mask], values[mask]
 
 
-def hsl_to_hsv(h: float, s: float, l: float) -> tuple:
-    # Taken and adapted from https://gist.github.com/mathebox/e0805f72e7db3269ec22
-    v = (2 * l + s * (1 - abs(2 * l - 1))) / 2
-    s = 2 * (v - l) / max(v, 1e-12)
-    return h, s, v
+def mineral_density(mesh, blocks, mineral: str) -> tuple:
+    """
+    Receives a MeshElement, a BlockElement, a mineral string,
+    and returns a tuple consisting of:
+    (blocks inside the mesh, values of those blocks, sum of those values)
 
+    :param mesh: MeshElement
+    :param blocks: BlockElement
+    :param mineral: str
+    :return: tuple(np.ndarray, np.ndarray, float)
+    """
+    min_bound, max_bound = mesh.bounding_box
+    block_size = blocks.block_size
 
-def parse_colormap(colormap: str) -> list:
-    try:
-        initial_str, final_str = colormap.split('-')
-        initial = np.array(hsl_to_hsv(*Color(initial_str).get_hsl()))
-        final = np.array(hsl_to_hsv(*Color(final_str).get_hsl()))
-        return [initial, final]
-    except Exception:
-        return []
+    # Recreate bounds to allow a block to be partially inside a mesh
+    min_bound -= block_size
+    max_bound += block_size
+
+    # Limit blocks by new bounding box of mesh and get their values
+    mask = np.all((blocks.vertices > min_bound) & (blocks.vertices < max_bound), axis=-1)
+    B = blocks.vertices[mask]
+    values = blocks.data.get(mineral)[mask]
+
+    # With ray tracing, we'll detect which blocks are truly inside the mesh
+    ray = np.array([0.0, 0.0, 1.0])  # Arbitrary direction
+    idx_inside = []
+
+    # From the block, if we hit the mesh an odd number of times, we're inside the mesh
+    for origin in B:
+        intersections = mesh_intersection(origin, ray, mesh)
+        idx_inside.append(len(intersections) > 0 and (np.unique(intersections, axis=0).size // 3) % 2 == 1)
+
+    # TODO Detect blocks near the borders (partial value)
+
+    return B[idx_inside], values[idx_inside], values[idx_inside].sum()
 
 
 def values_to_rgb(values: np.ndarray, vmin: float, vmax: float, colormap: str) -> np.ndarray:
@@ -200,6 +220,23 @@ def values_to_rgb(values: np.ndarray, vmin: float, vmax: float, colormap: str) -
     hsv[:, 2] = initial[2] + (final - initial)[2] * vals
 
     return hsv_to_rgb(hsv)
+
+
+def parse_colormap(colormap: str) -> list:
+    try:
+        initial_str, final_str = colormap.split('-')
+        initial = np.array(hsl_to_hsv(*Color(initial_str).get_hsl()))
+        final = np.array(hsl_to_hsv(*Color(final_str).get_hsl()))
+        return [initial, final]
+    except Exception:
+        return []
+
+
+def hsl_to_hsv(h: float, s: float, l: float) -> tuple:
+    # Taken and adapted from https://gist.github.com/mathebox/e0805f72e7db3269ec22
+    v = (2 * l + s * (1 - abs(2 * l - 1))) / 2
+    s = 2 * (v - l) / max(v, 1e-12)
+    return h, s, v
 
 
 def hsv_to_rgb(hsv: list) -> np.ndarray:
@@ -259,36 +296,3 @@ def hsv_to_rgb(hsv: list) -> np.ndarray:
 
     return rgb
 
-
-def mineral_density(mesh, blocks, mineral: str) -> tuple:
-    min_bound, max_bound = mesh.bounding_box
-    block_size = blocks.block_size
-
-    # Set value string to match what we're looking for
-    old_val = blocks.value_str
-    blocks.value_str = mineral
-
-    # Recreate bounds to allow a block to be partially inside a mesh
-    min_bound = min_bound - block_size
-    max_bound = max_bound + block_size
-
-    # Limit blocks by new bounding box of mesh and get their values
-    mask = np.all((blocks.vertices > min_bound) & (blocks.vertices < max_bound), axis=-1)
-    B = blocks.vertices[mask]
-    values = blocks.values[mask]
-
-    # Restore original value string
-    blocks.values_str = old_val
-
-    # With ray tracing, we'll detect which blocks are truly inside the mesh
-    ray = np.array([0.0, 0.0, 1.0])  # Arbitrary direction
-    idx_inside = []
-
-    # From the block, if we hit the mesh an odd number of times, we're inside the mesh
-    for origin in B:
-        intersections = mesh_intersection(origin, ray, mesh)
-        idx_inside.append(len(intersections) > 0 and (np.unique(intersections, axis=0).size // 3) % 2 == 1)
-
-    # TODO Detect blocks near the borders (partial value)
-
-    return B[idx_inside], values[idx_inside], values[idx_inside].sum()

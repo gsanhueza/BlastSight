@@ -14,6 +14,9 @@ class Mode:
     def mouseReleaseEvent(self, event, widget):
         pass
 
+    def mouseDoubleClickEvent(self, event, widget):
+        pass
+
     def wheelEvent(self, event, widget):
         dy = event.angleDelta().y()
         sign = dy / abs(dy) if abs(dy) > 1e-12 else 0.0
