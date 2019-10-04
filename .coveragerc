@@ -10,5 +10,6 @@ omit =
     caseron/__main__.py
     caseron/view/gui/*.py
     caseron/view/viewer.py
+    caseron/view/integrableviewer.py
     caseron/controller/*.py
 

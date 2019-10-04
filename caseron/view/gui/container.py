@@ -5,7 +5,7 @@ from qtpy.QtWidgets import QVBoxLayout
 from qtpy.QtWidgets import QWidget
 
 from .toolbar import ToolBar
-from .integrableviewer import IntegrableViewer
+from ..integrableviewer import IntegrableViewer
 from .cameradialog import CameraDialog
 from .treewidget import TreeWidget
 

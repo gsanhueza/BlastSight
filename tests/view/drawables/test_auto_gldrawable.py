@@ -6,7 +6,7 @@ from qtpy.QtWidgets import QApplication
 
 from caseron.model.elements.element import Element
 from caseron.view.drawables.gldrawable import GLDrawable
-from caseron.view.gui.integrableviewer import IntegrableViewer
+from caseron.view.integrableviewer import IntegrableViewer
 from caseron.view.drawables.glprograms.shaderprogram import ShaderProgram
 
 

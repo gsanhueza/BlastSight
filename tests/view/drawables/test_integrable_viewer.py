@@ -8,7 +8,7 @@ from caseron.model.model import Model
 from caseron.view.drawables.meshgl import MeshGL
 from caseron.view.drawables.blockgl import BlockGL
 from caseron.view.drawables.pointgl import PointGL
-from caseron.view.gui.integrableviewer import IntegrableViewer
+from caseron.view.integrableviewer import IntegrableViewer
 
 from caseron.controller.normalmode import NormalMode
 from caseron.controller.slicemode import SliceMode

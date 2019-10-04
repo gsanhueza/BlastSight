@@ -3,7 +3,7 @@
 import pytest
 
 from caseron.model.elements.pointelement import PointElement
-from caseron.view.gui.integrableviewer import IntegrableViewer
+from caseron.view.integrableviewer import IntegrableViewer
 from caseron.view.drawables.pointgl import PointGL
 from caseron.view.drawables.glprograms.pointprogram import PointProgram
 

@@ -2,7 +2,7 @@
 
 import pytest
 
-from caseron.view.gui.integrableviewer import IntegrableViewer
+from caseron.view.integrableviewer import IntegrableViewer
 from caseron.view.drawables.backgroundgl import BackgroundGL
 from caseron.view.drawables.glprograms.backgroundprogram import BackgroundProgram
 

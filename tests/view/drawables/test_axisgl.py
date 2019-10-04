@@ -2,7 +2,7 @@
 
 import pytest
 
-from caseron.view.gui.integrableviewer import IntegrableViewer
+from caseron.view.integrableviewer import IntegrableViewer
 from caseron.view.drawables.axisgl import AxisGL
 from caseron.view.drawables.glprograms.axisprogram import AxisProgram
 

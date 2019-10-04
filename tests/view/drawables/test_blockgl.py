@@ -3,7 +3,7 @@
 import pytest
 
 from caseron.model.elements.blockelement import BlockElement
-from caseron.view.gui.integrableviewer import IntegrableViewer
+from caseron.view.integrableviewer import IntegrableViewer
 from caseron.view.drawables.blockgl import BlockGL
 from caseron.view.drawables.glprograms.blockprogram import BlockProgram
 

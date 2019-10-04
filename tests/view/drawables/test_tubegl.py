@@ -3,7 +3,7 @@
 import pytest
 
 from caseron.model.elements.tubeelement import TubeElement
-from caseron.view.gui.integrableviewer import IntegrableViewer
+from caseron.view.integrableviewer import IntegrableViewer
 from caseron.view.drawables.tubegl import TubeGL
 from caseron.view.drawables.glprograms.tubeprogram import TubeProgram
 

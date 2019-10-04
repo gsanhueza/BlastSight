@@ -14,28 +14,28 @@ from qtpy.QtGui import QRegion
 from qtpy.QtGui import QVector4D
 from qtpy.QtWidgets import QOpenGLWidget
 
-from ..drawables.glaxiscollection import GLAxisCollection
-from ..drawables.glbackgroundcollection import GLBackgroundCollection
-from ..drawables.gldrawablecollection import GLDrawableCollection
+from .drawables.glaxiscollection import GLAxisCollection
+from .drawables.glbackgroundcollection import GLBackgroundCollection
+from .drawables.gldrawablecollection import GLDrawableCollection
 
-from ..drawables.axisgl import AxisGL
-from ..drawables.backgroundgl import BackgroundGL
-from ..drawables.blockgl import BlockGL
-from ..drawables.linegl import LineGL
-from ..drawables.meshgl import MeshGL
-from ..drawables.pointgl import PointGL
-from ..drawables.tubegl import TubeGL
+from .drawables.axisgl import AxisGL
+from .drawables.backgroundgl import BackgroundGL
+from .drawables.blockgl import BlockGL
+from .drawables.linegl import LineGL
+from .drawables.meshgl import MeshGL
+from .drawables.pointgl import PointGL
+from .drawables.tubegl import TubeGL
 
-from ..fpscounter import FPSCounter
+from .fpscounter import FPSCounter
 
-from ...controller.detectionmode import DetectionMode
-from ...controller.normalmode import NormalMode
-from ...controller.slicemode import SliceMode
-from ...controller.measurementmode import MeasurementMode
+from ..controller.detectionmode import DetectionMode
+from ..controller.normalmode import NormalMode
+from ..controller.slicemode import SliceMode
+from ..controller.measurementmode import MeasurementMode
 
-from ...model import utils
-from ...model.model import Model
-from ...model.elements.nullelement import NullElement
+from ..model import utils
+from ..model.model import Model
+from ..model.elements.nullelement import NullElement
 
 
 class IntegrableViewer(QOpenGLWidget):
@@ -382,7 +382,7 @@ class IntegrableViewer(QOpenGLWidget):
         return pixmap
 
     def take_screenshot(self, save_path=None) -> None:
-        if save_path is not None:
+        if save_path:
             self.get_pixmap().save(save_path)
 
     def screen_to_ndc(self, _x, _y, _z) -> np.ndarray:
@@ -496,8 +496,7 @@ class IntegrableViewer(QOpenGLWidget):
         self.set_normal_mode()
 
     def measure_from_rays(self, origin_list: list, ray_list: list) -> None:
-        drawables = [m for m in self.drawable_collection.filter(MeshGL) if m.is_visible]
-        elements = [m.element for m in drawables]
+        elements = [m.element for m in self.drawable_collection.filter(MeshGL) if m.is_visible]
 
         points_A = []
         points_B = []
@@ -508,10 +507,10 @@ class IntegrableViewer(QOpenGLWidget):
 
             # Discard non-intersections
             if int_A.size > 0:
-               points_A.append(utils.closest_point_to(origin_list[0], int_A))
+                points_A.append(utils.closest_point_to(origin_list[0], int_A))
 
             if int_B.size > 0:
-               points_B.append(utils.closest_point_to(origin_list[1], int_B))
+                points_B.append(utils.closest_point_to(origin_list[1], int_B))
 
         distance = None
         if len(points_A) > 0 and len(points_B) > 0:
@@ -527,10 +526,9 @@ class IntegrableViewer(QOpenGLWidget):
 
     def detect_mesh_intersection(self, x: float, y: float, z: float) -> None:
         ray, origin = self.ray_from_click(x, y, z)
-        attributes_list = []
+        elements = [m.element for m in self.drawable_collection.filter(MeshGL) if m.is_visible]
 
-        drawables = [m for m in self.drawable_collection.filter(MeshGL) if m.is_visible]
-        elements = [m.element for m in drawables]
+        attributes_list = []
 
         for mesh in elements:
             intersections = utils.mesh_intersection(origin, ray, mesh)

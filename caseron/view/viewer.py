@@ -6,7 +6,7 @@ from qtpy.QtCore import Qt
 from qtpy.QtCore import QTimer
 from qtpy.QtWidgets import QApplication
 
-from .gui.integrableviewer import IntegrableViewer
+from caseron.view.integrableviewer import IntegrableViewer
 
 
 class Viewer(IntegrableViewer):

@@ -1,10 +1,9 @@
 #!/usr/bin/env python
 
-import pytest
 from caseron.model.elements.element import Element
 from caseron.view.drawables.gldrawablecollection import GLDrawableCollection
 from caseron.view.drawables.gldrawable import GLDrawable
-from caseron.view.gui.integrableviewer import IntegrableViewer
+from caseron.view.integrableviewer import IntegrableViewer
 
 
 class TestGLDrawableCollection:

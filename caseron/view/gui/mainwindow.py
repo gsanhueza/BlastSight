@@ -25,7 +25,7 @@ from .helpdialog import HelpDialog
 from .aboutdialog import AboutDialog
 from .threadworker import ThreadWorker
 
-from .integrableviewer import IntegrableViewer
+from ..integrableviewer import IntegrableViewer
 from .toolbar import ToolBar
 from .treewidget import TreeWidget
 
