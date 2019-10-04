@@ -5,7 +5,7 @@ def demo():
     from caseron.view.viewer import Viewer
 
     viewer = Viewer()
-    viewer.setWindowTitle('MineVisGL (Demo)')
+    viewer.setWindowTitle('Caseron (Demo)')
 
     viewer.mesh(x=[1, 3, 2], y=[0, 0, 1], z=[-3, -3, -3],
                 color=[0.0, 0.0, 1.0],
