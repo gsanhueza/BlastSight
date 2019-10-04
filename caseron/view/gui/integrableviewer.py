@@ -527,21 +527,22 @@ class IntegrableViewer(QOpenGLWidget):
 
     def detect_mesh_intersection(self, x: float, y: float, z: float) -> None:
         ray, origin = self.ray_from_click(x, y, z)
-        intersected_ids = []
+        attributes_list = []
 
         drawables = [m for m in self.drawable_collection.filter(MeshGL) if m.is_visible]
         elements = [m.element for m in drawables]
 
         for mesh in elements:
             intersections = utils.mesh_intersection(origin, ray, mesh)
-            point = utils.closest_point_to(origin, intersections)
+            closest_point = utils.closest_point_to(origin, intersections)
             # print(f'(Mesh {mesh.id}): Intersections: {intersections}')
-            # print(f'(Mesh {mesh.id}): Closest intersection: {point}')
-            if point is not None:
-                intersected_ids.append(mesh.id)
+            # print(f'(Mesh {mesh.id}): Closest intersection: {closest_point}')
+            if closest_point is not None:
+                attributes = {**mesh.attributes, 'intersection': closest_point}
+                attributes_list.append(attributes)
 
         # Emit signal with clicked mesh
-        self.signal_mesh_clicked.emit(intersected_ids)
+        self.signal_mesh_clicked.emit(attributes_list)
 
         # print('-------------------------------')
 

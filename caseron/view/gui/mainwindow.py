@@ -171,7 +171,7 @@ class MainWindow(QMainWindow):
 
         self.viewer.signal_fps_updated.connect(self.print_fps)
         self.viewer.signal_mode_updated.connect(self.slot_mode_updated)
-        self.viewer.signal_mesh_clicked.connect(self.slot_detected_meshes)
+        self.viewer.signal_mesh_clicked.connect(self.slot_mesh_clicked)
         self.viewer.signal_mesh_distances.connect(self.slot_mesh_distances)
         self.viewer.signal_file_modified.connect(self.fill_tree_widget)
         self.viewer.signal_load_success.connect(self.slot_element_load_success)
@@ -222,19 +222,22 @@ class MainWindow(QMainWindow):
     def slot_mesh_distances(self, distance: list or None):
         self.statusBar.showMessage(f'Distance: {distance}')
 
-    def slot_detected_meshes(self, mesh_ids: list):
+    def slot_mesh_clicked(self, mesh_attributes: list):
         self.treeWidget.clearSelection()
         it = QTreeWidgetItemIterator(self.treeWidget)
 
+        # Get items in tree
+        items = []
         while it.value():
-            item = it.value()
-            for _id in mesh_ids:
-                if _id == item.id:
-                    item.setSelected(True)
-
+            items.append(it.value())
             it += 1
 
-        self.statusBar.showMessage(f'Detected mesh ids: {mesh_ids}')
+        # Select correct items
+        id_list = [attr.get('id', -1) for attr in mesh_attributes]
+        for item in items:
+            item.setSelected(item.id in id_list)
+
+        self.statusBar.showMessage(f'Detected meshes: {id_list}')
 
     """
     Utilities dialogs

@@ -91,6 +91,10 @@ class Element:
     def metadata(self) -> dict:
         return self._metadata
 
+    @property
+    def attributes(self) -> dict:
+        return {**self.properties, **self.metadata}
+
     @data.setter
     def data(self, _data: dict) -> None:
         self._data = _data

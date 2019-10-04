@@ -100,6 +100,13 @@ class TestElement:
         assert 'color' in element.properties.keys()
         assert 'alpha' in element.properties.keys()
 
+        # We check attributes as properties + metadata
+        for prop in element.properties.keys():
+            assert prop in element.attributes.keys()
+
+        for prop in element.metadata.keys():
+            assert prop in element.attributes.keys()
+
     def test_color_rgba(self):
         element = Element(vertices=[[0, 1, 2]])
 
