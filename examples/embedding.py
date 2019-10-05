@@ -12,14 +12,21 @@ from qtpy.QtWidgets import QGridLayout
 
 from blastsight.view.integrableviewer import IntegrableViewer
 
+"""
+In this demo, we'll show how you can embed BlastSight in
+an PyQt5/PySide2 application.
+"""
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     central_widget = QWidget()
     central_widget.setWindowTitle('Embedding BlastSight in a PyQt5/PySide2 Application')
     layout = QGridLayout(central_widget)
-    viewer = IntegrableViewer(central_widget)
 
+    """
+    IntegrableViewer inherits from QOpenGLWidget, so you can insert it as any QWidget.
+    """
+    viewer = IntegrableViewer(central_widget)
     viewer.setSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding)
 
     label_list = []

@@ -113,19 +113,23 @@ def vectorized_triangles_intersection(origin: np.ndarray,
     return origin + ray * t[mask].reshape(-1, 1)  # Here are the intersections.
 
 
-def slice_mesh(mesh, plane_origin: np.ndarray, plane_normal: np.ndarray) -> list:
+def slice_mesh(mesh,
+               plane_origin: np.ndarray or list,
+               plane_normal: np.ndarray or list) -> list:
     # Taken from https://pypi.org/project/meshcut/
     # Although we might want to have an improved version.
     # This returns a list with the slices (in case we have a concave mesh)
     try:
-        return meshcut.cross_section(mesh.vertices, mesh.indices, plane_origin, plane_normal)
+        return meshcut.cross_section(mesh.vertices, mesh.indices, np.array(plane_origin), np.array(plane_normal))
     except AssertionError:
         # Meshcut doesn't want to slice
         print(f'WARNING: Mesh {mesh.name} (id = {mesh.id}) cannot be sliced, fix your mesh!')
         return []
 
 
-def slice_blocks(blocks, plane_origin: np.ndarray, plane_normal: np.ndarray) -> tuple:
+def slice_blocks(blocks,
+                 plane_origin: np.ndarray or list,
+                 plane_normal: np.ndarray or list) -> tuple:
     """
     *** Plane Equation: ax + by + cz + d = 0 ***
 
