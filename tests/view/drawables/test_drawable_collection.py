@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
-from caseron.model.elements.element import Element
-from caseron.view.drawables.gldrawablecollection import GLDrawableCollection
-from caseron.view.drawables.gldrawable import GLDrawable
-from caseron.view.integrableviewer import IntegrableViewer
+from blastsight.model.elements.element import Element
+from blastsight.view.drawables.gldrawablecollection import GLDrawableCollection
+from blastsight.view.drawables.gldrawable import GLDrawable
+from blastsight.view.integrableviewer import IntegrableViewer
 
 
 class TestGLDrawableCollection:

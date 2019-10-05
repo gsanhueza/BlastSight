@@ -2,8 +2,8 @@
 
 import time
 
-from caseron.view.viewer import Viewer
-from caseron.model import utils
+from blastsight.view.viewer import Viewer
+from blastsight.model import utils
 
 v = Viewer()
 path = '../test_files/rainbow.csv'

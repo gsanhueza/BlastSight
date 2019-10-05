@@ -2,7 +2,7 @@
 
 import pytest
 import numpy as np
-from caseron.model.elements.dfelement import DFElement
+from blastsight.model.elements.dfelement import DFElement
 
 
 class TestDFElement:

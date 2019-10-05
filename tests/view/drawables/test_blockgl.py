@@ -2,10 +2,10 @@
 
 import pytest
 
-from caseron.model.elements.blockelement import BlockElement
-from caseron.view.integrableviewer import IntegrableViewer
-from caseron.view.drawables.blockgl import BlockGL
-from caseron.view.drawables.glprograms.blockprogram import BlockProgram
+from blastsight.model.elements.blockelement import BlockElement
+from blastsight.view.integrableviewer import IntegrableViewer
+from blastsight.view.drawables.blockgl import BlockGL
+from blastsight.view.drawables.glprograms.blockprogram import BlockProgram
 
 
 class TestBlockGL:

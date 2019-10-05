@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from caseron.view.fpscounter import FPSCounter
+from blastsight.view.fpscounter import FPSCounter
 
 
 class TestFPSCounter:

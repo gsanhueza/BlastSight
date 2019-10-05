@@ -6,13 +6,13 @@ with open('README.md', 'r') as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name='caseron',
+    name='blastsight',
     version='0.1.0',
     author='Gabriel Sanhueza',
     description='3D visualization software designed to aid in Mining research.',
     long_description=long_description,
     long_description_content_type='text/markdown',
-    url='https://github.com/gsanhueza/Caseron',
+    url='https://github.com/gsanhueza/BlastSight',
     packages=setuptools.find_packages(exclude=['tests*']),
     include_package_data=True,
     install_requires=[

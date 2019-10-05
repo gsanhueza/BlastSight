@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-from caseron.model.utils import *
-from caseron.model.elements.meshelement import MeshElement
+from blastsight.model.utils import *
+from blastsight.model.elements.meshelement import MeshElement
 
 
 class TestUtils:

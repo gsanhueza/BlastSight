@@ -2,11 +2,11 @@
 
 import pytest
 
-from caseron.model.elements.meshelement import MeshElement
-from caseron.view.integrableviewer import IntegrableViewer
-from caseron.view.drawables.meshgl import MeshGL
-from caseron.view.drawables.glprograms.meshprogram import MeshProgram
-from caseron.view.drawables.glprograms.wireprogram import WireProgram
+from blastsight.model.elements.meshelement import MeshElement
+from blastsight.view.integrableviewer import IntegrableViewer
+from blastsight.view.drawables.meshgl import MeshGL
+from blastsight.view.drawables.glprograms.meshprogram import MeshProgram
+from blastsight.view.drawables.glprograms.wireprogram import WireProgram
 
 
 class TestMeshGL:

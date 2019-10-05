@@ -13,7 +13,7 @@ class Viewer(IntegrableViewer):
     def __init__(self):
         self.app = QApplication(sys.argv)
         super().__init__()
-        self.setWindowTitle('Caseron (Viewer)')
+        self.setWindowTitle('BlastSight (Viewer)')
 
     def show(self, detached: bool = False, timer: int = 0) -> None:
         super().show()

@@ -2,7 +2,7 @@
 
 import numpy as np
 import pytest
-from caseron.model.elements.lineelement import LineElement
+from blastsight.model.elements.lineelement import LineElement
 
 
 class TestLineElement:

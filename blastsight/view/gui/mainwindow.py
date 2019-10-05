@@ -64,7 +64,7 @@ class MainWindow(QMainWindow):
         self.menuBar.addAction(self.menu_Tools.menuAction())
         self.menuBar.addAction(self.menu_Help.menuAction())
 
-        self.setWindowTitle('Caseron')
+        self.setWindowTitle('BlastSight')
         self.toolbar.setWindowTitle('Toolbar')
         self.dockWidget.setWindowTitle('Element tree')
         self.treeWidget.headerItem().setText(0, 'Elements')
@@ -74,7 +74,7 @@ class MainWindow(QMainWindow):
         self.statusBar.showMessage('Ready')
 
         # Attributes
-        self.settings = QSettings('Caseron', application='caseron', parent=self)
+        self.settings = QSettings('BlastSight', application='blastsight', parent=self)
         self.filters_dict = {
             'mesh': 'Mesh Files (*.dxf *.off *.h5m);;'
                     'DXF Files (*.dxf);;'
@@ -257,7 +257,7 @@ class MainWindow(QMainWindow):
     def dialog_screenshot(self):
         (path, selected_filter) = QFileDialog.getSaveFileName(
             parent=self,
-            directory=f'Caseron Screenshot ({datetime.now().strftime("%Y%m%d-%H%M%S")})',
+            directory=f'BlastSight Screenshot ({datetime.now().strftime("%Y%m%d-%H%M%S")})',
             filter='PNG image (*.png);;')
 
         if path != '':
@@ -338,17 +338,17 @@ class MainWindow(QMainWindow):
     """
     def dialog_export_mesh(self, _id: int) -> None:
         self._dialog_export_element(_id=_id,
-                                    filters='Caseron mesh (*.h5m);;',
+                                    filters='BlastSight mesh (*.h5m);;',
                                     method=self.viewer.export_mesh)
 
     def dialog_export_blocks(self, _id: int) -> None:
         self._dialog_export_element(_id=_id,
-                                    filters='Caseron blocks (*.h5p);;',
+                                    filters='BlastSight blocks (*.h5p);;',
                                     method=self.viewer.export_blocks)
 
     def dialog_export_points(self, _id: int) -> None:
         self._dialog_export_element(_id=_id,
-                                    filters='Caseron points (*.h5p);;',
+                                    filters='BlastSight points (*.h5p);;',
                                     method=self.viewer.export_points)
 
     """

@@ -2,7 +2,7 @@
 
 import os
 import pytest
-from caseron.model.parsers.csvparser import CSVParser as Parser
+from blastsight.model.parsers.csvparser import CSVParser as Parser
 from tests.globals import *
 
 
@@ -25,7 +25,7 @@ class TestCSVParser:
 
     def test_load_wrong_extension(self):
         with pytest.raises(Exception):
-            Parser.load_file(f'{TEST_FILES_FOLDER_PATH}/caseron.off')
+            Parser.load_file(f'{TEST_FILES_FOLDER_PATH}/blastsight.off')
 
     def test_load_damaged(self):
         with pytest.raises(Exception):

@@ -1,4 +1,4 @@
 #!/usr/bin/env python
-import caseron.__main__
+import blastsight.__main__
 
-caseron.__main__.demo()
+blastsight.__main__.demo()

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import pytest
-from caseron.model.parsers.gslibparser import GSLibParser as Parser
+from blastsight.model.parsers.gslibparser import GSLibParser as Parser
 from tests.globals import *
 
 
@@ -36,4 +36,4 @@ class TestGSLibParser:
 
     def test_load_wrong_extension(self):
         with pytest.raises(Exception):
-            Parser.load_file(f'{TEST_FILES_FOLDER_PATH}/caseron.off')
+            Parser.load_file(f'{TEST_FILES_FOLDER_PATH}/blastsight.off')

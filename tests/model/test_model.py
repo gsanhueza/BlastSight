@@ -2,9 +2,9 @@
 
 import os
 import pytest
-from caseron.model.parsers.offparser import OFFParser
-from caseron.model.parsers.csvparser import CSVParser
-from caseron.model.model import Model
+from blastsight.model.parsers.offparser import OFFParser
+from blastsight.model.parsers.csvparser import CSVParser
+from blastsight.model.model import Model
 from tests.globals import *
 
 

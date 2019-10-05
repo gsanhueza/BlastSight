@@ -2,7 +2,7 @@
 
 import os
 import pytest
-from caseron.model.parsers.h5pparser import H5PParser as Parser
+from blastsight.model.parsers.h5pparser import H5PParser as Parser
 from tests.globals import *
 
 
@@ -43,7 +43,7 @@ class TestH5PParser:
 
     def test_load_wrong_extension(self):
         with pytest.raises(Exception):
-            Parser.load_file(path=f'{TEST_FILES_FOLDER_PATH}/caseron.off')
+            Parser.load_file(path=f'{TEST_FILES_FOLDER_PATH}/blastsight.off')
 
     def test_load_damaged(self):
         with pytest.raises(Exception):

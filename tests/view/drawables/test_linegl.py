@@ -2,10 +2,10 @@
 
 import pytest
 
-from caseron.model.elements.lineelement import LineElement
-from caseron.view.integrableviewer import IntegrableViewer
-from caseron.view.drawables.linegl import LineGL
-from caseron.view.drawables.glprograms.lineprogram import LineProgram
+from blastsight.model.elements.lineelement import LineElement
+from blastsight.view.integrableviewer import IntegrableViewer
+from blastsight.view.drawables.linegl import LineGL
+from blastsight.view.drawables.glprograms.lineprogram import LineProgram
 
 
 class TestLineGL:

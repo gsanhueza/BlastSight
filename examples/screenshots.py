@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
-from caseron.view.viewer import Viewer
+from blastsight.view.viewer import Viewer
 
 v = Viewer()
 
-v.mesh_by_path('../test_files/caseron.off')
+v.mesh_by_path('../test_files/blastsight.off')
 v.fit_to_screen()
 v.resize(800, 800)
 

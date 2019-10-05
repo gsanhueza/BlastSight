@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import pytest
-from caseron.model.parsers.parser import Parser
+from blastsight.model.parsers.parser import Parser
 from tests.globals import *
 
 

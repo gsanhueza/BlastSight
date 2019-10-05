@@ -52,7 +52,7 @@ class IntegrableViewer(QOpenGLWidget):
     signal_fps_updated = Signal(float)
 
     def __init__(self, parent=None):
-        QOpenGLWidget.__init__(self, parent)
+        super().__init__(parent)
         self.setAcceptDrops(True)
 
         # Model
@@ -138,6 +138,17 @@ class IntegrableViewer(QOpenGLWidget):
     @property
     def background(self):
         return self.background_collection.get('BG')
+
+    """
+    Projections
+    """
+    def perspective_projection(self) -> None:
+        self.projection_mode = 'perspective'
+        self.update()
+
+    def orthographic_projection(self) -> None:
+        self.projection_mode = 'orthographic'
+        self.update()
 
     """
     Load methods
@@ -570,17 +581,6 @@ class IntegrableViewer(QOpenGLWidget):
 
     def set_measurement_mode(self) -> None:
         self.set_controller_mode('measurement')
-
-    """
-    Projections
-    """
-    def perspective_projection(self) -> None:
-        self.projection_mode = 'perspective'
-        self.update()
-
-    def orthographic_projection(self) -> None:
-        self.projection_mode = 'orthographic'
-        self.update()
 
     """
     Events (dependent on current controller)

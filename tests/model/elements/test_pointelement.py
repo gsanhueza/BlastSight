@@ -2,7 +2,7 @@
 
 import numpy as np
 import pytest
-from caseron.model.elements.pointelement import PointElement
+from blastsight.model.elements.pointelement import PointElement
 
 
 class TestPointElement:

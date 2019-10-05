@@ -3,16 +3,16 @@
 import os
 import pytest
 
-from caseron.model.elements.element import Element
-from caseron.model.model import Model
-from caseron.view.drawables.meshgl import MeshGL
-from caseron.view.drawables.blockgl import BlockGL
-from caseron.view.drawables.pointgl import PointGL
-from caseron.view.integrableviewer import IntegrableViewer
+from blastsight.model.elements.element import Element
+from blastsight.model.model import Model
+from blastsight.view.drawables.meshgl import MeshGL
+from blastsight.view.drawables.blockgl import BlockGL
+from blastsight.view.drawables.pointgl import PointGL
+from blastsight.view.integrableviewer import IntegrableViewer
 
-from caseron.controller.normalmode import NormalMode
-from caseron.controller.slicemode import SliceMode
-from caseron.controller.detectionmode import DetectionMode
+from blastsight.controller.normalmode import NormalMode
+from blastsight.controller.slicemode import SliceMode
+from blastsight.controller.detectionmode import DetectionMode
 
 from tests.globals import *
 

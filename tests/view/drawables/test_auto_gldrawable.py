@@ -4,10 +4,10 @@ import sys
 
 from qtpy.QtWidgets import QApplication
 
-from caseron.model.elements.element import Element
-from caseron.view.drawables.gldrawable import GLDrawable
-from caseron.view.integrableviewer import IntegrableViewer
-from caseron.view.drawables.glprograms.shaderprogram import ShaderProgram
+from blastsight.model.elements.element import Element
+from blastsight.view.drawables.gldrawable import GLDrawable
+from blastsight.view.integrableviewer import IntegrableViewer
+from blastsight.view.drawables.glprograms.shaderprogram import ShaderProgram
 
 
 class TestAutoDrawable:

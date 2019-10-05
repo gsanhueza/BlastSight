@@ -1,5 +1,5 @@
 #!/usr/bin/env python
 
-import caseron.__main__
+import blastsight.__main__
 
-caseron.__main__.main()
+blastsight.__main__.main()

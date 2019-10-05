@@ -36,7 +36,9 @@ class TreeWidget(QTreeWidget):
 
     def fill_from_viewer(self, viewer) -> None:
         self.clear()
-        drawables = viewer.drawable_collection.values()
+        # Copy the OrderedDict to avoid exception
+        # RuntimeError: OrderedDict mutated during iteration
+        drawables = viewer.drawable_collection.copy().values()
 
         for drawable in drawables:
             item = TreeWidgetItem(self, viewer, drawable.id)

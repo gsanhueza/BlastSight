@@ -7,9 +7,9 @@ show_missing = True
 # Elements from GUI and Controller are being omitted in the coverage report
 omit = 
     *__init__.py*
-    caseron/__main__.py
-    caseron/view/gui/*.py
-    caseron/view/viewer.py
-    caseron/view/integrableviewer.py
-    caseron/controller/*.py
+    blastsight/__main__.py
+    blastsight/view/gui/*.py
+    blastsight/view/viewer.py
+    blastsight/view/integrableviewer.py
+    blastsight/controller/*.py
 

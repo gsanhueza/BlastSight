@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import pytest
-from caseron.model.parsers.offparser import OFFParser as Parser
+from blastsight.model.parsers.offparser import OFFParser as Parser
 from tests.globals import *
 
 

@@ -2,12 +2,12 @@
 
 import numpy as np
 
-from caseron.view.viewer import Viewer
-from caseron.model.utils import mineral_density
+from blastsight.view.viewer import Viewer
+from blastsight.model.utils import mineral_density
 
 viewer = Viewer()
 
-mesh = viewer.mesh_by_path(path='../test_files/caseron.off', alpha=0.5)
+mesh = viewer.mesh_by_path(path='../test_files/blastsight.off', alpha=0.5)
 blocks = viewer.blocks_by_path(path='../test_files/rainbow.csv')
 points = viewer.points_by_path(path='../test_files/rainbow.csv')
 

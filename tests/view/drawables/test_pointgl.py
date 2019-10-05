@@ -2,10 +2,10 @@
 
 import pytest
 
-from caseron.model.elements.pointelement import PointElement
-from caseron.view.integrableviewer import IntegrableViewer
-from caseron.view.drawables.pointgl import PointGL
-from caseron.view.drawables.glprograms.pointprogram import PointProgram
+from blastsight.model.elements.pointelement import PointElement
+from blastsight.view.integrableviewer import IntegrableViewer
+from blastsight.view.drawables.pointgl import PointGL
+from blastsight.view.drawables.glprograms.pointprogram import PointProgram
 
 
 class TestPointGL:

@@ -2,7 +2,7 @@
 
 import pytest
 import os
-from caseron.model.parsers.h5mparser import H5MParser as Parser
+from blastsight.model.parsers.h5mparser import H5MParser as Parser
 from tests.globals import *
 
 

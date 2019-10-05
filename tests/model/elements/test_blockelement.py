@@ -2,7 +2,7 @@
 
 import numpy as np
 import pytest
-from caseron.model.elements.blockelement import BlockElement
+from blastsight.model.elements.blockelement import BlockElement
 
 
 class TestBlockElement:

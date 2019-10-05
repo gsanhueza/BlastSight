@@ -2,7 +2,7 @@
 
 import numpy as np
 import pytest
-from caseron.model.elements.tubeelement import TubeElement
+from blastsight.model.elements.tubeelement import TubeElement
 
 
 class TestTubeElement:

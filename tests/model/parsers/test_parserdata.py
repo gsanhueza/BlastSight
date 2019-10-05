@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from caseron.model.parsers.parserdata import ParserData
+from blastsight.model.parsers.parserdata import ParserData
 
 
 class TestParserData:

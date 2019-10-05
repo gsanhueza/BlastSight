@@ -2,11 +2,11 @@
 
 import pytest
 
-from caseron.view.integrableviewer import IntegrableViewer
-from caseron.view.drawables.axisgl import AxisGL
-from caseron.view.drawables.glprograms.axisprogram import AxisProgram
+from blastsight.view.integrableviewer import IntegrableViewer
+from blastsight.view.drawables.axisgl import AxisGL
+from blastsight.view.drawables.glprograms.axisprogram import AxisProgram
 
-from caseron.model.elements.nullelement import NullElement
+from blastsight.model.elements.nullelement import NullElement
 
 
 class TestAxisGL:

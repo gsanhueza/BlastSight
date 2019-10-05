@@ -25,7 +25,7 @@ class Container(QWidget):
         self.verticalLayout.addWidget(self.viewer)
         self.verticalLayout.addWidget(self.toolbar)
 
-        self.setWindowTitle('Caseron (Container)')
+        self.setWindowTitle('BlastSight (Container)')
         self.setMinimumSize(600, 500)
 
         self.toolbar.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)

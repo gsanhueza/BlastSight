@@ -2,12 +2,12 @@
 
 import numpy as np
 
-from caseron.view.viewer import Viewer
-from caseron.model.utils import slice_mesh
+from blastsight.view.viewer import Viewer
+from blastsight.model.utils import slice_mesh
 
 v = Viewer()
 
-meshgl = v.mesh_by_path('../test_files/caseron.off', color=[0.0, 0.0, 1.0], alpha=0.3)
+meshgl = v.mesh_by_path('../test_files/blastsight.off', color=[0.0, 0.0, 1.0], alpha=0.3)
 mesh = meshgl.element
 
 slice_vertices = slice_mesh(mesh=mesh, plane_origin=mesh.centroid, plane_normal=[0.2, 1.0, 0.8])

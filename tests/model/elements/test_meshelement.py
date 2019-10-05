@@ -2,7 +2,7 @@
 
 import numpy as np
 import pytest
-from caseron.model.elements.meshelement import MeshElement
+from blastsight.model.elements.meshelement import MeshElement
 
 
 class TestMeshElement:

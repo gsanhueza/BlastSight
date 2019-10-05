@@ -2,10 +2,10 @@
 
 import pytest
 
-from caseron.model.elements.tubeelement import TubeElement
-from caseron.view.integrableviewer import IntegrableViewer
-from caseron.view.drawables.tubegl import TubeGL
-from caseron.view.drawables.glprograms.tubeprogram import TubeProgram
+from blastsight.model.elements.tubeelement import TubeElement
+from blastsight.view.integrableviewer import IntegrableViewer
+from blastsight.view.drawables.tubegl import TubeGL
+from blastsight.view.drawables.glprograms.tubeprogram import TubeProgram
 
 
 class TestTubeGL:
