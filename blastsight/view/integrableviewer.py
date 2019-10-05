@@ -409,10 +409,20 @@ class IntegrableViewer(QOpenGLWidget):
         # Adapted from http://antongerdelan.net/opengl/raycasting.html
         x, y, z = self.screen_to_ndc(_x, _y, _z)
 
-        ray_eye = proj.inverted()[0] * QVector4D(x, y, -1.0, 1.0)
+        # We'd use `QVector4D(x, y, -1.0, 1.0)`, but PySide2
+        # hasn't implemented QMatrix4x4 * QVector4D yet.
+        vector = [x, y, -1.0, 1.0]
+        temp_matrix = QMatrix4x4(*[e for e in vector for _ in range(4)])
+
+        ray_eye = (proj.inverted()[0] * temp_matrix).column(0)
         ray_eye = QVector4D(ray_eye.x(), ray_eye.y(), -1.0, 0.0)
 
-        ray_world = ((view * model).inverted()[0] * ray_eye).toVector3D()
+        # We'd use `ray_eye`, but PySide2
+        # hasn't implemented QMatrix4x4 * QVector4D yet.
+        vector = [ray_eye.x(), ray_eye.y(), ray_eye.z(), ray_eye.w()]
+        temp_matrix = QMatrix4x4(*[e for e in vector for _ in range(4)])
+
+        ray_world = ((view * model).inverted()[0] * temp_matrix).column(0).toVector3D()
         ray = ray_world.normalized()
         return np.array([ray.x(), ray.y(), ray.z()])
 
