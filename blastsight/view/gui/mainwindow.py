@@ -8,7 +8,6 @@ from qtpy.QtCore import QSettings
 from qtpy.QtCore import QThreadPool
 from qtpy.QtWidgets import QFileDialog
 from qtpy.QtWidgets import QMainWindow
-from qtpy.QtWidgets import QTreeWidgetItemIterator
 from qtpy.QtWidgets import QHBoxLayout
 from qtpy.QtWidgets import QVBoxLayout
 from qtpy.QtWidgets import QWidget
@@ -223,19 +222,10 @@ class MainWindow(QMainWindow):
         self.statusBar.showMessage(f'Distance: {distance}')
 
     def slot_mesh_clicked(self, mesh_attributes: list):
-        self.treeWidget.clearSelection()
-        it = QTreeWidgetItemIterator(self.treeWidget)
-
-        # Get items in tree
-        items = []
-        while it.value():
-            items.append(it.value())
-            it += 1
-
-        # Select correct items
         id_list = [attr.get('id', -1) for attr in mesh_attributes]
-        for item in items:
-            item.setSelected(item.id in id_list)
+
+        self.treeWidget.clearSelection()
+        self.treeWidget.select_by_id_list(id_list)
 
         self.statusBar.showMessage(f'Detected meshes: {id_list}')
 

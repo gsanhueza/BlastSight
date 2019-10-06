@@ -2,9 +2,10 @@
 
 from qtpy.QtCore import Qt
 from qtpy.QtCore import Signal
+from qtpy.QtWidgets import QAbstractItemView
 from qtpy.QtWidgets import QMenu
 from qtpy.QtWidgets import QTreeWidget
-from qtpy.QtWidgets import QAbstractItemView
+from qtpy.QtWidgets import QTreeWidgetItemIterator
 
 from .treewidgetitem import TreeWidgetItem
 from .actioncollection import ActionCollection
@@ -121,8 +122,17 @@ class TreeWidget(QTreeWidget):
 
     def select_item(self, row, col):
         row = max(min(row, self.topLevelItemCount() - 1), 0)
+
         self.setCurrentItem(self.itemAt(row, col))
         self.scrollToItem(self.currentItem(), QAbstractItemView.PositionAtCenter)
+
+    def select_by_id_list(self, id_list):
+        it = QTreeWidgetItemIterator(self)
+
+        while it.value():
+            item = it.value()
+            item.setSelected(item.id in id_list)
+            it += 1
 
     def show_items(self):
         for item in self.selectedItems():
