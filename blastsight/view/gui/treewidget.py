@@ -44,7 +44,6 @@ class TreeWidget(QTreeWidget):
         for drawable in drawables:
             item = TreeWidgetItem(self, viewer, drawable.id)
             self.addTopLevelItem(item)
-        self.select_item(self.topLevelItemCount() - 1, 0)
 
     def context_menu(self, event) -> None:
         """
@@ -116,22 +115,29 @@ class TreeWidget(QTreeWidget):
 
         menu.exec_(global_pos)
 
-    def center_camera(self, item):
-        item.show()
-        item.center_camera()
+    def center_camera(self):
+        row = min([self.indexOfTopLevelItem(x) for x in self.selectedItems()], default=0)
+        self.topLevelItem(row).show()
+        self.topLevelItem(row).center_camera()
 
-    def select_item(self, row, col):
+    def select_item(self, row):
         row = max(min(row, self.topLevelItemCount() - 1), 0)
-
-        self.setCurrentItem(self.itemAt(row, col))
-        self.scrollToItem(self.currentItem(), QAbstractItemView.PositionAtCenter)
+        item = self.topLevelItem(row)
+        item.setSelected(True)
+        self.scrollToItem(item, QAbstractItemView.EnsureVisible)
 
     def select_by_id_list(self, id_list):
         it = QTreeWidgetItemIterator(self)
 
+        first_item = False
         while it.value():
             item = it.value()
-            item.setSelected(item.id in id_list)
+            if item.id in id_list:
+                if not first_item:
+                    self.setCurrentItem(item)
+                    first_item = True
+
+                self.select_item(self.indexOfTopLevelItem(item))
             it += 1
 
     def show_items(self):
@@ -150,7 +156,7 @@ class TreeWidget(QTreeWidget):
         closest_row = min([self.indexOfTopLevelItem(x) for x in self.selectedItems()], default=0)
         for item in self.selectedItems():
             item.delete()
-        self.select_item(closest_row, 0)
+        self.setCurrentItem(self.topLevelItem(max(closest_row - 1, 0)))
 
     def keyPressEvent(self, event):
         super().keyPressEvent(event)
@@ -160,8 +166,8 @@ class TreeWidget(QTreeWidget):
         shortcut_commands_dict = {
             Qt.Key_Space: self.toggle_items_visibility,
             Qt.Key_Delete: self.delete_items,
-            Qt.Key_Enter: lambda: self.center_camera(self.currentItem()),
-            Qt.Key_Return: lambda: self.center_camera(self.currentItem()),
+            Qt.Key_Enter: self.center_camera,
+            Qt.Key_Return: self.center_camera,
         }
 
         # Execute command based on event.key()
