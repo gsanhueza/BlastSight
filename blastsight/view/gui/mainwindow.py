@@ -287,7 +287,7 @@ class MainWindow(QMainWindow):
 
         # Execute method
         self._threaded_load(method, path)
-        self.last_dir = QFileInfo(path).absoluteDir().absolutePath()
+        self.last_dir = path
 
     def _dialog_export_element(self, _id: int, filters: str, method: classmethod) -> None:
         (path, selected_filter) = QFileDialog.getSaveFileName(
