@@ -165,19 +165,24 @@ class MainWindow(QMainWindow):
         self.toolbar.action_collection.action_help.triggered.connect(self.slot_help)
         self.toolbar.action_collection.action_about.triggered.connect(self.slot_about)
 
-        # Extra actions
+        # DockWidget actions
         self.toolbar.action_collection.action_show_tree.triggered.connect(self.dockWidget.show)
 
+        # Viewer actions
         self.viewer.signal_fps_updated.connect(self.print_fps)
         self.viewer.signal_mode_updated.connect(self.slot_mode_updated)
         self.viewer.signal_mesh_clicked.connect(self.slot_mesh_clicked)
         self.viewer.signal_mesh_distances.connect(self.slot_mesh_distances)
+        self.viewer.signal_mesh_sliced.connect(self.slot_mesh_sliced)
+        self.viewer.signal_blocks_sliced.connect(self.slot_blocks_sliced)
+
         self.viewer.signal_file_modified.connect(self.fill_tree_widget)
         self.viewer.signal_load_success.connect(self.slot_element_load_success)
         self.viewer.signal_load_failure.connect(self.slot_element_load_failure)
         self.viewer.signal_export_success.connect(self.slot_element_export_success)
         self.viewer.signal_export_failure.connect(self.slot_element_export_failure)
 
+        # TreeWidget actions
         self.treeWidget.signal_headers_triggered.connect(self.dialog_properties)
         self.treeWidget.signal_colors_triggered.connect(self.dialog_color)
         self.treeWidget.signal_export_mesh.connect(self.dialog_export_mesh)
@@ -228,6 +233,41 @@ class MainWindow(QMainWindow):
         self.treeWidget.select_by_id_list(id_list)
 
         self.statusBar.showMessage(f'Detected meshes: {id_list}')
+
+    def slot_mesh_sliced(self, slice_dict: dict):
+        slice_list = slice_dict.get('slices', [])
+
+        for sliced_meshes in slice_list:
+            slices = sliced_meshes.get('sliced_vertices')
+            origin_id = sliced_meshes.get('origin_id')
+            mesh = self.viewer.get_drawable(origin_id)
+
+            for i, vert_slice in enumerate(slices):
+                self.viewer.lines(vertices=vert_slice,
+                                  color=mesh.color,
+                                  name=f'MESHSLICE_{i}_{mesh.name}',
+                                  extension=mesh.extension,
+                                  loop=True)
+
+    def slot_blocks_sliced(self, slice_dict: dict):
+        slice_list = slice_dict.get('slices', [])
+
+        for sliced_blocks in slice_list:
+            slices = sliced_blocks.get('sliced_vertices')
+            values = sliced_blocks.get('sliced_values')
+            origin_id = sliced_blocks.get('origin_id')
+            block = self.viewer.get_drawable(origin_id)
+
+            self.viewer.blocks(vertices=slices,
+                               values=values,
+                               vmin=block.vmin,
+                               vmax=block.vmax,
+                               colormap=block.colormap,
+                               name=f'BLOCKSLICE_{block.name}',
+                               extension=block.extension,
+                               block_size=block.block_size,
+                               alpha=1.0,
+                               )
 
     """
     Utilities dialogs

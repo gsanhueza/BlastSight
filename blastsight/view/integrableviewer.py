@@ -40,14 +40,17 @@ from ..model.elements.nullelement import NullElement
 
 class IntegrableViewer(QOpenGLWidget):
     # Signals
+    signal_file_modified = Signal()
     signal_load_success = Signal(int)
     signal_load_failure = Signal()
     signal_export_success = Signal(int)
     signal_export_failure = Signal()
 
-    signal_file_modified = Signal()
     signal_mesh_clicked = Signal(object)
     signal_mesh_distances = Signal(object)
+    signal_mesh_sliced = Signal(object)
+    signal_blocks_sliced = Signal(object)
+
     signal_mode_updated = Signal(str)
     signal_fps_updated = Signal(float)
 
@@ -58,7 +61,13 @@ class IntegrableViewer(QOpenGLWidget):
         # Model
         self.model = Model()
 
-        # Controller mode
+        # Controllers
+        self.controllers = {
+            'normal': NormalMode,
+            'detection': DetectionMode,
+            'slice': SliceMode,
+            'measurement': MeasurementMode,
+        }
         self.signal_mode_updated.connect(lambda m: print(f'MODE: {m}'))
         self.current_mode = None
         self.set_normal_mode()
@@ -465,31 +474,50 @@ class IntegrableViewer(QOpenGLWidget):
         mesh_drawables = [m for m in self.drawable_collection.filter(MeshGL) if m.is_visible]
         mesh_elements = [m.element for m in mesh_drawables if 'SLICE' not in m.element.name]
 
+        # We'll emit a signal with origin id, plane origin, plane normal, list of slices for each slice,
+        #  {'plane_origin': [],
+        #   'plane_normal': []',
+        #   'slices': [{
+        #     'origin_id': 10,
+        #     'slice_vertices': [[]],
+        #  ]]
+        slices_list = []
+
         for mesh in mesh_elements:
-            slices = utils.slice_mesh(mesh, origin, plane_normal)
-            for i, vert_slice in enumerate(slices):
-                self.lines(vertices=vert_slice,
-                           color=mesh.color,
-                           name=f'MESHSLICE_{i}_{mesh.name}',
-                           extension=mesh.extension,
-                           loop=True)
+            slices_list.append({
+                'origin_id': mesh.id,
+                'sliced_vertices': utils.slice_mesh(mesh, origin, plane_normal),
+            })
+
+        slice_results = {
+            'plane_origin': origin,
+            'plane_normal': plane_normal,
+            'slices': slices_list,
+        }
+
+        self.signal_mesh_sliced.emit(slice_results)
 
     def slice_visible_blocks(self, origin: np.ndarray, plane_normal: np.ndarray) -> None:
         block_drawables = [m for m in self.drawable_collection.filter(BlockGL) if m.is_visible]
         block_elements = [m.element for m in block_drawables if 'SLICE' not in m.element.name]
 
+        slices_list = []
+
         for block in block_elements:
             slices, values = utils.slice_blocks(block, origin, plane_normal)
-            self.blocks(vertices=slices,
-                        values=values,
-                        vmin=block.vmin,
-                        vmax=block.vmax,
-                        colormap=block.colormap,
-                        name=f'BLOCKSLICE_{block.name}',
-                        extension=block.extension,
-                        block_size=block.block_size,
-                        alpha=1.0,
-                        )
+            slices_list.append({
+                'origin_id': block.id,
+                'sliced_vertices': slices,
+                'sliced_values': values,
+            })
+
+        slice_results = {
+            'plane_origin': origin,
+            'plane_normal': plane_normal,
+            'slices': slices_list,
+        }
+
+        self.signal_blocks_sliced.emit(slice_results)
 
     def slice_visible_drawables(self, origin: np.ndarray, plane_normal: np.ndarray) -> None:
         self.slice_visible_meshes(origin, plane_normal)
@@ -569,14 +597,7 @@ class IntegrableViewer(QOpenGLWidget):
     Controller
     """
     def set_controller_mode(self, mode: str) -> None:
-        controllers = {
-            'normal': NormalMode,
-            'detection': DetectionMode,
-            'slice': SliceMode,
-            'measurement': MeasurementMode,
-        }
-
-        self.current_mode = controllers[mode]()
+        self.current_mode = self.controllers[mode]()
         self.signal_mode_updated.emit(self.current_mode.name)
         self.update()
 
