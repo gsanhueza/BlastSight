@@ -62,12 +62,12 @@ class IntegrableViewer(QOpenGLWidget):
         self.model = Model()
 
         # Controllers
-        self.controllers = {
-            'normal': NormalMode,
-            'detection': DetectionMode,
-            'slice': SliceMode,
-            'measurement': MeasurementMode,
-        }
+        self.controllers = {}
+        self.add_controller(NormalMode, 'normal')
+        self.add_controller(DetectionMode, 'detection')
+        self.add_controller(SliceMode, 'slice')
+        self.add_controller(MeasurementMode, 'measurement')
+
         self.signal_mode_updated.connect(lambda m: print(f'MODE: {m}'))
         self.current_mode = None
         self.set_normal_mode()
@@ -596,22 +596,25 @@ class IntegrableViewer(QOpenGLWidget):
     """
     Controller
     """
-    def set_controller_mode(self, mode: str) -> None:
-        self.current_mode = self.controllers[mode]()
+    def add_controller(self, mode, mode_name: str):
+        self.controllers[mode_name] = mode
+
+    def set_controller(self, mode_name: str) -> None:
+        self.current_mode = self.controllers.get(mode_name)()
         self.signal_mode_updated.emit(self.current_mode.name)
         self.update()
 
     def set_normal_mode(self) -> None:
-        self.set_controller_mode('normal')
+        self.set_controller('normal')
 
     def set_detection_mode(self) -> None:
-        self.set_controller_mode('detection')
+        self.set_controller('detection')
 
     def set_slice_mode(self) -> None:
-        self.set_controller_mode('slice')
+        self.set_controller('slice')
 
     def set_measurement_mode(self) -> None:
-        self.set_controller_mode('measurement')
+        self.set_controller('measurement')
 
     """
     Events (dependent on current controller)
