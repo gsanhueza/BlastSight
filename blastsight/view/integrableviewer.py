@@ -471,16 +471,18 @@ class IntegrableViewer(QOpenGLWidget):
         return ray, origin
 
     def slice_visible_meshes(self, origin: np.ndarray, plane_normal: np.ndarray) -> None:
+        # We'll emit a signal with origin id, plane origin, plane normal, list of slices for each slice,
+        # {
+        #     'plane_origin': list(vertex),
+        #     'plane_normal': list(vertex)',
+        #     'slices': [{
+        #         'origin_id': int,
+        #         'slice_vertices': list(list(vertex))
+        #     }]
+        # }
         mesh_drawables = [m for m in self.drawable_collection.filter(MeshGL) if m.is_visible]
         mesh_elements = [m.element for m in mesh_drawables if 'SLICE' not in m.element.name]
 
-        # We'll emit a signal with origin id, plane origin, plane normal, list of slices for each slice,
-        #  {'plane_origin': [],
-        #   'plane_normal': []',
-        #   'slices': [{
-        #     'origin_id': 10,
-        #     'slice_vertices': [[]],
-        #  ]]
         slices_list = []
 
         for mesh in mesh_elements:
