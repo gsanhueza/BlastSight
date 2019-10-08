@@ -186,6 +186,19 @@ def slice_points(points,
     return slice_blocks(points, 3 * [point_size], plane_origin, plane_normal)
 
 
+def points_inside_mesh(mesh, point_vertices: np.ndarray) -> np.ndarray:
+    # With ray tracing, we'll detect which points are inside the mesh
+    ray = np.array([0.0, 0.0, 1.0])  # Arbitrary direction
+    mask = []
+
+    # From the point center, if we hit the mesh an odd number of times, we're inside the mesh
+    for origin in point_vertices:
+        intersections = mesh_intersection(origin, ray, mesh)
+        mask.append(len(intersections) > 0 and (np.unique(intersections, axis=0).size // 3) % 2 == 1)
+
+    return np.array(mask)
+
+
 def mineral_density(mesh, blocks, mineral: str) -> tuple:
     """
     Receives a MeshElement, a BlockElement, a mineral string,
@@ -197,30 +210,45 @@ def mineral_density(mesh, blocks, mineral: str) -> tuple:
     :param mineral: str
     :return: tuple(np.ndarray, np.ndarray, float)
     """
+    # Limit points by new bounding box of mesh and get their values
     min_bound, max_bound = mesh.bounding_box
     block_size = blocks.block_size
+    half_block = block_size / 2
 
     # Recreate bounds to allow a block to be partially inside a mesh
     min_bound -= block_size
     max_bound += block_size
 
-    # Limit blocks by new bounding box of mesh and get their values
     mask = np.all((blocks.vertices > min_bound) & (blocks.vertices < max_bound), axis=-1)
-    B = blocks.vertices[mask]
-    values = blocks.data.get(mineral)[mask]
+    bound_blocks = blocks.vertices[mask]
+    bound_values = blocks.data.get(mineral)[mask]
 
-    # With ray tracing, we'll detect which blocks are truly inside the mesh
-    ray = np.array([0.0, 0.0, 1.0])  # Arbitrary direction
-    idx_inside = []
+    # Get points inside mesh
+    mask = points_inside_mesh(mesh, bound_blocks)
+    insiders = np.ones(mask.size)
 
-    # From the block, if we hit the mesh an odd number of times, we're inside the mesh
-    for origin in B:
-        intersections = mesh_intersection(origin, ray, mesh)
-        idx_inside.append(len(intersections) > 0 and (np.unique(intersections, axis=0).size // 3) % 2 == 1)
+    # We have to check the 8 vertices to know we're not omitting a block just because its
+    # center is not inside the mesh.
+    # Maybe there's a better way, but we still need to investigate that.
+    bias_list = [[-1, -1, -1],
+                 [+1, -1, -1],
+                 [-1, +1, -1],
+                 [+1, +1, -1],
+                 [-1, -1, +1],
+                 [+1, -1, +1],
+                 [-1, +1, +1],
+                 [+1, +1, +1]]
 
-    # TODO Detect blocks near the borders (partial value)
+    for bias in bias_list:
+        mask = mask | points_inside_mesh(mesh, bound_blocks + half_block * bias)
+        insiders = mask & points_inside_mesh(mesh, bound_blocks + half_block * bias)
 
-    return B[idx_inside], values[idx_inside], values[idx_inside].sum()
+    # TODO Calculate mineral density of blocks partially inside the mesh
+    # Until now, we can only detect which blocks are fully/partially/not inside the mesh
+    mask_partials = insiders ^ mask  # ^ = XOR
+    # mask = mask_partials
+
+    return bound_blocks[mask], bound_values[mask], bound_values[mask].sum()
 
 
 def values_to_rgb(values: np.ndarray, vmin: float, vmax: float, colormap: str) -> np.ndarray:
@@ -252,7 +280,7 @@ def hsl_to_hsv(h: float, s: float, l: float) -> tuple:
     return h, s, v
 
 
-def hsv_to_rgb(hsv: list) -> np.ndarray:
+def hsv_to_rgb(hsv: np.ndarray or list) -> np.ndarray:
     # Taken and adapted from matplotlib.colors
     hsv = np.asarray(hsv)
 
