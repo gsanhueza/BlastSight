@@ -17,6 +17,7 @@ We need the plane's normal and any point that belongs to that plane.
 """
 blocks = v.blocks_by_path(path).element
 s_blocks, s_values = utils.slice_blocks(blocks=blocks,
+                                        block_size=blocks.block_size,
                                         plane_origin=blocks.center,
                                         plane_normal=[0.5, 1.0, 1.0])
 
@@ -24,8 +25,8 @@ s_blocks, s_values = utils.slice_blocks(blocks=blocks,
 Finally, we'll show the detected blocks.
 We'll shrink the original blocks so the difference will be more evident.
 """
+v.blocks(vertices=s_blocks, values=s_values, vmin=blocks.vmin, vmax=blocks.vmax, block_size=blocks.block_size)
 blocks.block_size /= 2
-v.blocks(vertices=s_blocks, values=s_values, vmin=blocks.vmin, vmax=blocks.vmax)
 
 v.fit_to_screen()
 v.show()

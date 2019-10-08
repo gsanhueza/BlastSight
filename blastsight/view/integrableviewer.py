@@ -506,7 +506,7 @@ class IntegrableViewer(QOpenGLWidget):
         slices_list = []
 
         for block in block_elements:
-            slices, values = utils.slice_blocks(block, origin, plane_normal)
+            slices, values = utils.slice_blocks(block, block.block_size, origin, plane_normal)
             slices_list.append({
                 'origin_id': block.id,
                 'sliced_vertices': slices,

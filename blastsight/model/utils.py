@@ -128,6 +128,7 @@ def slice_mesh(mesh,
 
 
 def slice_blocks(blocks,
+                 block_size: np.ndarray or list,
                  plane_origin: np.ndarray or list,
                  plane_normal: np.ndarray or list) -> tuple:
     """
@@ -163,7 +164,7 @@ def slice_blocks(blocks,
     https://gdbooks.gitbooks.io/3dcollisions/content/Chapter2/static_aabb_plane.html
     """
     plane_normal /= np.linalg.norm(plane_normal)
-    half_block = blocks.block_size / 2
+    half_block = np.array(block_size) / 2
     vertices = blocks.vertices
     values = blocks.values
 
@@ -175,6 +176,14 @@ def slice_blocks(blocks,
     mask = np.abs(np.inner(plane_normal, vertices) + plane_d) <= threshold
 
     return vertices[mask], values[mask]
+
+
+def slice_points(points,
+                 point_size: float,
+                 plane_origin: np.ndarray or list,
+                 plane_normal: np.ndarray or list) -> tuple:
+
+    return slice_blocks(points, 3 * [point_size], plane_origin, plane_normal)
 
 
 def mineral_density(mesh, blocks, mineral: str) -> tuple:
