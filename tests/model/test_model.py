@@ -74,7 +74,7 @@ class TestModel:
         assert model.get(_id) is None
 
     # Block model
-    def test_add_block_model(self):
+    def test_add_blocks(self):
         model = Model()
         path = f'{TEST_FILES_FOLDER_PATH}/mini.csv'
         info = CSVParser.load_file(path)
@@ -85,7 +85,7 @@ class TestModel:
 
         assert bm_1.id != bm_2.id
 
-    def test_add_blockmodel_by_path(self):
+    def test_add_blocks_by_path(self):
         model = Model()
         path = f'{TEST_FILES_FOLDER_PATH}/mini.csv'
 
@@ -94,12 +94,12 @@ class TestModel:
 
         assert bm_1.id != bm_2.id
 
-    def test_wrong_blockmodel(self):
+    def test_wrong_blocks(self):
         model = Model()
         with pytest.raises(Exception):
             model.blocks_by_path(f'{TEST_FILES_FOLDER_PATH}/nonexistent.csv')
 
-    def test_get_blockmodel(self):
+    def test_get_blocks(self):
         model = Model()
         path = f'{TEST_FILES_FOLDER_PATH}/mini.csv'
         info = CSVParser.load_file(path)
@@ -112,7 +112,7 @@ class TestModel:
         assert bm_get is not None
         assert bm.id == bm_get.id
 
-    def test_delete_blockmodel(self):
+    def test_delete_blocks(self):
         model = Model()
         path = f'{TEST_FILES_FOLDER_PATH}/mini.csv'
         info = CSVParser.load_file(path)
@@ -137,6 +137,15 @@ class TestModel:
         lines_2 = model.lines(x=x, y=y, z=z, color=color)
 
         assert lines_1.id != lines_2.id
+
+    def test_add_lines_by_path(self):
+        model = Model()
+        path = f'{TEST_FILES_FOLDER_PATH}/lines.csv'
+
+        bm_1 = model.lines_by_path(path=path)
+        bm_2 = model.lines_by_path(path=path)
+
+        assert bm_1.id != bm_2.id
 
     def test_get_lines(self):
         model = Model()
@@ -302,12 +311,15 @@ class TestModel:
         mesh = model.mesh_by_path(path=f'{TEST_FILES_FOLDER_PATH}/caseron.off')
         blocks = model.blocks_by_path(path=f'{TEST_FILES_FOLDER_PATH}/mini.csv')
         points = model.points_by_path(path=f'{TEST_FILES_FOLDER_PATH}/mini.csv')
+        lines = model.lines_by_path(path=f'{TEST_FILES_FOLDER_PATH}/lines.csv')
 
         model.export_mesh(f'{TEST_FILES_FOLDER_PATH}/caseron_model_export.h5m', mesh.id)
         model.export_blocks(f'{TEST_FILES_FOLDER_PATH}/mini_model_export_blocks.h5p', blocks.id)
         model.export_points(f'{TEST_FILES_FOLDER_PATH}/mini_model_export_points.h5p', points.id)
+        model.export_lines(f'{TEST_FILES_FOLDER_PATH}/mini_model_export_lines.csv', lines.id)
 
         # Cleanup
         os.remove(f'{TEST_FILES_FOLDER_PATH}/caseron_model_export.h5m')
         os.remove(f'{TEST_FILES_FOLDER_PATH}/mini_model_export_blocks.h5p')
         os.remove(f'{TEST_FILES_FOLDER_PATH}/mini_model_export_points.h5p')
+        os.remove(f'{TEST_FILES_FOLDER_PATH}/mini_model_export_lines.csv')
