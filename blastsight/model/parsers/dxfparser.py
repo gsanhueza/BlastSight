@@ -16,8 +16,9 @@ class DXFParser(Parser):
         dxf = dxfgrabber.readfile(path)
 
         # Detect vertices and indices
+        forbidden_types = [dxfgrabber.dxfentities.Line, dxfgrabber.dxfentities.LWPolyline]
         points = []
-        entities = [e for e in dxf.entities]
+        entities = [e for e in dxf.entities if type(e) not in forbidden_types]
 
         for entity in entities:
             points += entity.points[:3]
