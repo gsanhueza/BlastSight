@@ -75,6 +75,10 @@ class ActionCollection:
         self.action_load_points_folder.setIcon(QIcon(f'{self.icons_path}/scatter_plot.svg'))
         self.action_load_points_folder.setShortcut('Ctrl+Shift+P')
 
+        self.action_load_lines_folder = QAction('Load l&ines folder', parent)
+        self.action_load_lines_folder.setIcon(QIcon(f'{self.icons_path}/line_chart.svg'))
+        self.action_load_lines_folder.setShortcut('Ctrl+Shift+L')
+
         self.action_quit = QAction('&Quit', parent)
         self.action_quit.setIcon(QIcon(f'{self.icons_path}/cancel.svg'))
         self.action_quit.setShortcut('Ctrl+Q')

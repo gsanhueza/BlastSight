@@ -115,6 +115,7 @@ class MainWindow(QMainWindow):
         self.menu_File.addAction(self.toolbar.action_collection.action_load_mesh_folder)
         self.menu_File.addAction(self.toolbar.action_collection.action_load_blocks_folder)
         self.menu_File.addAction(self.toolbar.action_collection.action_load_points_folder)
+        self.menu_File.addAction(self.toolbar.action_collection.action_load_lines_folder)
         self.menu_File.addSeparator()
         self.menu_File.addAction(self.toolbar.action_collection.action_quit)
 
@@ -148,6 +149,7 @@ class MainWindow(QMainWindow):
         self.toolbar.action_collection.action_load_mesh_folder.triggered.connect(self.dialog_load_mesh_folder)
         self.toolbar.action_collection.action_load_blocks_folder.triggered.connect(self.dialog_load_blocks_folder)
         self.toolbar.action_collection.action_load_points_folder.triggered.connect(self.dialog_load_points_folder)
+        self.toolbar.action_collection.action_load_lines_folder.triggered.connect(self.dialog_load_lines_folder)
         self.toolbar.action_collection.action_quit.triggered.connect(self.close)
 
         # View
@@ -372,6 +374,9 @@ class MainWindow(QMainWindow):
 
     def dialog_load_points_folder(self) -> None:
         self._dialog_load_folder(method=self.viewer.points_by_folder_path)
+
+    def dialog_load_lines_folder(self) -> None:
+        self._dialog_load_folder(method=self.viewer.lines_by_folder_path)
 
     """
     Slots for exporting files

@@ -240,6 +240,9 @@ class IntegrableViewer(QOpenGLWidget):
     def points_by_folder_path(self, path: str, *args, **kwargs) -> list:
         return self._load_folder(self.points_by_path, path, *args, **kwargs)
 
+    def lines_by_folder_path(self, path: str, *args, **kwargs) -> list:
+        return self._load_folder(self.lines_by_path, path, *args, **kwargs)
+
     """
     Export methods
     """
