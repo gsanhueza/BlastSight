@@ -13,7 +13,7 @@ void main()
 {
     vec3 X = dFdx(pos_mv);
     vec3 Y = dFdy(pos_mv);
-    vec3 v_normal = cross(X, Y);
+    vec3 v_normal = normalize(cross(X, Y));
 
     vec3 light_vector = vec3(0.0, 0.0, 1.0);
     vec3 col = lambert(v_normal, light_vector, v_color.rgb);

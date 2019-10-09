@@ -387,11 +387,11 @@ class IntegrableViewer(QOpenGLWidget):
 
     def resizeGL(self, w: float, h: float) -> None:
         if self.projection_mode == 'perspective':
-            self.proj.perspective(self.fov, (w / h), 1.0, 10000.0)
+            self.proj.perspective(self.fov, (w / h), 1.0, 100000.0)
         elif self.projection_mode == 'orthographic':
             z = self.off_center[2]
             aspect = w / h
-            self.proj.ortho(-z, z, -z / aspect, z / aspect, 0.0, 10000.0)
+            self.proj.ortho(-z, z, -z / aspect, z / aspect, 0.0, 100000.0)
 
     """
     Utilities
