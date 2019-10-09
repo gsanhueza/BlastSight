@@ -90,9 +90,9 @@ class MainWindow(QMainWindow):
                      'H5P Files (*.h5p);;'
                      'GSLib Files (*.out);;'
                      'All Files (*.*)',
-            'line': 'Data Files (*.csv);;'
-                     'CSV Files (*.csv);;'
-                     'All Files (*.*)',
+            'line': 'Data Files (*.csv *.dxf);;'
+                    'CSV Files (*.csv);;'
+                    'All Files (*.*)',
         }
 
         # Extra actions
@@ -304,10 +304,10 @@ class MainWindow(QMainWindow):
     """
     Common functionality for loading/exporting
     """
-    def _threaded_load(self, method: classmethod, path: str) -> None:
+    def _threaded_load(self, method: classmethod, path: str, *args, **kwargs) -> None:
         self.statusBar.showMessage('Loading...')
 
-        worker = ThreadWorker(path, method=method)
+        worker = ThreadWorker(path, method=method, *args, **kwargs)
         QThreadPool.globalInstance().start(worker)
 
     def _threaded_export(self, method: classmethod, path: str, _id: int) -> None:
@@ -316,25 +316,25 @@ class MainWindow(QMainWindow):
         worker = ThreadWorker(path, _id, method=method)
         QThreadPool.globalInstance().start(worker)
 
-    def _dialog_load_element(self, method: classmethod, filters: str) -> None:
+    def _dialog_load_element(self, method: classmethod, hint: str, *args, **kwargs) -> None:
         (paths, selected_filter) = QFileDialog.getOpenFileNames(
             parent=self,
             directory=self.last_dir,
-            filter=filters)
+            filter=self.filters_dict.get(hint))
 
         path_list = [p for p in paths if p != '']
         for path in sorted(path_list):
-            self._threaded_load(method, path)
+            self._threaded_load(method, path, hint=hint, *args, **kwargs)
             self.last_dir = QFileInfo(path).absoluteDir().absolutePath()
 
-    def _dialog_load_folder(self, method: classmethod) -> None:
+    def _dialog_load_folder(self, method: classmethod, hint: str, *args, **kwargs) -> None:
         path = QFileDialog.getExistingDirectory(
             parent=self,
             directory=self.last_dir,
             options=QFileDialog.ShowDirsOnly)
 
         # Execute method
-        self._threaded_load(method, path)
+        self._threaded_load(method, path, hint=hint, *args, **kwargs)
         self.last_dir = path
 
     def _dialog_export_element(self, _id: int, filters: str, method: classmethod) -> None:
@@ -351,32 +351,28 @@ class MainWindow(QMainWindow):
     Slots for loading files
     """
     def dialog_load_mesh(self) -> None:
-        self._dialog_load_element(method=self.viewer.mesh_by_path,
-                                  filters=self.filters_dict.get('mesh'))
+        self._dialog_load_element(method=self.viewer.mesh_by_path, hint='mesh')
 
     def dialog_load_blocks(self) -> None:
-        self._dialog_load_element(method=self.viewer.blocks_by_path,
-                                  filters=self.filters_dict.get('block'))
+        self._dialog_load_element(method=self.viewer.blocks_by_path, hint='block')
 
     def dialog_load_points(self) -> None:
-        self._dialog_load_element(method=self.viewer.points_by_path,
-                                  filters=self.filters_dict.get('point'))
+        self._dialog_load_element(method=self.viewer.points_by_path, hint='point')
 
     def dialog_load_lines(self) -> None:
-        self._dialog_load_element(method=self.viewer.lines_by_path,
-                                  filters=self.filters_dict.get('line'))
+        self._dialog_load_element(method=self.viewer.lines_by_path, hint='line')
 
     def dialog_load_mesh_folder(self) -> None:
-        self._dialog_load_folder(method=self.viewer.meshes_by_folder_path)
+        self._dialog_load_folder(method=self.viewer.meshes_by_folder_path, hint='mesh')
 
     def dialog_load_blocks_folder(self) -> None:
-        self._dialog_load_folder(method=self.viewer.blocks_by_folder_path)
+        self._dialog_load_folder(method=self.viewer.blocks_by_folder_path, hint='block')
 
     def dialog_load_points_folder(self) -> None:
-        self._dialog_load_folder(method=self.viewer.points_by_folder_path)
+        self._dialog_load_folder(method=self.viewer.points_by_folder_path, hint='point')
 
     def dialog_load_lines_folder(self) -> None:
-        self._dialog_load_folder(method=self.viewer.lines_by_folder_path)
+        self._dialog_load_folder(method=self.viewer.lines_by_folder_path, hint='line')
 
     """
     Slots for exporting files

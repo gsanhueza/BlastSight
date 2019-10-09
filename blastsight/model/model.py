@@ -76,7 +76,7 @@ class Model:
 
     def _load_element_by_path(self, path: str, element_type: type, *args, **kwargs):
         ext = path.split('.')[-1]
-        info = self.get_parser(ext).load_file(path)
+        info = self.get_parser(ext).load_file(path, *args, **kwargs)
         data = info.data
         properties = info.properties
 

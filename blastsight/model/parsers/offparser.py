@@ -9,7 +9,7 @@ from .parser import Parser
 
 class OFFParser(Parser):
     @staticmethod
-    def load_file(path: str) -> ParserData:
+    def load_file(path: str, *args, **kwargs) -> ParserData:
         assert path.lower().endswith('off')
 
         with open(path, 'r') as fp:

@@ -8,7 +8,7 @@ from .parser import Parser
 
 class H5PParser(Parser):
     @staticmethod
-    def load_file(path: str) -> ParserData:
+    def load_file(path: str, *args, **kwargs) -> ParserData:
         store = pd.HDFStore(path, 'r')
         try:
             properties = store.get_storer('data').attrs.metadata

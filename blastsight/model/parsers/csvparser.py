@@ -8,7 +8,7 @@ from .parser import Parser
 
 class CSVParser(Parser):
     @staticmethod
-    def load_file(path: str) -> ParserData:
+    def load_file(path: str, *args, **kwargs) -> ParserData:
         assert path.lower().endswith('csv')
 
         # Metadata

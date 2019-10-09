@@ -10,14 +10,16 @@ from .parser import Parser
 
 class DXFParser(Parser):
     @staticmethod
-    def load_file(path: str) -> ParserData:
+    def load_file(path: str, *args, **kwargs) -> ParserData:
         assert path.lower().endswith('dxf')
 
         dxf = dxfgrabber.readfile(path)
 
         # Detect vertices and indices
         points = []
-        for entity in dxf.entities:
+        entities = [e for e in dxf.entities]
+
+        for entity in entities:
             points += entity.points[:3]
         vertices, indices = np.unique(np.array(points), axis=0, return_inverse=True)
 

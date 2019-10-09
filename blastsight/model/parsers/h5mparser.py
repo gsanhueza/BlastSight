@@ -9,7 +9,7 @@ from .parser import Parser
 
 class H5MParser(Parser):
     @staticmethod
-    def load_file(path: str) -> ParserData:
+    def load_file(path: str, *args, **kwargs) -> ParserData:
         hf = h5py.File(path, 'r')
         vertices = hf['vertices'][()]
         indices = hf['indices'][()]

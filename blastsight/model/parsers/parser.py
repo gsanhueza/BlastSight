@@ -5,7 +5,7 @@ from .parserdata import ParserData
 
 class Parser:
     @staticmethod
-    def load_file(path: str) -> ParserData:
+    def load_file(path: str, *args, **kwargs) -> ParserData:
         raise NotImplementedError
 
     @staticmethod
