@@ -154,8 +154,16 @@ class TreeWidget(QTreeWidget):
 
     def delete_items(self):
         closest_row = min([self.indexOfTopLevelItem(x) for x in self.selectedItems()], default=0)
-        for item in self.selectedItems():
-            item.delete()
+
+        # We'll trick the viewer so it doesn't emit file_modified_signal until last item
+        # has been deleted, so we're not forced to auto-fill for each deleted item.
+        selected = self.selectedItems()
+        for item in selected[:-1]:
+            item.delete(no_signal=True)
+
+        if len(selected) > 0:
+            selected[-1].delete()
+
         self.setCurrentItem(self.topLevelItem(max(closest_row - 1, 0)))
 
     def keyPressEvent(self, event):

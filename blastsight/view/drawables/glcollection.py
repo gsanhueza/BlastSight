@@ -31,7 +31,8 @@ class GLCollection(OrderedDict):
             gl_program.draw()
 
     def filter(self, drawable_type):
-        return [x for x in self.values() if isinstance(x, drawable_type)]
+        # The copy avoids RuntimeError: OrderedDict mutated during iteration
+        return [x for x in self.copy().values() if isinstance(x, drawable_type)]
 
     @property
     def last_id(self):

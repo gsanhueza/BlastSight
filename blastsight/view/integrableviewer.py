@@ -182,10 +182,21 @@ class IntegrableViewer(QOpenGLWidget):
         path_list = self.model.get_paths_from_directory(path)
         drawables = []
 
+        # We'll block viewer._load_drawable's signal_file_modified until last item has been loaded.
+        self.blockSignals(True)
         for path in path_list:
             drawables.append(method(path, *args, **kwargs))
+        self.blockSignals(False)
 
-        return [d for d in drawables if d is not None]
+        # We'll manually emit the signals we didn't emit before.
+        loaded = [d for d in drawables if d is not None]
+        if len(loaded) > 0:
+            self.signal_file_modified.emit()
+            self.signal_load_success.emit(self.last_id)
+        else:
+            self.signal_load_failure.emit()
+
+        return loaded
 
     """
     Load methods by arguments

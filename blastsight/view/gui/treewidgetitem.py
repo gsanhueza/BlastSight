@@ -44,9 +44,14 @@ class TreeWidgetItem(QTreeWidgetItem):
         self.set_visible(self.drawable.is_visible)
         self.viewer.update()
 
-    def delete(self) -> None:
+    def delete(self, no_signal=False) -> None:
+        if no_signal:
+            self.viewer.blockSignals(True)
+
         self.viewer.delete(self.drawable.id)
         self.viewer.update()
+
+        self.viewer.blockSignals(False)
         self.viewer = None
 
     def toggle_highlighting(self) -> None:
