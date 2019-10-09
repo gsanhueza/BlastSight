@@ -22,6 +22,7 @@ class TreeWidget(QTreeWidget):
     signal_export_mesh = Signal(int)
     signal_export_blocks = Signal(int)
     signal_export_points = Signal(int)
+    signal_export_lines = Signal(int)
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -77,6 +78,7 @@ class TreeWidget(QTreeWidget):
         actions.action_export_mesh.triggered.connect(lambda: self.signal_export_mesh.emit(item.id))
         actions.action_export_blocks.triggered.connect(lambda: self.signal_export_blocks.emit(item.id))
         actions.action_export_points.triggered.connect(lambda: self.signal_export_points.emit(item.id))
+        actions.action_export_lines.triggered.connect(lambda: self.signal_export_lines.emit(item.id))
 
         # If multiple elements are selected, we'll only show a basic menu
         if len(self.selectedItems()) > 1:
@@ -102,6 +104,7 @@ class TreeWidget(QTreeWidget):
         elif item.type == LineGL:
             menu.addAction(actions.action_colors)
             menu.addSeparator()
+            menu.addAction(actions.action_export_lines)
         elif item.type == BlockGL:
             menu.addAction(actions.action_properties)
             menu.addSeparator()

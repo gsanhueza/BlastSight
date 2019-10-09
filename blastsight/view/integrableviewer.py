@@ -228,6 +228,9 @@ class IntegrableViewer(QOpenGLWidget):
     def points_by_path(self, path: str, *args, **kwargs) -> PointGL:
         return self._load_drawable(self.model.points_by_path, PointGL, path, *args, **kwargs)
 
+    def lines_by_path(self, path: str, *args, **kwargs) -> PointGL:
+        return self._load_drawable(self.model.lines_by_path, LineGL, path, *args, **kwargs)
+
     def meshes_by_folder_path(self, path: str, *args, **kwargs) -> list:
         return self._load_folder(self.mesh_by_path, path, *args, **kwargs)
 
@@ -255,6 +258,9 @@ class IntegrableViewer(QOpenGLWidget):
 
     def export_points(self, path, _id) -> None:
         self._export_element(self.model.export_points, path, _id)
+
+    def export_lines(self, path, _id) -> None:
+        self._export_element(self.model.export_lines, path, _id)
 
     """
     Drawable manipulation

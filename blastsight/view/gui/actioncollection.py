@@ -43,6 +43,9 @@ class ActionCollection:
         self.action_export_points = QAction('Export &points', parent)
         self.action_export_points.setIcon(QIcon(f'{self.icons_path}/export.svg'))
 
+        self.action_export_lines = QAction('Export &lines', parent)
+        self.action_export_lines.setIcon(QIcon(f'{self.icons_path}/export.svg'))
+
         # MainWindow Actions
         self.action_load_mesh = QAction('Load &mesh', parent)
         self.action_load_mesh.setIcon(QIcon(f'{self.icons_path}/radar_plot.svg'))
@@ -55,6 +58,10 @@ class ActionCollection:
         self.action_load_points = QAction('Load &points', parent)
         self.action_load_points.setIcon(QIcon(f'{self.icons_path}/scatter_plot.svg'))
         self.action_load_points.setShortcut('Ctrl+P')
+
+        self.action_load_lines = QAction('Load &lines', parent)
+        self.action_load_lines.setIcon(QIcon(f'{self.icons_path}/line_chart.svg'))
+        self.action_load_lines.setShortcut('Ctrl+L')
 
         self.action_load_mesh_folder = QAction('Load m&esh folder', parent)
         self.action_load_mesh_folder.setIcon(QIcon(f'{self.icons_path}/radar_plot.svg'))

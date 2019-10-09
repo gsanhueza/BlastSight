@@ -31,20 +31,20 @@ class TubeElement(Element):
         """
         super().__init__(*args, **kwargs)
 
-    def _fill_element(self, *args, **kwargs):
-        super()._fill_element(*args, **kwargs)
-        if len(self.vertices) < 2:
-            raise ValueError("Not enough data to create this element.")
-
-        if kwargs.get('loop', False):
-            self.x = np.append(self.x, self.x[0])
-            self.y = np.append(self.y, self.y[0])
-            self.z = np.append(self.z, self.z[0])
-
     def _fill_properties(self, *args, **kwargs):
         super()._fill_properties(*args, **kwargs)
         self.radius = kwargs.get('radius', 0.15)
         self.resolution = kwargs.get('resolution', 15)
+        self.loop = kwargs.get('loop', False)
+
+    def _check_integrity(self):
+        super()._check_integrity()
+        if len(self.vertices) < 2:
+            raise ValueError("Not enough data to create this element.")
+
+        # Append first vertex to self.vertices if a loop was enabled
+        if self.loop:
+            self.vertices = np.append(self.vertices, [self.vertices[0, :]], axis=0)
 
     """
     Properties
@@ -57,6 +57,10 @@ class TubeElement(Element):
     def resolution(self) -> int:
         return self.properties.get('resolution')
 
+    @property
+    def loop(self):
+        return self.properties.get('loop')
+
     @radius.setter
     def radius(self, _radius: float) -> None:
         self.properties['radius'] = _radius
@@ -64,6 +68,10 @@ class TubeElement(Element):
     @resolution.setter
     def resolution(self, _resolution: int) -> None:
         self.properties['resolution'] = _resolution
+
+    @loop.setter
+    def loop(self, _loop: bool):
+        self.properties['loop'] = _loop
 
     """
     Utilities

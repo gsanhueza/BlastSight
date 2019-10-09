@@ -90,6 +90,9 @@ class MainWindow(QMainWindow):
                      'H5P Files (*.h5p);;'
                      'GSLib Files (*.out);;'
                      'All Files (*.*)',
+            'line': 'Data Files (*.csv);;'
+                     'CSV Files (*.csv);;'
+                     'All Files (*.*)',
         }
 
         # Extra actions
@@ -107,6 +110,7 @@ class MainWindow(QMainWindow):
         self.menu_File.addAction(self.toolbar.action_collection.action_load_mesh)
         self.menu_File.addAction(self.toolbar.action_collection.action_load_blocks)
         self.menu_File.addAction(self.toolbar.action_collection.action_load_points)
+        self.menu_File.addAction(self.toolbar.action_collection.action_load_lines)
         self.menu_File.addSeparator()
         self.menu_File.addAction(self.toolbar.action_collection.action_load_mesh_folder)
         self.menu_File.addAction(self.toolbar.action_collection.action_load_blocks_folder)
@@ -139,6 +143,7 @@ class MainWindow(QMainWindow):
         self.toolbar.action_collection.action_load_mesh.triggered.connect(self.dialog_load_mesh)
         self.toolbar.action_collection.action_load_blocks.triggered.connect(self.dialog_load_blocks)
         self.toolbar.action_collection.action_load_points.triggered.connect(self.dialog_load_points)
+        self.toolbar.action_collection.action_load_lines.triggered.connect(self.dialog_load_lines)
 
         self.toolbar.action_collection.action_load_mesh_folder.triggered.connect(self.dialog_load_mesh_folder)
         self.toolbar.action_collection.action_load_blocks_folder.triggered.connect(self.dialog_load_blocks_folder)
@@ -188,6 +193,7 @@ class MainWindow(QMainWindow):
         self.treeWidget.signal_export_mesh.connect(self.dialog_export_mesh)
         self.treeWidget.signal_export_blocks.connect(self.dialog_export_blocks)
         self.treeWidget.signal_export_points.connect(self.dialog_export_points)
+        self.treeWidget.signal_export_lines.connect(self.dialog_export_lines)
 
     @property
     def last_dir(self) -> str:
@@ -354,6 +360,10 @@ class MainWindow(QMainWindow):
         self._dialog_load_element(method=self.viewer.points_by_path,
                                   filters=self.filters_dict.get('point'))
 
+    def dialog_load_lines(self) -> None:
+        self._dialog_load_element(method=self.viewer.lines_by_path,
+                                  filters=self.filters_dict.get('line'))
+
     def dialog_load_mesh_folder(self) -> None:
         self._dialog_load_folder(method=self.viewer.meshes_by_folder_path)
 
@@ -380,6 +390,11 @@ class MainWindow(QMainWindow):
         self._dialog_export_element(_id=_id,
                                     filters='BlastSight points (*.h5p);;',
                                     method=self.viewer.export_points)
+
+    def dialog_export_lines(self, _id: int) -> None:
+        self._dialog_export_element(_id=_id,
+                                    filters='BlastSight lines (*.csv);;',
+                                    method=self.viewer.export_lines)
 
     """
     Slots for modifying controller modes

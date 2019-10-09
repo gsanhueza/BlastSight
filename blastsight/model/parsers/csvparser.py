@@ -31,5 +31,5 @@ class CSVParser(Parser):
         if path is None:
             raise KeyError('Path missing.')
 
-        data = kwargs.get('data', pd.DataFrame())
+        data = pd.DataFrame(kwargs.get('data', {}))
         data.to_csv(path, index=False)

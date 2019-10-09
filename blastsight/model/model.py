@@ -110,6 +110,9 @@ class Model:
     def points_by_path(self, path: str, *args, **kwargs) -> PointElement:
         return self._load_element_by_path(path, PointElement, *args, **kwargs)
 
+    def lines_by_path(self, path: str, *args, **kwargs) -> LineElement:
+        return self._load_element_by_path(path, LineElement, *args, **kwargs)
+
     """
     Element exporting
     """
@@ -131,6 +134,9 @@ class Model:
         self.export(path, _id)
 
     def export_points(self, path: str, _id: int) -> None:
+        self.export(path, _id)
+
+    def export_lines(self, path: str, _id: int) -> None:
         self.export(path, _id)
 
     """

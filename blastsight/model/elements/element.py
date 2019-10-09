@@ -45,14 +45,20 @@ class Element:
     Element filling
     """
     def _fill_element(self, *args, **kwargs):
-        msg = f'Data must contain ["x", "y", "z"] or "vertices", got {list(kwargs.keys())}.'
-
-        if 'vertices' in kwargs.keys():
+        msg = f'Data must contain ["x", "y", "z"], "vertices" or "data", got {list(kwargs.keys())}.'
+        if 'data' in kwargs.keys():
+            self._fill_as_data(*args, **kwargs)
+        elif 'vertices' in kwargs.keys():
             self._fill_as_vertices(*args, **kwargs)
         elif 'x' in kwargs.keys() and 'y' in kwargs.keys() and 'z' in kwargs.keys():
             self._fill_as_xyz(*args, **kwargs)
         else:
             raise KeyError(msg)
+
+    def _fill_as_data(self, *args, **kwargs):
+        self.x = kwargs.get('data', {}).get('x', [])
+        self.y = kwargs.get('data', {}).get('y', [])
+        self.z = kwargs.get('data', {}).get('z', [])
 
     def _fill_as_vertices(self, *args, **kwargs):
         self.vertices = kwargs.get('vertices', [])

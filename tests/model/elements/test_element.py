@@ -18,7 +18,7 @@ class TestElement:
 
         for i in range(len(expected)):
             assert type(element.vertices[i]) == np.ndarray
-            for j in range(3):
+            for j in range(len(expected[0])):
                 assert element.vertices[i][j] == expected[i][j]
 
     def test_one_triangle(self):
@@ -31,7 +31,7 @@ class TestElement:
 
         for i in range(len(expected)):
             assert type(element.vertices[i]) == np.ndarray
-            for j in range(3):
+            for j in range(len(expected[0])):
                 assert element.vertices[i][j] == expected[i][j]
 
     def test_named_element(self):
@@ -48,12 +48,26 @@ class TestElement:
                     [3.0, 4.0, 5.0]]
 
         for i in range(len(expected)):
-            for j in range(3):
+            for j in range(len(expected[0])):
                 assert element.vertices[i][j] == expected[i][j]
 
     def test_empty_vertices(self):
         with pytest.raises(Exception):
             Element(vertices=[])
+
+    def test_data_element(self):
+        element = Element(data={'x': [0, 3], 'y': [1, 4], 'z': [2, 5]})
+
+        expected = [[0.0, 1.0, 2.0],
+                    [3.0, 4.0, 5.0]]
+
+        for i in range(len(expected)):
+            for j in range(len(expected[0])):
+                assert element.vertices[i][j] == expected[i][j]
+
+    def test_empty_data(self):
+        with pytest.raises(Exception):
+            Element(vertices={})
 
     def test_set_vertices(self):
         element = Element(vertices=[[0, 1, 2]])
@@ -63,7 +77,7 @@ class TestElement:
                     [6.0, 5.0, 4.0]]
 
         for i in range(len(expected)):
-            for j in range(3):
+            for j in range(len(expected[0])):
                 assert element.vertices[i][j] == expected[i][j]
 
     def test_setters(self):

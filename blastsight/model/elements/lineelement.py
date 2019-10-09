@@ -28,12 +28,23 @@ class LineElement(Element):
         """
         super().__init__(*args, **kwargs)
 
-    def _fill_element(self, *args, **kwargs):
-        super()._fill_element(*args, **kwargs)
+    def _fill_properties(self, *args, **kwargs):
+        super()._fill_properties(*args, **kwargs)
+        self.loop = kwargs.get('loop', False)
+
+    def _check_integrity(self):
+        super()._check_integrity()
         if len(self.vertices) < 2:
             raise ValueError("Not enough data to create this element.")
 
-        if kwargs.get('loop', False):
-            self.x = np.append(self.x, self.x[0])
-            self.y = np.append(self.y, self.y[0])
-            self.z = np.append(self.z, self.z[0])
+        # Append first vertex to self.vertices if a loop was enabled
+        if self.loop:
+            self.vertices = np.append(self.vertices, [self.vertices[0, :]], axis=0)
+
+    @property
+    def loop(self):
+        return self.properties.get('loop')
+
+    @loop.setter
+    def loop(self, _loop: bool):
+        self.properties['loop'] = _loop
