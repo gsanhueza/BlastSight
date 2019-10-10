@@ -62,17 +62,6 @@ class IntegrableViewer(QOpenGLWidget):
         # Model
         self.model = Model()
 
-        # Controllers
-        self.controllers = {}
-        self.add_controller(NormalMode, 'normal')
-        self.add_controller(DetectionMode, 'detection')
-        self.add_controller(SliceMode, 'slice')
-        self.add_controller(MeasurementMode, 'measurement')
-
-        self.signal_mode_updated.connect(lambda m: print(f'MODE: {m}'))
-        self.current_mode = None
-        self.set_normal_mode()
-
         # Drawable elements
         self.axis_collection = GLAxisCollection(self)
         self.background_collection = GLBackgroundCollection(self)
@@ -80,6 +69,20 @@ class IntegrableViewer(QOpenGLWidget):
 
         self.axis_collection.add(AxisGL(NullElement(id='AXIS')))
         self.background_collection.add(BackgroundGL(NullElement(id='BG')))
+
+        # Signals for viewer (self)
+        self.signal_mode_updated.connect(lambda m: print(f'MODE: {m}'))
+        self.signal_file_modified.connect(self.recreate)
+
+        # Controllers
+        self.current_mode = None
+        self.controllers = {}
+
+        self.add_controller(NormalMode, 'normal')
+        self.add_controller(DetectionMode, 'detection')
+        self.add_controller(SliceMode, 'slice')
+        self.add_controller(MeasurementMode, 'measurement')
+        self.set_normal_mode()
 
         # Camera/World/Projection
         self.camera = QMatrix4x4()
@@ -298,6 +301,10 @@ class IntegrableViewer(QOpenGLWidget):
         self.drawable_collection.delete(_id)
         self.signal_file_modified.emit()
         self.update()
+
+    def recreate(self) -> None:
+        # Currently only BatchMesh should need this
+        self.drawable_collection.recreate()
 
     def update_all(self) -> None:
         for _id in list(self.drawable_collection.keys()):
