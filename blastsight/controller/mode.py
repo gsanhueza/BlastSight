@@ -21,11 +21,11 @@ class Mode:
         dy = event.angleDelta().y()
         sign = dy / abs(dy) if abs(dy) > 1e-12 else 0.0
 
-        rate = 0.1
+        smoothness = max(widget.smoothness, 0.1)
+        rate = 0.1 * smoothness
         movement_rate = rate / (1.0 + max(0.0, min(sign, rate)))
 
         off_center = widget.off_center[2]
-        smoothness = max(widget.smoothness, 0.1)
         shift = -sign * movement_rate * max(-sign, off_center) / smoothness
 
         self.set_z_movement(widget, widget.zCameraPos + shift)

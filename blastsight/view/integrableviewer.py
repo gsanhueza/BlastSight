@@ -99,7 +99,7 @@ class IntegrableViewer(QOpenGLWidget):
 
         # Extra information
         self.fov = 45.0
-        self.smoothness = 1.0  # Bigger => smoother (but slower) rotations
+        self.smoothness = 2.0  # Bigger => smoother (but slower) rotations
         self.projection_mode = 'perspective'  # 'perspective'/'orthographic'
 
     """
