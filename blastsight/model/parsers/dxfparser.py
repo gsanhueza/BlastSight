@@ -17,11 +17,11 @@ class DXFParser(Parser):
 
         # Detect vertices and indices
         forbidden_types = [dxfgrabber.dxfentities.Line, dxfgrabber.dxfentities.LWPolyline]
-        points = []
         entities = [e for e in dxf.entities if type(e) not in forbidden_types]
+        points = []
 
         for entity in entities:
-            points += entity.points[:3]
+            points.extend(entity.points[:3])
         vertices, indices = np.unique(np.array(points), axis=0, return_inverse=True)
 
         # Metadata

@@ -37,7 +37,7 @@ class H5MParser(Parser):
         vertices = kwargs.get('vertices', None)
         indices = kwargs.get('indices', None)
 
-        if vertices is None or indices is None:
+        if vertices is None:
             data = kwargs.get('data', {})
             try:
                 vertices = data['vertices']
@@ -46,7 +46,8 @@ class H5MParser(Parser):
                                             data.get('y', []),
                                             data.get('z', []),
                                             ))
-            indices = data.get('indices', [])
+
+            indices = indices or data.get('indices', [])
 
         properties = kwargs.get('properties', {})
 

@@ -33,11 +33,11 @@ class TestH5MParser:
 
         for v, v_s in zip(vertices, vertices_s):
             for e, e_s in zip(v, v_s):
-                assert e == e_s
+                assert abs(e - e_s) < 1e-12
 
         for i, i_s in zip(indices, indices_s):
             for e, e_s in zip(i, i_s):
-                assert e == e_s
+                assert abs(e - e_s) < 1e-12
 
         assert properties_s.get('name', '') == 'caseron_save'
         assert properties_s.get('extension', '') == 'h5m'

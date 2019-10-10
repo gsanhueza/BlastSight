@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import numpy as np
 import pandas as pd
 
 from qtpy.QtCore import QFileInfo
@@ -33,3 +34,39 @@ class OFFParser(Parser):
             data.properties = properties
 
             return data
+
+    @staticmethod
+    def save_file(path: str, *args, **kwargs) -> None:
+        if path is None:
+            raise KeyError('Path missing.')
+
+        vertices = kwargs.get('vertices', None)
+        indices = kwargs.get('indices', None)
+
+        if vertices is None:
+            data = kwargs.get('data', {})
+            try:
+                vertices = data['vertices']
+            except Exception as e:
+                vertices = np.column_stack((data.get('x', []),
+                                            data.get('y', []),
+                                            data.get('z', []),
+                                            ))
+
+            indices = indices or data.get('indices', [])
+
+        V = len(vertices)
+        F = len(indices)
+        E = V + F - 2
+
+        # Internal data
+        with open(path, 'w') as f:
+            f.write('OFF\n')
+            f.write(f'{V} {F} {E}\n')
+
+        # Vertices
+        pd.DataFrame(vertices).to_csv(path, mode='a', sep=' ', header=False, index=False)
+
+        # Indices
+        pd.DataFrame(np.column_stack(([[3]] * (indices.size // 3), indices))).to_csv(
+            path, mode='a', sep=' ', header=False, index=False)
