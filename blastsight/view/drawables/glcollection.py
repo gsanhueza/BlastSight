@@ -37,9 +37,9 @@ class GLCollection(OrderedDict):
     def filter(self, drawable_type):
         # The copy avoids RuntimeError: OrderedDict mutated during iteration
         try:
-            return [x for x in self.values() if isinstance(x, drawable_type)]
+            return [x for x in self.values() if type(x) is drawable_type]
         except RuntimeError:
-            return [x for x in self.copy().values() if isinstance(x, drawable_type)]
+            return [x for x in self.copy().values() if type(x) is drawable_type]
 
     @property
     def last_id(self):

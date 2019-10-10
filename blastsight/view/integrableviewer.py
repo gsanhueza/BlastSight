@@ -506,8 +506,9 @@ class IntegrableViewer(QOpenGLWidget):
         #     }]
         # }
         mesh_drawables = [m for m in self.drawable_collection.filter(MeshGL) if m.is_visible]
-        mesh_elements = [m.element for m in mesh_drawables if 'SLICE' not in m.element.name]
+        mesh_drawables.extend([m for m in self.drawable_collection.filter(BatchMeshGL) if m.is_visible])
 
+        mesh_elements = [m.element for m in mesh_drawables if 'SLICE' not in m.element.name]
         slices_list = []
 
         for mesh in mesh_elements:

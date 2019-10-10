@@ -15,6 +15,7 @@ class BatchMeshProgram(ShaderProgram):
         self.vbos = []
         self.num_indices = 0
         self.already_set = False
+        self.all_opaque = True
 
     @property
     def vao(self):
@@ -42,8 +43,6 @@ class BatchMeshProgram(ShaderProgram):
 
         # Get the meshes that we'll really render
         meshes = [m for m in meshes if m.is_visible]
-        if len(meshes) == 0:
-            return
 
         # Data
         vertices = np.empty(len(meshes), np.ndarray)
@@ -51,6 +50,9 @@ class BatchMeshProgram(ShaderProgram):
         colors = np.empty(len(meshes), np.ndarray)
 
         v_size = 0
+        self.num_indices = 0
+        self.all_opaque = True
+
         for index, mesh in enumerate(meshes):
             num_triangles = mesh.element.vertices.size // 3
 
@@ -61,9 +63,13 @@ class BatchMeshProgram(ShaderProgram):
             self.num_indices += (mesh.element.indices + v_size).size
             v_size += num_triangles
 
-        vertices = np.concatenate(vertices)
-        indices = np.concatenate(indices)
-        colors = np.concatenate(colors)
+            if mesh.alpha < 0.99:
+                self.all_opaque = False
+
+        if len(meshes) > 0:
+            vertices = np.concatenate(vertices)
+            indices = np.concatenate(indices)
+            colors = np.concatenate(colors)
 
         glBindVertexArray(self.vao)
 
@@ -82,5 +88,17 @@ class BatchMeshProgram(ShaderProgram):
 
     def draw(self):
         glBindVertexArray(self.vao)
-        glDrawElements(GL_TRIANGLES, self.num_indices, GL_UNSIGNED_INT, None)
-        glBindVertexArray(0)
+
+        # We can perform faster if we don't need to fix alpha rendering
+        if self.all_opaque:
+            glDrawElements(GL_TRIANGLES, self.num_indices, GL_UNSIGNED_INT, None)
+        else:
+            glDepthMask(GL_FALSE)
+            glEnable(GL_CULL_FACE)
+
+            for gl_cull in [GL_FRONT, GL_BACK]:
+                glCullFace(gl_cull)
+                glDrawElements(GL_TRIANGLES, self.num_indices, GL_UNSIGNED_INT, None)
+
+            glDisable(GL_CULL_FACE)
+            glDepthMask(GL_TRUE)
