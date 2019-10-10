@@ -63,12 +63,13 @@ class GLDrawable:
             self.vaos = [glGenVertexArrays(1)]
             self.vbos = glGenBuffers(vbo_count)
 
-    def fill_buffers(self, buffer_properties: list) -> None:
+    @staticmethod
+    def fill_buffers(buffer_properties: list, vbos: list) -> None:
         # buffer_properties = [(pointer, basesize, array, glsize, gltype)]
 
         for i, buf in enumerate(buffer_properties):
             pointer, basesize, array, glsize, gltype = buf
-            glBindBuffer(GL_ARRAY_BUFFER, self.vbos[i])
+            glBindBuffer(GL_ARRAY_BUFFER, vbos[i])
             glBufferData(GL_ARRAY_BUFFER, sizeof(glsize) * array.size, array, GL_STATIC_DRAW)
             glVertexAttribPointer(pointer, basesize, gltype, False, 0, None)
             glEnableVertexAttribArray(pointer)

@@ -36,7 +36,7 @@ class TubeGL(GLDrawable):
                              ]
 
         # Fill buffers (see GLDrawable)
-        self.fill_buffers(buffer_properties)
+        self.fill_buffers(buffer_properties, self.vbos)
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, self.vbos[-1])
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices, GL_STATIC_DRAW)

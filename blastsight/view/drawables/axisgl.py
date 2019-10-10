@@ -37,7 +37,7 @@ class AxisGL(GLDrawable):
                              ]
 
         # Fill buffers (see GLDrawable)
-        self.fill_buffers(buffer_properties)
+        self.fill_buffers(buffer_properties, self.vbos)
 
         glBindVertexArray(0)
 

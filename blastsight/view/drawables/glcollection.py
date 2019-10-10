@@ -16,6 +16,10 @@ class GLCollection(OrderedDict):
         self[_id].cleanup()
         del self[_id]
 
+    def recreate(self):
+        for gl_program in self.programs.keys():
+            gl_program.recreate()
+
     def draw(self, proj_matrix, view_matrix, model_matrix) -> None:
         for gl_program, lambda_drawables in self.programs.items():
             drawables = lambda_drawables()
@@ -32,7 +36,10 @@ class GLCollection(OrderedDict):
 
     def filter(self, drawable_type):
         # The copy avoids RuntimeError: OrderedDict mutated during iteration
-        return [x for x in self.copy().values() if isinstance(x, drawable_type)]
+        try:
+            return [x for x in self.values() if isinstance(x, drawable_type)]
+        except RuntimeError:
+            return [x for x in self.copy().values() if isinstance(x, drawable_type)]
 
     @property
     def last_id(self):

@@ -35,7 +35,7 @@ class BlockGL(GLDrawable):
                              ]
 
         # Fill buffers (see GLDrawable)
-        self.fill_buffers(buffer_properties)
+        self.fill_buffers(buffer_properties, self.vbos)
 
         # The attribute advances once per divisor instances of the set(s) of vertices being rendered
         # And guess what, we have just 1 instance, exactly what we wanted!

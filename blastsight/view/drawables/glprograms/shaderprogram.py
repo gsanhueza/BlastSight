@@ -59,6 +59,9 @@ class ShaderProgram:
     def bind(self) -> None:
         self.shader_program.bind()
 
+    def recreate(self) -> None:
+        pass
+
     def draw(self):
         for drawable in self.drawables:
             drawable.draw()

@@ -34,7 +34,7 @@ class LineGL(GLDrawable):
                              ]
 
         # Fill buffers (see GLDrawable)
-        self.fill_buffers(buffer_properties)
+        self.fill_buffers(buffer_properties, self.vbos)
         glVertexAttribDivisor(_COLOR, 1)
 
         glBindVertexArray(0)

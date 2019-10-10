@@ -25,6 +25,7 @@ from .drawables.linegl import LineGL
 from .drawables.meshgl import MeshGL
 from .drawables.pointgl import PointGL
 from .drawables.tubegl import TubeGL
+from .drawables.batchmeshgl import BatchMeshGL
 
 from .fpscounter import FPSCounter
 
@@ -202,6 +203,8 @@ class IntegrableViewer(QOpenGLWidget):
     Load methods by arguments
     """
     def mesh(self, *args, **kwargs) -> MeshGL:
+        if kwargs.pop('batch', False):
+            return self._load_drawable(self.model.mesh, BatchMeshGL, *args, **kwargs)
         return self._load_drawable(self.model.mesh, MeshGL, *args, **kwargs)
 
     def blocks(self, *args, **kwargs) -> BlockGL:
@@ -220,6 +223,8 @@ class IntegrableViewer(QOpenGLWidget):
     Load methods by path
     """
     def mesh_by_path(self, path: str, *args, **kwargs) -> MeshGL:
+        if kwargs.pop('batch', False):
+            return self._load_drawable(self.model.mesh_by_path, BatchMeshGL, path, *args, **kwargs)
         return self._load_drawable(self.model.mesh_by_path, MeshGL, path, *args, **kwargs)
 
     def blocks_by_path(self, path: str, *args, **kwargs) -> BlockGL:
