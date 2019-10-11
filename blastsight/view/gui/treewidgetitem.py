@@ -37,35 +37,35 @@ class TreeWidgetItem(QTreeWidgetItem):
     def show(self) -> None:
         self.drawable.show()
         self.set_visible(self.drawable.is_visible)
-        self.viewer.update()
+        self.viewer.recreate()
 
     def hide(self) -> None:
         self.drawable.hide()
         self.set_visible(self.drawable.is_visible)
-        self.viewer.update()
+        self.viewer.recreate()
 
     def delete(self, no_signal=False) -> None:
         if no_signal:
             self.viewer.blockSignals(True)
 
         self.viewer.delete(self.drawable.id)
-        self.viewer.update()
+        self.viewer.recreate()
 
         self.viewer.blockSignals(False)
         self.viewer = None
 
     def toggle_highlighting(self) -> None:
         self.drawable.toggle_highlighting()
-        self.viewer.update()
+        self.viewer.recreate()
 
     def toggle_wireframe(self) -> None:
         self.drawable.toggle_wireframe()
-        self.viewer.update()
+        self.viewer.recreate()
 
     def toggle_visibility(self) -> None:
         self.drawable.toggle_visibility()
         self.set_visible(self.drawable.is_visible)
-        self.viewer.update()
+        self.viewer.recreate()
 
     def center_camera(self) -> None:
         self.viewer.camera_at(self.drawable.id)

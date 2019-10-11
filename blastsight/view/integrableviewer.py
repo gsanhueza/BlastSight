@@ -281,16 +281,16 @@ class IntegrableViewer(QOpenGLWidget):
 
     def show_drawable(self, _id: int) -> None:
         self.get_drawable(_id).show()
-        self.update()
+        self.recreate()
 
     def hide_drawable(self, _id: int) -> None:
         self.get_drawable(_id).hide()
-        self.update()
+        self.recreate()
 
     def update_drawable(self, _id: int) -> None:
         self.makeCurrent()
         self.get_drawable(_id).setup_attributes()
-        self.update()
+        self.recreate()
 
     def delete(self, _id: int) -> None:
         if _id < 0:
@@ -300,11 +300,12 @@ class IntegrableViewer(QOpenGLWidget):
         self.model.delete(_id)
         self.drawable_collection.delete(_id)
         self.signal_file_modified.emit()
-        self.update()
+        self.recreate()
 
     def recreate(self) -> None:
         # Currently only BatchMesh should need this
         self.drawable_collection.recreate()
+        self.update()
 
     def update_all(self) -> None:
         for _id in list(self.drawable_collection.keys()):
