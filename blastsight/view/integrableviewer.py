@@ -206,9 +206,8 @@ class IntegrableViewer(QOpenGLWidget):
     Load methods by arguments
     """
     def mesh(self, *args, **kwargs) -> MeshGL:
-        if kwargs.pop('batch', False):
-            return self._load_drawable(self.model.mesh, BatchMeshGL, *args, **kwargs)
-        return self._load_drawable(self.model.mesh, MeshGL, *args, **kwargs)
+        GLType = BatchMeshGL if kwargs.pop('batch', False) else MeshGL
+        return self._load_drawable(self.model.mesh, GLType, *args, **kwargs)
 
     def blocks(self, *args, **kwargs) -> BlockGL:
         return self._load_drawable(self.model.blocks, BlockGL, *args, **kwargs)
@@ -226,9 +225,8 @@ class IntegrableViewer(QOpenGLWidget):
     Load methods by path
     """
     def mesh_by_path(self, path: str, *args, **kwargs) -> MeshGL:
-        if kwargs.pop('batch', False):
-            return self._load_drawable(self.model.mesh_by_path, BatchMeshGL, path, *args, **kwargs)
-        return self._load_drawable(self.model.mesh_by_path, MeshGL, path, *args, **kwargs)
+        GLType = BatchMeshGL if kwargs.pop('batch', False) else MeshGL
+        return self._load_drawable(self.model.mesh_by_path, GLType, path, *args, **kwargs)
 
     def blocks_by_path(self, path: str, *args, **kwargs) -> BlockGL:
         return self._load_drawable(self.model.blocks_by_path, BlockGL, path, *args, **kwargs)

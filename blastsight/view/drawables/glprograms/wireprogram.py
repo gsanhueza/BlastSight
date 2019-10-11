@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
-from .shaderprogram import ShaderProgram
+from .meshprogram import MeshProgram
 from OpenGL.GL import *
 
 
-class WireProgram(ShaderProgram):
+class WireProgram(MeshProgram):
     def __init__(self, widget):
         super().__init__(widget)
         self.base_name = 'Wireframe'

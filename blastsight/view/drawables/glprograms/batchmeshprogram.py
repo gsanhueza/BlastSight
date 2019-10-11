@@ -3,16 +3,16 @@
 import numpy as np
 from OpenGL.GL import *
 
-from .shaderprogram import ShaderProgram
+from .meshprogram import MeshProgram
 from ..gldrawable import GLDrawable
 
 
-class BatchMeshProgram(ShaderProgram):
+class BatchMeshProgram(MeshProgram):
     def __init__(self, widget):
         super().__init__(widget)
-        self.base_name = 'Mesh'
         self.vaos = []
         self.vbos = []
+        self.v_size = 0
         self.num_indices = 0
         self.already_set = False
         self.all_opaque = True
@@ -22,6 +22,9 @@ class BatchMeshProgram(ShaderProgram):
         return self.vaos[-1]
 
     def recreate(self) -> None:
+        self.v_size = 0
+        self.num_indices = 0
+        self.all_opaque = True
         self.already_set = False
 
     def set_drawables(self, meshes):
@@ -49,19 +52,15 @@ class BatchMeshProgram(ShaderProgram):
         indices = np.empty(len(meshes), np.ndarray)
         colors = np.empty(len(meshes), np.ndarray)
 
-        v_size = 0
-        self.num_indices = 0
-        self.all_opaque = True
-
         for index, mesh in enumerate(meshes):
             num_triangles = mesh.element.vertices.size // 3
 
-            indices[index] = (mesh.element.indices + v_size)
+            indices[index] = (mesh.element.indices + self.v_size)
             vertices[index] = mesh.element.vertices.astype(np.float32)
             colors[index] = np.tile(mesh.element.rgba, num_triangles).astype(np.float32)
 
-            self.num_indices += (mesh.element.indices + v_size).size
-            v_size += num_triangles
+            self.num_indices += (mesh.element.indices + self.v_size).size
+            self.v_size += num_triangles
 
             if mesh.alpha < 0.99:
                 self.all_opaque = False
