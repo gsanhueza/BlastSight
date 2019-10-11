@@ -42,14 +42,24 @@ class Viewer(IntegrableViewer):
         self.camera_at(self.last_id)
 
     def keyPressEvent(self, event) -> None:
+        def rotate(angle_list) -> None:
+            self.rotation_angle += angle_list
+            self.update()
+
         shortcut_commands_dict = {
-            Qt.Key_1: lambda: self.plan_view(),
-            Qt.Key_2: lambda: self.north_view(),
-            Qt.Key_3: lambda: self.east_view(),
-            Qt.Key_4: lambda: self.perspective_projection(),
-            Qt.Key_5: lambda: self.orthographic_projection(),
+            Qt.Key_1: self.plan_view,
+            Qt.Key_2: self.north_view,
+            Qt.Key_3: self.east_view,
+            Qt.Key_4: self.perspective_projection,
+            Qt.Key_5: self.orthographic_projection,
+            Qt.Key_Space: self.fit_to_screen,
             Qt.Key_Delete: lambda: self.delete(self.last_id),
-            Qt.Key_Return: lambda: self.fit_to_screen(),
+            Qt.Key_A: lambda: rotate([0.0, -10.0, 0.0]),
+            Qt.Key_D: lambda: rotate([0.0, 10.0, 0.0]),
+            Qt.Key_W: lambda: rotate([-10.0, 0.0, 0.0]),
+            Qt.Key_S: lambda: rotate([10.0, 0.0, 0.0]),
+            Qt.Key_Q: lambda: rotate([0.0, 0.0, 10.0]),
+            Qt.Key_E: lambda: rotate([0.0, 0.0, -10.0]),
         }
 
         # Execute command based on event.key()
