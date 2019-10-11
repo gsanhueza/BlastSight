@@ -34,12 +34,18 @@ class GLCollection(OrderedDict):
             gl_program.update_uniform('model_view_matrix', view_matrix * model_matrix)
             gl_program.draw()
 
-    def filter(self, drawable_type):
+    @staticmethod
+    def _filter_method(strict: bool) -> classmethod:
+        if strict:
+            return lambda e, t: type(e) is t
+        return lambda e, t: isinstance(e, t)
+
+    def filter(self, drawable_type: type, strict: bool = False):
         # The copy avoids RuntimeError: OrderedDict mutated during iteration
         try:
-            return [x for x in self.values() if type(x) is drawable_type]
+            return [x for x in self.values() if self._filter_method(strict)(x, drawable_type)]
         except RuntimeError:
-            return [x for x in self.copy().values() if type(x) is drawable_type]
+            return [x for x in self.copy().values() if self._filter_method(strict)(x, drawable_type)]
 
     @property
     def last_id(self):
