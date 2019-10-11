@@ -20,9 +20,10 @@ class Mode:
     def wheelEvent(self, event, widget):
         dy = event.angleDelta().y()
         sign = dy / abs(dy) if abs(dy) > 1e-12 else 0.0
-
         smoothness = max(widget.smoothness, 0.1)
-        rate = 0.1 * smoothness
+
+        # Arbitrary number, but dependent on viewer's smoothness
+        rate = 0.4 / smoothness
         movement_rate = rate / (1.0 + max(0.0, min(sign, rate)))
 
         off_center = widget.off_center[2]
