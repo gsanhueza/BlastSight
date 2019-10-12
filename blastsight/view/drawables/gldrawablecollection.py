@@ -25,8 +25,6 @@ class GLDrawableCollection(GLCollection):
         self.programs[LineProgram(widget)] = lambda: self.filter(LineGL)
         self.programs[TubeProgram(widget)] = lambda: self.filter(TubeGL)
         self.programs[PointProgram(widget)] = lambda: self.filter(PointGL)
-        self.programs[BatchMeshProgram(widget)] = lambda: self.filter(BatchMeshGL, strict=True)
-        self.programs[MeshProgram(widget)] = lambda: [x for x in self.filter(MeshGL, strict=True)
-                                                      if not x.is_wireframed]
-        self.programs[WireProgram(widget)] = lambda: [x for x in self.filter(MeshGL, strict=True)
-                                                      if x.is_wireframed]
+        self.programs[BatchMeshProgram(widget)] = lambda: self.filter(BatchMeshGL)
+        self.programs[MeshProgram(widget)] = lambda: [x for x in self.filter(MeshGL) if not x.is_wireframed]
+        self.programs[WireProgram(widget)] = lambda: [x for x in self.filter(MeshGL) if x.is_wireframed]

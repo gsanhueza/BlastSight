@@ -360,7 +360,7 @@ class IntegrableViewer(QOpenGLWidget):
         self.update()
 
     def fit_to_screen(self) -> None:
-        drawables = [d for d in self.drawable_collection.values() if d.is_visible]
+        drawables = [d for d in self.get_all_drawables() if d.is_visible]
 
         if len(drawables) == 0:
             return
@@ -517,7 +517,7 @@ class IntegrableViewer(QOpenGLWidget):
         #         'slice_vertices': list(list(vertex))
         #     }]
         # }
-        mesh_drawables = [m for m in self.drawable_collection.filter(MeshGL) if m.is_visible]
+        mesh_drawables = [m for m in self.drawable_collection.loose_filter(MeshGL) if m.is_visible]
 
         mesh_elements = [m.element for m in mesh_drawables if 'SLICE' not in m.element.name]
         slices_list = []
@@ -537,7 +537,7 @@ class IntegrableViewer(QOpenGLWidget):
         self.signal_mesh_sliced.emit(slice_results)
 
     def slice_visible_blocks(self, origin: np.ndarray, plane_normal: np.ndarray) -> None:
-        block_drawables = [m for m in self.drawable_collection.filter(BlockGL) if m.is_visible]
+        block_drawables = [m for m in self.drawable_collection.loose_filter(BlockGL) if m.is_visible]
         block_elements = [m.element for m in block_drawables if 'SLICE' not in m.element.name]
 
         slices_list = []
@@ -584,7 +584,7 @@ class IntegrableViewer(QOpenGLWidget):
         self.set_normal_mode()
 
     def measure_from_rays(self, origin_list: list, ray_list: list) -> None:
-        elements = [m.element for m in self.drawable_collection.filter(MeshGL) if m.is_visible]
+        elements = [m.element for m in self.drawable_collection.loose_filter(MeshGL) if m.is_visible]
 
         points_A = []
         points_B = []
@@ -614,7 +614,7 @@ class IntegrableViewer(QOpenGLWidget):
 
     def detect_mesh_intersection(self, x: float, y: float, z: float) -> None:
         ray, origin = self.ray_from_click(x, y, z)
-        elements = [m.element for m in self.drawable_collection.filter(MeshGL) if m.is_visible]
+        elements = [m.element for m in self.drawable_collection.loose_filter(MeshGL) if m.is_visible]
 
         attributes_list = []
 
