@@ -67,8 +67,13 @@ class IntegrableViewer(QOpenGLWidget):
         self.background_collection = GLBackgroundCollection(self)
         self.drawable_collection = GLDrawableCollection(self)
 
-        self.axis_collection.add(AxisGL(NullElement(id='AXIS')))
-        self.background_collection.add(BackgroundGL(NullElement(id='BG')))
+        self.axis = AxisGL(NullElement(id='AXIS'))
+        self.axis.add_observer(self)
+        self.axis_collection.add(self.axis)
+
+        self.bg = BackgroundGL(NullElement(id='BG'))
+        self.bg.add_observer(self)
+        self.background_collection.add(self.bg)
 
         # Signals for viewer (self)
         self.signal_mode_updated.connect(lambda m: print(f'MODE: {m}'))
@@ -142,17 +147,6 @@ class IntegrableViewer(QOpenGLWidget):
         self.xCenterPos, self.yCenterPos, self.zCenterPos = center
 
     """
-    Axis/Background
-    """
-    @property
-    def axis(self):
-        return self.axis_collection.get('AXIS')
-
-    @property
-    def background(self):
-        return self.background_collection.get('BG')
-
-    """
     Projections
     """
     def perspective_projection(self) -> None:
@@ -170,6 +164,7 @@ class IntegrableViewer(QOpenGLWidget):
         try:
             element = method(*args, **kwargs)
             drawable = drawable_type(element, *args, **kwargs)
+            drawable.add_observer(self)
             self.drawable_collection.add(drawable)
 
             self.signal_load_success.emit(drawable.id)
@@ -279,11 +274,9 @@ class IntegrableViewer(QOpenGLWidget):
 
     def show_drawable(self, _id: int) -> None:
         self.get_drawable(_id).show()
-        self.recreate()
 
     def hide_drawable(self, _id: int) -> None:
         self.get_drawable(_id).hide()
-        self.recreate()
 
     def update_drawable(self, _id: int) -> None:
         self.makeCurrent()
@@ -298,7 +291,6 @@ class IntegrableViewer(QOpenGLWidget):
         self.model.delete(_id)
         self.drawable_collection.delete(_id)
         self.signal_file_modified.emit()
-        self.recreate()
 
     def recreate(self) -> None:
         # Currently only BatchMeshGL should need this

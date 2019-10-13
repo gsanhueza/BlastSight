@@ -8,6 +8,7 @@ class GLCollection(OrderedDict):
     def __init__(self):
         super().__init__()
         self.programs = OrderedDict()
+        self.needs_update = True
 
     def add(self, drawable: GLDrawable) -> None:
         self[drawable.id] = drawable
@@ -17,15 +18,17 @@ class GLCollection(OrderedDict):
         del self[_id]
 
     def recreate(self):
+        self.needs_update = True
         for gl_program in self.programs.keys():
             gl_program.recreate()
 
     def draw(self, proj_matrix, view_matrix, model_matrix) -> None:
         for gl_program, lambda_drawables in self.programs.items():
-            drawables = lambda_drawables()
-            gl_program.set_drawables(drawables)
-            if len(drawables) == 0:
-                continue
+            if self.needs_update:
+                drawables = lambda_drawables()
+                gl_program.set_drawables(drawables)
+                if len(drawables) == 0:
+                    continue
 
             gl_program.setup()
             gl_program.bind()
@@ -33,6 +36,8 @@ class GLCollection(OrderedDict):
             gl_program.update_uniform('proj_matrix', proj_matrix)
             gl_program.update_uniform('model_view_matrix', view_matrix * model_matrix)
             gl_program.draw()
+
+        self.needs_update = False
 
     def loose_filter(self, drawable_type: type) -> list:
         # The copy avoids RuntimeError: OrderedDict mutated during iteration

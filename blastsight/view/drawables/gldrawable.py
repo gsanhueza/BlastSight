@@ -10,6 +10,7 @@ class GLDrawable:
 
         self.vaos = []
         self.vbos = []
+        self.observers = []
 
         self.is_initialized = False
         self.is_highlighted = False
@@ -86,11 +87,21 @@ class GLDrawable:
     """
     Quick GLDrawable API
     """
+    def add_observer(self, observer):
+        self.observers.append(observer)
+
+    def notify(self):
+        for observer in self.observers:
+            observer.recreate()
+
     def show(self) -> None:
         self.is_visible = True
+        self.notify()
 
     def hide(self) -> None:
         self.is_visible = False
+        self.notify()
 
     def toggle_visibility(self) -> None:
         self.is_visible = not self.is_visible
+        self.notify()
