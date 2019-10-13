@@ -307,13 +307,13 @@ class MainWindow(QMainWindow):
     def _threaded_load(self, method: classmethod, path: str, *args, **kwargs) -> None:
         self.statusBar.showMessage('Loading...')
 
-        worker = ThreadWorker(path, method=method, *args, **kwargs)
+        worker = ThreadWorker(method, path, *args, **kwargs)
         QThreadPool.globalInstance().start(worker)
 
     def _threaded_export(self, method: classmethod, path: str, _id: int) -> None:
         self.statusBar.showMessage('Exporting...')
 
-        worker = ThreadWorker(path, _id, method=method)
+        worker = ThreadWorker(method, path, _id)
         QThreadPool.globalInstance().start(worker)
 
     def _dialog_load_element(self, method: classmethod, hint: str, *args, **kwargs) -> None:
