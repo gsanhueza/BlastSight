@@ -97,6 +97,13 @@ class TreeWidget(QTreeWidget):
 
         # WARNING: MeshGL.is_batchable == True means no highlight/wireframe support yet.
         if item.type is MeshGL:
+            # Dynamic text fixing in actions
+            text = 'Disable h&ighlighting' if item.drawable.is_highlighted else 'Enable h&ighlighting'
+            actions.action_highlight.setText(text)
+
+            text = 'Disable &wireframe' if item.drawable.is_wireframed else 'Enable &wireframe'
+            actions.action_wireframe.setText(text)
+
             menu.addAction(actions.action_highlight)
             menu.addAction(actions.action_wireframe)
             menu.addAction(actions.action_colors)
