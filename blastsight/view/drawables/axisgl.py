@@ -8,7 +8,7 @@ from OpenGL.GL import *
 
 class AxisGL(GLDrawable):
     def __init__(self, element, *args, **kwargs):
-        super().__init__(element)
+        super().__init__(element, *args, **kwargs)
 
     def __dir__(self):
         return sorted(set(dir(type(self)) + list(self.__dict__.keys())))

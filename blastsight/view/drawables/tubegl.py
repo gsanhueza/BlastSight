@@ -8,7 +8,7 @@ from OpenGL.GL import *
 
 class TubeGL(GLDrawable):
     def __init__(self, element, *args, **kwargs):
-        super().__init__(element)
+        super().__init__(element, *args, **kwargs)
 
         self.indices_size = 0
 

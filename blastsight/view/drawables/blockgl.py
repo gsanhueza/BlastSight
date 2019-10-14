@@ -8,7 +8,7 @@ from OpenGL.GL import *
 
 class BlockGL(GLDrawable):
     def __init__(self, element, *args, **kwargs):
-        super().__init__(element)
+        super().__init__(element, *args, **kwargs)
         self.num_cubes = 0
 
     def setup_attributes(self) -> None:
