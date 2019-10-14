@@ -25,7 +25,6 @@ from .drawables.linegl import LineGL
 from .drawables.meshgl import MeshGL
 from .drawables.pointgl import PointGL
 from .drawables.tubegl import TubeGL
-from .drawables.batchmeshgl import BatchMeshGL
 
 from .fpscounter import FPSCounter
 
@@ -201,8 +200,7 @@ class IntegrableViewer(QOpenGLWidget):
     Load methods by arguments
     """
     def mesh(self, *args, **kwargs) -> MeshGL:
-        GLType = BatchMeshGL if kwargs.pop('batch', False) else MeshGL
-        return self._load_drawable(self.model.mesh, GLType, *args, **kwargs)
+        return self._load_drawable(self.model.mesh, MeshGL, *args, **kwargs)
 
     def blocks(self, *args, **kwargs) -> BlockGL:
         return self._load_drawable(self.model.blocks, BlockGL, *args, **kwargs)
@@ -220,8 +218,7 @@ class IntegrableViewer(QOpenGLWidget):
     Load methods by path
     """
     def mesh_by_path(self, path: str, *args, **kwargs) -> MeshGL:
-        GLType = BatchMeshGL if kwargs.pop('batch', False) else MeshGL
-        return self._load_drawable(self.model.mesh_by_path, GLType, path, *args, **kwargs)
+        return self._load_drawable(self.model.mesh_by_path, MeshGL, path, *args, **kwargs)
 
     def blocks_by_path(self, path: str, *args, **kwargs) -> BlockGL:
         return self._load_drawable(self.model.blocks_by_path, BlockGL, path, *args, **kwargs)
@@ -293,7 +290,7 @@ class IntegrableViewer(QOpenGLWidget):
         self.signal_file_modified.emit()
 
     def recreate(self) -> None:
-        # Currently only BatchMeshGL should need this
+        # Currently, only meshes with MeshGL.is_batchable == True should need this.
         self.drawable_collection.recreate()
         self.update()
 
@@ -509,7 +506,7 @@ class IntegrableViewer(QOpenGLWidget):
         #         'slice_vertices': list(list(vertex))
         #     }]
         # }
-        mesh_drawables = [m for m in self.drawable_collection.loose_filter(MeshGL) if m.is_visible]
+        mesh_drawables = [m for m in self.drawable_collection.filter(MeshGL) if m.is_visible]
 
         mesh_elements = [m.element for m in mesh_drawables if 'SLICE' not in m.element.name]
         slices_list = []
@@ -529,7 +526,7 @@ class IntegrableViewer(QOpenGLWidget):
         self.signal_mesh_sliced.emit(slice_results)
 
     def slice_visible_blocks(self, origin: np.ndarray, plane_normal: np.ndarray) -> None:
-        block_drawables = [m for m in self.drawable_collection.loose_filter(BlockGL) if m.is_visible]
+        block_drawables = [m for m in self.drawable_collection.filter(BlockGL) if m.is_visible]
         block_elements = [m.element for m in block_drawables if 'SLICE' not in m.element.name]
 
         slices_list = []
@@ -576,7 +573,7 @@ class IntegrableViewer(QOpenGLWidget):
         self.set_normal_mode()
 
     def measure_from_rays(self, origin_list: list, ray_list: list) -> None:
-        elements = [m.element for m in self.drawable_collection.loose_filter(MeshGL) if m.is_visible]
+        elements = [m.element for m in self.drawable_collection.filter(MeshGL) if m.is_visible]
 
         points_A = []
         points_B = []
@@ -606,7 +603,7 @@ class IntegrableViewer(QOpenGLWidget):
 
     def detect_mesh_intersection(self, x: float, y: float, z: float) -> None:
         ray, origin = self.ray_from_click(x, y, z)
-        elements = [m.element for m in self.drawable_collection.loose_filter(MeshGL) if m.is_visible]
+        elements = [m.element for m in self.drawable_collection.filter(MeshGL) if m.is_visible]
 
         attributes_list = []
 

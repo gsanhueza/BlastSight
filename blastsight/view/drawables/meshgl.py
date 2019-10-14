@@ -11,8 +11,9 @@ class MeshGL(GLDrawable):
         super().__init__(element)
         self.indices_size = 0
 
-        self._highlighted = kwargs.get('highlight', False)
-        self._wireframed = kwargs.get('wireframe', False)
+        self._highlighted = kwargs.pop('highlight', False)
+        self._wireframed = kwargs.pop('wireframe', False)
+        self._batchable = kwargs.pop('batch', False)
 
     """
     Properties
@@ -25,6 +26,10 @@ class MeshGL(GLDrawable):
     def is_wireframed(self) -> bool:
         return self._wireframed
 
+    @property
+    def is_batchable(self) -> bool:
+        return self._batchable
+
     @is_highlighted.setter
     def is_highlighted(self, status: bool) -> None:
         self._highlighted = status
@@ -33,6 +38,11 @@ class MeshGL(GLDrawable):
     @is_wireframed.setter
     def is_wireframed(self, status: bool) -> None:
         self._wireframed = status
+        self.notify()
+
+    @is_batchable.setter
+    def is_batchable(self, status: bool) -> None:
+        self._batchable = status
         self.notify()
 
     """

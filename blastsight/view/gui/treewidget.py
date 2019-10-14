@@ -14,7 +14,6 @@ from ..drawables.meshgl import MeshGL
 from ..drawables.blockgl import BlockGL
 from ..drawables.pointgl import PointGL
 from ..drawables.linegl import LineGL
-from ..drawables.batchmeshgl import BatchMeshGL
 
 
 class TreeWidget(QTreeWidget):
@@ -96,11 +95,10 @@ class TreeWidget(QTreeWidget):
         menu.addAction(actions.action_hide)
         menu.addAction(actions.action_center_camera)
 
-        # MeshGL and BatchMeshGL are instances of MeshGL
-        if isinstance(item.drawable, MeshGL):
-            if item.type is MeshGL:
-                menu.addAction(actions.action_highlight)
-                menu.addAction(actions.action_wireframe)
+        # WARNING: MeshGL.is_batchable == True means no highlight/wireframe support yet.
+        if item.type is MeshGL:
+            menu.addAction(actions.action_highlight)
+            menu.addAction(actions.action_wireframe)
             menu.addAction(actions.action_colors)
             menu.addSeparator()
             menu.addAction(actions.action_export_mesh)

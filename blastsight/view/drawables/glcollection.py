@@ -39,13 +39,6 @@ class GLCollection(OrderedDict):
 
         self.needs_update = False
 
-    def loose_filter(self, drawable_type: type) -> list:
-        # The copy avoids RuntimeError: OrderedDict mutated during iteration
-        try:
-            return [x for x in self.values() if isinstance(x, drawable_type)]
-        except RuntimeError:
-            return [x for x in self.copy().values() if isinstance(x, drawable_type)]
-
     def filter(self, drawable_type: type) -> list:
         # The copy avoids RuntimeError: OrderedDict mutated during iteration
         try:
