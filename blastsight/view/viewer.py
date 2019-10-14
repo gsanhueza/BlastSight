@@ -42,8 +42,12 @@ class Viewer(IntegrableViewer):
         self.camera_at(self.last_id)
 
     def keyPressEvent(self, event) -> None:
-        def rotate(angle_list) -> None:
+        def rotate(angle_list: list) -> None:
             self.rotation_angle += angle_list
+            self.update()
+
+        def move(pos_list: list) -> None:
+            self.camera_position += pos_list
             self.update()
 
         shortcut_commands_dict = {
@@ -54,12 +58,18 @@ class Viewer(IntegrableViewer):
             Qt.Key_5: self.orthographic_projection,
             Qt.Key_Space: self.fit_to_screen,
             Qt.Key_Delete: lambda: self.delete(self.last_id),
-            Qt.Key_A: lambda: rotate([0.0, -10.0, 0.0]),
-            Qt.Key_D: lambda: rotate([0.0, 10.0, 0.0]),
             Qt.Key_W: lambda: rotate([-10.0, 0.0, 0.0]),
             Qt.Key_S: lambda: rotate([10.0, 0.0, 0.0]),
+            Qt.Key_A: lambda: rotate([0.0, -10.0, 0.0]),
+            Qt.Key_D: lambda: rotate([0.0, 10.0, 0.0]),
             Qt.Key_Q: lambda: rotate([0.0, 0.0, 10.0]),
             Qt.Key_E: lambda: rotate([0.0, 0.0, -10.0]),
+            Qt.Key_Left: lambda: move([1.0, 0.0, 0.0]),
+            Qt.Key_Right: lambda: move([-1.0, 0.0, 0.0]),
+            Qt.Key_Up: lambda: move([0.0, -1.0, 0.0]),
+            Qt.Key_Down: lambda: move([0.0, 1.0, 0.0]),
+            Qt.Key_PageDown: lambda: move([0.0, 0.0, -1.0]),
+            Qt.Key_PageUp: lambda: move([0.0, 0.0, 1.0]),
         }
 
         # Execute command based on event.key()
