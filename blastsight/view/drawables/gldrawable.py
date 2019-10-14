@@ -12,9 +12,8 @@ class GLDrawable:
         self.vbos = []
         self.observers = []
 
-        self.is_initialized = False
-        self.is_highlighted = False
-        self.is_visible = True
+        self._initialized = False
+        self._visible = True
 
     # Note: The following "hacks" are shortened versions of Delegator Pattern.
     # They're convenient, but optional.
@@ -85,6 +84,26 @@ class GLDrawable:
             glDeleteVertexArrays(len(self.vaos), self.vaos)
 
     """
+    Properties
+    """
+    @property
+    def is_initialized(self) -> bool:
+        return self._initialized
+
+    @property
+    def is_visible(self) -> bool:
+        return self._visible
+
+    @is_initialized.setter
+    def is_initialized(self, status: bool) -> None:
+        self._initialized = status
+
+    @is_visible.setter
+    def is_visible(self, status: bool) -> None:
+        self._visible = status
+        self.notify()
+
+    """
     Quick GLDrawable API
     """
     def add_observer(self, observer):
@@ -96,12 +115,9 @@ class GLDrawable:
 
     def show(self) -> None:
         self.is_visible = True
-        self.notify()
 
     def hide(self) -> None:
         self.is_visible = False
-        self.notify()
 
     def toggle_visibility(self) -> None:
         self.is_visible = not self.is_visible
-        self.notify()

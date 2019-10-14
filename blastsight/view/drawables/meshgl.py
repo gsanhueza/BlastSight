@@ -11,27 +11,56 @@ class MeshGL(GLDrawable):
         super().__init__(element)
         self.indices_size = 0
 
-        self.is_highlighted = kwargs.get('highlight', False)
-        self.is_wireframed = kwargs.get('wireframe', False)
+        self._highlighted = kwargs.get('highlight', False)
+        self._wireframed = kwargs.get('wireframe', False)
+
+    """
+    Properties
+    """
+    @property
+    def is_highlighted(self) -> bool:
+        return self._highlighted
+
+    @property
+    def is_wireframed(self) -> bool:
+        return self._wireframed
+
+    @is_highlighted.setter
+    def is_highlighted(self, status: bool) -> None:
+        self._highlighted = status
+        self.notify()
+
+    @is_wireframed.setter
+    def is_wireframed(self, status: bool) -> None:
+        self._wireframed = status
+        self.notify()
+
+    """
+    Quick MeshGL API
+    """
+    def enable_highlighting(self) -> None:
+        self.is_highlighted = True
+
+    def disable_highlighting(self) -> None:
+        self.is_highlighted = False
 
     def toggle_highlighting(self) -> bool:
         self.is_highlighted = not self.is_highlighted
-        self.notify()
         return self.is_highlighted
-
-    def toggle_wireframe(self) -> bool:
-        self.is_wireframed = not self.is_wireframed
-        self.notify()
-        return self.is_wireframed
-
-    def disable_wireframe(self) -> None:
-        self.is_wireframed = False
-        self.notify()
 
     def enable_wireframe(self):
         self.is_wireframed = True
-        self.notify()
 
+    def disable_wireframe(self) -> None:
+        self.is_wireframed = False
+
+    def toggle_wireframe(self) -> bool:
+        self.is_wireframed = not self.is_wireframed
+        return self.is_wireframed
+
+    """
+    Internal methods
+    """
     def setup_attributes(self) -> None:
         _POSITION = 0
         _COLOR = 1
