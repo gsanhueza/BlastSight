@@ -55,6 +55,8 @@ class ShaderProgram:
 
     def set_drawables(self, drawables):
         self.drawables = drawables
+        for drawable in self.drawables:
+            drawable.initialize()
 
     def bind(self) -> None:
         self.shader_program.bind()

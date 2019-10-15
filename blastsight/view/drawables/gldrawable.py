@@ -53,7 +53,8 @@ class GLDrawable:
         return self.vaos[-1]
 
     def initialize(self) -> None:
-        self.setup_attributes()
+        if not self.is_initialized:
+            self.setup_attributes()
         self.is_initialized = True
 
     def setup_attributes(self) -> None:
@@ -76,8 +77,7 @@ class GLDrawable:
             glEnableVertexAttribArray(pointer)
 
     def draw(self) -> None:
-        if not self.is_initialized:
-            self.initialize()
+        pass
 
     def cleanup(self):
         if self.is_initialized:

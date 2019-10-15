@@ -95,7 +95,6 @@ class MeshGL(GLDrawable):
         glBindVertexArray(0)
 
     def draw(self):
-        super().draw()
         if not self.is_visible:
             return
 
