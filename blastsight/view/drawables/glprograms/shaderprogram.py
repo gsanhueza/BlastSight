@@ -12,7 +12,7 @@ class ShaderProgram:
         self.shader_program = None
         self.shader_dir = f'{pathlib.Path(__file__).parent.parent}/shaders'
         self.uniform_locs = {}
-        self.drawables = None
+        self.drawables = []
         self.base_name = None
 
     def setup(self) -> None:

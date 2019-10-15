@@ -14,7 +14,6 @@ class BatchMeshProgram(MeshProgram):
         self.vbos = []
         self.v_size = 0
         self.num_indices = 0
-        self.already_set = False
         self.all_opaque = True
 
     @property
@@ -25,16 +24,12 @@ class BatchMeshProgram(MeshProgram):
         self.v_size = 0
         self.num_indices = 0
         self.all_opaque = True
-        self.already_set = False
 
     def set_drawables(self, meshes):
-        if self.already_set:
-            return
+        self.drawables = meshes
+        self.set_buffers()
 
-        self.set_buffers(meshes)
-        self.already_set = True
-
-    def set_buffers(self, meshes):
+    def set_buffers(self):
         _POSITION = 0
         _COLOR = 1
         _WIREFRAME = 2
@@ -45,7 +40,7 @@ class BatchMeshProgram(MeshProgram):
             self.vbos = glGenBuffers(3)
 
         # Get the meshes that we'll really render
-        meshes = [m for m in meshes if m.is_visible]
+        meshes = [m for m in self.drawables if m.is_visible]
 
         # Data
         vertices = np.empty(len(meshes), np.ndarray)

@@ -24,11 +24,14 @@ class GLCollection(OrderedDict):
 
     def draw(self, proj_matrix, view_matrix, model_matrix) -> None:
         for gl_program, lambda_drawables in self.programs.items():
+            # Update shader program so that it knows what to draw.
             if self.needs_update:
                 drawables = lambda_drawables()
                 gl_program.set_drawables(drawables)
-                if len(drawables) == 0:
-                    continue
+
+            # Skip bindings if there are no elements of this type.
+            if len(gl_program.drawables) == 0:
+                continue
 
             gl_program.setup()
             gl_program.bind()
