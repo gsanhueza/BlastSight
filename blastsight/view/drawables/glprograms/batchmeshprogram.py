@@ -39,8 +39,7 @@ class BatchMeshProgram(MeshProgram):
             self.vaos = [glGenVertexArrays(1)]
             self.vbos = glGenBuffers(3)
 
-        # Get the meshes that we'll really render
-        meshes = [m for m in self.drawables if m.is_visible]
+        meshes = self.drawables
 
         # Data
         vertices = np.empty(len(meshes), np.ndarray)

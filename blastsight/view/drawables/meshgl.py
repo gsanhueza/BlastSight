@@ -95,9 +95,6 @@ class MeshGL(GLDrawable):
         glBindVertexArray(0)
 
     def draw(self):
-        if not self.is_visible:
-            return
-
         glBindVertexArray(self.vao)
         glDrawElements(GL_TRIANGLES, self.indices_size, GL_UNSIGNED_INT, None)
         glBindVertexArray(0)

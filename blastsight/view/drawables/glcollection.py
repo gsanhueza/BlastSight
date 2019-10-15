@@ -26,7 +26,8 @@ class GLCollection(OrderedDict):
         for gl_program, lambda_drawables in self.programs.items():
             # Update shader program so that it knows what to draw.
             if self.needs_update:
-                drawables = lambda_drawables()
+                # Get the meshes that we'll really render
+                drawables = [d for d in lambda_drawables() if d.is_visible]
                 gl_program.set_drawables(drawables)
 
             # Skip bindings if there are no elements of this type.

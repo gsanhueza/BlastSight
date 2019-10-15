@@ -47,9 +47,6 @@ class PointGL(GLDrawable):
         glBindVertexArray(0)
 
     def draw(self):
-        if not self.is_visible:
-            return
-
         glBindVertexArray(self.vao)
         glDrawArrays(GL_POINTS, 0, self.num_points)
         glBindVertexArray(0)

@@ -13,9 +13,6 @@ class BackgroundGL(GLDrawable):
         return sorted(set(dir(type(self)) + list(self.__dict__.keys())))
 
     def draw(self):
-        if not self.is_visible:
-            return
-
         glDisable(GL_DEPTH_TEST)
         glDrawArrays(GL_TRIANGLES, 0, 3)
         glEnable(GL_DEPTH_TEST)

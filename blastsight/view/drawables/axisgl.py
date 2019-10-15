@@ -42,9 +42,6 @@ class AxisGL(GLDrawable):
         glBindVertexArray(0)
 
     def draw(self):
-        if not self.is_visible:
-            return
-
         glDisable(GL_DEPTH_TEST)
         glBindVertexArray(self.vao)
         glLineWidth(5)
