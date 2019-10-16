@@ -1,23 +1,24 @@
 #!/usr/bin/env python
 
 from blastsight.model.elements.element import Element
-from blastsight.view.drawables.gldrawablecollection import GLDrawableCollection
 from blastsight.view.drawables.gldrawable import GLDrawable
+from blastsight.view.drawables.glcollection import GLCollection
+from blastsight.view.drawables.gldrawablecollection import GLDrawableCollection
 from blastsight.view.integrableviewer import IntegrableViewer
 
 
-class TestGLDrawableCollection:
+class TestGLCollection:
     element = Element(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0])
     element.id = 0
     drawable = GLDrawable(element)
 
     def test_base(self):
-        collection = GLDrawableCollection()
+        collection = GLCollection()
 
         assert len(collection) == 0
 
     def test_add(self):
-        collection = GLDrawableCollection()
+        collection = GLCollection()
         collection.add(self.drawable)
         assert len(collection) == 1
         assert collection[0] == self.drawable
@@ -28,7 +29,7 @@ class TestGLDrawableCollection:
         assert isinstance(drawable.id, int)
 
     def test_set(self):
-        collection = GLDrawableCollection()
+        collection = GLCollection()
         collection.add(self.drawable)
         drawable = collection[0]
         collection[0] = drawable
@@ -37,14 +38,14 @@ class TestGLDrawableCollection:
         assert isinstance(drawable.id, int)
 
     def test_delete(self):
-        collection = GLDrawableCollection()
+        collection = GLCollection()
         collection.add(self.drawable)
         assert len(collection) == 1
         del collection[0]
         assert len(collection) == 0
 
     def test_items(self):
-        collection = GLDrawableCollection()
+        collection = GLCollection()
         collection.add(self.drawable)
         drawable = collection[0]
 
@@ -53,7 +54,7 @@ class TestGLDrawableCollection:
         assert items[0][1] is drawable
 
     def test_clear(self):
-        collection = GLDrawableCollection()
+        collection = GLCollection()
         collection.add(self.drawable)
         collection.add(self.drawable)
         collection.add(self.drawable)
@@ -62,12 +63,22 @@ class TestGLDrawableCollection:
         collection.clear()
         assert len(collection) == 0
 
-    def test_draw(self):
+    def test_drawable_collection(self):
         widget = IntegrableViewer()
-        collection = GLDrawableCollection(widget)
+        collection = GLDrawableCollection()
         drawable_1 = GLDrawable(self.element)
         drawable_2 = GLDrawable(self.element)
 
         collection.add(drawable_1)
         collection.add(drawable_2)
+
+        assert collection.needs_update
         collection.draw(widget.proj, widget.camera, widget.world)
+        assert not collection.needs_update
+        collection.draw(widget.proj, widget.camera, widget.world)
+        assert not collection.needs_update
+
+        collection.recreate()
+        assert collection.needs_update
+        collection.draw(widget.proj, widget.camera, widget.world)
+        assert not collection.needs_update

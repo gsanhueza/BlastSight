@@ -7,6 +7,7 @@ from blastsight.view.integrableviewer import IntegrableViewer
 from blastsight.view.drawables.meshgl import MeshGL
 from blastsight.view.drawables.glprograms.meshprogram import MeshProgram
 from blastsight.view.drawables.glprograms.wireprogram import WireProgram
+from blastsight.view.drawables.glprograms.batchmeshprogram import BatchMeshProgram
 
 
 class TestMeshGL:
@@ -41,6 +42,34 @@ class TestMeshGL:
         assert drawable.is_wireframed
         drawable.toggle_wireframe()
         assert not drawable.is_wireframed
+
+    def test_meshgl_highlighting(self):
+        drawable = MeshGL(self.element)
+
+        # The state should change regardless of initialization
+
+        def auto_test():
+            assert not drawable.is_highlighted
+            drawable.toggle_highlighting()
+            assert drawable.is_highlighted
+            drawable.toggle_highlighting()
+            assert not drawable.is_highlighted
+
+            drawable.disable_highlighting()
+            assert not drawable.is_highlighted
+
+            drawable.enable_highlighting()
+            assert drawable.is_highlighted
+
+            drawable.disable_highlighting()
+            assert not drawable.is_highlighted
+
+        # The state should change regardless of initialization
+        drawable.is_initialized = False
+        auto_test()
+
+        drawable.is_initialized = True
+        auto_test()
 
     def test_meshgl_wireframe(self):
         drawable = MeshGL(self.element)
@@ -92,7 +121,7 @@ class TestMeshGL:
         drawable.hide()
         assert not drawable.is_visible
 
-    def test_program(self):
+    def test_mesh_program(self):
         widget = IntegrableViewer()
         program = MeshProgram(widget)
         element = MeshElement(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], indices=[[0, 1, 2]], alpha=0.8)
@@ -132,4 +161,20 @@ class TestMeshGL:
                                drawable_alpha,
                                drawable_wireframe,
                                drawable_highlight])
+        program.draw()
+
+    def test_batch_program(self):
+        widget = IntegrableViewer()
+        program = BatchMeshProgram(widget)
+        element = MeshElement(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], indices=[[0, 1, 2]], alpha=0.8)
+        program.setup()
+        program.bind()
+
+        drawable_normal = MeshGL(self.element, batch=True)
+        drawable_alpha = MeshGL(element, batch=True)
+
+        program.set_drawables([drawable_normal])
+        program.draw()
+
+        program.set_drawables([drawable_normal, drawable_alpha])
         program.draw()

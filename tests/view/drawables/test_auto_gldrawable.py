@@ -31,6 +31,20 @@ class TestAutoDrawable:
         for dir_e in dir(self.element):
             assert dir_e in dir(drawable)
 
+        assert not drawable.is_initialized
+        assert not drawable.is_batchable
+        assert drawable.is_visible
+
+        drawable.initialize()
+        drawable.is_batchable = True
+
+        assert drawable.is_initialized
+        assert drawable.is_batchable
+        assert drawable.is_visible
+
+        drawable.initialize()
+        assert drawable.is_initialized
+
     def test_drawable_id(self):
         drawable = GLDrawable(self.element)
         assert drawable.id == self.element.id
@@ -43,7 +57,6 @@ class TestAutoDrawable:
         program = ShaderProgram(widget)
         program.setup()
         program.bind()
-        program.setup()  # Deliberately duplicated
 
         drawable = GLDrawable(self.element)
         program.set_drawables([drawable])
@@ -51,15 +64,23 @@ class TestAutoDrawable:
 
     def test_cleanup(self):
         drawable = GLDrawable(self.element)
-        drawable.cleanup()
+        assert len(drawable.vaos) == 0
         drawable.initialize()
         drawable.cleanup()
+        assert len(drawable.vaos) == 0
 
     def test_draw(self):
         widget = IntegrableViewer()
         program = ShaderProgram(widget)
+        assert program.shader_program is None
         program.setup()
+        assert program.shader_program is not None
+        program_id = id(program.shader_program)
         program.bind()
+
+        program.setup()
+        assert program.shader_program is not None
+        assert program_id == id(program.shader_program)
 
         drawable = GLDrawable(self.element)
         drawable.setup_attributes()

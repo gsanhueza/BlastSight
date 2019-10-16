@@ -42,30 +42,29 @@ class TestIntegrableViewer:
 
     def test_camera(self):
         widget = IntegrableViewer()
-        assert widget.camera_position[0] == 0.0
-        assert widget.camera_position[1] == 0.0
-        assert widget.camera_position[2] == 200.0
+        for i, pos in enumerate([0.0, 0.0, 200.0]):
+            assert widget.camera_position[i] == pos
+            assert widget.off_center[i] == pos
 
-        assert widget.rotation_angle[0] == 0.0
-        assert widget.rotation_angle[1] == 0.0
-        assert widget.rotation_angle[2] == 0.0
+        for i, rot in enumerate([0.0, 0.0, 0.0]):
+            assert widget.rotation_angle[i] == rot
 
         widget.camera_position = [5.0, 10.0, 15.0]
-        assert widget.camera_position[0] == 5.0
-        assert widget.camera_position[1] == 10.0
-        assert widget.camera_position[2] == 15.0
+        for i, pos in enumerate([5.0, 10.0, 15.0]):
+            assert widget.camera_position[i] == pos
+            assert widget.off_center[i] == pos
 
         widget.rotation_angle = [90.0, 10.0, 45.0]
-        assert widget.rotation_angle[0] == 90.0
-        assert widget.rotation_angle[1] == 10.0
-        assert widget.rotation_angle[2] == 45.0
+        for i, rot in enumerate([90.0, 10.0, 45.0]):
+            assert widget.rotation_angle[i] == rot
 
-    def test_last_id(self):
+    def test_last_drawable(self):
         widget = IntegrableViewer()
         assert widget.last_id == -1
 
-        widget.mesh(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], indices=[[0, 1, 2]])
+        mesh = widget.mesh(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], indices=[[0, 1, 2]])
         assert widget.last_id == 0
+        assert widget.last_drawable is mesh
 
     def test_add_mesh(self):
         widget = IntegrableViewer()
@@ -287,3 +286,11 @@ class TestIntegrableViewer:
 
         viewer.set_normal_mode()
         assert type(viewer.current_mode) is NormalMode
+
+    def test_projections(self):
+        viewer = IntegrableViewer()
+        assert viewer.projection_mode == 'perspective'
+        viewer.orthographic_projection()
+        assert viewer.projection_mode == 'orthographic'
+        viewer.perspective_projection()
+        assert viewer.projection_mode == 'perspective'
