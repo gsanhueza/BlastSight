@@ -410,8 +410,7 @@ class IntegrableViewer(QOpenGLWidget):
         self.axis_collection.draw(self.proj, self.camera, self.world)
 
         # Tick FPS counter
-        self.fps_counter.tick()
-        self.signal_fps_updated.emit(self.fps_counter.fps)
+        self.fps_counter.tick(callback=self.signal_fps_updated.emit)
 
     def resizeGL(self, w: float, h: float) -> None:
         if self.projection_mode == 'perspective':
