@@ -498,55 +498,18 @@ class IntegrableViewer(QOpenGLWidget):
         return ray, origin
 
     def slice_visible_meshes(self, origin: np.ndarray, plane_normal: np.ndarray) -> None:
-        # We'll emit a signal with origin id, plane origin, plane normal, list of slices for each slice,
-        # {
-        #     'plane_origin': list(vertex),
-        #     'plane_normal': list(vertex)',
-        #     'slices': [{
-        #         'origin_id': int,
-        #         'slice_vertices': list(list(vertex))
-        #     }]
-        # }
-        mesh_drawables = [m for m in self.drawable_collection.filter(MeshGL) if m.is_visible]
+        drawables = [m for m in self.drawable_collection.filter(MeshGL) if m.is_visible]
+        meshes = [m.element for m in drawables if 'SLICE' not in m.element.name]
 
-        mesh_elements = [m.element for m in mesh_drawables if 'SLICE' not in m.element.name]
-        slices_list = []
-
-        for mesh in mesh_elements:
-            slices_list.append({
-                'origin_id': mesh.id,
-                'sliced_vertices': utils.slice_mesh(mesh, origin, plane_normal),
-            })
-
-        slice_results = {
-            'plane_origin': origin,
-            'plane_normal': plane_normal,
-            'slices': slices_list,
-        }
-
-        self.signal_mesh_sliced.emit(slice_results)
+        results = self.model.slice_meshes(origin, plane_normal, meshes)
+        self.signal_mesh_sliced.emit(results)
 
     def slice_visible_blocks(self, origin: np.ndarray, plane_normal: np.ndarray) -> None:
-        block_drawables = [m for m in self.drawable_collection.filter(BlockGL) if m.is_visible]
-        block_elements = [m.element for m in block_drawables if 'SLICE' not in m.element.name]
+        drawables = [m for m in self.drawable_collection.filter(BlockGL) if m.is_visible]
+        blocks = [m.element for m in drawables if 'SLICE' not in m.element.name]
 
-        slices_list = []
-
-        for block in block_elements:
-            slices, values = utils.slice_blocks(block, block.block_size, origin, plane_normal)
-            slices_list.append({
-                'origin_id': block.id,
-                'sliced_vertices': slices,
-                'sliced_values': values,
-            })
-
-        slice_results = {
-            'plane_origin': origin,
-            'plane_normal': plane_normal,
-            'slices': slices_list,
-        }
-
-        self.signal_blocks_sliced.emit(slice_results)
+        results = self.model.slice_blocks(origin, plane_normal, blocks)
+        self.signal_blocks_sliced.emit(results)
 
     def slice_visible_drawables(self, origin: np.ndarray, plane_normal: np.ndarray) -> None:
         self.slice_visible_meshes(origin, plane_normal)
@@ -574,31 +537,8 @@ class IntegrableViewer(QOpenGLWidget):
         self.set_normal_mode()
 
     def measure_from_rays(self, origin_list: list, ray_list: list) -> None:
-        elements = [m.element for m in self.drawable_collection.filter(MeshGL) if m.is_visible]
-
-        points_A = []
-        points_B = []
-
-        for mesh in elements:
-            int_A = utils.mesh_intersection(origin_list[0], ray_list[0], mesh)
-            int_B = utils.mesh_intersection(origin_list[1], ray_list[1], mesh)
-
-            # Discard non-intersections
-            if int_A.size > 0:
-                points_A.append(utils.closest_point_to(origin_list[0], int_A))
-
-            if int_B.size > 0:
-                points_B.append(utils.closest_point_to(origin_list[1], int_B))
-
-        distance = None
-        if len(points_A) > 0 and len(points_B) > 0:
-            points_A = np.vstack(points_A)
-            points_B = np.vstack(points_B)
-
-            closest_A = utils.closest_point_to(origin_list[0], points_A)
-            closest_B = utils.closest_point_to(origin_list[1], points_B)
-
-            distance = np.linalg.norm(closest_B - closest_A)
+        meshes = [m.element for m in self.drawable_collection.filter(MeshGL) if m.is_visible]
+        distance = self.model.measure_from_rays(origin_list, ray_list, meshes)
 
         self.signal_mesh_distances.emit(distance)
 
@@ -611,10 +551,11 @@ class IntegrableViewer(QOpenGLWidget):
         for mesh in elements:
             intersections = utils.mesh_intersection(origin, ray, mesh)
             closest_point = utils.closest_point_to(origin, intersections)
-            # print(f'(Mesh {mesh.id}): Intersections: {intersections}')
-            # print(f'(Mesh {mesh.id}): Closest intersection: {closest_point}')
             if closest_point is not None:
-                attributes = {**mesh.attributes, 'intersection': closest_point}
+                attributes = {**mesh.attributes,
+                              'intersections': intersections,
+                              'closest_point': closest_point,
+                              }
                 attributes_list.append(attributes)
 
         # Emit signal with clicked mesh

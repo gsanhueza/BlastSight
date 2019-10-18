@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 
+import numpy as np
+from . import utils
+
 from qtpy.QtCore import QDirIterator
 from qtpy.QtCore import QFileInfo
 from qtpy.QtCore import QMutex
@@ -114,6 +117,15 @@ class Model:
         return self._load_element_by_path(path, LineElement, *args, **kwargs)
 
     """
+    Element handling
+    """
+    def get(self, _id: int) -> Element:
+        return self.element_collection.get(_id, None)
+
+    def delete(self, _id: int) -> None:
+        self.element_collection.delete(_id)
+
+    """
     Element exporting
     """
     def export(self, path: str, _id: int) -> None:
@@ -140,10 +152,95 @@ class Model:
         self.export(path, _id)
 
     """
-    Element handling
+    Adapter for viewer's utilities (slice/distance)
     """
-    def get(self, _id: int) -> Element:
-        return self.element_collection.get(_id, None)
+    @staticmethod
+    def slice_meshes(origin: np.ndarray, plane_normal: np.ndarray, meshes: list) -> dict:
+        """
+        Returns a dict with the following structure:
 
-    def delete(self, _id: int) -> None:
-        self.element_collection.delete(_id)
+        {
+            'plane_origin': list(float),
+            'plane_normal': list(float)',
+            'slices': [{
+                'origin_id': int,
+                'sliced_vertices': list(list(float))
+            }]
+        }
+        """
+        slices_list = []
+
+        for mesh in meshes:
+            slices_list.append({
+                'origin_id': mesh.id,
+                'sliced_vertices': utils.slice_mesh(mesh, origin, plane_normal),
+            })
+
+        slice_results = {
+            'plane_origin': origin,
+            'plane_normal': plane_normal,
+            'slices': slices_list,
+        }
+
+        return slice_results
+
+    @staticmethod
+    def slice_blocks(origin: np.ndarray, plane_normal: np.ndarray, blocks: list) -> dict:
+        """
+        Returns a dict with the following structure:
+
+        {
+            'plane_origin': list(float),
+            'plane_normal': list(float)',
+            'slices': [{
+                'origin_id': int,
+                'sliced_vertices': list(list(float))
+                'sliced_values': list(float)
+            }]
+        }
+        """
+        slices_list = []
+
+        for block in blocks:
+            slices, values = utils.slice_blocks(block, block.block_size, origin, plane_normal)
+            slices_list.append({
+                'origin_id': block.id,
+                'sliced_vertices': slices,
+                'sliced_values': values,
+            })
+
+        slice_results = {
+            'plane_origin': origin,
+            'plane_normal': plane_normal,
+            'slices': slices_list,
+        }
+
+        return slice_results
+
+    @staticmethod
+    def measure_from_rays(origin_list: list, ray_list: list, meshes: list) -> float or None:
+        points_A = []
+        points_B = []
+
+        for mesh in meshes:
+            int_A = utils.mesh_intersection(origin_list[0], ray_list[0], mesh)
+            int_B = utils.mesh_intersection(origin_list[1], ray_list[1], mesh)
+
+            # Discard non-intersections
+            if int_A.size > 0:
+                points_A.append(utils.closest_point_to(origin_list[0], int_A))
+
+            if int_B.size > 0:
+                points_B.append(utils.closest_point_to(origin_list[1], int_B))
+
+        distance = None
+        if len(points_A) > 0 and len(points_B) > 0:
+            points_A = np.vstack(points_A)
+            points_B = np.vstack(points_B)
+
+            closest_A = utils.closest_point_to(origin_list[0], points_A)
+            closest_B = utils.closest_point_to(origin_list[1], points_B)
+
+            distance = np.linalg.norm(closest_B - closest_A)
+
+        return distance
