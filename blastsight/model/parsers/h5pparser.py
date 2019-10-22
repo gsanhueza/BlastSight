@@ -1,5 +1,10 @@
 #!/usr/bin/env python
 
+#  Copyright (c) 2019 Gabriel Sanhueza.
+#
+#  Distributed under the MIT License.
+#  See LICENSE for more info.
+
 import pandas as pd
 from qtpy.QtCore import QFileInfo
 from .parserdata import ParserData

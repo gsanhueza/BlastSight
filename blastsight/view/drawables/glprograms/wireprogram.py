@@ -1,5 +1,10 @@
 #!/usr/bin/env python
 
+#  Copyright (c) 2019 Gabriel Sanhueza.
+#
+#  Distributed under the MIT License.
+#  See LICENSE for more info.
+
 from .meshprogram import MeshProgram
 from OpenGL.GL import *
 

@@ -1,5 +1,10 @@
 #!/usr/bin/env python
 
+#  Copyright (c) 2019 Gabriel Sanhueza.
+#
+#  Distributed under the MIT License.
+#  See LICENSE for more info.
+
 from .element import Element
 from .elementcollection import ElementCollection
 from .blockelement import BlockElement

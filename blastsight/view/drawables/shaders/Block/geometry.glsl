@@ -17,7 +17,7 @@ uniform vec3 block_size;
 
 mat4 mvp = proj_matrix * model_view_matrix;
 
-void AddQuad(vec4 center, vec4 shift, vec4 dy, vec4 dx, vec3 n)
+void add_face(vec4 center, vec4 shift, vec4 dy, vec4 dx, vec3 n)
 {
     vec4 v1 = (center + shift) + (dx - dy);
     vec4 v2 = (center + shift) + (-dx - dy);
@@ -63,10 +63,10 @@ void main()
     vec4 dy = 0.5f * model_view_matrix[1] * block_size.y;
     vec4 dz = 0.5f * model_view_matrix[2] * block_size.z;
 
-    AddQuad(center, +dx, dy, dz, vec3(1.0, 0.0, 0.0));  // Right
-    AddQuad(center, -dx, dz, dy, vec3(-1.0, 0.0, 0.0)); // Left
-    AddQuad(center, +dy, dz, dx, vec3(0.0, 1.0, 0.0));  // Top
-    AddQuad(center, -dy, dx, dz, vec3(0.0, -1.0, 0.0)); // Bottom
-    AddQuad(center, +dz, dx, dy, vec3(0.0, 0.0, 1.0));  // Front
-    AddQuad(center, -dz, dy, dx, vec3(0.0, 0.0, -1.0)); // Back
+    add_face(center, +dx, dy, dz, vec3(1.0, 0.0, 0.0));  // Right
+    add_face(center, -dx, dz, dy, vec3(-1.0, 0.0, 0.0)); // Left
+    add_face(center, +dy, dz, dx, vec3(0.0, 1.0, 0.0));  // Top
+    add_face(center, -dy, dx, dz, vec3(0.0, -1.0, 0.0)); // Bottom
+    add_face(center, +dz, dx, dy, vec3(0.0, 0.0, 1.0));  // Front
+    add_face(center, -dz, dy, dx, vec3(0.0, 0.0, -1.0)); // Back
 }

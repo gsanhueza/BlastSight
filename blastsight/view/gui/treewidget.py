@@ -1,5 +1,10 @@
 #!/usr/bin/env python
 
+#  Copyright (c) 2019 Gabriel Sanhueza.
+#
+#  Distributed under the MIT License.
+#  See LICENSE for more info.
+
 from qtpy.QtCore import Qt
 from qtpy.QtCore import Signal
 from qtpy.QtWidgets import QAbstractItemView
@@ -47,12 +52,6 @@ class TreeWidget(QTreeWidget):
             self.addTopLevelItem(item)
 
     def context_menu(self, event) -> None:
-        """
-        Creates a context menu when the user does a right click.
-
-        :param event: Qt Event.
-        :return: None
-        """
         # Pop-up the context menu on current position, if an item is there
         item = self.itemAt(event)
 

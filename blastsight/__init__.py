@@ -1,5 +1,10 @@
 #!/usr/bin/env python
 
+#  Copyright (c) 2019 Gabriel Sanhueza.
+#
+#  Distributed under the MIT License.
+#  See LICENSE for more info.
+
 """
 Pandas' current version (0.25) has an ugly memory leak when reading files (tested empirically).
 Since BlastSight is not meant to improve Pandas, we'll implement a workaround from

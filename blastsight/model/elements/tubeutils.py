@@ -1,9 +1,14 @@
 #!/usr/bin/env python
 
-import numpy as np
-
-# cylinder, quat_from_data and to_matrix taken and adapted from PyMesh
+# These methods are taken and adapted from PyMesh.
 # https://github.com/PyMesh/PyMesh
+#
+# PyMesh's license is Mozilla Public License 2, and as such,
+# this particular file must be licensed as MPL2.
+#
+# See https://www.mozilla.org/en-US/MPL/ for more info.
+
+import numpy as np
 
 
 def cylinder(radius, resolution, segment):
