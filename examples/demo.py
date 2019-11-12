@@ -55,6 +55,8 @@ def demo():
     The arguments vmin, vmax and colormap are optional.
 
     The colormap is two colors separated with a`-`.
+    For example, `red-blue`, `cyan-magenta`, etc.
+
     Alternatively, you can pass an HTML color, like
     "#FF0000-#00FF00", as long as it's separated
     by the `-` character.
@@ -70,10 +72,10 @@ def demo():
                   name='Blocks')
 
     """
-    You can load a set of blocks with viewer.points().
+    You can load a set of points with viewer.points().
     Points and blocks receive the same arguments,
     except block_size (a point has point_size).
-    You can also omit pass colors instead of values.
+    That means you can also pass values, instead of colors.
 
     If you're manually setting the colors, the `colormap`
     argument will be ignored.
@@ -100,8 +102,9 @@ def demo():
                   name='Points rendered as circles')
 
     """
-    As you noticed in the `marker` argument, you can have more than
-    one point marker.
+    As you might have noticed in the `marker` argument, 
+    you can have more than one point marker.
+
     Currently the markers are:
     - square: Squares that always face the camera.
     - circle: Circles that always face the camera.
@@ -115,7 +118,7 @@ def demo():
                   name='Points rendered as spheres')
 
     """
-    You can load a set of blocks with viewer.lines().
+    You can load a set of lines with viewer.lines().
     You need at least two vertices.
 
     If you need to join the first and the last vertex
@@ -157,10 +160,10 @@ def demo():
     viewer.fit_to_screen()
 
     """
-    Every drawable can be accessed in the viewer.drawable_collection dict.
+    Every drawable can be accessed with the viewer.get_all_drawables() method.
     """
-    for _id, drawable in viewer.drawable_collection.items():
-        print(f'ID: {_id}\t Type: {type(drawable)}\t Name: {drawable.name}')
+    for drawable in viewer.get_all_drawables():
+        print(f'ID: {drawable.id}\t Type: {type(drawable)}\t Name: {drawable.name}')
 
     """
     Finally, you can show the viewer with all the elements.
