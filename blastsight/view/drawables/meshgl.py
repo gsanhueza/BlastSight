@@ -30,6 +30,10 @@ class MeshGL(GLDrawable):
     def is_wireframed(self) -> bool:
         return self._wireframed
 
+    @property
+    def is_batch_ready(self) -> bool:
+        return self.is_batchable and not self.is_highlighted and not self.is_wireframed
+
     @is_highlighted.setter
     def is_highlighted(self, status: bool) -> None:
         self._highlighted = status

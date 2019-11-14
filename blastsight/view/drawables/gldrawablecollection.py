@@ -43,8 +43,8 @@ class GLDrawableCollection(GLCollection):
 
         # Meshes
         self.programs[BatchMeshProgram(widget)] = lambda: [
-            x for x in self.filter(MeshGL) if x.is_batchable]
+            x for x in self.filter(MeshGL) if x.is_batch_ready]
         self.programs[MeshProgram(widget)] = lambda: [
-            x for x in self.filter(MeshGL) if not x.is_batchable and not x.is_wireframed]
+            x for x in self.filter(MeshGL) if not x.is_batch_ready and not x.is_wireframed]
         self.programs[WireProgram(widget)] = lambda: [
-            x for x in self.filter(MeshGL) if not x.is_batchable and x.is_wireframed]
+            x for x in self.filter(MeshGL) if x.is_wireframed]
