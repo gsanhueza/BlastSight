@@ -43,7 +43,7 @@ class BlockGL(GLDrawable):
         vertices = np.array(self.element.vertices, np.float32)
         colors = np.array(self.element.color, np.float32)
         alpha = np.array([self.element.alpha], np.float32)
-        template, indices = self.generate_cube(self.element.block_size)
+        template = self.generate_cube(self.element.block_size)
 
         self.num_cubes = vertices.size // 3
 
@@ -53,7 +53,7 @@ class BlockGL(GLDrawable):
         buffer_properties = [(_POSITION, 3, vertices, GLfloat, GL_FLOAT),
                              (_COLOR, 3, colors, GLfloat, GL_FLOAT),
                              (_ALPHA, 1, alpha, GLfloat, GL_FLOAT),
-                             (_TEMPLATE, 3, template[indices], GLfloat, GL_FLOAT),
+                             (_TEMPLATE, 3, template, GLfloat, GL_FLOAT),
                              ]
 
         # Fill buffers (see GLDrawable)
@@ -81,33 +81,33 @@ class BlockGL(GLDrawable):
             glDrawArrays(GL_POINTS, 0, self.num_cubes)
         glBindVertexArray(0)
 
-    # Taken from https://stackoverflow.com/questions/28375338/cube-using-single-gl-triangle-strip
+    # Adapted from https://stackoverflow.com/questions/28375338/cube-using-single-gl-triangle-strip
     @staticmethod
-    def generate_cube(size: np.ndarray) -> tuple:
-        cube_vertices = np.array([
+    def generate_cube(size: np.ndarray) -> np.ndarray:
+        vertices = np.array([
             [1, 1, -1],
-            [1, -1, -1],
-            [1, 1, 1],
-            [1, -1, 1],
             [-1, 1, -1],
+            [1, -1, -1],
             [-1, -1, -1],
+            [1, 1, 1],
             [-1, 1, 1],
+            [1, -1, 1],
             [-1, -1, 1],
         ]) * size * 0.5
 
-        cube_indices = np.array([
-            [4, 2, 0],
-            [2, 7, 3],
-            [6, 5, 7],
-            [1, 7, 5],
-            [0, 3, 1],
-            [4, 1, 5],
-            [4, 6, 2],
-            [2, 6, 7],
-            [6, 4, 5],
-            [1, 3, 7],
-            [0, 2, 3],
-            [4, 0, 1],
+        indices = np.array([
+            [0, 5, 4],
+            [0, 1, 5],
+            [1, 2, 0],
+            [1, 3, 2],
+            [2, 4, 0],
+            [2, 6, 4],
+            [4, 1, 0],
+            [4, 5, 1],
+            [5, 6, 4],
+            [5, 7, 6],
+            [6, 0, 4],
+            [6, 2, 0],
         ])
 
-        return cube_vertices.astype(np.float32), cube_indices.astype(np.uint32)
+        return vertices[indices].astype(np.float32)
