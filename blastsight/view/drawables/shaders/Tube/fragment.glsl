@@ -1,4 +1,5 @@
-#version 330
+#version 140
+#extension GL_ARB_explicit_attrib_location : require
 
 in vec3 pos_mv;
 in vec4 v_color;

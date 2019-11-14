@@ -1,4 +1,5 @@
-#version 330
+#version 140
+#extension GL_ARB_explicit_attrib_location : require
 
 in vec3 v_color;
 in float v_alpha;

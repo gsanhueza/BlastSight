@@ -1,6 +1,7 @@
-#version 330
+#version 140
+#extension GL_ARB_explicit_attrib_location : require
 
-varying vec3 v_color;
+in vec3 v_color;
 out vec4 out_color;
 
 void main()

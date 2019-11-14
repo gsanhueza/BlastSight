@@ -60,6 +60,10 @@ class BlockGL(GLDrawable):
         # Fill buffers (see GLDrawable)
         self.fill_buffers(buffer_properties, self.vbos)
 
+        # Force legacy method if OpenGL < 3.3
+        if float(glGetString(GL_SHADING_LANGUAGE_VERSION)) < 3.3:
+            self.is_legacy = True
+
         # The attribute advances once per divisor instances of the set(s) of vertices being rendered.
         if self.is_legacy:
             glVertexAttribDivisor(_POSITION, 1)
@@ -76,14 +80,10 @@ class BlockGL(GLDrawable):
     def draw(self):
         glBindVertexArray(self.vao)
 
-        try:
-            if self.is_legacy:
-                glDrawArraysInstanced(GL_TRIANGLES, 0, 36, self.num_cubes)
-            else:
-                glDrawArrays(GL_POINTS, 0, self.num_cubes)
-        except Exception:
-            # Force legacy method if unable to draw
-            self.is_legacy = True
+        if self.is_legacy:
+            glDrawArraysInstanced(GL_TRIANGLES, 0, 36, self.num_cubes)
+        else:
+            glDrawArrays(GL_POINTS, 0, self.num_cubes)
 
         glBindVertexArray(0)
 
@@ -102,18 +102,18 @@ class BlockGL(GLDrawable):
         ]) * size * 0.5
 
         indices = np.array([
-            [0, 5, 4],
-            [0, 1, 5],
+            [0, 4, 5],
+            [0, 5, 1],
             [1, 2, 0],
             [1, 3, 2],
             [2, 4, 0],
             [2, 6, 4],
-            [4, 1, 0],
-            [4, 5, 1],
+            [2, 6, 7],
+            [2, 7, 3],
             [5, 6, 4],
             [5, 7, 6],
-            [6, 0, 4],
-            [6, 2, 0],
+            [3, 1, 5],
+            [3, 5, 7],
         ])
 
         return vertices[indices].astype(np.float32)

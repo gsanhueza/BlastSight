@@ -5,6 +5,7 @@
 #  Distributed under the MIT License.
 #  See LICENSE for more info.
 
+from OpenGL.GL import *
 from .glcollection import GLCollection
 
 from .meshgl import MeshGL
@@ -37,9 +38,10 @@ class GLDrawableCollection(GLCollection):
 
         # Blocks
         self.programs[BlockLegacyProgram(widget)] = lambda: [
-            x for x in self.filter(BlockGL) if x.is_legacy]
+            x for x in self.filter(BlockGL) if x.is_legacy or float(glGetString(GL_SHADING_LANGUAGE_VERSION)) < 3.3]
+
         self.programs[BlockProgram(widget)] = lambda: [
-            x for x in self.filter(BlockGL) if not x.is_legacy]
+            x for x in self.filter(BlockGL) if not (x.is_legacy or float(glGetString(GL_SHADING_LANGUAGE_VERSION)) < 3.3)]
 
         # Meshes
         self.programs[BatchMeshProgram(widget)] = lambda: [
