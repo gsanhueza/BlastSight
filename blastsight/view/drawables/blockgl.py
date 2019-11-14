@@ -28,6 +28,7 @@ class BlockGL(GLDrawable):
     @is_legacy.setter
     def is_legacy(self, status: bool) -> None:
         self._legacy = status
+        self.is_initialized = False
         self.notify()
 
     def setup_attributes(self) -> None:
@@ -63,22 +64,27 @@ class BlockGL(GLDrawable):
         if self.is_legacy:
             glVertexAttribDivisor(_POSITION, 1)
             glVertexAttribDivisor(_COLOR, 1)
-            glVertexAttribDivisor(_TEMPLATE, 0)
         else:
             glVertexAttribDivisor(_POSITION, 0)
             glVertexAttribDivisor(_COLOR, 0)
-            glVertexAttribDivisor(_TEMPLATE, 0)
 
+        glVertexAttribDivisor(_TEMPLATE, 0)
         glVertexAttribDivisor(_ALPHA, -1)
 
         glBindVertexArray(0)
 
     def draw(self):
         glBindVertexArray(self.vao)
-        if self.is_legacy:
-            glDrawArraysInstanced(GL_TRIANGLES, 0, 36, self.num_cubes)
-        else:
-            glDrawArrays(GL_POINTS, 0, self.num_cubes)
+
+        try:
+            if self.is_legacy:
+                glDrawArraysInstanced(GL_TRIANGLES, 0, 36, self.num_cubes)
+            else:
+                glDrawArrays(GL_POINTS, 0, self.num_cubes)
+        except Exception:
+            # Force legacy method if unable to draw
+            self.is_legacy = True
+
         glBindVertexArray(0)
 
     # Adapted from https://stackoverflow.com/questions/28375338/cube-using-single-gl-triangle-strip
