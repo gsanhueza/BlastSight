@@ -140,7 +140,7 @@ class MainWindow(QMainWindow):
         self.menu_Tools.addAction(self.toolbar.action_collection.action_measurement_mode)
         self.menu_Tools.addSeparator()
         self.menu_Tools.addAction(self.toolbar.action_collection.action_normal_mode)
-        self.menu_Tools.addAction(self.toolbar.action_collection.action_batching)
+        self.menu_Tools.addAction(self.toolbar.action_collection.action_turbo_rendering)
 
         self.menu_Help.addAction(self.toolbar.action_collection.action_help)
         self.menu_Help.addAction(self.toolbar.action_collection.action_about)
@@ -173,7 +173,7 @@ class MainWindow(QMainWindow):
         self.toolbar.action_collection.action_slice_mode.triggered.connect(self.slot_slice_mode)
         self.toolbar.action_collection.action_measurement_mode.triggered.connect(self.slot_measurement_mode)
         self.toolbar.action_collection.action_normal_mode.triggered.connect(self.slot_normal_mode)
-        self.toolbar.action_collection.action_batching.triggered.connect(self.slot_batching)
+        self.toolbar.action_collection.action_turbo_rendering.triggered.connect(self.slot_turbo_rendering)
 
         # Help
         self.toolbar.action_collection.action_help.triggered.connect(self.slot_help)
@@ -431,8 +431,9 @@ class MainWindow(QMainWindow):
     """
     Other slots
     """
-    def slot_batching(self) -> None:
-        self.viewer.toggle_batching()
+    def slot_turbo_rendering(self) -> None:
+        self.viewer.turbo_rendering = self.toolbar.action_collection.action_turbo_rendering.isChecked()
+        self.statusBar.showMessage(f'Turbo rendering: {self.viewer.turbo_rendering}')
 
     """
     Events pass-through
