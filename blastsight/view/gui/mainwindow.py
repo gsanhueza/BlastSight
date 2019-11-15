@@ -156,33 +156,25 @@ class MainWindow(QMainWindow):
         self.toolbar.action_collection.action_load_blocks_folder.triggered.connect(self.dialog_load_blocks_folder)
         self.toolbar.action_collection.action_load_points_folder.triggered.connect(self.dialog_load_points_folder)
         self.toolbar.action_collection.action_load_lines_folder.triggered.connect(self.dialog_load_lines_folder)
-        self.toolbar.action_collection.action_quit.triggered.connect(self.close)
 
         # View
-        self.toolbar.action_collection.action_camera_properties.triggered.connect(self.dialog_camera)
-        self.toolbar.action_collection.action_plan_view.triggered.connect(self.viewer.plan_view)
-        self.toolbar.action_collection.action_north_view.triggered.connect(self.viewer.north_view)
-        self.toolbar.action_collection.action_east_view.triggered.connect(self.viewer.east_view)
-        self.toolbar.action_collection.action_fit_to_screen.triggered.connect(self.viewer.fit_to_screen)
+        self.toolbar.connect_tree(self.dockWidget)  # Handles dockWidget.show()
+        self.toolbar.connect_viewer(self.viewer)  # Handles Plan/North/East/Fit/Camera/Turbo/Screenshot
+        self.toolbar.connect_main_widget(self)  # Handles Exit
         self.toolbar.action_collection.action_perspective_projection.triggered.connect(self.viewer.perspective_projection)
         self.toolbar.action_collection.action_orthographic_projection.triggered.connect(self.viewer.orthographic_projection)
-        self.toolbar.action_collection.action_take_screenshot.triggered.connect(self.dialog_screenshot)
 
         # Tools
         self.toolbar.action_collection.action_detection_mode.triggered.connect(self.slot_detection_mode)
         self.toolbar.action_collection.action_slice_mode.triggered.connect(self.slot_slice_mode)
         self.toolbar.action_collection.action_measurement_mode.triggered.connect(self.slot_measurement_mode)
         self.toolbar.action_collection.action_normal_mode.triggered.connect(self.slot_normal_mode)
-        self.toolbar.action_collection.action_turbo_rendering.triggered.connect(self.slot_turbo_rendering)
 
         # Help
         self.toolbar.action_collection.action_help.triggered.connect(self.slot_help)
         self.toolbar.action_collection.action_about.triggered.connect(self.slot_about)
 
-        # DockWidget actions
-        self.toolbar.action_collection.action_show_tree.triggered.connect(self.dockWidget.show)
-
-        # Viewer actions
+        # Viewer signals
         self.viewer.signal_fps_updated.connect(self.print_fps)
         self.viewer.signal_mode_updated.connect(self.slot_mode_updated)
         self.viewer.signal_mesh_clicked.connect(self.slot_mesh_clicked)
@@ -224,8 +216,6 @@ class MainWindow(QMainWindow):
     Status bar updates
     """
     def slot_element_load_success(self, _id: int):
-        # Re-update last turbo status on each new element
-        self.slot_turbo_rendering()
         self.statusBar.showMessage(f'Load successful (id: {_id}).')
 
     def slot_element_load_failure(self):
@@ -296,19 +286,6 @@ class MainWindow(QMainWindow):
     def dialog_color(self, _id: int):
         dialog = ColorDialog(self.viewer, _id)
         dialog.show()
-
-    def dialog_camera(self):
-        dialog = CameraDialog(self.viewer)
-        dialog.show()
-
-    def dialog_screenshot(self):
-        (path, selected_filter) = QFileDialog.getSaveFileName(
-            parent=self,
-            directory=f'BlastSight Screenshot ({datetime.now().strftime("%Y%m%d-%H%M%S")})',
-            filter='PNG image (*.png);;')
-
-        if path != '':
-            self.viewer.take_screenshot(path)
 
     """
     Common functionality for loading/exporting
@@ -429,13 +406,6 @@ class MainWindow(QMainWindow):
 
     def slot_about(self) -> None:
         AboutDialog(self).exec_()
-
-    """
-    Slots for turbo rendering
-    """
-    def slot_turbo_rendering(self) -> None:
-        self.viewer.turbo_rendering = self.toolbar.action_collection.action_turbo_rendering.isChecked()
-        self.statusBar.showMessage(f'Turbo rendering: {self.viewer.turbo_rendering}')
 
     """
     Events pass-through
