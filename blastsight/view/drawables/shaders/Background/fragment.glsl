@@ -1,4 +1,5 @@
-#version 330
+#version 140
+#extension GL_ARB_explicit_attrib_location : require
 
 uniform vec4 top_color;
 uniform vec4 bot_color;
