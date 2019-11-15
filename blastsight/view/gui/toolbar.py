@@ -26,8 +26,8 @@ class ToolBar(QToolBar):
         self.addAction(self.action_collection.action_east_view)
         self.addAction(self.action_collection.action_fit_to_screen)
         self.addSeparator()
-        self.addAction(self.action_collection.action_take_screenshot)
         self.addAction(self.action_collection.action_turbo_rendering)
+        self.addAction(self.action_collection.action_take_screenshot)
 
     def connect_tree(self, tree):
         self.action_collection.action_show_tree.triggered.connect(tree.show)

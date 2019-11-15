@@ -224,6 +224,8 @@ class MainWindow(QMainWindow):
     Status bar updates
     """
     def slot_element_load_success(self, _id: int):
+        # Re-update last turbo status on each new element
+        self.slot_turbo_rendering()
         self.statusBar.showMessage(f'Load successful (id: {_id}).')
 
     def slot_element_load_failure(self):
@@ -429,7 +431,7 @@ class MainWindow(QMainWindow):
         AboutDialog(self).exec_()
 
     """
-    Other slots
+    Slots for turbo rendering
     """
     def slot_turbo_rendering(self) -> None:
         self.viewer.turbo_rendering = self.toolbar.action_collection.action_turbo_rendering.isChecked()
