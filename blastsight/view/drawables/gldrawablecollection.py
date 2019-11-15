@@ -38,10 +38,10 @@ class GLDrawableCollection(GLCollection):
 
         # Blocks
         self.programs[BlockLegacyProgram(widget)] = lambda: [
-            x for x in self.filter(BlockGL) if x.is_legacy or float(glGetString(GL_SHADING_LANGUAGE_VERSION)) < 3.3]
+            x for x in self.filter(BlockGL) if x.is_legacy]
 
         self.programs[BlockProgram(widget)] = lambda: [
-            x for x in self.filter(BlockGL) if not (x.is_legacy or float(glGetString(GL_SHADING_LANGUAGE_VERSION)) < 3.3)]
+            x for x in self.filter(BlockGL) if not x.is_legacy]
 
         # Meshes
         self.programs[BatchMeshProgram(widget)] = lambda: [

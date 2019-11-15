@@ -60,10 +60,6 @@ class BlockGL(GLDrawable):
         # Fill buffers (see GLDrawable)
         self.fill_buffers(buffer_properties, self.vbos)
 
-        # Force legacy method if OpenGL < 3.3
-        if float(glGetString(GL_SHADING_LANGUAGE_VERSION)) < 3.3:
-            self.is_legacy = True
-
         # The attribute advances once per divisor instances of the set(s) of vertices being rendered.
         if self.is_legacy:
             glVertexAttribDivisor(_POSITION, 1)
@@ -78,6 +74,10 @@ class BlockGL(GLDrawable):
         glBindVertexArray(0)
 
     def draw(self):
+        # Force legacy method if OpenGL < 3.3
+        if not self.is_legacy and float(f'{glGetIntegerv(GL_MAJOR_VERSION)}.{glGetIntegerv(GL_MINOR_VERSION)}') < 3.3:
+            self.is_legacy = True
+
         glBindVertexArray(self.vao)
 
         if self.is_legacy:

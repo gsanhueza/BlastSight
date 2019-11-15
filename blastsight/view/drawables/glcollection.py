@@ -28,13 +28,15 @@ class GLCollection(OrderedDict):
             gl_program.recreate()
 
     def draw(self, proj_matrix, view_matrix, model_matrix) -> None:
-        for gl_program, lambda_drawables in self.programs.items():
-            # Update shader program so that it knows what to draw.
-            if self.needs_update:
+        # Update shader program so that it knows what to draw.
+        if self.needs_update:
+            for gl_program, lambda_drawables in self.programs.items():
                 # Get the meshes that we'll really render
                 drawables = [d for d in lambda_drawables() if d.is_visible]
                 gl_program.set_drawables(drawables)
+            self.needs_update = False
 
+        for gl_program, lambda_drawables in self.programs.items():
             # Skip bindings if there are no elements of this type.
             if len(gl_program.drawables) == 0:
                 continue
@@ -45,8 +47,6 @@ class GLCollection(OrderedDict):
             gl_program.update_uniform('proj_matrix', proj_matrix)
             gl_program.update_uniform('model_view_matrix', view_matrix * model_matrix)
             gl_program.draw()
-
-        self.needs_update = False
 
     def filter(self, drawable_type: type) -> list:
         # The copy avoids RuntimeError: OrderedDict mutated during iteration
