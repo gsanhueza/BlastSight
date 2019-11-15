@@ -568,6 +568,11 @@ class IntegrableViewer(QOpenGLWidget):
 
         # print('-------------------------------')
 
+    def toggle_batching(self) -> None:
+        print('WARNING: Toggling batching capabilities might leave you out of memory!')
+        for d in self.get_all_drawables():
+            d.is_batchable = not d.is_batchable
+
     """
     Controller
     """

@@ -140,6 +140,7 @@ class MainWindow(QMainWindow):
         self.menu_Tools.addAction(self.toolbar.action_collection.action_measurement_mode)
         self.menu_Tools.addSeparator()
         self.menu_Tools.addAction(self.toolbar.action_collection.action_normal_mode)
+        self.menu_Tools.addAction(self.toolbar.action_collection.action_batching)
 
         self.menu_Help.addAction(self.toolbar.action_collection.action_help)
         self.menu_Help.addAction(self.toolbar.action_collection.action_about)
@@ -172,6 +173,7 @@ class MainWindow(QMainWindow):
         self.toolbar.action_collection.action_slice_mode.triggered.connect(self.slot_slice_mode)
         self.toolbar.action_collection.action_measurement_mode.triggered.connect(self.slot_measurement_mode)
         self.toolbar.action_collection.action_normal_mode.triggered.connect(self.slot_normal_mode)
+        self.toolbar.action_collection.action_batching.triggered.connect(self.slot_batching)
 
         # Help
         self.toolbar.action_collection.action_help.triggered.connect(self.slot_help)
@@ -425,6 +427,12 @@ class MainWindow(QMainWindow):
 
     def slot_about(self) -> None:
         AboutDialog(self).exec_()
+
+    """
+    Other slots
+    """
+    def slot_batching(self) -> None:
+        self.viewer.toggle_batching()
 
     """
     Events pass-through

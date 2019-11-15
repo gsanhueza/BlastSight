@@ -100,6 +100,10 @@ class ActionCollection:
         self.action_about.setIcon(QIcon(f'{self.icons_path}/about.svg'))
         self.action_about.setShortcut('?')
 
+        self.action_batching = QAction('Toggle &batching', parent)
+        self.action_batching.setIcon(QIcon(f'{self.icons_path}/sports_mode.svg'))
+        self.action_batching.setShortcut('Ctrl+B')
+
         self.action_normal_mode = QAction('Return to &normal', parent)
         self.action_normal_mode.setIcon(QIcon(f'{self.icons_path}/rotate_camera.svg'))
         self.action_normal_mode.setShortcut('Ctrl+N')
