@@ -33,11 +33,11 @@ def container():
     sys.exit(qt_app.exec_())
 
 
-def standalone():
+def viewer():
     from blastsight.view.viewer import Viewer
-    viewer = Viewer()
+    v = Viewer()
 
-    viewer.show()
+    v.show()
 
 
 def demo():
@@ -50,12 +50,12 @@ def main():
     parser.add_argument('-a', '--app', action='store_true', help='Starts in App mode.')
     parser.add_argument('-c', '--container', action='store_true', help='Starts in Container mode.')
     parser.add_argument('-v', '--viewer', action='store_true', help='Starts in Viewer mode.')
-    parser.add_argument('-d', '--demo', action='store_true', help='Shows a demo of BlastSight.')
+    parser.add_argument('-d', '--demo', action='store_true', help=argparse.SUPPRESS)
 
     args = parser.parse_args()
 
     if args.viewer:
-        standalone()
+        viewer()
     elif args.container:
         container()
     elif args.demo:

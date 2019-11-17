@@ -1,5 +1,5 @@
 #!/usr/bin/env python
 
-import blastsight.__main__
+from blastsight.__main__ import main
 
-blastsight.__main__.main()
+main()
