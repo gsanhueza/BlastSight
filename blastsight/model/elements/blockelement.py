@@ -47,10 +47,10 @@ class BlockElement(DFElement):
 
     def _fill_properties(self, *args, **kwargs):
         super()._fill_properties(*args, **kwargs)
-        if kwargs.get('noautosize', False):
-            self.block_size = kwargs.get('block_size', [1.0, 1.0, 1.0])
-        else:
+        if kwargs.get('autosize', True):
             self.block_size = kwargs.get('block_size', self.get_autosize())
+        else:
+            self.block_size = kwargs.get('block_size', [1.0, 1.0, 1.0])
 
     def get_autosize(self) -> list:
         size = []

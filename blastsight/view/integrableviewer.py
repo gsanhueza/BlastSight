@@ -108,6 +108,7 @@ class IntegrableViewer(QOpenGLWidget):
 
         # Extra information
         self._turbo_rendering = False
+        self._autofit_to_screen = False
 
         self.fov = 45.0
         self.smoothness = 2.0  # Bigger => smoother (but slower) rotations
@@ -144,6 +145,10 @@ class IntegrableViewer(QOpenGLWidget):
     def turbo_rendering(self) -> bool:
         return self._turbo_rendering
 
+    @property
+    def autofit_to_screen(self) -> bool:
+        return self._autofit_to_screen
+
     @camera_position.setter
     def camera_position(self, pos: list) -> None:
         self.xCameraPos, self.yCameraPos, self.zCameraPos = pos
@@ -158,11 +163,19 @@ class IntegrableViewer(QOpenGLWidget):
 
     @turbo_rendering.setter
     def turbo_rendering(self, status: bool) -> None:
-        print('WARNING: Turbo-rendering might leave you without memory!')
-        self._turbo_rendering = status
+        if status:
+            print('WARNING: Turbo-rendering might leave you without memory!')
 
+        self._turbo_rendering = status
         for d in self.get_all_drawables():
             d.is_batchable = self._turbo_rendering
+
+    @autofit_to_screen.setter
+    def autofit_to_screen(self, status) -> None:
+        self._autofit_to_screen = status
+
+        if self._autofit_to_screen:
+            self.fit_to_screen()
 
     """
     Projections

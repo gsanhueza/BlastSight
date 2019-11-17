@@ -27,9 +27,10 @@ class ToolBar(QToolBar):
         self.addAction(self.action_collection.action_plan_view)
         self.addAction(self.action_collection.action_north_view)
         self.addAction(self.action_collection.action_east_view)
-        self.addAction(self.action_collection.action_fit_to_screen)
         self.addSeparator()
+        self.addAction(self.action_collection.action_fit_to_screen)
         self.addAction(self.action_collection.action_turbo_rendering)
+        self.addSeparator()
         self.addAction(self.action_collection.action_take_screenshot)
 
     def connect_tree(self, tree):
@@ -39,16 +40,20 @@ class ToolBar(QToolBar):
         self.action_collection.action_plan_view.triggered.connect(viewer.plan_view)
         self.action_collection.action_north_view.triggered.connect(viewer.north_view)
         self.action_collection.action_east_view.triggered.connect(viewer.east_view)
-        self.action_collection.action_fit_to_screen.triggered.connect(viewer.fit_to_screen)
 
+        self.action_collection.action_fit_to_screen.triggered.connect(
+            lambda: self.handle_autofit(viewer))
         self.action_collection.action_turbo_rendering.triggered.connect(
-            lambda: self.handle_turbo(viewer))
-        viewer.signal_file_modified.connect(
             lambda: self.handle_turbo(viewer))
         self.action_collection.action_camera_properties.triggered.connect(
             lambda: self.dialog_camera(viewer))
         self.action_collection.action_take_screenshot.triggered.connect(
             lambda: self.dialog_screenshot(viewer))
+
+        viewer.signal_file_modified.connect(
+            lambda: self.handle_turbo(viewer))
+        viewer.signal_load_success.connect(
+            lambda: self.handle_autofit(viewer))
 
     def connect_main_widget(self, widget):
         self.action_collection.action_quit.triggered.connect(widget.close)
@@ -56,6 +61,9 @@ class ToolBar(QToolBar):
     """
     Advanced handlers
     """
+    def handle_autofit(self, viewer):
+        viewer.autofit_to_screen = self.action_collection.action_fit_to_screen.isChecked()
+
     def handle_turbo(self, viewer):
         viewer.turbo_rendering = self.action_collection.action_turbo_rendering.isChecked()
 

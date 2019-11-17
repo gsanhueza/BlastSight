@@ -128,7 +128,9 @@ class MainWindow(QMainWindow):
         self.menu_View.addAction(self.toolbar.action_collection.action_plan_view)
         self.menu_View.addAction(self.toolbar.action_collection.action_north_view)
         self.menu_View.addAction(self.toolbar.action_collection.action_east_view)
+        self.menu_View.addSeparator()
         self.menu_View.addAction(self.toolbar.action_collection.action_fit_to_screen)
+        self.menu_View.addAction(self.toolbar.action_collection.action_turbo_rendering)
         self.menu_View.addSeparator()
         self.menu_View.addAction(self.toolbar.action_collection.action_perspective_projection)
         self.menu_View.addAction(self.toolbar.action_collection.action_orthographic_projection)
@@ -140,7 +142,6 @@ class MainWindow(QMainWindow):
         self.menu_Tools.addAction(self.toolbar.action_collection.action_measurement_mode)
         self.menu_Tools.addSeparator()
         self.menu_Tools.addAction(self.toolbar.action_collection.action_normal_mode)
-        self.menu_Tools.addAction(self.toolbar.action_collection.action_turbo_rendering)
 
         self.menu_Help.addAction(self.toolbar.action_collection.action_help)
         self.menu_Help.addAction(self.toolbar.action_collection.action_about)
@@ -182,7 +183,7 @@ class MainWindow(QMainWindow):
         self.viewer.signal_mesh_sliced.connect(self.slot_mesh_sliced)
         self.viewer.signal_blocks_sliced.connect(self.slot_blocks_sliced)
 
-        self.viewer.signal_file_modified.connect(self.fill_tree_widget)
+        self.viewer.signal_file_modified.connect(self.slot_file_modified)
         self.viewer.signal_load_success.connect(self.slot_element_load_success)
         self.viewer.signal_load_failure.connect(self.slot_element_load_failure)
         self.viewer.signal_export_success.connect(self.slot_element_export_success)
@@ -204,7 +205,7 @@ class MainWindow(QMainWindow):
     def last_dir(self, _last_dir: str) -> None:
         self.settings.setValue('last_directory', _last_dir)
 
-    def fill_tree_widget(self) -> None:
+    def slot_file_modified(self) -> None:
         self.treeWidget.fill_from_viewer(self.viewer)
 
     @staticmethod

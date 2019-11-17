@@ -20,7 +20,13 @@ class Viewer(IntegrableViewer):
         super().__init__()
         self.setWindowTitle('BlastSight (Viewer)')
 
-    def show(self, detached: bool = False, timer: int = 0) -> None:
+    def show(self, detached: bool = False, timer: int = 0, autofit: bool = True) -> None:
+        # This will auto-fit to screen when used from a script,
+        # as it's reasonable to expect the figure to be shown
+        # immediately, even if it's far from [0.0, 0.0, 0.0].
+        if autofit:
+            self.fit_to_screen()
+
         super().show()
 
         if detached:
