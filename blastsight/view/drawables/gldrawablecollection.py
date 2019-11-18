@@ -21,7 +21,7 @@ from .glprograms.blocklegacyprogram import BlockLegacyProgram
 from .glprograms.lineprogram import LineProgram
 from .glprograms.pointprogram import PointProgram
 from .glprograms.tubeprogram import TubeProgram
-from .glprograms.batchmeshprogram import BatchMeshProgram
+from .glprograms.turbomeshprogram import TurboMeshProgram
 
 
 class GLDrawableCollection(GLCollection):
@@ -44,9 +44,9 @@ class GLDrawableCollection(GLCollection):
             x for x in self.filter(BlockGL) if not x.is_legacy]
 
         # Meshes
-        self.programs[BatchMeshProgram(widget)] = lambda: [
-            x for x in self.filter(MeshGL) if x.is_batch_ready]
+        self.programs[TurboMeshProgram(widget)] = lambda: [
+            x for x in self.filter(MeshGL) if x.is_turbo_ready]
         self.programs[MeshProgram(widget)] = lambda: [
-            x for x in self.filter(MeshGL) if not x.is_batch_ready and not x.is_wireframed]
+            x for x in self.filter(MeshGL) if not x.is_turbo_ready and not x.is_wireframed]
         self.programs[WireProgram(widget)] = lambda: [
             x for x in self.filter(MeshGL) if x.is_wireframed]

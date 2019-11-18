@@ -19,7 +19,7 @@ class GLDrawable:
 
         self._initialized = kwargs.pop('initialized', False)
         self._visible = kwargs.pop('visible', True)
-        self._batchable = kwargs.pop('batch', False)
+        self._boostable = kwargs.pop('turbo', False)
 
     # Note: The following "hacks" are shortened versions of Delegator Pattern.
     # They're convenient, but optional.
@@ -101,8 +101,8 @@ class GLDrawable:
         return self._visible
 
     @property
-    def is_batchable(self) -> bool:
-        return self._batchable
+    def is_boostable(self) -> bool:
+        return self._boostable
 
     @is_initialized.setter
     def is_initialized(self, status: bool) -> None:
@@ -113,9 +113,9 @@ class GLDrawable:
         self._visible = status
         self.notify()
 
-    @is_batchable.setter
-    def is_batchable(self, status: bool) -> None:
-        self._batchable = status
+    @is_boostable.setter
+    def is_boostable(self, status: bool) -> None:
+        self._boostable = status
         self.notify()
 
     """

@@ -32,14 +32,14 @@ class TestAutoDrawable:
             assert dir_e in dir(drawable)
 
         assert not drawable.is_initialized
-        assert not drawable.is_batchable
+        assert not drawable.is_boostable
         assert drawable.is_visible
 
         drawable.initialize()
-        drawable.is_batchable = True
+        drawable.is_boostable = True
 
         assert drawable.is_initialized
-        assert drawable.is_batchable
+        assert drawable.is_boostable
         assert drawable.is_visible
 
         drawable.initialize()

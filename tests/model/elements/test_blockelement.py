@@ -214,7 +214,7 @@ class TestBlockElement:
                 'z': [0.0, 3.0, 3.0, 3.0, 3.0, 3.0],
                 'CuT': [1.0, 0.4, 0.5, 0.8, 0.3, 0.2]}
 
-        element = BlockElement(data=data, noautosize=True)
+        element = BlockElement(data=data, autosize=False)
         assert element.block_size[0] == 1.0
         assert element.block_size[1] == 1.0
         assert element.block_size[2] == 1.0
@@ -223,7 +223,7 @@ class TestBlockElement:
         for i, j in zip(element.get_autosize(), expected):
             assert i == j
 
-        element = BlockElement(data=data, noautosize=False)
+        element = BlockElement(data=data, autosize=True)
         assert element.block_size[0] == 2.0
         assert element.block_size[1] == 2.0
         assert element.block_size[2] == 3.0

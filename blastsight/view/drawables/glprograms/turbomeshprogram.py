@@ -12,7 +12,7 @@ from .meshprogram import MeshProgram
 from ..gldrawable import GLDrawable
 
 
-class BatchMeshProgram(MeshProgram):
+class TurboMeshProgram(MeshProgram):
     def __init__(self, widget):
         super().__init__(widget)
         self.info = {

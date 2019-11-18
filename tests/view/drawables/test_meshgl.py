@@ -7,7 +7,7 @@ from blastsight.view.integrableviewer import IntegrableViewer
 from blastsight.view.drawables.meshgl import MeshGL
 from blastsight.view.drawables.glprograms.meshprogram import MeshProgram
 from blastsight.view.drawables.glprograms.wireprogram import WireProgram
-from blastsight.view.drawables.glprograms.batchmeshprogram import BatchMeshProgram
+from blastsight.view.drawables.glprograms.turbomeshprogram import TurboMeshProgram
 
 
 class TestMeshGL:
@@ -163,15 +163,21 @@ class TestMeshGL:
                                drawable_highlight])
         program.draw()
 
-    def test_batch_program(self):
+    def test_turbo_program(self):
         widget = IntegrableViewer()
-        program = BatchMeshProgram(widget)
+        program = TurboMeshProgram(widget)
         element = MeshElement(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], indices=[[0, 1, 2]], alpha=0.8)
         program.setup()
         program.bind()
 
-        drawable_normal = MeshGL(self.element, batch=True)
-        drawable_alpha = MeshGL(element, batch=True)
+        drawable_normal = MeshGL(self.element, turbo=True)
+        drawable_alpha = MeshGL(element, turbo=False)
+
+        assert drawable_normal.is_boostable
+        assert not drawable_alpha.is_boostable
+
+        assert drawable_normal.is_turbo_ready
+        assert not drawable_alpha.is_turbo_ready
 
         program.set_drawables([drawable_normal])
         program.draw()

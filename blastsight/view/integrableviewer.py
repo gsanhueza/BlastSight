@@ -168,7 +168,7 @@ class IntegrableViewer(QOpenGLWidget):
 
         self._turbo_rendering = status
         for d in self.get_all_drawables():
-            d.is_batchable = self._turbo_rendering
+            d.is_boostable = self._turbo_rendering
 
     @autofit_to_screen.setter
     def autofit_to_screen(self, status) -> None:
@@ -322,7 +322,7 @@ class IntegrableViewer(QOpenGLWidget):
         self.signal_file_modified.emit()
 
     def recreate(self) -> None:
-        # Only batchable drawables *need* this.
+        # Only boostable drawables *need* this.
         self.axis_collection.recreate()
         self.background_collection.recreate()
         self.drawable_collection.recreate()

@@ -100,9 +100,9 @@ class ActionCollection:
         self.action_about.setIcon(QIcon(f'{self.icons_path}/about.svg'))
         self.action_about.setShortcut('?')
 
-        self.action_turbo_rendering = QAction('Turbo &rendering', parent)
+        self.action_turbo_rendering = QAction('Tur&bo rendering', parent)
         self.action_turbo_rendering.setIcon(QIcon(f'{self.icons_path}/sports_mode.svg'))
-        self.action_turbo_rendering.setShortcut('Ctrl+R')
+        self.action_turbo_rendering.setShortcut('Ctrl+B')
         self.action_turbo_rendering.setCheckable(True)
 
         self.action_normal_mode = QAction('Return to &normal', parent)
