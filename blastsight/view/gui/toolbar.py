@@ -27,8 +27,9 @@ class ToolBar(QToolBar):
         self.addAction(self.action_collection.action_plan_view)
         self.addAction(self.action_collection.action_north_view)
         self.addAction(self.action_collection.action_east_view)
-        self.addSeparator()
         self.addAction(self.action_collection.action_fit_to_screen)
+        self.addSeparator()
+        self.addAction(self.action_collection.action_autofit_to_screen)
         self.addAction(self.action_collection.action_turbo_rendering)
         self.addSeparator()
         self.addAction(self.action_collection.action_take_screenshot)
@@ -40,8 +41,9 @@ class ToolBar(QToolBar):
         self.action_collection.action_plan_view.triggered.connect(viewer.plan_view)
         self.action_collection.action_north_view.triggered.connect(viewer.north_view)
         self.action_collection.action_east_view.triggered.connect(viewer.east_view)
+        self.action_collection.action_fit_to_screen.triggered.connect(viewer.fit_to_screen)
 
-        self.action_collection.action_fit_to_screen.triggered.connect(
+        self.action_collection.action_autofit_to_screen.triggered.connect(
             lambda: self.handle_autofit(viewer))
         self.action_collection.action_turbo_rendering.triggered.connect(
             lambda: self.handle_turbo(viewer))
@@ -62,7 +64,7 @@ class ToolBar(QToolBar):
     Advanced handlers
     """
     def handle_autofit(self, viewer):
-        viewer.autofit_to_screen = self.action_collection.action_fit_to_screen.isChecked()
+        viewer.autofit_to_screen = self.action_collection.action_autofit_to_screen.isChecked()
 
     def handle_turbo(self, viewer):
         viewer.turbo_rendering = self.action_collection.action_turbo_rendering.isChecked()

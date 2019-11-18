@@ -37,7 +37,7 @@ from .treewidget import TreeWidget
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):
         QMainWindow.__init__(self, parent)
-        self.resize(QApplication.desktop().width() / 2, QApplication.desktop().height() / 2)
+        self.resize(1000, 500)
 
         # Widget definition
         self.centralWidget = QWidget(self)
@@ -128,8 +128,9 @@ class MainWindow(QMainWindow):
         self.menu_View.addAction(self.toolbar.action_collection.action_plan_view)
         self.menu_View.addAction(self.toolbar.action_collection.action_north_view)
         self.menu_View.addAction(self.toolbar.action_collection.action_east_view)
-        self.menu_View.addSeparator()
         self.menu_View.addAction(self.toolbar.action_collection.action_fit_to_screen)
+        self.menu_View.addSeparator()
+        self.menu_View.addAction(self.toolbar.action_collection.action_autofit_to_screen)
         self.menu_View.addAction(self.toolbar.action_collection.action_turbo_rendering)
         self.menu_View.addSeparator()
         self.menu_View.addAction(self.toolbar.action_collection.action_perspective_projection)

@@ -138,10 +138,14 @@ class ActionCollection:
         self.action_east_view.setShortcut('Ctrl+3')
 
         self.action_fit_to_screen = QAction('&Fit to screen', parent)
-        self.action_fit_to_screen.setIcon(QIcon(f'{self.icons_path}/globe.svg'))
+        self.action_fit_to_screen.setIcon(QIcon(f'{self.icons_path}/collect.svg'))
         self.action_fit_to_screen.setShortcut('Ctrl+F')
-        self.action_fit_to_screen.setCheckable(True)
-        self.action_fit_to_screen.setChecked(True)
+
+        self.action_autofit_to_screen = QAction('&Auto-fit to screen', parent)
+        self.action_autofit_to_screen.setIcon(QIcon(f'{self.icons_path}/globe.svg'))
+        self.action_autofit_to_screen.setShortcut('Ctrl+Shift+F')
+        self.action_autofit_to_screen.setCheckable(True)
+        self.action_autofit_to_screen.setChecked(True)
 
         self.action_perspective_projection = QAction('P&erspective projection', parent)
         self.action_perspective_projection.setIcon(QIcon(f'{self.icons_path}/ruler.svg'))
