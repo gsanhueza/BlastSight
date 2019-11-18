@@ -71,8 +71,8 @@ class TreeWidget(QTreeWidget):
         actions.action_wireframe.triggered.connect(item.toggle_wireframe)
 
         actions.action_properties.triggered.connect(lambda: self.signal_headers_triggered.emit(item.id))
-        actions.action_colors.triggered.connect(lambda: self.signal_colors_triggered.emit(item.id))
-        actions.action_center_camera.triggered.connect(item.center_camera)
+        actions.action_setup_colors.triggered.connect(lambda: self.signal_colors_triggered.emit(item.id))
+        actions.action_focus_camera.triggered.connect(item.center_camera)
 
         actions.action_export_mesh.triggered.connect(lambda: self.signal_export_mesh.emit(item.id))
         actions.action_export_blocks.triggered.connect(lambda: self.signal_export_blocks.emit(item.id))
@@ -92,24 +92,23 @@ class TreeWidget(QTreeWidget):
         # Add actions depending on item type
         menu.addAction(actions.action_show)
         menu.addAction(actions.action_hide)
-        menu.addAction(actions.action_center_camera)
+        menu.addAction(actions.action_focus_camera)
+        menu.addSeparator()
 
         # WARNING: MeshGL.is_boostable == True means no highlight/wireframe support yet.
         if item.type is MeshGL:
-            # Dynamic text fixing in actions
-            text = f'{"Disable" if item.drawable.is_highlighted else "Enable"} h&ighlighting'
-            actions.action_highlight.setText(text)
-
-            text = f'{"Disable" if item.drawable.is_wireframed else "Enable"} &wireframe'
-            actions.action_wireframe.setText(text)
+            # Dynamic checkbox in actions
+            actions.action_highlight.setChecked(item.drawable.is_highlighted)
+            actions.action_wireframe.setChecked(item.drawable.is_wireframed)
 
             menu.addAction(actions.action_highlight)
             menu.addAction(actions.action_wireframe)
-            menu.addAction(actions.action_colors)
+            menu.addSeparator()
+            menu.addAction(actions.action_setup_colors)
             menu.addSeparator()
             menu.addAction(actions.action_export_mesh)
         elif item.type is LineGL:
-            menu.addAction(actions.action_colors)
+            menu.addAction(actions.action_setup_colors)
             menu.addSeparator()
             menu.addAction(actions.action_export_lines)
         elif item.type is BlockGL:

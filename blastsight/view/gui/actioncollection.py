@@ -24,20 +24,22 @@ class ActionCollection:
         self.action_delete = QAction('&Delete', parent)
         self.action_delete.setIcon(QIcon(f'{self.icons_path}/cancel.svg'))
 
-        self.action_center_camera = QAction('&Center camera', parent)
-        self.action_center_camera.setIcon(QIcon(f'{self.icons_path}/collect.svg'))
+        self.action_focus_camera = QAction('&Focus camera', parent)
+        self.action_focus_camera.setIcon(QIcon(f'{self.icons_path}/collect.svg'))
 
-        self.action_highlight = QAction('T&oggle highlighting', parent)
+        self.action_highlight = QAction('H&ighlight', parent)
         self.action_highlight.setIcon(QIcon(f'{self.icons_path}/idea.svg'))
+        self.action_highlight.setCheckable(True)
 
-        self.action_wireframe = QAction('&Toggle wireframe', parent)
+        self.action_wireframe = QAction('&Wireframe', parent)
         self.action_wireframe.setIcon(QIcon(f'{self.icons_path}/grid.svg'))
+        self.action_wireframe.setCheckable(True)
 
         self.action_properties = QAction('&Properties', parent)
         self.action_properties.setIcon(QIcon(f'{self.icons_path}/settings.svg'))
 
-        self.action_colors = QAction('C&olors', parent)
-        self.action_colors.setIcon(QIcon(f'{self.icons_path}/picture.svg'))
+        self.action_setup_colors = QAction('Setup c&olors', parent)
+        self.action_setup_colors.setIcon(QIcon(f'{self.icons_path}/picture.svg'))
 
         self.action_export_mesh = QAction('&Export mesh', parent)
         self.action_export_mesh.setIcon(QIcon(f'{self.icons_path}/export.svg'))
