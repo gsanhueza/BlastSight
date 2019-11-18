@@ -15,36 +15,44 @@ from ..gldrawable import GLDrawable
 class BatchMeshProgram(MeshProgram):
     def __init__(self, widget):
         super().__init__(widget)
-        self.vaos = []
-        self.vbos = []
-        self.v_size = 0
-        self.num_indices = 0
+        self.info = {
+            'opaque': {
+                'vaos': [],
+                'vbos': [],
+                'v_size': 0,
+                'num_indices': 0,
+            },
+            'transparent': {
+                'vaos': [],
+                'vbos': [],
+                'v_size': 0,
+                'num_indices': 0,
+            },
+        }
+
         self.all_opaque = True
 
-    @property
-    def vao(self):
-        return self.vaos[-1]
-
     def recreate(self) -> None:
-        self.v_size = 0
-        self.num_indices = 0
+        self.info['opaque']['v_size'] = 0
+        self.info['opaque']['num_indices'] = 0
+        self.info['transparent']['v_size'] = 0
+        self.info['transparent']['num_indices'] = 0
         self.all_opaque = True
 
     def set_drawables(self, meshes):
         self.drawables = meshes
-        self.set_buffers()
+        self.set_buffers([x for x in meshes if x.element.alpha >= 0.99], 'opaque')
+        self.set_buffers([x for x in meshes if x.element.alpha < 0.99], 'transparent')
 
-    def set_buffers(self):
+    def set_buffers(self, meshes, visibility):
         _POSITION = 0
         _COLOR = 1
         _WIREFRAME = 2
 
         # VBO
-        if len(self.vbos) == 0:
-            self.vaos = [glGenVertexArrays(1)]
-            self.vbos = glGenBuffers(3)
-
-        meshes = self.drawables
+        if len(self.info[visibility]['vbos']) == 0:
+            self.info[visibility]['vaos'] = [glGenVertexArrays(1)]
+            self.info[visibility]['vbos'] = glGenBuffers(3)
 
         # Data
         vertices = np.empty(len(meshes), np.ndarray)
@@ -54,14 +62,14 @@ class BatchMeshProgram(MeshProgram):
         for index, mesh in enumerate(meshes):
             num_triangles = mesh.element.vertices.size // 3
 
-            indices[index] = (mesh.element.indices + self.v_size)
+            indices[index] = (mesh.element.indices + self.info[visibility]['v_size'])
             vertices[index] = mesh.element.vertices.astype(np.float32)
             colors[index] = np.tile(mesh.element.rgba, num_triangles).astype(np.float32)
 
-            self.num_indices += (mesh.element.indices + self.v_size).size
-            self.v_size += num_triangles
+            self.info[visibility]['num_indices'] += (mesh.element.indices + self.info[visibility]['v_size']).size
+            self.info[visibility]['v_size'] += num_triangles
 
-            if mesh.alpha < 0.99:
+            if visibility == 'transparent' and len(meshes) > 0:
                 self.all_opaque = False
 
         if len(meshes) > 0:
@@ -69,7 +77,7 @@ class BatchMeshProgram(MeshProgram):
             indices = np.concatenate(indices)
             colors = np.concatenate(colors)
 
-        glBindVertexArray(self.vao)
+        glBindVertexArray(self.info[visibility]['vaos'][-1])
 
         # buffer_properties = [(pointer, basesize, array, glsize, gltype)]
         properties = [(_POSITION, 3, vertices, GLfloat, GL_FLOAT),
@@ -77,26 +85,28 @@ class BatchMeshProgram(MeshProgram):
                       ]
 
         # Recycle GLDrawable's fill buffers method
-        GLDrawable.fill_buffers(properties, self.vbos)
+        GLDrawable.fill_buffers(properties, self.info[visibility]['vbos'])
 
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, self.vbos[-1])
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, self.info[visibility]['vbos'][-1])
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices, GL_STATIC_DRAW)
 
         glBindVertexArray(0)
 
     def draw(self):
-        glBindVertexArray(self.vao)
+        glBindVertexArray(self.info['opaque']['vaos'][-1])
+        glDrawElements(GL_TRIANGLES, self.info['opaque']['num_indices'], GL_UNSIGNED_INT, None)
 
         # We can perform faster if we don't need to fix alpha rendering
-        if self.all_opaque:
-            glDrawElements(GL_TRIANGLES, self.num_indices, GL_UNSIGNED_INT, None)
-        else:
+        if not self.all_opaque:
+            glBindVertexArray(self.info['transparent']['vaos'][-1])
             glDepthMask(GL_FALSE)
             glEnable(GL_CULL_FACE)
 
             for gl_cull in [GL_FRONT, GL_BACK]:
                 glCullFace(gl_cull)
-                glDrawElements(GL_TRIANGLES, self.num_indices, GL_UNSIGNED_INT, None)
+                glDrawElements(GL_TRIANGLES, self.info['transparent']['num_indices'], GL_UNSIGNED_INT, None)
 
             glDisable(GL_CULL_FACE)
             glDepthMask(GL_TRUE)
+
+        glBindVertexArray(0)
