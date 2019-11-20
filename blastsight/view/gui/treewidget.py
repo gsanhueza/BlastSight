@@ -32,7 +32,7 @@ class TreeWidget(QTreeWidget):
     signal_export_points = Signal(int)
     signal_export_lines = Signal(int)
 
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, enable_export=False):
         super().__init__(parent)
         self.setContextMenuPolicy(Qt.CustomContextMenu)
         self.setWindowFlags(Qt.WindowStaysOnTopHint)
@@ -44,9 +44,17 @@ class TreeWidget(QTreeWidget):
         self.setWindowTitle('Element list')
         self.headerItem().setText(0, 'Elements')
 
+        self.enable_export = enable_export
+
     def connect_viewer(self, viewer):
         viewer.signal_file_modified.connect(
             lambda: self.fill_from_viewer(viewer))
+
+        viewer.signal_mesh_clicked.connect(
+            lambda mesh_attributes: self.select_by_id_list(
+                [attr.get('id', -1) for attr in mesh_attributes]
+            )
+        )
 
         self.signal_colors_triggered.connect(
             lambda _id: ColorDialog(viewer, _id).show())
@@ -108,29 +116,29 @@ class TreeWidget(QTreeWidget):
         menu.addSeparator()
 
         # WARNING: MeshGL.is_boostable == True means no highlight/wireframe support yet.
-        if item.type is MeshGL:
-            # Dynamic checkbox in actions
-            actions.action_highlight.setChecked(item.drawable.is_highlighted)
-            actions.action_wireframe.setChecked(item.drawable.is_wireframed)
+        if item.type in [MeshGL, LineGL]:
+            if item.type is MeshGL:
+                # Dynamic checkbox in actions
+                actions.action_highlight.setChecked(item.drawable.is_highlighted)
+                actions.action_wireframe.setChecked(item.drawable.is_wireframed)
 
-            menu.addAction(actions.action_highlight)
-            menu.addAction(actions.action_wireframe)
-            menu.addSeparator()
+                menu.addAction(actions.action_highlight)
+                menu.addAction(actions.action_wireframe)
             menu.addAction(actions.action_setup_colors)
-            menu.addSeparator()
-            menu.addAction(actions.action_export_mesh)
-        elif item.type is LineGL:
-            menu.addAction(actions.action_setup_colors)
-            menu.addSeparator()
-            menu.addAction(actions.action_export_lines)
-        elif item.type is BlockGL:
+        elif item.type in [BlockGL, PointGL]:
             menu.addAction(actions.action_properties)
-            menu.addSeparator()
-            menu.addAction(actions.action_export_blocks)
-        elif item.type is PointGL:
-            menu.addAction(actions.action_properties)
-            menu.addSeparator()
-            menu.addAction(actions.action_export_points)
+
+        menu.addSeparator()
+
+        export_dict = {
+            MeshGL: actions.action_export_mesh,
+            LineGL: actions.action_export_lines,
+            BlockGL: actions.action_export_blocks,
+            PointGL: actions.action_export_points,
+        }
+
+        if self.enable_export:
+            menu.addAction(export_dict.get(item.type))
 
         menu.addAction(actions.action_delete)
 
@@ -148,6 +156,7 @@ class TreeWidget(QTreeWidget):
         self.scrollToItem(item, QAbstractItemView.EnsureVisible)
 
     def select_by_id_list(self, id_list):
+        self.clearSelection()
         it = QTreeWidgetItemIterator(self)
 
         first_item = False

@@ -52,7 +52,7 @@ class MainWindow(QMainWindow):
         self.dockWidget = QDockWidget(self)
         self.dockWidgetContents = QWidget()
         self.verticalLayout = QVBoxLayout(self.dockWidgetContents)
-        self.treeWidget = TreeWidget(self.dockWidgetContents)
+        self.treeWidget = TreeWidget(self.dockWidgetContents, enable_export=True)
         self.verticalLayout.addWidget(self.treeWidget)
         self.dockWidget.setWidget(self.dockWidgetContents)
         self.addDockWidget(Qt.DockWidgetArea(1), self.dockWidget)
@@ -142,6 +142,12 @@ class MainWindow(QMainWindow):
         self.menu_Help.addAction(self.toolbar.action_collection.action_about)
 
     def connect_actions(self):
+        # Auto-connections
+        self.toolbar.connect_tree(self.treeWidget)  # Handles tree.show()
+        self.toolbar.connect_viewer(self.viewer)  # Handles Plan/North/East/Fit/Camera/Turbo/Screenshot
+        self.toolbar.connect_main_widget(self)  # Handles Exit
+        self.treeWidget.connect_viewer(self.viewer)  # Handles signals from viewer
+
         # File
         self.toolbar.action_collection.action_load_mesh.triggered.connect(self.dialog_load_mesh)
         self.toolbar.action_collection.action_load_blocks.triggered.connect(self.dialog_load_blocks)
@@ -154,9 +160,7 @@ class MainWindow(QMainWindow):
         self.toolbar.action_collection.action_load_lines_folder.triggered.connect(self.dialog_load_lines_folder)
 
         # View
-        self.toolbar.connect_tree(self.dockWidget)  # Handles dockWidget.show()
-        self.toolbar.connect_viewer(self.viewer)  # Handles Plan/North/East/Fit/Camera/Turbo/Screenshot
-        self.toolbar.connect_main_widget(self)  # Handles Exit
+        self.toolbar.action_collection.action_show_tree.triggered.connect(self.dockWidget.show)
         self.toolbar.action_collection.action_perspective_projection.triggered.connect(self.viewer.perspective_projection)
         self.toolbar.action_collection.action_orthographic_projection.triggered.connect(self.viewer.orthographic_projection)
 
@@ -184,7 +188,6 @@ class MainWindow(QMainWindow):
         self.viewer.signal_export_failure.connect(self.slot_element_export_failure)
 
         # TreeWidget actions
-        self.treeWidget.connect_viewer(self.viewer)  # Handles fill_from_widget
         self.treeWidget.signal_export_mesh.connect(self.dialog_export_mesh)
         self.treeWidget.signal_export_blocks.connect(self.dialog_export_blocks)
         self.treeWidget.signal_export_points.connect(self.dialog_export_points)
@@ -226,10 +229,6 @@ class MainWindow(QMainWindow):
 
     def slot_mesh_clicked(self, mesh_attributes: list):
         id_list = [attr.get('id', -1) for attr in mesh_attributes]
-
-        self.treeWidget.clearSelection()
-        self.treeWidget.select_by_id_list(id_list)
-
         self.statusBar.showMessage(f'Detected meshes: {id_list}')
 
     def slot_mesh_sliced(self, slice_dict: dict):
