@@ -67,12 +67,12 @@ class TreeWidget(QTreeWidget):
         actions.action_hide.triggered.connect(self.hide_items)
         actions.action_delete.triggered.connect(self.delete_items)
 
+        actions.action_focus_camera.triggered.connect(item.center_camera)
         actions.action_highlight.triggered.connect(item.toggle_highlighting)
         actions.action_wireframe.triggered.connect(item.toggle_wireframe)
 
         actions.action_properties.triggered.connect(lambda: self.signal_headers_triggered.emit(item.id))
         actions.action_setup_colors.triggered.connect(lambda: self.signal_colors_triggered.emit(item.id))
-        actions.action_focus_camera.triggered.connect(item.center_camera)
 
         actions.action_export_mesh.triggered.connect(lambda: self.signal_export_mesh.emit(item.id))
         actions.action_export_blocks.triggered.connect(lambda: self.signal_export_blocks.emit(item.id))

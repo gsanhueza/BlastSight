@@ -6,8 +6,13 @@
 #  See LICENSE for more info.
 
 import pathlib
+
+from datetime import datetime
+from qtpy.QtWidgets import QFileDialog
 from qtpy.QtWidgets import QAction
 from qtpy.QtGui import QIcon
+
+from .cameradialog import CameraDialog
 
 
 class ActionCollection:
@@ -160,3 +165,54 @@ class ActionCollection:
         self.action_take_screenshot = QAction('&Take screenshot', parent)
         self.action_take_screenshot.setIcon(QIcon(f'{self.icons_path}/webcam.svg'))
         self.action_take_screenshot.setShortcut('Ctrl+T')
+
+    """
+    Basic handlers
+    """
+    def connect_tree(self, tree):
+        self.action_show_tree.triggered.connect(tree.show)
+
+    def connect_main_widget(self, widget):
+        self.action_quit.triggered.connect(widget.close)
+
+    def connect_viewer(self, viewer):
+        self.action_plan_view.triggered.connect(viewer.plan_view)
+        self.action_north_view.triggered.connect(viewer.north_view)
+        self.action_east_view.triggered.connect(viewer.east_view)
+        self.action_fit_to_screen.triggered.connect(viewer.fit_to_screen)
+
+        self.action_autofit_to_screen.triggered.connect(
+            lambda: self.handle_autofit(viewer))
+        self.action_turbo_rendering.triggered.connect(
+            lambda: self.handle_turbo(viewer))
+        self.action_camera_properties.triggered.connect(
+            lambda: self.handle_camera_properties(viewer))
+        self.action_take_screenshot.triggered.connect(
+            lambda: self.handle_screenshot(viewer))
+
+        viewer.signal_file_modified.connect(
+            lambda: self.handle_turbo(viewer))
+        viewer.signal_load_success.connect(
+            lambda: self.handle_autofit(viewer))
+
+    """
+    Advanced handlers
+    """
+    def handle_autofit(self, viewer):
+        viewer.autofit_to_screen = self.action_autofit_to_screen.isChecked()
+
+    def handle_turbo(self, viewer):
+        viewer.turbo_rendering = self.action_turbo_rendering.isChecked()
+
+    def handle_camera_properties(self, viewer):
+        dialog = CameraDialog(viewer)
+        dialog.show()
+
+    def handle_screenshot(self, viewer):
+        (path, selected_filter) = QFileDialog.getSaveFileName(
+            parent=viewer,
+            directory=f'BlastSight Screenshot ({datetime.now().strftime("%Y%m%d-%H%M%S")})',
+            filter='PNG image (*.png);;')
+
+        if path != '':
+            viewer.take_screenshot(path)
