@@ -5,8 +5,6 @@
 #  Distributed under the MIT License.
 #  See LICENSE for more info.
 
-from datetime import datetime
-
 from qtpy.QtCore import Qt
 from qtpy.QtCore import QFileInfo
 from qtpy.QtCore import QSettings
@@ -20,11 +18,7 @@ from qtpy.QtWidgets import QMenu
 from qtpy.QtWidgets import QMenuBar
 from qtpy.QtWidgets import QStatusBar
 from qtpy.QtWidgets import QDockWidget
-from qtpy.QtWidgets import QApplication
 
-from .cameradialog import CameraDialog
-from .propertiesdialog import PropertiesDialog
-from .colordialog import ColorDialog
 from .helpdialog import HelpDialog
 from .aboutdialog import AboutDialog
 from .threadworker import ThreadWorker
@@ -184,15 +178,13 @@ class MainWindow(QMainWindow):
         self.viewer.signal_mesh_sliced.connect(self.slot_mesh_sliced)
         self.viewer.signal_blocks_sliced.connect(self.slot_blocks_sliced)
 
-        self.viewer.signal_file_modified.connect(self.slot_file_modified)
         self.viewer.signal_load_success.connect(self.slot_element_load_success)
         self.viewer.signal_load_failure.connect(self.slot_element_load_failure)
         self.viewer.signal_export_success.connect(self.slot_element_export_success)
         self.viewer.signal_export_failure.connect(self.slot_element_export_failure)
 
         # TreeWidget actions
-        self.treeWidget.signal_headers_triggered.connect(self.dialog_properties)
-        self.treeWidget.signal_colors_triggered.connect(self.dialog_color)
+        self.treeWidget.connect_viewer(self.viewer)  # Handles fill_from_widget
         self.treeWidget.signal_export_mesh.connect(self.dialog_export_mesh)
         self.treeWidget.signal_export_blocks.connect(self.dialog_export_blocks)
         self.treeWidget.signal_export_points.connect(self.dialog_export_points)
@@ -205,9 +197,6 @@ class MainWindow(QMainWindow):
     @last_dir.setter
     def last_dir(self, _last_dir: str) -> None:
         self.settings.setValue('last_directory', _last_dir)
-
-    def slot_file_modified(self) -> None:
-        self.treeWidget.fill_from_viewer(self.viewer)
 
     @staticmethod
     def print_fps(fps) -> None:
@@ -277,17 +266,6 @@ class MainWindow(QMainWindow):
                                block_size=block.block_size,
                                alpha=1.0,
                                )
-
-    """
-    Utilities dialogs
-    """
-    def dialog_properties(self, _id: int):
-        dialog = PropertiesDialog(self.viewer, _id)
-        dialog.show()
-
-    def dialog_color(self, _id: int):
-        dialog = ColorDialog(self.viewer, _id)
-        dialog.show()
 
     """
     Common functionality for loading/exporting

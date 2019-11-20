@@ -15,6 +15,9 @@ from qtpy.QtWidgets import QTreeWidgetItemIterator
 from .treewidgetitem import TreeWidgetItem
 from .actioncollection import ActionCollection
 
+from .colordialog import ColorDialog
+from .propertiesdialog import PropertiesDialog
+
 from ..drawables.meshgl import MeshGL
 from ..drawables.blockgl import BlockGL
 from ..drawables.pointgl import PointGL
@@ -40,6 +43,15 @@ class TreeWidget(QTreeWidget):
 
         self.setWindowTitle('Element list')
         self.headerItem().setText(0, 'Elements')
+
+    def connect_viewer(self, viewer):
+        viewer.signal_file_modified.connect(
+            lambda: self.fill_from_viewer(viewer))
+
+        self.signal_colors_triggered.connect(
+            lambda _id: ColorDialog(viewer, _id).show())
+        self.signal_headers_triggered.connect(
+            lambda _id: PropertiesDialog(viewer, _id).show())
 
     def fill_from_viewer(self, viewer) -> None:
         self.clear()
