@@ -48,6 +48,13 @@ class PropertiesDialog(QDialog):
     def accept(self):
         element = self.viewer.get_drawable(self.id).element
 
+        # Check alteration of coordinates
+        coordinates_altered = not (
+            element.x_str == self.comboBox_x.currentText() and
+            element.y_str == self.comboBox_y.currentText() and
+            element.z_str == self.comboBox_z.currentText()
+        )
+
         element.x_str = self.comboBox_x.currentText()
         element.y_str = self.comboBox_y.currentText()
         element.z_str = self.comboBox_z.currentText()
@@ -69,6 +76,10 @@ class PropertiesDialog(QDialog):
 
         # Recreate the BlockModelGL instance with the "new" data
         self.viewer.update_drawable(self.id)
+
+        # If coordinates were altered and auto-fit is enabled, call fit_to_screen()
+        if coordinates_altered and self.viewer.autofit_to_screen:
+            self.viewer.fit_to_screen()
 
         super().accept()
 
