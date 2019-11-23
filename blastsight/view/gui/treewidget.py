@@ -25,7 +25,7 @@ from ..drawables.linegl import LineGL
 
 
 class TreeWidget(QTreeWidget):
-    signal_headers_triggered = Signal(int)
+    signal_properties_triggered = Signal(int)
     signal_colors_triggered = Signal(int)
     signal_export_mesh = Signal(int)
     signal_export_blocks = Signal(int)
@@ -38,13 +38,32 @@ class TreeWidget(QTreeWidget):
         self.setWindowFlags(Qt.WindowStaysOnTopHint)
         self.setSelectionMode(QAbstractItemView.ExtendedSelection)
 
-        self.itemDoubleClicked.connect(self.center_camera)
+        self.itemDoubleClicked.connect(self.focus_camera)
         self.customContextMenuRequested.connect(self.context_menu)
 
         self.setWindowTitle('Element list')
         self.headerItem().setText(0, 'Elements')
 
         self.enable_export = enable_export
+        self.connect_actions()
+
+    def connect_actions(self):
+        actions = ActionCollection(self)
+        actions.action_show.triggered.connect(self.show_items)
+        actions.action_hide.triggered.connect(self.hide_items)
+        actions.action_focus_camera.triggered.connect(self.focus_camera)
+        actions.action_delete.triggered.connect(self.delete_items)
+
+        actions.action_highlight.triggered.connect(lambda: self.currentItem().toggle_highlighting())
+        actions.action_wireframe.triggered.connect(lambda: self.currentItem().toggle_wireframe())
+
+        actions.action_properties.triggered.connect(self.handle_properties)
+        actions.action_setup_colors.triggered.connect(self.handle_colors)
+
+        actions.action_export_mesh.triggered.connect(self.handle_export)
+        actions.action_export_blocks.triggered.connect(self.handle_export)
+        actions.action_export_points.triggered.connect(self.handle_export)
+        actions.action_export_lines.triggered.connect(self.handle_export)
 
     def connect_viewer(self, viewer):
         viewer.signal_file_modified.connect(
@@ -58,7 +77,7 @@ class TreeWidget(QTreeWidget):
 
         self.signal_colors_triggered.connect(
             lambda _id: ColorDialog(viewer, _id).show())
-        self.signal_headers_triggered.connect(
+        self.signal_properties_triggered.connect(
             lambda _id: PropertiesDialog(viewer, _id).show())
 
     def fill_from_viewer(self, viewer) -> None:
@@ -81,23 +100,6 @@ class TreeWidget(QTreeWidget):
     def show_context_menu(self, item, global_pos):
         menu = QMenu()
         actions = ActionCollection(self)
-
-        # Action commands
-        actions.action_show.triggered.connect(self.show_items)
-        actions.action_hide.triggered.connect(self.hide_items)
-        actions.action_delete.triggered.connect(self.delete_items)
-
-        actions.action_focus_camera.triggered.connect(item.center_camera)
-        actions.action_highlight.triggered.connect(item.toggle_highlighting)
-        actions.action_wireframe.triggered.connect(item.toggle_wireframe)
-
-        actions.action_properties.triggered.connect(lambda: self.signal_headers_triggered.emit(item.id))
-        actions.action_setup_colors.triggered.connect(lambda: self.signal_colors_triggered.emit(item.id))
-
-        actions.action_export_mesh.triggered.connect(lambda: self.signal_export_mesh.emit(item.id))
-        actions.action_export_blocks.triggered.connect(lambda: self.signal_export_blocks.emit(item.id))
-        actions.action_export_points.triggered.connect(lambda: self.signal_export_points.emit(item.id))
-        actions.action_export_lines.triggered.connect(lambda: self.signal_export_lines.emit(item.id))
 
         # If multiple elements are selected, we'll only show a basic menu
         if len(self.selectedItems()) > 1:
@@ -130,24 +132,37 @@ class TreeWidget(QTreeWidget):
 
         menu.addSeparator()
 
-        export_dict = {
-            MeshGL: actions.action_export_mesh,
-            LineGL: actions.action_export_lines,
-            BlockGL: actions.action_export_blocks,
-            PointGL: actions.action_export_points,
-        }
-
         if self.enable_export:
-            menu.addAction(export_dict.get(item.type))
+            actions_dict = {
+                MeshGL: actions.action_export_mesh,
+                LineGL: actions.action_export_lines,
+                BlockGL: actions.action_export_blocks,
+                PointGL: actions.action_export_points,
+            }
+            menu.addAction(actions_dict.get(item.type))
 
         menu.addAction(actions.action_delete)
-
         menu.exec_(global_pos)
 
-    def center_camera(self):
-        row = min([self.indexOfTopLevelItem(x) for x in self.selectedItems()], default=0)
-        self.topLevelItem(row).show()
-        self.topLevelItem(row).center_camera()
+    def focus_camera(self):
+        self.currentItem().show()
+        self.currentItem().focus_camera()
+
+    def handle_properties(self):
+        self.signal_properties_triggered.emit(self.currentItem().id)
+
+    def handle_colors(self):
+        self.signal_colors_triggered.emit(self.currentItem().id)
+
+    def handle_export(self):
+        item = self.currentItem()
+        export_dict = {
+            MeshGL: self.signal_export_mesh,
+            LineGL: self.signal_export_lines,
+            BlockGL: self.signal_export_blocks,
+            PointGL: self.signal_export_points,
+        }
+        export_dict.get(item.type).emit(item.id)
 
     def select_item(self, row):
         row = max(min(row, self.topLevelItemCount() - 1), 0)
@@ -204,8 +219,8 @@ class TreeWidget(QTreeWidget):
         shortcut_commands_dict = {
             Qt.Key_Space: self.toggle_items_visibility,
             Qt.Key_Delete: self.delete_items,
-            Qt.Key_Enter: self.center_camera,
-            Qt.Key_Return: self.center_camera,
+            Qt.Key_Enter: self.focus_camera,
+            Qt.Key_Return: self.focus_camera,
         }
 
         # Execute command based on event.key()

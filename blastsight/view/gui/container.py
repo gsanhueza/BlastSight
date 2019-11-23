@@ -9,6 +9,7 @@ from qtpy.QtCore import Qt
 from qtpy.QtWidgets import QVBoxLayout
 from qtpy.QtWidgets import QWidget
 
+from .actioncollection import ActionCollection
 from .toolbar import ToolBar
 from .treewidget import TreeWidget
 from ..integrableviewer import IntegrableViewer
@@ -20,8 +21,8 @@ class Container(QWidget):
         self.setAcceptDrops(True)
 
         self.toolbar = ToolBar(self)
-        self.actions = self.toolbar.action_collection
         self.viewer = IntegrableViewer(self)
+        self.action_collection = ActionCollection(self)
         self.treeWidget = TreeWidget()
         self.treeWidget.setWindowTitle('Drawables')
 
@@ -33,8 +34,9 @@ class Container(QWidget):
         self.setMinimumSize(600, 500)
 
         self.toolbar.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
-        self.toolbar.insertAction(self.actions.action_plan_view, self.actions.action_camera_properties)
-        self.toolbar.addAction(self.actions.action_quit)
+        self.toolbar.insertAction(self.action_collection.action_plan_view,
+                                  self.action_collection.action_camera_properties)
+        self.toolbar.addAction(self.action_collection.action_quit)
 
         self.connect_actions()
 
