@@ -28,8 +28,8 @@ class Element:
             },
             'metadata': {
                 'id': int,
-                'name': str or None,
-                'extension': str or None
+                'name': str,
+                'extension': str
             }
         }
         """
@@ -78,8 +78,8 @@ class Element:
         self.alpha = kwargs.get('alpha', 1.0)
 
     def _fill_metadata(self, *args, **kwargs):
-        self.name = kwargs.get('name', None)
-        self.extension = kwargs.get('extension', None)
+        self.name = kwargs.get('name')
+        self.extension = kwargs.get('extension')
         self.id = kwargs.get('id', -1)
 
     def _check_integrity(self):

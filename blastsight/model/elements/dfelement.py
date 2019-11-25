@@ -78,14 +78,6 @@ class DFElement(Element):
         else:
             raise KeyError(msg)
 
-    def _fill_as_vertices(self, *args, **kwargs):
-        self.vertices = kwargs.get('vertices', [])
-
-    def _fill_as_xyz(self, *args, **kwargs):
-        self.x = kwargs.get('x', [])
-        self.y = kwargs.get('y', [])
-        self.z = kwargs.get('z', [])
-
     def _fill_as_values(self, *args, **kwargs):
         self.values = np.array(kwargs.get('values', np.empty(self.x.size)))
 
@@ -100,10 +92,6 @@ class DFElement(Element):
 
         self.vmin = kwargs.get('vmin', self.values.min())
         self.vmax = kwargs.get('vmax', self.values.max())
-
-    def _fill_metadata(self, *args, **kwargs):
-        self.name = kwargs.get('name', None)
-        self.extension = kwargs.get('extension', None)
 
     """
     Main accessors (Override)

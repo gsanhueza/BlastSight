@@ -529,23 +529,25 @@ class IntegrableViewer(QOpenGLWidget):
 
         return ray, origin
 
-    def slice_visible_meshes(self, origin: np.ndarray, plane_normal: np.ndarray) -> None:
+    def slice_meshes(self, origin: np.ndarray, plane_normal: np.ndarray) -> None:
+        # Slicing all *visible* meshes
         drawables = [m for m in self.drawable_collection.filter(MeshGL) if m.is_visible]
-        meshes = [m.element for m in drawables if 'SLICE' not in m.element.name]
+        meshes = [m.element for m in drawables if 'SLICE' not in str(m.element.name)]
 
         results = self.model.slice_meshes(origin, plane_normal, meshes)
         self.signal_mesh_sliced.emit(results)
 
-    def slice_visible_blocks(self, origin: np.ndarray, plane_normal: np.ndarray) -> None:
-        drawables = [m for m in self.drawable_collection.filter(BlockGL) if m.is_visible]
-        blocks = [m.element for m in drawables if 'SLICE' not in m.element.name]
+    def slice_blocks(self, origin: np.ndarray, plane_normal: np.ndarray) -> None:
+        # Slicing all blocks
+        drawables = [m for m in self.drawable_collection.filter(BlockGL)]
+        blocks = [m.element for m in drawables if 'SLICE' not in str(m.element.name)]
 
         results = self.model.slice_blocks(origin, plane_normal, blocks)
         self.signal_blocks_sliced.emit(results)
 
-    def slice_visible_drawables(self, origin: np.ndarray, plane_normal: np.ndarray) -> None:
-        self.slice_visible_meshes(origin, plane_normal)
-        self.slice_visible_blocks(origin, plane_normal)
+    def slice_drawables(self, origin: np.ndarray, plane_normal: np.ndarray) -> None:
+        self.slice_meshes(origin, plane_normal)
+        self.slice_blocks(origin, plane_normal)
 
     def slice_from_rays(self, origin_list: list, ray_list: list) -> None:
         # A plane is created from `origin` and `ray_list`.
@@ -563,7 +565,7 @@ class IntegrableViewer(QOpenGLWidget):
         plane_normal /= np.linalg.norm(plane_normal)
 
         # Slice drawables
-        self.slice_visible_drawables(origin, plane_normal)
+        self.slice_drawables(origin, plane_normal)
 
         # Auto-exit the slice mode for now
         self.set_normal_mode()
