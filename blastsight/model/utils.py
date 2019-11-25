@@ -124,6 +124,7 @@ def slice_mesh(mesh,
     # Taken from https://pypi.org/project/meshcut/
     # Although we might want to have an improved version.
     # This returns a list with the slices (in case we have a concave mesh)
+    # FIXME We might return indices, instead of vertices
     try:
         return meshcut.cross_section(mesh.vertices, mesh.indices, np.array(plane_origin), np.array(plane_normal))
     except AssertionError:
@@ -135,7 +136,7 @@ def slice_mesh(mesh,
 def slice_blocks(blocks,
                  block_size: np.ndarray or list,
                  plane_origin: np.ndarray or list,
-                 plane_normal: np.ndarray or list) -> tuple:
+                 plane_normal: np.ndarray or list) -> list:
     """
     *** Plane Equation: ax + by + cz + d = 0 ***
 
@@ -171,7 +172,6 @@ def slice_blocks(blocks,
     plane_normal /= np.linalg.norm(plane_normal)
     half_block = np.array(block_size) / 2
     vertices = blocks.vertices
-    values = blocks.values
 
     plane_d = -np.dot(plane_normal, plane_origin)
     threshold = np.dot(np.abs(plane_normal), half_block)
@@ -180,13 +180,13 @@ def slice_blocks(blocks,
     # Luckily, we don't run out of memory like in vectorized_triangles_intersection.
     mask = np.abs(np.inner(plane_normal, vertices) + plane_d) <= threshold
 
-    return vertices[mask], values[mask]
+    return mask
 
 
 def slice_points(points,
                  point_size: float,
                  plane_origin: np.ndarray or list,
-                 plane_normal: np.ndarray or list) -> tuple:
+                 plane_normal: np.ndarray or list) -> list:
 
     return slice_blocks(points, 3 * [point_size], plane_origin, plane_normal)
 

@@ -238,7 +238,7 @@ class MainWindow(QMainWindow):
         slice_list = slice_dict.get('slices', [])
 
         for sliced_meshes in slice_list:
-            slices = sliced_meshes.get('sliced_vertices')
+            slices = sliced_meshes.get('vertices')
             origin_id = sliced_meshes.get('origin_id')
             mesh = self.viewer.get_drawable(origin_id)
 
@@ -253,13 +253,13 @@ class MainWindow(QMainWindow):
         slice_list = slice_dict.get('slices', [])
 
         for sliced_blocks in slice_list:
-            slices = sliced_blocks.get('sliced_vertices')
-            values = sliced_blocks.get('sliced_values')
+            indices = sliced_blocks.get('indices')
             origin_id = sliced_blocks.get('origin_id')
             block = self.viewer.get_drawable(origin_id)
 
-            self.viewer.blocks(vertices=slices,
-                               values=values,
+            self.viewer.blocks(vertices=block.vertices[indices],
+                               values=block.values[indices],
+                               color=block.color[indices],
                                vmin=block.vmin,
                                vmax=block.vmax,
                                colormap=block.colormap,

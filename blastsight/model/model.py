@@ -169,28 +169,22 @@ class Model:
             'plane_normal': list(float)',
             'slices': [{
                 'origin_id': int,
-                'sliced_vertices': list(list(float))
+                'vertices': list(list(float))
             }]
         }
         """
-        slices_list = []
-
-        for mesh in meshes:
-            slices_list.append({
-                'origin_id': mesh.id,
-                'sliced_vertices': utils.slice_mesh(mesh, origin, plane_normal),
-            })
-
-        slice_results = {
+        return {
             'plane_origin': origin,
             'plane_normal': plane_normal,
-            'slices': slices_list,
+            'slices': [
+                {
+                    'origin_id': mesh.id,
+                    'vertices': utils.slice_mesh(mesh, origin, plane_normal)
+                } for mesh in meshes]
         }
 
-        return slice_results
-
     @staticmethod
-    def slice_blocks(origin: np.ndarray, plane_normal: np.ndarray, blocks: list) -> dict:
+    def slice_blocks(origin: np.ndarray, plane_normal: np.ndarray, block_list: list) -> dict:
         """
         Returns a dict with the following structure:
 
@@ -199,28 +193,19 @@ class Model:
             'plane_normal': list(float)',
             'slices': [{
                 'origin_id': int,
-                'sliced_vertices': list(list(float))
-                'sliced_values': list(float)
+                'indices': list(int)
             }]
         }
         """
-        slices_list = []
-
-        for block in blocks:
-            slices, values = utils.slice_blocks(block, block.block_size, origin, plane_normal)
-            slices_list.append({
-                'origin_id': block.id,
-                'sliced_vertices': slices,
-                'sliced_values': values,
-            })
-
-        slice_results = {
+        return {
             'plane_origin': origin,
             'plane_normal': plane_normal,
-            'slices': slices_list,
+            'slices': [
+                {
+                    'origin_id': block.id,
+                    'indices': utils.slice_blocks(block, block.block_size, origin, plane_normal)
+                } for block in block_list]
         }
-
-        return slice_results
 
     @staticmethod
     def measure_from_rays(origin_list: list, ray_list: list, meshes: list) -> float or None:
