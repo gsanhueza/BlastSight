@@ -16,16 +16,23 @@ Then, we'll slice the blocks by a plane.
 We need the plane's normal and any point that belongs to that plane.
 """
 blocks = v.blocks_by_path(path).element
-s_blocks, s_values = utils.slice_blocks(blocks=blocks,
-                                        block_size=blocks.block_size,
-                                        plane_origin=blocks.center,
-                                        plane_normal=[0.5, 1.0, 1.0])
+indices = utils.slice_blocks(blocks=blocks,
+                             block_size=blocks.block_size,
+                             plane_origin=blocks.center,
+                             plane_normal=[0.5, 1.0, 1.0])
 
 """
-Finally, we'll show the detected blocks.
+Then, we'll show the detected blocks.
+"""
+v.blocks(vertices=blocks.vertices[indices],
+         values=blocks.values[indices],
+         vmin=blocks.vmin,
+         vmax=blocks.vmax,
+         block_size=blocks.block_size)
+
+"""
 We'll shrink the original blocks so the difference will be more evident.
 """
-v.blocks(vertices=s_blocks, values=s_values, vmin=blocks.vmin, vmax=blocks.vmax, block_size=blocks.block_size)
 blocks.block_size /= 2
 
 v.fit_to_screen()

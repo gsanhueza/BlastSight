@@ -13,7 +13,9 @@ v.setWindowTitle(f'{title} - Click two points in the screen.')
 mesh_path = '../test_files/caseron.off'
 blocks_path = '../test_files/rainbow.csv'
 
-mesh = v.mesh_by_path(mesh_path, color=[0.0, 0.8, 0.6], alpha=0.6)
+mesh = v.mesh_by_path(mesh_path,
+                      color=[0.0, 0.8, 0.6],
+                      alpha=0.6)
 blocks = v.blocks_by_path(blocks_path)
 points = v.points_by_path(blocks_path)
 
@@ -31,13 +33,15 @@ def slot_mesh_sliced(slice_dict: dict):
     slice_list = slice_dict.get('slices', [])
 
     for sliced_meshes in slice_list:
-        slices = sliced_meshes.get('sliced_vertices')
+        slices = sliced_meshes.get('vertices')
         origin_id = sliced_meshes.get('origin_id')
-        _mesh = v.get_drawable(origin_id)
+        mesh = v.get_drawable(origin_id)
 
         for i, vert_slice in enumerate(slices):
             v.lines(vertices=vert_slice,
-                    color=_mesh.color,
+                    color=mesh.color,
+                    name=f'MESHSLICE_{i}_{mesh.name}',
+                    extension=mesh.extension,
                     loop=True)
 
 
@@ -45,17 +49,19 @@ def slot_blocks_sliced(slice_dict: dict):
     slice_list = slice_dict.get('slices', [])
 
     for sliced_blocks in slice_list:
-        slices = sliced_blocks.get('sliced_vertices')
-        values = sliced_blocks.get('sliced_values')
+        indices = sliced_blocks.get('indices')
         origin_id = sliced_blocks.get('origin_id')
-        _blocks = v.get_drawable(origin_id)
+        block = v.get_drawable(origin_id)
 
-        v.blocks(vertices=slices,
-                 values=values,
-                 vmin=_blocks.vmin,
-                 vmax=_blocks.vmax,
-                 colormap=_blocks.colormap,
-                 block_size=_blocks.block_size,
+        v.blocks(vertices=block.vertices[indices],
+                 values=block.values[indices],
+                 color=block.color[indices],
+                 vmin=block.vmin,
+                 vmax=block.vmax,
+                 colormap=block.colormap,
+                 name=f'BLOCKSLICE_{block.name}',
+                 extension=block.extension,
+                 block_size=block.block_size,
                  alpha=1.0,
                  )
 

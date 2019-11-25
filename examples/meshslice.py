@@ -10,10 +10,26 @@ of that slice, so we can draw a line there.
 
 v = Viewer()
 
-mesh = v.mesh_by_path('../test_files/caseron.off', color=[0.0, 0.0, 1.0], alpha=0.3).element
+"""
+First, we'll load a mesh file.
+Then, we'll slice the mesh by a plane.
+We need the plane's normal and any point that belongs to that plane.
+"""
+mesh = v.mesh_by_path('../test_files/caseron.off',
+                      color=[0.0, 0.0, 1.0],
+                      alpha=0.3).element
 
-slice_vertices = utils.slice_mesh(mesh=mesh, plane_origin=mesh.centroid, plane_normal=[0.2, 1.0, 0.8])
-v.lines(vertices=slice_vertices, color=[0.0, 1.0, 0.0], loop=True)
+vertices = utils.slice_mesh(mesh=mesh,
+                            plane_origin=mesh.centroid,
+                            plane_normal=[0.2, 1.0, 0.8])
+
+"""
+Then, we'll show the detected vertices.
+We'll draw them as a line, so the slice is more evident.
+"""
+v.lines(vertices=vertices,
+        color=[0.0, 1.0, 0.0],
+        loop=True)
 
 v.fit_to_screen()
 v.show()

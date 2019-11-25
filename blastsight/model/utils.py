@@ -124,7 +124,6 @@ def slice_mesh(mesh,
     # Taken from https://pypi.org/project/meshcut/
     # Although we might want to have an improved version.
     # This returns a list with the slices (in case we have a concave mesh)
-    # FIXME We might return indices, instead of vertices
     try:
         return meshcut.cross_section(mesh.vertices, mesh.indices, np.array(plane_origin), np.array(plane_normal))
     except AssertionError:
