@@ -532,7 +532,7 @@ class IntegrableViewer(QOpenGLWidget):
     def slice_meshes(self, origin: np.ndarray, plane_normal: np.ndarray) -> None:
         # Slicing all *visible* meshes
         drawables = [m for m in self.drawable_collection.filter(MeshGL) if m.is_visible]
-        meshes = [m.element for m in drawables if 'SLICE' not in m.element.name]
+        meshes = [m.element for m in drawables if 'SLICE' not in str(m.element.name)]
 
         results = self.model.slice_meshes(origin, plane_normal, meshes)
         self.signal_mesh_sliced.emit(results)
@@ -540,7 +540,7 @@ class IntegrableViewer(QOpenGLWidget):
     def slice_blocks(self, origin: np.ndarray, plane_normal: np.ndarray) -> None:
         # Slicing all blocks
         drawables = [m for m in self.drawable_collection.filter(BlockGL)]
-        blocks = [m.element for m in drawables if 'SLICE' not in m.element.name]
+        blocks = [m.element for m in drawables if 'SLICE' not in str(m.element.name)]
 
         results = self.model.slice_blocks(origin, plane_normal, blocks)
         self.signal_blocks_sliced.emit(results)
