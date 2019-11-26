@@ -135,7 +135,7 @@ def slice_mesh(mesh,
 def slice_blocks(blocks,
                  block_size: np.ndarray or list,
                  plane_origin: np.ndarray or list,
-                 plane_normal: np.ndarray or list) -> list:
+                 plane_normal: np.ndarray or list) -> np.ndarray:
     """
     *** Plane Equation: ax + by + cz + d = 0 ***
 
@@ -179,13 +179,13 @@ def slice_blocks(blocks,
     # Luckily, we don't run out of memory like in vectorized_triangles_intersection.
     mask = np.abs(np.inner(plane_normal, vertices) + plane_d) <= threshold
 
-    return mask
+    return mask_to_indices(mask)
 
 
 def slice_points(points,
                  point_size: float,
                  plane_origin: np.ndarray or list,
-                 plane_normal: np.ndarray or list) -> list:
+                 plane_normal: np.ndarray or list) -> np.ndarray:
 
     return slice_blocks(points, 3 * [point_size], plane_origin, plane_normal)
 
@@ -265,6 +265,11 @@ def values_to_rgb(values: np.ndarray, vmin: float, vmax: float, colormap: str) -
     hsv[:, 2] = initial[2] + (final - initial)[2] * vals
 
     return hsv_to_rgb(hsv)
+
+
+def mask_to_indices(mask: np.ndarray) -> np.ndarray:
+    # If mask = [True, False, True], then mask.nonzero()[-1] = [0, 2]
+    return mask.nonzero()[-1]
 
 
 def parse_colormap(colormap: str) -> list:
