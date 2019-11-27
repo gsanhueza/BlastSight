@@ -572,9 +572,9 @@ class IntegrableViewer(QOpenGLWidget):
 
     def measure_from_rays(self, origin_list: list, ray_list: list) -> None:
         meshes = [m.element for m in self.drawable_collection.filter(MeshGL) if m.is_visible]
-        distance = self.model.measure_from_rays(origin_list, ray_list, meshes)
+        results = self.model.measure_from_rays(origin_list, ray_list, meshes)
 
-        self.signal_mesh_distances.emit(distance)
+        self.signal_mesh_distances.emit(results)
 
     def detect_mesh_intersection(self, x: float, y: float, z: float) -> None:
         ray, origin = self.ray_from_click(x, y, z)

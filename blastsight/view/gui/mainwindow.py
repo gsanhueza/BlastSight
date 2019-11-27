@@ -227,8 +227,8 @@ class MainWindow(QMainWindow):
     def slot_mode_updated(self, mode: str):
         self.statusBar.showMessage(f'Mode: {mode}')
 
-    def slot_mesh_distances(self, distance: list or None):
-        self.statusBar.showMessage(f'Distance: {distance}')
+    def slot_mesh_distances(self, distance_dict: dict):
+        self.statusBar.showMessage(f'Distance: {distance_dict.get("distance")}')
 
     def slot_mesh_clicked(self, mesh_attributes: list):
         id_list = [attr.get('id', -1) for attr in mesh_attributes]

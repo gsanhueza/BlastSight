@@ -208,10 +208,23 @@ class Model:
         }
 
     @staticmethod
-    def measure_from_rays(origin_list: list, ray_list: list, meshes: list) -> float or None:
+    def measure_from_rays(origin_list: list, ray_list: list, meshes: list) -> dict:
+        """
+        Returns a dict with the following structure:
+
+        {
+            'point_a': list(float) or None,
+            'point_b': list(float) or None',
+            'distance': float or None
+        }
+        """
         points_A = []
         points_B = []
 
+        closest_A = None
+        closest_B = None
+
+        # Detect intersections
         for mesh in meshes:
             int_A = utils.mesh_intersection(origin_list[0], ray_list[0], mesh)
             int_B = utils.mesh_intersection(origin_list[1], ray_list[1], mesh)
@@ -223,14 +236,23 @@ class Model:
             if int_B.size > 0:
                 points_B.append(utils.closest_point_to(origin_list[1], int_B))
 
-        distance = None
-        if len(points_A) > 0 and len(points_B) > 0:
+        # Get closest points for each origin
+        if len(points_A) > 0:
             points_A = np.vstack(points_A)
-            points_B = np.vstack(points_B)
-
             closest_A = utils.closest_point_to(origin_list[0], points_A)
+
+        if len(points_B) > 0:
+            points_B = np.vstack(points_B)
             closest_B = utils.closest_point_to(origin_list[1], points_B)
 
+        # Calculate distance if possible
+        try:
             distance = np.linalg.norm(closest_B - closest_A)
+        except TypeError:
+            distance = None
 
-        return distance
+        return {
+            'point_a': closest_A,
+            'point_b': closest_B,
+            'distance': distance,
+        }
