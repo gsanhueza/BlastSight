@@ -65,5 +65,5 @@ class TreeWidgetItem(QTreeWidgetItem):
         self.drawable.toggle_visibility()
         self.set_visible(self.drawable.is_visible)
 
-    def focus_camera(self) -> None:
+    def center_camera(self) -> None:
         self.viewer.camera_at(self.drawable.id)

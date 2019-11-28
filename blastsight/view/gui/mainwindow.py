@@ -23,10 +23,9 @@ from .helpdialog import HelpDialog
 from .aboutdialog import AboutDialog
 from .threadworker import ThreadWorker
 
-from .actioncollection import ActionCollection
+from ..integrableviewer import IntegrableViewer
 from .toolbar import ToolBar
 from .treewidget import TreeWidget
-from ..integrableviewer import IntegrableViewer
 
 
 class MainWindow(QMainWindow):
@@ -73,7 +72,6 @@ class MainWindow(QMainWindow):
         self.statusBar.showMessage('Ready')
 
         # Attributes
-        self.action_collection = ActionCollection(self)
         self.settings = QSettings('BlastSight', application='blastsight', parent=self)
         self.filters_dict = {
             'mesh': 'Mesh Files (*.dxf *.off *.h5m);;'
@@ -97,9 +95,8 @@ class MainWindow(QMainWindow):
         }
 
         # Extra actions
-        self.toolbar.insertAction(self.action_collection.action_plan_view,
-                                  self.action_collection.action_camera_properties)
-        self.toolbar.addAction(self.action_collection.action_quit)
+        self.toolbar.insertAction(self.toolbar.action_collection.action_plan_view, self.toolbar.action_collection.action_camera_properties)
+        self.toolbar.addAction(self.toolbar.action_collection.action_quit)
         self.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
 
         self.generate_menubar()
@@ -109,40 +106,40 @@ class MainWindow(QMainWindow):
         # self.viewer.signal_fps_updated.connect(lambda x: self.setWindowTitle(f'{self.title} (FPS: {x:.1f})'))
 
     def generate_menubar(self):
-        self.menu_File.addAction(self.action_collection.action_load_mesh)
-        self.menu_File.addAction(self.action_collection.action_load_blocks)
-        self.menu_File.addAction(self.action_collection.action_load_points)
-        self.menu_File.addAction(self.action_collection.action_load_lines)
+        self.menu_File.addAction(self.toolbar.action_collection.action_load_mesh)
+        self.menu_File.addAction(self.toolbar.action_collection.action_load_blocks)
+        self.menu_File.addAction(self.toolbar.action_collection.action_load_points)
+        self.menu_File.addAction(self.toolbar.action_collection.action_load_lines)
         self.menu_File.addSeparator()
-        self.menu_File.addAction(self.action_collection.action_load_mesh_folder)
-        self.menu_File.addAction(self.action_collection.action_load_blocks_folder)
-        self.menu_File.addAction(self.action_collection.action_load_points_folder)
-        self.menu_File.addAction(self.action_collection.action_load_lines_folder)
+        self.menu_File.addAction(self.toolbar.action_collection.action_load_mesh_folder)
+        self.menu_File.addAction(self.toolbar.action_collection.action_load_blocks_folder)
+        self.menu_File.addAction(self.toolbar.action_collection.action_load_points_folder)
+        self.menu_File.addAction(self.toolbar.action_collection.action_load_lines_folder)
         self.menu_File.addSeparator()
-        self.menu_File.addAction(self.action_collection.action_quit)
+        self.menu_File.addAction(self.toolbar.action_collection.action_quit)
 
-        self.menu_View.addAction(self.action_collection.action_camera_properties)
-        self.menu_View.addAction(self.action_collection.action_plan_view)
-        self.menu_View.addAction(self.action_collection.action_north_view)
-        self.menu_View.addAction(self.action_collection.action_east_view)
-        self.menu_View.addAction(self.action_collection.action_fit_to_screen)
+        self.menu_View.addAction(self.toolbar.action_collection.action_camera_properties)
+        self.menu_View.addAction(self.toolbar.action_collection.action_plan_view)
+        self.menu_View.addAction(self.toolbar.action_collection.action_north_view)
+        self.menu_View.addAction(self.toolbar.action_collection.action_east_view)
+        self.menu_View.addAction(self.toolbar.action_collection.action_fit_to_screen)
         self.menu_View.addSeparator()
-        self.menu_View.addAction(self.action_collection.action_autofit_to_screen)
-        self.menu_View.addAction(self.action_collection.action_turbo_rendering)
+        self.menu_View.addAction(self.toolbar.action_collection.action_autofit_to_screen)
+        self.menu_View.addAction(self.toolbar.action_collection.action_turbo_rendering)
         self.menu_View.addSeparator()
-        self.menu_View.addAction(self.action_collection.action_perspective_projection)
-        self.menu_View.addAction(self.action_collection.action_orthographic_projection)
+        self.menu_View.addAction(self.toolbar.action_collection.action_perspective_projection)
+        self.menu_View.addAction(self.toolbar.action_collection.action_orthographic_projection)
         self.menu_View.addSeparator()
-        self.menu_View.addAction(self.action_collection.action_take_screenshot)
+        self.menu_View.addAction(self.toolbar.action_collection.action_take_screenshot)
 
-        self.menu_Tools.addAction(self.action_collection.action_slice_mode)
-        self.menu_Tools.addAction(self.action_collection.action_detection_mode)
-        self.menu_Tools.addAction(self.action_collection.action_measurement_mode)
+        self.menu_Tools.addAction(self.toolbar.action_collection.action_slice_mode)
+        self.menu_Tools.addAction(self.toolbar.action_collection.action_detection_mode)
+        self.menu_Tools.addAction(self.toolbar.action_collection.action_measurement_mode)
         self.menu_Tools.addSeparator()
-        self.menu_Tools.addAction(self.action_collection.action_normal_mode)
+        self.menu_Tools.addAction(self.toolbar.action_collection.action_normal_mode)
 
-        self.menu_Help.addAction(self.action_collection.action_help)
-        self.menu_Help.addAction(self.action_collection.action_about)
+        self.menu_Help.addAction(self.toolbar.action_collection.action_help)
+        self.menu_Help.addAction(self.toolbar.action_collection.action_about)
 
     def connect_actions(self):
         # Auto-connections
@@ -152,30 +149,30 @@ class MainWindow(QMainWindow):
         self.treeWidget.connect_viewer(self.viewer)  # Handles signals from viewer
 
         # File
-        self.action_collection.action_load_mesh.triggered.connect(self.dialog_load_mesh)
-        self.action_collection.action_load_blocks.triggered.connect(self.dialog_load_blocks)
-        self.action_collection.action_load_points.triggered.connect(self.dialog_load_points)
-        self.action_collection.action_load_lines.triggered.connect(self.dialog_load_lines)
+        self.toolbar.action_collection.action_load_mesh.triggered.connect(self.dialog_load_mesh)
+        self.toolbar.action_collection.action_load_blocks.triggered.connect(self.dialog_load_blocks)
+        self.toolbar.action_collection.action_load_points.triggered.connect(self.dialog_load_points)
+        self.toolbar.action_collection.action_load_lines.triggered.connect(self.dialog_load_lines)
 
-        self.action_collection.action_load_mesh_folder.triggered.connect(self.dialog_load_mesh_folder)
-        self.action_collection.action_load_blocks_folder.triggered.connect(self.dialog_load_blocks_folder)
-        self.action_collection.action_load_points_folder.triggered.connect(self.dialog_load_points_folder)
-        self.action_collection.action_load_lines_folder.triggered.connect(self.dialog_load_lines_folder)
+        self.toolbar.action_collection.action_load_mesh_folder.triggered.connect(self.dialog_load_mesh_folder)
+        self.toolbar.action_collection.action_load_blocks_folder.triggered.connect(self.dialog_load_blocks_folder)
+        self.toolbar.action_collection.action_load_points_folder.triggered.connect(self.dialog_load_points_folder)
+        self.toolbar.action_collection.action_load_lines_folder.triggered.connect(self.dialog_load_lines_folder)
 
         # View
-        self.action_collection.action_show_tree.triggered.connect(self.dockWidget.show)
-        self.action_collection.action_perspective_projection.triggered.connect(self.viewer.perspective_projection)
-        self.action_collection.action_orthographic_projection.triggered.connect(self.viewer.orthographic_projection)
+        self.toolbar.action_collection.action_show_tree.triggered.connect(self.dockWidget.show)
+        self.toolbar.action_collection.action_perspective_projection.triggered.connect(self.viewer.perspective_projection)
+        self.toolbar.action_collection.action_orthographic_projection.triggered.connect(self.viewer.orthographic_projection)
 
         # Tools
-        self.action_collection.action_detection_mode.triggered.connect(self.slot_detection_mode)
-        self.action_collection.action_slice_mode.triggered.connect(self.slot_slice_mode)
-        self.action_collection.action_measurement_mode.triggered.connect(self.slot_measurement_mode)
-        self.action_collection.action_normal_mode.triggered.connect(self.slot_normal_mode)
+        self.toolbar.action_collection.action_detection_mode.triggered.connect(self.slot_detection_mode)
+        self.toolbar.action_collection.action_slice_mode.triggered.connect(self.slot_slice_mode)
+        self.toolbar.action_collection.action_measurement_mode.triggered.connect(self.slot_measurement_mode)
+        self.toolbar.action_collection.action_normal_mode.triggered.connect(self.slot_normal_mode)
 
         # Help
-        self.action_collection.action_help.triggered.connect(self.slot_help)
-        self.action_collection.action_about.triggered.connect(self.slot_about)
+        self.toolbar.action_collection.action_help.triggered.connect(self.slot_help)
+        self.toolbar.action_collection.action_about.triggered.connect(self.slot_about)
 
         # Viewer signals
         self.viewer.signal_fps_updated.connect(self.print_fps)

@@ -12,11 +12,10 @@ from qtpy.QtWidgets import QFileDialog
 from qtpy.QtWidgets import QAction
 from qtpy.QtGui import QIcon
 
-from .singleton import Singleton
 from .cameradialog import CameraDialog
 
 
-class ActionCollection(metaclass=Singleton):
+class ActionCollection:
     def __init__(self, parent):
         self.icons_path = f'{pathlib.Path(__file__).parent}/UI/icons'
 
@@ -168,7 +167,7 @@ class ActionCollection(metaclass=Singleton):
         self.action_take_screenshot.setShortcut('Ctrl+T')
 
     """
-    Connections
+    Basic handlers
     """
     def connect_tree(self, tree):
         self.action_show_tree.triggered.connect(tree.show)
@@ -197,7 +196,7 @@ class ActionCollection(metaclass=Singleton):
             lambda: self.handle_autofit(viewer))
 
     """
-    Handlers
+    Advanced handlers
     """
     def handle_autofit(self, viewer):
         viewer.autofit_to_screen = self.action_autofit_to_screen.isChecked()
