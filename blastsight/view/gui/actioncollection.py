@@ -120,7 +120,7 @@ class ActionCollection:
         self.action_slice_mode.setIcon(QIcon(f'{self.icons_path}/flash_on.svg'))
         self.action_slice_mode.setShortcut('Ctrl+S')
 
-        self.action_measurement_mode = QAction('&Measure distance (in mesh)', parent)
+        self.action_measurement_mode = QAction('&Measure mesh distances', parent)
         self.action_measurement_mode.setIcon(QIcon(f'{self.icons_path}/ruler.svg'))
         self.action_measurement_mode.setShortcut('Ctrl+M')
 
