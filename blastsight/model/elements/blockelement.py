@@ -79,3 +79,8 @@ class BlockElement(DFElement):
     @block_size.setter
     def block_size(self, _size: list) -> None:
         self.properties['size'] = np.array(_size) if len(_size) == 3 else self.get_autosize()
+
+    @property
+    def bounding_box(self) -> tuple:
+        lo, hi = super().bounding_box
+        return lo - (self.block_size / 2), hi + (self.block_size / 2)

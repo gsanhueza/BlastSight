@@ -40,17 +40,11 @@ def viewer():
     v.show()
 
 
-def demo():
-    from examples import demo
-    demo.demo()
-
-
 def main():
     parser = argparse.ArgumentParser(description='Starts BlastSight in App/Container/Viewer mode.')
     parser.add_argument('-a', '--app', action='store_true', help='Starts in App mode.')
     parser.add_argument('-c', '--container', action='store_true', help='Starts in Container mode.')
     parser.add_argument('-v', '--viewer', action='store_true', help='Starts in Viewer mode.')
-    parser.add_argument('-d', '--demo', action='store_true', help=argparse.SUPPRESS)
 
     args = parser.parse_args()
 
@@ -58,8 +52,6 @@ def main():
         viewer()
     elif args.container:
         container()
-    elif args.demo:
-        demo()
     else:
         application()
 

@@ -237,3 +237,14 @@ class TestBlockElement:
         element = BlockElement(vertices=[[0, 1, 2]])
         for prop in ['alpha', 'colormap', 'headers', 'block_size']:
             assert prop in element.exportable_properties
+
+    def test_bounding_box(self):
+        element = BlockElement(vertices=[[0, 0, 0]], values=[0])
+
+        expected_lo = [-0.5, -0.5, -0.5]
+        expected_hi = [0.5, 0.5, 0.5]
+
+        for i, j in zip(expected_lo, expected_hi):
+            for k in range(len(expected_lo)):
+                assert i == element.bounding_box[0][k]
+                assert j == element.bounding_box[1][k]
