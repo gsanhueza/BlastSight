@@ -322,7 +322,6 @@ class IntegrableViewer(QOpenGLWidget):
         self.signal_file_modified.emit()
 
     def recreate(self) -> None:
-        # Only boostable drawables *need* this.
         self.axis_collection.recreate()
         self.background_collection.recreate()
         self.drawable_collection.recreate()

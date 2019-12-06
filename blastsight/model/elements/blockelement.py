@@ -52,14 +52,14 @@ class BlockElement(DFElement):
         else:
             self.block_size = kwargs.get('block_size', [1.0, 1.0, 1.0])
 
-    def get_autosize(self) -> list:
+    def get_autosize(self) -> np.ndarray:
         size = []
 
         for v in [self.x, self.y, self.z]:
             delta = np.abs(np.diff(v))
             size.append(float(min(delta[delta > 0.0], default=1.0)))
 
-        return size
+        return np.array(size)
 
     """
     Properties
@@ -78,7 +78,7 @@ class BlockElement(DFElement):
 
     @block_size.setter
     def block_size(self, _size: list) -> None:
-        self.properties['size'] = np.array(_size) if len(_size) == 3 else self.get_autosize()
+        self.properties['size'] = np.array(_size) if len(_size) == 3 else np.array(self.get_autosize())
 
     @property
     def bounding_box(self) -> tuple:

@@ -21,7 +21,7 @@ From there you can load elements with File > Load [element].
 
 More information in Help > Help.
 
-### Integrable Mode 
+### Integrable Mode
 
 You can embed BlastSight's viewer within your application.
 
@@ -72,7 +72,8 @@ viewer.show()
 
 BlastSight comes with a folder of examples that show what you can do with it.
 
-It's recommended to check the `examples/demo.py` file first, so you can develop an idea of how to use this software.
+It's recommended to check `examples/demo.py` in https://github.com/gsanhueza/BlastSight/
+to develop an idea of how to use this software.
 
 ## Packaging
 
