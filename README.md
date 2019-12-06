@@ -2,6 +2,8 @@
 
 BlastSight is a 3D visualization software designed to aid in Mining research.
 
+![blastsight](https://users.dcc.uchile.cl/~gsanhuez/blastsight-app.png)
+
 ## Installation
 
 You can install BlastSight with the following command:
