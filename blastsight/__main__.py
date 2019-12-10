@@ -9,7 +9,7 @@ import argparse
 import sys
 
 
-def application():
+def application(paths: list):
     from qtpy.QtWidgets import QApplication
     from blastsight.view.gui.mainwindow import MainWindow
 
@@ -18,10 +18,13 @@ def application():
     w = MainWindow()
     w.show()
 
+    for path in paths:
+        w.viewer.mesh_by_path(path)
+
     sys.exit(qt_app.exec_())
 
 
-def container():
+def container(paths: list):
     from qtpy.QtWidgets import QApplication
     from blastsight.view.gui.container import Container
 
@@ -30,12 +33,18 @@ def container():
     w = Container()
     w.show()
 
+    for path in paths:
+        w.viewer.mesh_by_path(path)
+
     sys.exit(qt_app.exec_())
 
 
-def viewer():
+def viewer(paths: list):
     from blastsight.view.viewer import Viewer
     v = Viewer()
+
+    for path in paths:
+        v.mesh_by_path(path)
 
     v.show()
 
@@ -45,15 +54,16 @@ def main():
     parser.add_argument('-a', '--app', action='store_true', help='Starts in App mode.')
     parser.add_argument('-c', '--container', action='store_true', help='Starts in Container mode.')
     parser.add_argument('-v', '--viewer', action='store_true', help='Starts in Viewer mode.')
+    parser.add_argument('paths', nargs='*', help='Paths of meshes loaded before opening BlastSight.')
 
     args = parser.parse_args()
 
     if args.viewer:
-        viewer()
+        viewer(args.paths)
     elif args.container:
-        container()
+        container(args.paths)
     else:
-        application()
+        application(args.paths)
 
 
 if __name__ == '__main__':
