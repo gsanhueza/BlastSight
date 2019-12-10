@@ -6,7 +6,7 @@
 #  See LICENSE for more info.
 
 from collections import OrderedDict
-from .gldrawable import GLDrawable
+from ..drawables.gldrawable import GLDrawable
 
 
 class GLCollection(OrderedDict):

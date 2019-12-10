@@ -5,23 +5,22 @@
 #  Distributed under the MIT License.
 #  See LICENSE for more info.
 
-from OpenGL.GL import *
 from .glcollection import GLCollection
 
-from .meshgl import MeshGL
-from .blockgl import BlockGL
-from .linegl import LineGL
-from .pointgl import PointGL
-from .tubegl import TubeGL
+from ..drawables.meshgl import MeshGL
+from ..drawables.blockgl import BlockGL
+from ..drawables.linegl import LineGL
+from ..drawables.pointgl import PointGL
+from ..drawables.tubegl import TubeGL
 
-from .glprograms.meshprogram import MeshProgram
-from .glprograms.wireprogram import WireProgram
-from .glprograms.blockprogram import BlockProgram
-from .glprograms.blocklegacyprogram import BlockLegacyProgram
-from .glprograms.lineprogram import LineProgram
-from .glprograms.pointprogram import PointProgram
-from .glprograms.tubeprogram import TubeProgram
-from .glprograms.turbomeshprogram import TurboMeshProgram
+from ..glprograms.meshprogram import MeshProgram
+from ..glprograms.wireprogram import WireProgram
+from ..glprograms.blockprogram import BlockProgram
+from ..glprograms.blocklegacyprogram import BlockLegacyProgram
+from ..glprograms.lineprogram import LineProgram
+from ..glprograms.pointprogram import PointProgram
+from ..glprograms.tubeprogram import TubeProgram
+from ..glprograms.turbomeshprogram import TurboMeshProgram
 
 
 class GLDrawableCollection(GLCollection):

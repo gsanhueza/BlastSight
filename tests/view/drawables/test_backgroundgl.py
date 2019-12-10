@@ -4,7 +4,7 @@ import pytest
 
 from blastsight.view.integrableviewer import IntegrableViewer
 from blastsight.view.drawables.backgroundgl import BackgroundGL
-from blastsight.view.drawables.glprograms.backgroundprogram import BackgroundProgram
+from blastsight.view.glprograms.backgroundprogram import BackgroundProgram
 
 from blastsight.model.elements.nullelement import NullElement
 

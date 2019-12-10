@@ -5,9 +5,9 @@ import pytest
 from blastsight.model.elements.meshelement import MeshElement
 from blastsight.view.integrableviewer import IntegrableViewer
 from blastsight.view.drawables.meshgl import MeshGL
-from blastsight.view.drawables.glprograms.meshprogram import MeshProgram
-from blastsight.view.drawables.glprograms.wireprogram import WireProgram
-from blastsight.view.drawables.glprograms.turbomeshprogram import TurboMeshProgram
+from blastsight.view.glprograms.meshprogram import MeshProgram
+from blastsight.view.glprograms.wireprogram import WireProgram
+from blastsight.view.glprograms.turbomeshprogram import TurboMeshProgram
 
 
 class TestMeshGL:

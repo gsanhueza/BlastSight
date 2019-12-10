@@ -7,7 +7,7 @@ from qtpy.QtWidgets import QApplication
 from blastsight.model.elements.element import Element
 from blastsight.view.drawables.gldrawable import GLDrawable
 from blastsight.view.integrableviewer import IntegrableViewer
-from blastsight.view.drawables.glprograms.shaderprogram import ShaderProgram
+from blastsight.view.glprograms.shaderprogram import ShaderProgram
 
 
 class TestAutoDrawable:

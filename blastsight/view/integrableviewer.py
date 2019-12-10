@@ -19,9 +19,9 @@ from qtpy.QtGui import QRegion
 from qtpy.QtGui import QVector4D
 from qtpy.QtWidgets import QOpenGLWidget
 
-from .drawables.glaxiscollection import GLAxisCollection
-from .drawables.glbackgroundcollection import GLBackgroundCollection
-from .drawables.gldrawablecollection import GLDrawableCollection
+from .collections.glaxiscollection import GLAxisCollection
+from .collections.glbackgroundcollection import GLBackgroundCollection
+from .collections.gldrawablecollection import GLDrawableCollection
 
 from .drawables.axisgl import AxisGL
 from .drawables.backgroundgl import BackgroundGL

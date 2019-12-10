@@ -5,8 +5,8 @@ import pytest
 from blastsight.model.elements.blockelement import BlockElement
 from blastsight.view.integrableviewer import IntegrableViewer
 from blastsight.view.drawables.blockgl import BlockGL
-from blastsight.view.drawables.glprograms.blockprogram import BlockProgram
-from blastsight.view.drawables.glprograms.blocklegacyprogram import BlockLegacyProgram
+from blastsight.view.glprograms.blockprogram import BlockProgram
+from blastsight.view.glprograms.blocklegacyprogram import BlockLegacyProgram
 
 
 class TestBlockGL:

@@ -7,11 +7,11 @@
 
 from .glcollection import GLCollection
 
-from .backgroundgl import BackgroundGL
-from .glprograms.backgroundprogram import BackgroundProgram
+from ..drawables.axisgl import AxisGL
+from ..glprograms.axisprogram import AxisProgram
 
 
-class GLBackgroundCollection(GLCollection):
+class GLAxisCollection(GLCollection):
     def __init__(self, widget=None):
         super().__init__()
-        self.programs[BackgroundProgram(widget)] = lambda: self.filter(BackgroundGL)
+        self.programs[AxisProgram(widget)] = lambda: self.filter(AxisGL)

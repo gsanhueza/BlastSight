@@ -15,7 +15,7 @@ class ShaderProgram:
     def __init__(self, widget):
         self.widget = widget
         self.shader_program = None
-        self.shader_dir = f'{pathlib.Path(__file__).parent.parent}/shaders'
+        self.shader_dir = f'{pathlib.Path(__file__).parent.parent}/drawables/shaders'
         self.uniform_locs = {}
         self.drawables = []
         self.base_name = None

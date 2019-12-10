@@ -5,7 +5,7 @@ import pytest
 from blastsight.model.elements.pointelement import PointElement
 from blastsight.view.integrableviewer import IntegrableViewer
 from blastsight.view.drawables.pointgl import PointGL
-from blastsight.view.drawables.glprograms.pointprogram import PointProgram
+from blastsight.view.glprograms.pointprogram import PointProgram
 
 
 class TestPointGL:

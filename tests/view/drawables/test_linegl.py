@@ -5,7 +5,7 @@ import pytest
 from blastsight.model.elements.lineelement import LineElement
 from blastsight.view.integrableviewer import IntegrableViewer
 from blastsight.view.drawables.linegl import LineGL
-from blastsight.view.drawables.glprograms.lineprogram import LineProgram
+from blastsight.view.glprograms.lineprogram import LineProgram
 
 
 class TestLineGL:

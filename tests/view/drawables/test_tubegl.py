@@ -5,7 +5,7 @@ import pytest
 from blastsight.model.elements.tubeelement import TubeElement
 from blastsight.view.integrableviewer import IntegrableViewer
 from blastsight.view.drawables.tubegl import TubeGL
-from blastsight.view.drawables.glprograms.tubeprogram import TubeProgram
+from blastsight.view.glprograms.tubeprogram import TubeProgram
 
 
 class TestTubeGL:

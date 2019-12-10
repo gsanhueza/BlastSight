@@ -4,7 +4,7 @@ import pytest
 
 from blastsight.view.integrableviewer import IntegrableViewer
 from blastsight.view.drawables.axisgl import AxisGL
-from blastsight.view.drawables.glprograms.axisprogram import AxisProgram
+from blastsight.view.glprograms.axisprogram import AxisProgram
 
 from blastsight.model.elements.nullelement import NullElement
 

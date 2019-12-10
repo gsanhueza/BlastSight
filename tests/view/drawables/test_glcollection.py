@@ -2,8 +2,8 @@
 
 from blastsight.model.elements.element import Element
 from blastsight.view.drawables.gldrawable import GLDrawable
-from blastsight.view.drawables.glcollection import GLCollection
-from blastsight.view.drawables.gldrawablecollection import GLDrawableCollection
+from blastsight.view.collections.glcollection import GLCollection
+from blastsight.view.collections.gldrawablecollection import GLDrawableCollection
 from blastsight.view.integrableviewer import IntegrableViewer
 
 

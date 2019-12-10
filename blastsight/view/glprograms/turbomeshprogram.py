@@ -9,7 +9,7 @@ import numpy as np
 from OpenGL.GL import *
 
 from .meshprogram import MeshProgram
-from ..gldrawable import GLDrawable
+from ..drawables.gldrawable import GLDrawable
 
 
 class TurboMeshProgram(MeshProgram):
