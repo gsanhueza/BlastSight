@@ -121,6 +121,9 @@ class Model:
     def lines_by_path(self, path: str, *args, **kwargs) -> LineElement:
         return self._load_element_by_path(path, LineElement, *args, **kwargs)
 
+    def tubes_by_path(self, path: str, *args, **kwargs) -> TubeElement:
+        return self._load_element_by_path(path, TubeElement, *args, **kwargs)
+
     """
     Element handling
     """
@@ -154,6 +157,9 @@ class Model:
         self.export(path, _id)
 
     def export_lines(self, path: str, _id: int) -> None:
+        self.export(path, _id)
+
+    def export_tubes(self, path: str, _id: int) -> None:
         self.export(path, _id)
 
     """

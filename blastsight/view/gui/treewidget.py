@@ -22,6 +22,7 @@ from ..drawables.meshgl import MeshGL
 from ..drawables.blockgl import BlockGL
 from ..drawables.pointgl import PointGL
 from ..drawables.linegl import LineGL
+from ..drawables.tubegl import TubeGL
 
 
 class TreeWidget(QTreeWidget):
@@ -31,6 +32,7 @@ class TreeWidget(QTreeWidget):
     signal_export_blocks = Signal(int)
     signal_export_points = Signal(int)
     signal_export_lines = Signal(int)
+    signal_export_tubes = Signal(int)
 
     def __init__(self, parent=None, enable_export=False):
         super().__init__(parent)
@@ -98,6 +100,7 @@ class TreeWidget(QTreeWidget):
         actions.action_export_blocks.triggered.connect(lambda: self.signal_export_blocks.emit(item.id))
         actions.action_export_points.triggered.connect(lambda: self.signal_export_points.emit(item.id))
         actions.action_export_lines.triggered.connect(lambda: self.signal_export_lines.emit(item.id))
+        actions.action_export_tubes.triggered.connect(lambda: self.signal_export_tubes.emit(item.id))
 
         # If multiple elements are selected, we'll only show a basic menu
         if len(self.selectedItems()) > 1:
@@ -116,7 +119,7 @@ class TreeWidget(QTreeWidget):
         menu.addSeparator()
 
         # WARNING: MeshGL.is_boostable == True means no highlight/wireframe support yet.
-        if item.type in [MeshGL, LineGL]:
+        if item.type in [MeshGL, LineGL, TubeGL]:
             if item.type is MeshGL:
                 # Dynamic checkbox in actions
                 actions.action_highlight.setChecked(item.drawable.is_highlighted)
@@ -135,6 +138,7 @@ class TreeWidget(QTreeWidget):
             LineGL: actions.action_export_lines,
             BlockGL: actions.action_export_blocks,
             PointGL: actions.action_export_points,
+            TubeGL: actions.action_export_tubes,
         }
 
         if self.enable_export:

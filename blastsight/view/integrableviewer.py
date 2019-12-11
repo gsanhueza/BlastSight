@@ -261,6 +261,9 @@ class IntegrableViewer(QOpenGLWidget):
     def lines_by_path(self, path: str, *args, **kwargs) -> PointGL:
         return self._load_drawable(self.model.lines_by_path, LineGL, path, *args, **kwargs)
 
+    def tubes_by_path(self, path: str, *args, **kwargs) -> TubeGL:
+        return self._load_drawable(self.model.tubes_by_path, TubeGL, path, *args, **kwargs)
+
     def meshes_by_folder_path(self, path: str, *args, **kwargs) -> list:
         return self._load_folder(self.mesh_by_path, path, *args, **kwargs)
 
@@ -272,6 +275,9 @@ class IntegrableViewer(QOpenGLWidget):
 
     def lines_by_folder_path(self, path: str, *args, **kwargs) -> list:
         return self._load_folder(self.lines_by_path, path, *args, **kwargs)
+
+    def tubes_by_folder_path(self, path: str, *args, **kwargs) -> list:
+        return self._load_folder(self.tubes_by_path, path, *args, **kwargs)
 
     """
     Export methods
@@ -294,6 +300,9 @@ class IntegrableViewer(QOpenGLWidget):
 
     def export_lines(self, path, _id) -> None:
         self._export_element(self.model.export_lines, path, _id)
+
+    def export_tubes(self, path, _id) -> None:
+        self._export_element(self.model.export_tubes, path, _id)
 
     """
     Drawable manipulation

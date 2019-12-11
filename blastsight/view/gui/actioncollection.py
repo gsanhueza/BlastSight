@@ -58,9 +58,12 @@ class ActionCollection:
         self.action_export_lines = QAction('Export &lines', parent)
         self.action_export_lines.setIcon(QIcon(f'{self.icons_path}/export.svg'))
 
+        self.action_export_tubes = QAction('Export &tubes', parent)
+        self.action_export_tubes.setIcon(QIcon(f'{self.icons_path}/export.svg'))
+
         # MainWindow Actions
         self.action_load_mesh = QAction('Load &mesh', parent)
-        self.action_load_mesh.setIcon(QIcon(f'{self.icons_path}/radar_plot.svg'))
+        self.action_load_mesh.setIcon(QIcon(f'{self.icons_path}/area_chart.svg'))
         self.action_load_mesh.setShortcut('Ctrl+A')
 
         self.action_load_blocks = QAction('Load &blocks', parent)
@@ -75,8 +78,12 @@ class ActionCollection:
         self.action_load_lines.setIcon(QIcon(f'{self.icons_path}/line_chart.svg'))
         self.action_load_lines.setShortcut('Ctrl+L')
 
+        self.action_load_tubes = QAction('Load &tubes', parent)
+        self.action_load_tubes.setIcon(QIcon(f'{self.icons_path}/radar_plot.svg'))
+        self.action_load_tubes.setShortcut('Ctrl+U')
+
         self.action_load_mesh_folder = QAction('Load m&esh folder', parent)
-        self.action_load_mesh_folder.setIcon(QIcon(f'{self.icons_path}/radar_plot.svg'))
+        self.action_load_mesh_folder.setIcon(QIcon(f'{self.icons_path}/area_chart.svg'))
         self.action_load_mesh_folder.setShortcut('Ctrl+Shift+A')
 
         self.action_load_blocks_folder = QAction('Load b&locks folder', parent)
@@ -90,6 +97,10 @@ class ActionCollection:
         self.action_load_lines_folder = QAction('Load l&ines folder', parent)
         self.action_load_lines_folder.setIcon(QIcon(f'{self.icons_path}/line_chart.svg'))
         self.action_load_lines_folder.setShortcut('Ctrl+Shift+L')
+
+        self.action_load_tubes_folder = QAction('Load t&ubes folder', parent)
+        self.action_load_tubes_folder.setIcon(QIcon(f'{self.icons_path}/radar_plot.svg'))
+        self.action_load_tubes_folder.setShortcut('Ctrl+Shift+U')
 
         self.action_quit = QAction('&Quit', parent)
         self.action_quit.setIcon(QIcon(f'{self.icons_path}/cancel.svg'))

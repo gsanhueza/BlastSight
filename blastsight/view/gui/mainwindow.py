@@ -79,19 +79,20 @@ class MainWindow(QMainWindow):
                     'OFF Files (*.off);;'
                     'H5M Files (*.h5m);;'
                     'All Files (*.*)',
-            'block': 'Data Files (*.csv *.h5p *.out);;'
-                     'CSV Files (*.csv);;'
-                     'H5P Files (*.h5p);;'
-                     'GSLib Files (*.out);;'
+            'blocks': 'Data Files (*.csv *.h5p *.out);;'
+                      'CSV Files (*.csv);;'
+                      'H5P Files (*.h5p);;'
+                      'GSLib Files (*.out);;'
+                      'All Files (*.*)',
+            'points': 'Data Files (*.csv *.h5p *.out);;'
+                      'CSV Files (*.csv);;'
+                      'H5P Files (*.h5p);;'
+                      'GSLib Files (*.out);;'
+                      'All Files (*.*)',
+            'lines': 'CSV Files (*.csv);;'
                      'All Files (*.*)',
-            'point': 'Data Files (*.csv *.h5p *.out);;'
-                     'CSV Files (*.csv);;'
-                     'H5P Files (*.h5p);;'
-                     'GSLib Files (*.out);;'
+            'tubes': 'CSV Files (*.csv);;'
                      'All Files (*.*)',
-            'line': 'Data Files (*.csv *.dxf);;'
-                    'CSV Files (*.csv);;'
-                    'All Files (*.*)',
         }
 
         # Extra actions
@@ -110,11 +111,13 @@ class MainWindow(QMainWindow):
         self.menu_File.addAction(self.toolbar.action_collection.action_load_blocks)
         self.menu_File.addAction(self.toolbar.action_collection.action_load_points)
         self.menu_File.addAction(self.toolbar.action_collection.action_load_lines)
+        self.menu_File.addAction(self.toolbar.action_collection.action_load_tubes)
         self.menu_File.addSeparator()
         self.menu_File.addAction(self.toolbar.action_collection.action_load_mesh_folder)
         self.menu_File.addAction(self.toolbar.action_collection.action_load_blocks_folder)
         self.menu_File.addAction(self.toolbar.action_collection.action_load_points_folder)
         self.menu_File.addAction(self.toolbar.action_collection.action_load_lines_folder)
+        self.menu_File.addAction(self.toolbar.action_collection.action_load_tubes_folder)
         self.menu_File.addSeparator()
         self.menu_File.addAction(self.toolbar.action_collection.action_quit)
 
@@ -153,11 +156,13 @@ class MainWindow(QMainWindow):
         self.toolbar.action_collection.action_load_blocks.triggered.connect(self.dialog_load_blocks)
         self.toolbar.action_collection.action_load_points.triggered.connect(self.dialog_load_points)
         self.toolbar.action_collection.action_load_lines.triggered.connect(self.dialog_load_lines)
+        self.toolbar.action_collection.action_load_tubes.triggered.connect(self.dialog_load_tubes)
 
         self.toolbar.action_collection.action_load_mesh_folder.triggered.connect(self.dialog_load_mesh_folder)
         self.toolbar.action_collection.action_load_blocks_folder.triggered.connect(self.dialog_load_blocks_folder)
         self.toolbar.action_collection.action_load_points_folder.triggered.connect(self.dialog_load_points_folder)
         self.toolbar.action_collection.action_load_lines_folder.triggered.connect(self.dialog_load_lines_folder)
+        self.toolbar.action_collection.action_load_tubes_folder.triggered.connect(self.dialog_load_tubes_folder)
 
         # View
         self.toolbar.action_collection.action_show_tree.triggered.connect(self.dockWidget.show)
@@ -192,6 +197,7 @@ class MainWindow(QMainWindow):
         self.treeWidget.signal_export_blocks.connect(self.dialog_export_blocks)
         self.treeWidget.signal_export_points.connect(self.dialog_export_points)
         self.treeWidget.signal_export_lines.connect(self.dialog_export_lines)
+        self.treeWidget.signal_export_tubes.connect(self.dialog_export_tubes)
 
     @property
     def last_dir(self) -> str:
@@ -319,25 +325,31 @@ class MainWindow(QMainWindow):
         self._dialog_load_element(method=self.viewer.mesh_by_path, hint='mesh')
 
     def dialog_load_blocks(self) -> None:
-        self._dialog_load_element(method=self.viewer.blocks_by_path, hint='block')
+        self._dialog_load_element(method=self.viewer.blocks_by_path, hint='blocks')
 
     def dialog_load_points(self) -> None:
-        self._dialog_load_element(method=self.viewer.points_by_path, hint='point')
+        self._dialog_load_element(method=self.viewer.points_by_path, hint='points')
 
     def dialog_load_lines(self) -> None:
-        self._dialog_load_element(method=self.viewer.lines_by_path, hint='line')
+        self._dialog_load_element(method=self.viewer.lines_by_path, hint='lines')
+
+    def dialog_load_tubes(self) -> None:
+        self._dialog_load_element(method=self.viewer.tubes_by_path, hint='tubes')
 
     def dialog_load_mesh_folder(self) -> None:
         self._dialog_load_folder(method=self.viewer.meshes_by_folder_path, hint='mesh')
 
     def dialog_load_blocks_folder(self) -> None:
-        self._dialog_load_folder(method=self.viewer.blocks_by_folder_path, hint='block')
+        self._dialog_load_folder(method=self.viewer.blocks_by_folder_path, hint='blocks')
 
     def dialog_load_points_folder(self) -> None:
-        self._dialog_load_folder(method=self.viewer.points_by_folder_path, hint='point')
+        self._dialog_load_folder(method=self.viewer.points_by_folder_path, hint='points')
 
     def dialog_load_lines_folder(self) -> None:
-        self._dialog_load_folder(method=self.viewer.lines_by_folder_path, hint='line')
+        self._dialog_load_folder(method=self.viewer.lines_by_folder_path, hint='lines')
+
+    def dialog_load_tubes_folder(self) -> None:
+        self._dialog_load_folder(method=self.viewer.tubes_by_folder_path, hint='tubes')
 
     """
     Slots for exporting files
@@ -361,6 +373,11 @@ class MainWindow(QMainWindow):
         self._dialog_export_element(_id=_id,
                                     filters='BlastSight lines (*.csv);;',
                                     method=self.viewer.export_lines)
+
+    def dialog_export_tubes(self, _id: int) -> None:
+        self._dialog_export_element(_id=_id,
+                                    filters='BlastSight tubes (*.csv);;',
+                                    method=self.viewer.export_tubes)
 
     """
     Slots for modifying controller modes
