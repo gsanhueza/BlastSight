@@ -13,6 +13,26 @@ from .gldrawable import GLDrawable
 class BackgroundGL(GLDrawable):
     def __init__(self, element, *args, **kwargs):
         super().__init__(element, *args, **kwargs)
+        self._top_color = [0.1, 0.2, 0.3]
+        self._bot_color = [0.4, 0.5, 0.6]
+
+    @property
+    def top_color(self):
+        return self._top_color
+
+    @property
+    def bot_color(self):
+        return self._bot_color
+
+    @top_color.setter
+    def top_color(self, color):
+        self._top_color = color
+        self.notify()
+
+    @bot_color.setter
+    def bot_color(self, color):
+        self._bot_color = color
+        self.notify()
 
     def __dir__(self):
         return sorted(set(dir(type(self)) + list(self.__dict__.keys())))
