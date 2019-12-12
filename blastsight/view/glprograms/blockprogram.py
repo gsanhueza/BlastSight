@@ -25,7 +25,7 @@ class BlockProgram(ShaderProgram):
 
         self.shader_program.link()
 
-    def draw(self):
-        for drawable in self.drawables:
+    def inner_draw(self, drawables):
+        for drawable in drawables:
             self.update_uniform('block_size', *drawable.element.block_size)
             drawable.draw()

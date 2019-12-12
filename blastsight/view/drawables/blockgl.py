@@ -87,33 +87,32 @@ class BlockGL(GLDrawable):
 
         glBindVertexArray(0)
 
-    # Adapted from https://stackoverflow.com/questions/28375338/cube-using-single-gl-triangle-strip
     @staticmethod
     def generate_cube(size: np.ndarray) -> np.ndarray:
         vertices = np.array([
-            [1, 1, -1],
-            [-1, 1, -1],
-            [1, -1, -1],
             [-1, -1, -1],
-            [1, 1, 1],
-            [-1, 1, 1],
-            [1, -1, 1],
-            [-1, -1, 1],
+            [+1, -1, -1],
+            [+1, +1, -1],
+            [-1, +1, -1],
+            [-1, -1, +1],
+            [+1, -1, +1],
+            [+1, +1, +1],
+            [-1, +1, +1],
         ]) * size * 0.5
 
         indices = np.array([
-            [0, 4, 5],
-            [0, 5, 1],
-            [1, 2, 0],
-            [1, 3, 2],
-            [2, 4, 0],
-            [2, 6, 4],
-            [2, 6, 7],
-            [2, 7, 3],
-            [5, 6, 4],
-            [5, 7, 6],
-            [3, 1, 5],
-            [3, 5, 7],
+            [1, 2, 3],
+            [1, 3, 0],
+            [4, 5, 6],
+            [4, 6, 7],
+            [0, 1, 5],
+            [0, 5, 4],
+            [2, 3, 7],
+            [2, 7, 6],
+            [3, 0, 4],
+            [3, 4, 7],
+            [1, 2, 6],
+            [1, 6, 5],
         ])
 
         return vertices[indices].astype(np.float32)

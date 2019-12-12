@@ -39,10 +39,10 @@ class TurboMeshProgram(MeshProgram):
         self.info['transparent']['num_indices'] = 0
         self.all_opaque = True
 
-    def set_drawables(self, meshes):
-        self.drawables = meshes
-        self.set_buffers([x for x in meshes if x.element.alpha >= 0.99], 'opaque')
-        self.set_buffers([x for x in meshes if x.element.alpha < 0.99], 'transparent')
+    def set_drawables(self, drawables):
+        super().set_drawables(drawables)
+        self.set_buffers(self.drawables, 'opaque')
+        self.set_buffers(self.transparents, 'transparent')
 
     def set_buffers(self, meshes, visibility):
         _POSITION = 0
@@ -95,7 +95,9 @@ class TurboMeshProgram(MeshProgram):
     def draw(self):
         glBindVertexArray(self.info['opaque']['vaos'][-1])
         glDrawElements(GL_TRIANGLES, self.info['opaque']['num_indices'], GL_UNSIGNED_INT, None)
+        glBindVertexArray(0)
 
+    def redraw(self):
         # We can perform faster if we don't need to fix alpha rendering
         if not self.all_opaque:
             glBindVertexArray(self.info['transparent']['vaos'][-1])
@@ -108,5 +110,4 @@ class TurboMeshProgram(MeshProgram):
 
             glDisable(GL_CULL_FACE)
             glDepthMask(GL_TRUE)
-
-        glBindVertexArray(0)
+            glBindVertexArray(0)

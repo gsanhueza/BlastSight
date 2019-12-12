@@ -68,6 +68,7 @@ def demo():
                   values=[0.5, 1.0, 1.5],
                   vmin=0.5,
                   vmax=1.5,
+                  alpha=1.0,
                   colormap='red-blue',
                   name='Blocks')
 
@@ -85,6 +86,7 @@ def demo():
                   color=[[1.0, 1.0, 0.0],
                          [0.0, 1.0, 1.0],
                          [1.0, 0.0, 1.0]],
+                  alpha=1.0,
                   marker='square',
                   name='Points rendered as squares')
 
@@ -98,6 +100,7 @@ def demo():
                   color=[[1.0, 0.0, 0.0],
                          [0.0, 1.0, 0.0],
                          [0.0, 0.0, 1.0]],
+                  alpha=1.0,
                   marker='circle',
                   name='Points rendered as circles')
 
@@ -114,6 +117,7 @@ def demo():
                   point_size=2.0,
                   color=[[0.8, 0.5, 0.2],
                          [0.5, 0.2, 0.8]],
+                  alpha=1.0,
                   marker='sphere',
                   name='Points rendered as spheres')
 
@@ -128,6 +132,7 @@ def demo():
                  y=[1.0, 1.0, -1.0, -1.0],
                  z=[-2.0, -2.0, -2.0, -2.0],
                  color=[0.2, 0.8, 0.8],
+                 alpha=1.0,
                  loop=True,
                  name='Lines')
 
@@ -142,6 +147,7 @@ def demo():
                  color=[0.9, 0.2, 0.2],
                  radius=0.2,
                  resolution=150,
+                 alpha=1.0,
                  loop=False,
                  name='Tubes')
 
@@ -167,6 +173,10 @@ def demo():
 
     """
     Finally, you can show the viewer with all the elements.
+    You don't really need to call viewer.fit_to_screen(),
+    since it's automatically called.
+
+    If you want to disable it, use viewer.show(autofit=False).
     """
     viewer.show()
 

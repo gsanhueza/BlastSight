@@ -15,40 +15,34 @@ class MeshProgram(ShaderProgram):
         self.base_name = 'Mesh'
 
     def draw(self):
-        highlighted = []
-        normal_opaque = []
-        normal_transparent = []
-
-        # Prepare meshes
-        for drawable in self.drawables:
-            # Normal
-            if drawable.element.alpha >= 0.99:
-                normal_opaque.append(drawable)
-            else:
-                normal_transparent.append(drawable)
-            # Highlighted
-            if drawable.is_highlighted:
-                highlighted.append(drawable)
-
         # Highlighted
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
         glLineWidth(3)
-        for drawable in highlighted:
+        for drawable in filter(lambda x: x.is_highlighted, self.drawables):
             drawable.draw()
         glLineWidth(1)
 
         # Opaque
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)
-        for drawable in normal_opaque:
+        for drawable in self.drawables:
             drawable.draw()
 
+    def redraw(self):
+        # Highlighted
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
+        glLineWidth(3)
+        for drawable in filter(lambda x: x.is_highlighted, self.transparents):
+            drawable.draw()
+        glLineWidth(1)
+
         # Transparent
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)
         glDepthMask(GL_FALSE)
         glEnable(GL_CULL_FACE)
 
         for gl_cull in [GL_FRONT, GL_BACK]:
             glCullFace(gl_cull)
-            for drawable in normal_transparent:
+            for drawable in self.transparents:
                 drawable.draw()
 
         glDisable(GL_CULL_FACE)

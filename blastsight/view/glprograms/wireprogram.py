@@ -19,3 +19,9 @@ class WireProgram(MeshProgram):
         for drawable in self.drawables:
             drawable.draw()
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)
+
+    def redraw(self):
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
+        for drawable in self.transparents:
+            drawable.draw()
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)
