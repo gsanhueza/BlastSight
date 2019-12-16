@@ -9,7 +9,7 @@ setuptools.setup(
     name='blastsight',
     version='0.1.0',
     author='Gabriel Sanhueza',
-    description='3D visualization software designed to aid in Mining research.',
+    description='A 3D visualization library oriented to mining applications',
     long_description=long_description,
     long_description_content_type='text/markdown',
     url='https://github.com/gsanhueza/BlastSight',
@@ -37,3 +37,4 @@ setuptools.setup(
         'Operating System :: OS Independent',
     ],
 )
+

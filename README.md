@@ -2,7 +2,7 @@
 
 BlastSight is a 3D visualization software designed to aid in Mining research.
 
-![blastsight](https://users.dcc.uchile.cl/~gsanhuez/blastsight-app.png)
+![blastsight](https://users.dcc.uchile.cl/~gsanhuez/blastsight_app.png)
 
 ## Installation
 
@@ -51,7 +51,6 @@ if __name__ == '__main__':
     embedded = EmbeddedViewer()
     embedded.show()
     app.exec_()
-
 ```
 
 ### Viewer Mode
@@ -67,7 +66,6 @@ viewer = Viewer()
 # Your code
 
 viewer.show()
-
 ```
 
 ## Examples
