@@ -132,6 +132,7 @@ class TestMeshGL:
         drawable_alpha = MeshGL(element)
         drawable_wireframe = MeshGL(self.element, wireframe=True)
         drawable_highlight = MeshGL(self.element, highlight=True)
+        drawable_highlight_alpha = MeshGL(element, highlight=True)
 
         assert not drawable_highlight.toggle_highlighting()
         assert drawable_highlight.toggle_highlighting()
@@ -139,8 +140,11 @@ class TestMeshGL:
         program.set_drawables([drawable_normal,
                                drawable_alpha,
                                drawable_wireframe,
-                               drawable_highlight])
+                               drawable_highlight,
+                               drawable_highlight_alpha,
+                               ])
         program.draw()
+        program.redraw()
 
     def test_wire_program(self):
         widget = IntegrableViewer()
@@ -162,6 +166,7 @@ class TestMeshGL:
                                drawable_wireframe,
                                drawable_highlight])
         program.draw()
+        program.redraw()
 
     def test_turbo_program(self):
         widget = IntegrableViewer()
@@ -184,3 +189,4 @@ class TestMeshGL:
 
         program.set_drawables([drawable_normal, drawable_alpha])
         program.draw()
+        program.redraw()

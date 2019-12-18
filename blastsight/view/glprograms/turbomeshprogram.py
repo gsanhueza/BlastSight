@@ -30,14 +30,11 @@ class TurboMeshProgram(MeshProgram):
             },
         }
 
-        self.all_opaque = True
-
     def recreate(self) -> None:
         self.info['opaque']['v_size'] = 0
         self.info['opaque']['num_indices'] = 0
         self.info['transparent']['v_size'] = 0
         self.info['transparent']['num_indices'] = 0
-        self.all_opaque = True
 
     def set_drawables(self, drawables):
         super().set_drawables(drawables)
@@ -69,9 +66,6 @@ class TurboMeshProgram(MeshProgram):
             self.info[visibility]['num_indices'] += (mesh.element.indices + self.info[visibility]['v_size']).size
             self.info[visibility]['v_size'] += num_triangles
 
-            if visibility == 'transparent' and len(meshes) > 0:
-                self.all_opaque = False
-
         if len(meshes) > 0:
             vertices = np.concatenate(vertices)
             indices = np.concatenate(indices)
@@ -98,16 +92,14 @@ class TurboMeshProgram(MeshProgram):
         glBindVertexArray(0)
 
     def redraw(self):
-        # We can perform faster if we don't need to fix alpha rendering
-        if not self.all_opaque:
-            glBindVertexArray(self.info['transparent']['vaos'][-1])
-            glDepthMask(GL_FALSE)
-            glEnable(GL_CULL_FACE)
+        glBindVertexArray(self.info['transparent']['vaos'][-1])
+        glDepthMask(GL_FALSE)
+        glEnable(GL_CULL_FACE)
 
-            for gl_cull in [GL_FRONT, GL_BACK]:
-                glCullFace(gl_cull)
-                glDrawElements(GL_TRIANGLES, self.info['transparent']['num_indices'], GL_UNSIGNED_INT, None)
+        for gl_cull in [GL_FRONT, GL_BACK]:
+            glCullFace(gl_cull)
+            glDrawElements(GL_TRIANGLES, self.info['transparent']['num_indices'], GL_UNSIGNED_INT, None)
 
-            glDisable(GL_CULL_FACE)
-            glDepthMask(GL_TRUE)
-            glBindVertexArray(0)
+        glDisable(GL_CULL_FACE)
+        glDepthMask(GL_TRUE)
+        glBindVertexArray(0)
