@@ -87,6 +87,7 @@ class TestAutoDrawable:
 
         program.set_drawables([drawable])
         program.draw()
+        program.redraw()
 
         # Standard
         drawable.hide()
