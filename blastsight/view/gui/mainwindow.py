@@ -245,6 +245,9 @@ class MainWindow(QMainWindow):
             origin_id = sliced_meshes.get('origin_id')
             mesh = self.viewer.get_drawable(origin_id)
 
+            if 'SLICE' in str(mesh.name):
+                continue
+
             for i, vert_slice in enumerate(slices):
                 self.viewer.lines(vertices=vert_slice,
                                   color=mesh.color,
@@ -259,6 +262,9 @@ class MainWindow(QMainWindow):
             indices = sliced_blocks.get('indices')
             origin_id = sliced_blocks.get('origin_id')
             block = self.viewer.get_drawable(origin_id)
+
+            if 'SLICE' in str(block.name):
+                continue
 
             self.viewer.blocks(vertices=block.vertices[indices],
                                values=block.values[indices],
