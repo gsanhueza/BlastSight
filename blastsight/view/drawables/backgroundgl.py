@@ -11,7 +11,7 @@ from .gldrawable import GLDrawable
 
 
 class BackgroundGL(GLDrawable):
-    def __init__(self, element, *args, **kwargs):
+    def __init__(self, element=None, *args, **kwargs):
         super().__init__(element, *args, **kwargs)
         self._top_color = [0.1, 0.2, 0.3]
         self._bot_color = [0.4, 0.5, 0.6]

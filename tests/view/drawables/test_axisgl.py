@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 
-import pytest
-
 from blastsight.view.integrableviewer import IntegrableViewer
 from blastsight.view.drawables.axisgl import AxisGL
 from blastsight.view.glprograms.axisprogram import AxisProgram
@@ -11,11 +9,11 @@ from blastsight.model.elements.nullelement import NullElement
 
 class TestAxisGL:
     def test_empty_axis(self):
-        with pytest.raises(Exception):
-            AxisGL()
+        drawable = AxisGL()
+        assert type(drawable.element) is NullElement
 
     def test_dir(self):
-        assert len(dir(AxisGL(NullElement()))) > 0
+        assert len(dir(AxisGL())) > 0
 
     def test_draw(self):
         widget = IntegrableViewer()

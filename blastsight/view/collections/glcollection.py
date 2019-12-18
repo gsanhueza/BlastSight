@@ -35,31 +35,21 @@ class GLCollection(OrderedDict):
                 gl_program.set_drawables([d for d in lambda_drawables() if d.is_visible])
             self.needs_update = False
 
-        # Opaque
-        for gl_program in self.programs.keys():
-            # Skip bindings if there are no elements of this type.
-            if len(gl_program.drawables) == 0:
-                continue
+        def inner_draw(programs, collection, method):
+            for program in programs:
+                if len(getattr(program, collection)) == 0:
+                    continue
 
-            gl_program.setup()
-            gl_program.bind()
+                program.setup()
+                program.bind()
 
-            gl_program.update_uniform('proj_matrix', proj_matrix)
-            gl_program.update_uniform('model_view_matrix', view_matrix * model_matrix)
-            gl_program.draw()
+                program.update_uniform('proj_matrix', proj_matrix)
+                program.update_uniform('model_view_matrix', view_matrix * model_matrix)
 
-        # Transparent
-        for gl_program in self.programs.keys():
-            # Skip bindings if there are no elements of this type.
-            if len(gl_program.transparents) == 0:
-                continue
+                getattr(program, method)()
 
-            gl_program.setup()
-            gl_program.bind()
-
-            gl_program.update_uniform('proj_matrix', proj_matrix)
-            gl_program.update_uniform('model_view_matrix', view_matrix * model_matrix)
-            gl_program.redraw()
+        inner_draw(self.programs.keys(), collection='drawables', method='draw')
+        inner_draw(self.programs.keys(), collection='transparents', method='redraw')
 
     def filter(self, drawable_type: type) -> list:
         # The copy avoids RuntimeError: OrderedDict mutated during iteration

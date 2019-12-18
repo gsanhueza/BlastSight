@@ -12,7 +12,7 @@ from OpenGL.GL import *
 
 
 class AxisGL(GLDrawable):
-    def __init__(self, element, *args, **kwargs):
+    def __init__(self, element=None, *args, **kwargs):
         super().__init__(element, *args, **kwargs)
 
     def __dir__(self):

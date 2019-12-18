@@ -40,7 +40,6 @@ from ..controller.measurementmode import MeasurementMode
 
 from ..model import utils
 from ..model.model import Model
-from ..model.elements.nullelement import NullElement
 
 
 class IntegrableViewer(QOpenGLWidget):
@@ -71,11 +70,11 @@ class IntegrableViewer(QOpenGLWidget):
         self.background_collection = GLBackgroundCollection(self)
         self.drawable_collection = GLDrawableCollection(self)
 
-        self.axis = AxisGL(NullElement(id='AXIS'))
+        self.axis = AxisGL(id='AXIS')
         self.axis.add_observer(self)
         self.axis_collection.add(self.axis)
 
-        self.bg = BackgroundGL(NullElement(id='BG'))
+        self.bg = BackgroundGL(id='BG')
         self.bg.add_observer(self)
         self.background_collection.add(self.bg)
 

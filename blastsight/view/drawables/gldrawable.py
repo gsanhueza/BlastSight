@@ -7,11 +7,13 @@
 
 from OpenGL.GL import *
 
+from ...model.elements.nullelement import NullElement
+
 
 class GLDrawable:
     def __init__(self, element, *args, **kwargs):
-        assert element
-        super().__setattr__('element', element)  # self.element = element
+        # assert element
+        super().__setattr__('element', element or NullElement())  # self.element = element
 
         self.vaos = []
         self.vbos = []
