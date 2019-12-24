@@ -15,10 +15,7 @@ class BlockGL(GLDrawable):
     def __init__(self, element, *args, **kwargs):
         super().__init__(element, *args, **kwargs)
         self.num_cubes = 0
-
-        # Force legacy method if OpenGL < 3.3
-        opengl_check: bool = float(f'{glGetIntegerv(GL_MAJOR_VERSION)}.{glGetIntegerv(GL_MINOR_VERSION)}') < 3.3
-        self._legacy = kwargs.pop('legacy', opengl_check)
+        self._legacy = kwargs.pop('legacy', False)
 
     """
     Properties
@@ -76,6 +73,11 @@ class BlockGL(GLDrawable):
         glBindVertexArray(0)
 
     def draw(self):
+        # Force legacy method if OpenGL < 3.3
+        if not self.is_legacy and float(f'{glGetIntegerv(GL_MAJOR_VERSION)}.{glGetIntegerv(GL_MINOR_VERSION)}') < 3.3:
+            self.is_legacy = True
+            return
+
         glBindVertexArray(self.vao)
 
         if self.is_legacy:
