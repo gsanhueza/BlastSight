@@ -19,21 +19,17 @@ class TurboMeshProgram(MeshProgram):
             'opaque': {
                 'vaos': [],
                 'vbos': [],
-                'v_size': 0,
                 'num_indices': 0,
             },
             'transparent': {
                 'vaos': [],
                 'vbos': [],
-                'v_size': 0,
                 'num_indices': 0,
             },
         }
 
     def recreate(self) -> None:
-        self.info['opaque']['v_size'] = 0
         self.info['opaque']['num_indices'] = 0
-        self.info['transparent']['v_size'] = 0
         self.info['transparent']['num_indices'] = 0
 
     def set_drawables(self, drawables):
@@ -56,15 +52,20 @@ class TurboMeshProgram(MeshProgram):
         indices = np.empty(len(meshes), np.ndarray)
         colors = np.empty(len(meshes), np.ndarray)
 
+        vertices_counter = 0
+        indices_counter = 0
+
         for index, mesh in enumerate(meshes):
-            num_triangles = mesh.element.vertices.size // 3
+            num_vertices = len(mesh.element.vertices)
 
-            indices[index] = (mesh.element.indices + self.info[visibility]['v_size'])
             vertices[index] = mesh.element.vertices.astype(np.float32)
-            colors[index] = np.tile(mesh.element.rgba, num_triangles).astype(np.float32)
+            indices[index] = (mesh.element.indices + vertices_counter)
+            colors[index] = np.tile(mesh.element.rgba, num_vertices).astype(np.float32)
 
-            self.info[visibility]['num_indices'] += (mesh.element.indices + self.info[visibility]['v_size']).size
-            self.info[visibility]['v_size'] += num_triangles
+            vertices_counter += num_vertices
+            indices_counter += mesh.element.indices.size
+
+        self.info[visibility]['num_indices'] = indices_counter
 
         if len(meshes) > 0:
             vertices = np.concatenate(vertices)
