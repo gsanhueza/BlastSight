@@ -14,8 +14,7 @@ from OpenGL.GL import *
 class LineGL(GLDrawable):
     def __init__(self, element, *args, **kwargs):
         super().__init__(element, *args, **kwargs)
-
-        self.vertices_size = 0
+        self.num_vertices = 0
 
     def setup_attributes(self) -> None:
         _POSITION = 0
@@ -29,7 +28,7 @@ class LineGL(GLDrawable):
         colors = self.element.rgba.astype(np.float32)
 
         # np.array([[0, 1, 2]], type) has size 3, despite having only 1 list there
-        self.vertices_size = vertices.size // 3
+        self.num_vertices = len(vertices)
 
         glBindVertexArray(self.vao)
 
@@ -46,5 +45,5 @@ class LineGL(GLDrawable):
 
     def draw(self):
         glBindVertexArray(self.vao)
-        glDrawArrays(GL_LINE_STRIP, 0, self.vertices_size)
+        glDrawArrays(GL_LINE_STRIP, 0, self.num_vertices)
         glBindVertexArray(0)

@@ -45,7 +45,7 @@ class BlockGL(GLDrawable):
         alpha = np.array([self.element.alpha], np.float32)
         template = self.generate_cube(self.element.block_size)
 
-        self.num_cubes = vertices.size // 3
+        self.num_cubes = len(vertices)
 
         glBindVertexArray(self.vao)
 

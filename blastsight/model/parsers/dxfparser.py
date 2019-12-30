@@ -38,7 +38,7 @@ class DXFParser(Parser):
         # Model data
         data = ParserData()
         data.vertices = vertices
-        data.indices = indices.reshape((indices.size // 3, 3))
+        data.indices = indices.reshape((-1, 3))
         data.properties = properties
 
         return data

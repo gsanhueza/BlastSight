@@ -73,5 +73,5 @@ class OFFParser(Parser):
         pd.DataFrame(vertices).to_csv(path, mode='a', sep=' ', header=False, index=False)
 
         # Indices
-        pd.DataFrame(np.column_stack(([[3]] * (indices.size // 3), indices))).to_csv(
+        pd.DataFrame(np.column_stack(([[3]] * len(indices), indices))).to_csv(
             path, mode='a', sep=' ', header=False, index=False)

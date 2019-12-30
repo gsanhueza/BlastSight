@@ -31,7 +31,7 @@ class PointGL(GLDrawable):
         alpha = np.array([self.element.alpha], np.float32)
         sizes = self.element.point_size.astype(np.float32)
 
-        self.num_points = sizes.size
+        self.num_points = len(vertices)
 
         glBindVertexArray(self.vao)
 

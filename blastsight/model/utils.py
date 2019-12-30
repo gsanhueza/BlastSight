@@ -198,7 +198,7 @@ def points_inside_mesh(mesh, point_vertices: np.ndarray) -> np.ndarray:
     # From the point center, if we hit the mesh an odd number of times, we're inside the mesh
     for origin in point_vertices:
         intersections = mesh_intersection(origin, ray, mesh)
-        mask.append(len(intersections) > 0 and (np.unique(intersections, axis=0).size // 3) % 2 == 1)
+        mask.append(len(intersections) > 0 and len(np.unique(intersections, axis=0)) % 2 == 1)
 
     return np.array(mask)
 
