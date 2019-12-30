@@ -63,10 +63,7 @@ class ShaderProgram:
         self.drawables = [d for d in drawables if d.alpha >= 0.99]
         self.transparents = [d for d in drawables if d.alpha < 0.99]
 
-        for drawable in self.drawables:
-            drawable.initialize()
-
-        for drawable in self.transparents:
+        for drawable in self.drawables + self.transparents:
             drawable.initialize()
 
     def bind(self) -> None:

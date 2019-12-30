@@ -18,21 +18,18 @@ class MeshProgram(ShaderProgram):
         # Highlighted
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
         glLineWidth(3)
-        for drawable in filter(lambda x: x.is_highlighted, self.drawables):
-            drawable.draw()
+        super().inner_draw(filter(lambda x: x.is_highlighted, self.drawables))
         glLineWidth(1)
 
         # Opaque
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)
-        for drawable in self.drawables:
-            drawable.draw()
+        super().draw()
 
     def redraw(self):
         # Highlighted
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
         glLineWidth(3)
-        for drawable in filter(lambda x: x.is_highlighted, self.transparents):
-            drawable.draw()
+        super().inner_draw(filter(lambda x: x.is_highlighted, self.transparents))
         glLineWidth(1)
 
         # Transparent
@@ -42,8 +39,7 @@ class MeshProgram(ShaderProgram):
 
         for gl_cull in [GL_FRONT, GL_BACK]:
             glCullFace(gl_cull)
-            for drawable in self.transparents:
-                drawable.draw()
+            super().redraw()
 
         glDisable(GL_CULL_FACE)
         glDepthMask(GL_TRUE)
