@@ -13,6 +13,7 @@ class ColorDialog(QColorDialog):
     def __init__(self, parent=None, _id=None):
         QColorDialog.__init__(self, parent)
         self.setOption(self.ShowAlphaChannel)
+        self.setOption(self.DontUseNativeDialog)
 
         self.viewer = parent
         self.id = _id
