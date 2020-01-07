@@ -15,6 +15,10 @@ setuptools.setup(
     url='https://github.com/gsanhueza/BlastSight',
     packages=setuptools.find_packages(exclude=['tests*']),
     include_package_data=True,
+    data_files=[
+        ('share/applications', ['blastsight.desktop']),
+        ('share/pixmaps', ['blastsight/view/gui/UI/icons/blastsight.png']),
+    ],
     install_requires=[
         'numpy',
         'PyQt5',

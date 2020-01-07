@@ -1,0 +1,11 @@
+#!/usr/bin/env xdg-open
+[Desktop Entry]
+Type=Application
+Terminal=false
+Categories=Qt;Graphics
+Name=BlastSight
+GenericName=3D visualization application oriented to the mining sector
+Comment=BlastSight
+Encoding=UTF-8
+Icon=blastsight
+Exec=python3 -m blastsight
