@@ -79,24 +79,29 @@ class MainWindow(QMainWindow):
                     'OFF Files (*.off);;'
                     'H5M Files (*.h5m);;'
                     'All Files (*.*)',
-            'blocks': 'Data Files (*.csv *.h5p *.out);;'
-                      'CSV Files (*.csv);;'
-                      'H5P Files (*.h5p);;'
-                      'GSLib Files (*.out);;'
-                      'All Files (*.*)',
-            'points': 'Data Files (*.csv *.h5p *.out);;'
-                      'CSV Files (*.csv);;'
-                      'H5P Files (*.h5p);;'
-                      'GSLib Files (*.out);;'
-                      'All Files (*.*)',
-            'lines': 'CSV Files (*.csv);;'
+            'block': 'Block Files (*.csv *.h5p *.out);;'
+                     'CSV Files (*.csv);;'
+                     'H5P Files (*.h5p);;'
+                     'GSLib Files (*.out);;'
                      'All Files (*.*)',
-            'tubes': 'CSV Files (*.csv);;'
+            'point': 'Point Files (*.csv *.h5p *.out);;'
+                     'CSV Files (*.csv);;'
+                     'H5P Files (*.h5p);;'
+                     'GSLib Files (*.out);;'
                      'All Files (*.*)',
+            'line': 'Line Files (*.csv *.dxf);;'
+                    'CSV Files (*.csv);;'
+                    'DXF Files (*.csv);;'
+                    'All Files (*.*)',
+            'tube': 'Tube Files (*.csv *.dxf);;'
+                    'CSV Files (*.csv);;'
+                    'DXF Files (*.csv);;'
+                    'All Files (*.*)',
         }
 
         # Extra actions
-        self.toolbar.insertAction(self.toolbar.action_collection.action_plan_view, self.toolbar.action_collection.action_camera_properties)
+        self.toolbar.insertAction(self.toolbar.action_collection.action_plan_view,
+                                  self.toolbar.action_collection.action_camera_properties)
         self.toolbar.addAction(self.toolbar.action_collection.action_quit)
         self.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
 
@@ -331,31 +336,31 @@ class MainWindow(QMainWindow):
         self._dialog_load_element(method=self.viewer.mesh_by_path, hint='mesh')
 
     def dialog_load_blocks(self) -> None:
-        self._dialog_load_element(method=self.viewer.blocks_by_path, hint='blocks')
+        self._dialog_load_element(method=self.viewer.blocks_by_path, hint='block')
 
     def dialog_load_points(self) -> None:
-        self._dialog_load_element(method=self.viewer.points_by_path, hint='points')
+        self._dialog_load_element(method=self.viewer.points_by_path, hint='point')
 
     def dialog_load_lines(self) -> None:
-        self._dialog_load_element(method=self.viewer.lines_by_path, hint='lines')
+        self._dialog_load_element(method=self.viewer.lines_by_path, hint='line')
 
     def dialog_load_tubes(self) -> None:
-        self._dialog_load_element(method=self.viewer.tubes_by_path, hint='tubes')
+        self._dialog_load_element(method=self.viewer.tubes_by_path, hint='tube')
 
     def dialog_load_mesh_folder(self) -> None:
         self._dialog_load_folder(method=self.viewer.meshes_by_folder_path, hint='mesh')
 
     def dialog_load_blocks_folder(self) -> None:
-        self._dialog_load_folder(method=self.viewer.blocks_by_folder_path, hint='blocks')
+        self._dialog_load_folder(method=self.viewer.blocks_by_folder_path, hint='block')
 
     def dialog_load_points_folder(self) -> None:
-        self._dialog_load_folder(method=self.viewer.points_by_folder_path, hint='points')
+        self._dialog_load_folder(method=self.viewer.points_by_folder_path, hint='point')
 
     def dialog_load_lines_folder(self) -> None:
-        self._dialog_load_folder(method=self.viewer.lines_by_folder_path, hint='lines')
+        self._dialog_load_folder(method=self.viewer.lines_by_folder_path, hint='line')
 
     def dialog_load_tubes_folder(self) -> None:
-        self._dialog_load_folder(method=self.viewer.tubes_by_folder_path, hint='tubes')
+        self._dialog_load_folder(method=self.viewer.tubes_by_folder_path, hint='tube')
 
     """
     Slots for exporting files
