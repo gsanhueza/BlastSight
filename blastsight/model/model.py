@@ -72,8 +72,8 @@ class Model:
     """
     Element loading
     """
-    def _load_element(self, element_type: type, *args, **kwargs):
-        element = element_type(*args, **kwargs)
+    def _load_element(self, element_class, *args, **kwargs):
+        element = element_class(*args, **kwargs)
 
         # In a multi-threaded application, we can't risk assigning
         # the same ID to different elements, so we use a mutex here.
@@ -82,7 +82,15 @@ class Model:
 
         return element
 
-    def _load_element_by_path(self, path: str, element_type: type, *args, **kwargs):
+    def _load_element_by_path(self, path: str, element_class, *args, **kwargs):
+        hints = {MeshElement: 'mesh',
+                 BlockElement: 'block',
+                 PointElement: 'point',
+                 LineElement: 'line',
+                 TubeElement: 'tube',
+                 }
+        kwargs['hint'] = hints.get(element_class, 'mesh')
+
         ext = path.split('.')[-1]
         info = self.get_parser(ext).load_file(path, *args, **kwargs)
         data = info.data
@@ -92,7 +100,7 @@ class Model:
         for k, v in properties.items():
             kwargs[k] = v
 
-        return self._load_element(element_type, *args, **kwargs)
+        return self._load_element(element_class, *args, **kwargs)
 
     def mesh(self, *args, **kwargs) -> MeshElement:
         return self._load_element(MeshElement, *args, **kwargs)

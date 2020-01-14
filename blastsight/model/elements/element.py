@@ -61,9 +61,13 @@ class Element:
             raise KeyError(msg)
 
     def _fill_as_data(self, *args, **kwargs):
-        self.x = kwargs.get('data', {}).get('x', [])
-        self.y = kwargs.get('data', {}).get('y', [])
-        self.z = kwargs.get('data', {}).get('z', [])
+        data = kwargs.get('data', {})
+        if 'vertices' in data.keys():
+            self.vertices = data.get('vertices', [])
+        else:
+            self.x = data.get('x', [])
+            self.y = data.get('y', [])
+            self.z = data.get('z', [])
 
     def _fill_as_vertices(self, *args, **kwargs):
         self.vertices = kwargs.get('vertices', [])
@@ -209,7 +213,7 @@ class Element:
     """
     @property
     def id(self) -> int:
-        return self.metadata.get('id', -1)
+        return self.metadata.get('id')
 
     @property
     def name(self) -> str:
@@ -225,8 +229,8 @@ class Element:
 
     @name.setter
     def name(self, _name: str) -> None:
-        self._metadata['name'] = _name
+        self.metadata['name'] = _name
 
     @extension.setter
     def extension(self, _extension: str) -> None:
-        self._metadata['extension'] = _extension
+        self.metadata['extension'] = _extension

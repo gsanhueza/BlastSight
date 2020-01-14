@@ -20,9 +20,13 @@ class DXFParser(Parser):
 
         dxf = dxfgrabber.readfile(path)
 
+        hints = {'mesh': [dxfgrabber.dxfentities.Face],
+                 'line': [dxfgrabber.dxfentities.Polyline, dxfgrabber.dxfentities.LWPolyline],
+                 'tube': [dxfgrabber.dxfentities.Polyline, dxfgrabber.dxfentities.LWPolyline],
+                 }
+
         # Detect vertices and indices
-        forbidden_types = [dxfgrabber.dxfentities.Line, dxfgrabber.dxfentities.LWPolyline]
-        entities = [e for e in dxf.entities if type(e) not in forbidden_types]
+        entities = [e for e in dxf.entities if type(e) in hints.get(kwargs.get('hint', 'mesh'))]
         points = []
 
         for entity in entities:
