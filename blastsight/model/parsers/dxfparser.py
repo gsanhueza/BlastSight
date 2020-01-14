@@ -24,25 +24,29 @@ class DXFParser(Parser):
                  'line': [dxfgrabber.dxfentities.Polyline, dxfgrabber.dxfentities.LWPolyline],
                  'tube': [dxfgrabber.dxfentities.Polyline, dxfgrabber.dxfentities.LWPolyline],
                  }
+        hint = kwargs.get('hint', 'mesh')
+
+        # Model data
+        data = ParserData()
 
         # Detect vertices and indices
-        entities = [e for e in dxf.entities if type(e) in hints.get(kwargs.get('hint', 'mesh'))]
+        entities = [e for e in dxf.entities if type(e) in hints.get(hint)]
         points = []
 
         for entity in entities:
             points.extend(entity.points[:3])
-        vertices, indices = np.unique(np.array(points), axis=0, return_inverse=True)
+
+        if hint == 'mesh':
+            vertices, indices = np.unique(np.array(points), axis=0, return_inverse=True)
+            data.vertices = vertices
+            data.indices = indices.reshape((-1, 3))
+        else:
+            data.vertices = np.array(points)
 
         # Metadata
-        properties = {
+        data.properties = {
             'name': QFileInfo(path).completeBaseName(),
             'extension': QFileInfo(path).suffix()
         }
-
-        # Model data
-        data = ParserData()
-        data.vertices = vertices
-        data.indices = indices.reshape((-1, 3))
-        data.properties = properties
 
         return data
