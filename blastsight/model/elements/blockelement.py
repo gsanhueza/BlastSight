@@ -84,3 +84,55 @@ class BlockElement(DFElement):
     def bounding_box(self) -> tuple:
         lo, hi = super().bounding_box
         return lo - (self.block_size / 2), hi + (self.block_size / 2)
+
+    """
+    Utilities
+    """
+    def slice_with_plane(self,
+                         plane_origin: np.ndarray,
+                         plane_normal: np.ndarray) -> np.ndarray:
+        """
+        *** Plane Equation: ax + by + cz + d = 0 ***
+
+        Where [a, b, c] = plane_normal
+        Where [x, y, z] = plane_origin (or any point that we know belongs to the plane)
+
+        With this, we can get `d`:
+        dot([a, b, c], [x, y, z]) + d = 0
+        d = -dot([a, b, c], [x, y, z])
+
+        Since we have multiple vertices, it's easier to multiply plane_normal with
+        each vertex, and manually sum them to get an array of dot products.
+
+        But our points are blocks (they have 3D dimensions in `block_size`).
+        That means we have to tolerate more points, so we create a threshold.
+
+        *** Plane Inequation: abs(ax + by + cz + d) <= threshold ***
+
+        We need to know how inclined is the plane normal to know our threshold.
+        Let's say our block_size is [10, 10, 10] (half_block is [5, 5, 5]).
+
+        If the plane touches one face of the cube, our threshold is [-5, +5] * np.sqrt(1.0).
+        If the plane touches one edge of the cube, our threshold is [-5, +5] * np.sqrt(2.0).
+        If the plane touches one vertex of the cube, our threshold is [-5, +5] * np.sqrt(3.0).
+
+        Since a cube is symmetrical by axes, we don't really care about the plane normal's signs.
+        Then, we'll calculate np.dot(abs(plane_normal), half_block) to know the maximum
+        tolerable distance between the cube center and its projection on the plane.
+
+        The projection idea comes from
+        https://gdbooks.gitbooks.io/3dcollisions/content/Chapter2/static_aabb_plane.html
+        """
+        plane_normal /= np.linalg.norm(plane_normal)
+        half_block = np.array(self.block_size) / 2
+        vertices = self.vertices
+
+        plane_d = -np.dot(plane_normal, plane_origin)
+        threshold = np.dot(np.abs(plane_normal), half_block)
+
+        # In this context, np.inner(a, b) returns the same as (a * b).sum(axis=1), but it's faster.
+        # Luckily, we don't run out of memory like in vectorized_triangles_intersection.
+        mask = np.abs(np.inner(plane_normal, vertices) + plane_d) <= threshold
+
+        # If mask = [True, False, True], then mask.nonzero()[-1] = [0, 2]
+        return mask.nonzero()[-1]

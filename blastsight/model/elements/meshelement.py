@@ -5,7 +5,10 @@
 #  Distributed under the MIT License.
 #  See LICENSE for more info.
 
+import meshcut
 import numpy as np
+
+from .. import utils
 from .element import Element
 
 
@@ -105,3 +108,61 @@ class MeshElement(Element):
         del f1
 
         return abs(volume)
+
+    def slice_with_plane(self, plane_origin: np.ndarray, plane_normal: np.ndarray) -> list:
+        # This returns a list with the slices (in case we have a concave mesh)
+        try:
+            return meshcut.cross_section(self.vertices, self.indices, np.array(plane_origin), np.array(plane_normal))
+        except AssertionError:
+            # Meshcut doesn't want to slice
+            print(f'WARNING: Mesh {self.name} (id = {self.id}) cannot be sliced, fix your mesh!')
+            return []
+
+    def intersect_with_ray(self, origin: np.ndarray, ray: np.ndarray) -> np.ndarray:
+        # Early AABB detection test
+        if not utils.aabb_intersection(origin, ray, *self.bounding_box):
+            return np.empty(0)
+
+        return self.vectorized_intersection(origin, ray)
+
+    def vectorized_intersection(self, origin: np.ndarray, ray: np.ndarray) -> np.ndarray:
+        # Idea taken from https://cadxfem.org/inf/Fast%20MinimumStorage%20RayTriangle%20Intersection.pdf
+        # Code adapted from https://en.wikipedia.org/wiki/M%C3%B6ller%E2%80%93Trumbore_intersection_algorithm
+        # Manually vectorized to benefit from numpy's performance.
+
+        triangles = self.vertices[self.indices]
+
+        # Get individual vertices of each triangle
+        vertex0 = triangles[:, 0, :]
+        vertex1 = triangles[:, 1, :]
+        vertex2 = triangles[:, 2, :]
+
+        edge1 = vertex1 - vertex0
+        edge2 = vertex2 - vertex0
+
+        # Note: Both np.inner(a, b).diagonal() and np.dot(a, b.T)
+        # run out of memory, but (a * b).sum(axis=1) does not,
+        # so we're using that one instead.
+        h = np.cross(ray, edge2)
+        a = (edge1 * h).sum(axis=1)
+
+        mask = abs(a) > 1e-12  # False => Ray is parallel to triangle.
+
+        # Result of division by zero used deliberately
+        with np.errstate(divide='ignore', invalid='ignore'):
+            f = 1.0 / a  # Can this be solved in a more elegant way?
+            s = origin - vertex0
+            u = f * (s * h).sum(axis=1)
+
+            mask = (0.0 <= u) & (u <= 1.0) & mask
+
+            q = np.cross(s, edge1)
+            v = f * (ray * q).sum(axis=1)
+
+            mask = (v >= 0.0) & (u + v <= 1.0) & mask
+
+            # At this stage we can compute t to find out where the intersection point is on the line.
+            t = f * (edge2 * q).sum(axis=1)
+
+            mask = (t > 1e-12) & mask  # Ray intersections
+        return origin + ray * t[mask].reshape(-1, 1)  # Here are the intersections.

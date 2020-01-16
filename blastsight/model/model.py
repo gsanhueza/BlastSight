@@ -193,7 +193,7 @@ class Model:
             'slices': [
                 {
                     'origin_id': mesh.id,
-                    'vertices': utils.slice_mesh(mesh, origin, plane_normal)
+                    'vertices': mesh.slice_with_plane(origin, plane_normal)
                 } for mesh in meshes]
         }
 
@@ -217,7 +217,7 @@ class Model:
             'slices': [
                 {
                     'origin_id': block.id,
-                    'indices': utils.slice_blocks(block, block.block_size, origin, plane_normal)
+                    'indices': block.slice_with_plane(origin, plane_normal)
                 } for block in block_list]
         }
 
@@ -240,8 +240,8 @@ class Model:
 
         # Detect intersections
         for mesh in meshes:
-            int_A = utils.mesh_intersection(origin_list[0], ray_list[0], mesh)
-            int_B = utils.mesh_intersection(origin_list[1], ray_list[1], mesh)
+            int_A = mesh.intersect_with_ray(origin_list[0], ray_list[0])
+            int_B = mesh.intersect_with_ray(origin_list[1], ray_list[1])
 
             # Discard non-intersections
             if int_A.size > 0:

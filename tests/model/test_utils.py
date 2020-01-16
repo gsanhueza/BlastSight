@@ -16,7 +16,7 @@ class TestUtils:
     triangle_low = vertices.view(np.ndarray)[[0, 3, 1]]
     triangle_degenerate = vertices.view(np.ndarray)[[0, 0, 0]]
 
-    mesh_element = MeshElement(vertices=vertices, indices=[[0, 1, 2], [0, 3, 1]])
+    mesh = MeshElement(vertices=vertices, indices=[[0, 1, 2], [0, 3, 1]])
 
     # Tetrahedron
     vertices = np.array([[-1.0, 0.0, 0.0],
@@ -36,26 +36,6 @@ class TestUtils:
     ray_oblique = np.array([0.6, 0.0, -0.8])
     ray_low = np.array([0.0, 0.8, -0.9])
     ray_perpendicular = np.array([1.0, 0.0, 0.0])
-
-    def test_mesh_intersection(self):
-        assert utils.mesh_intersection(self.origin, self.ray, self.mesh_element).size > 0
-        assert utils.mesh_intersection(self.origin, self.ray_reversed, self.mesh_element).size == 0
-        assert utils.mesh_intersection(self.origin, self.ray_low, self.mesh_element).size == 0
-        assert utils.mesh_intersection(self.origin, self.ray_perpendicular, self.mesh_element).size == 0
-        assert utils.mesh_intersection(self.origin_translated, self.ray, self.mesh_element).size == 0
-        assert utils.mesh_intersection(self.origin_translated, self.ray_oblique, self.mesh_element).size == 0
-        assert utils.mesh_intersection(self.origin, self.ray_oblique, self.mesh_element).size == 0
-        assert utils.mesh_intersection(self.origin_translated, self.ray, self.tetrahedron).size == 0
-
-    def test_triangle_intersection(self):
-        assert utils.triangle_intersection(self.origin, self.ray, self.triangle) is not None
-        assert utils.triangle_intersection(self.origin, self.ray_reversed, self.triangle) is None
-        assert utils.triangle_intersection(self.origin, self.ray_low, self.triangle_low) is None
-        assert utils.triangle_intersection(self.origin, self.ray_low, self.triangle) is None
-        assert utils.triangle_intersection(self.origin_translated, self.ray, self.triangle) is None
-        assert utils.triangle_intersection(self.origin, self.ray_oblique, self.triangle) is None
-        assert utils.triangle_intersection(self.origin, self.ray, self.triangle_degenerate) is None
-        assert utils.triangle_intersection(self.origin_low, self.ray, self.triangle) is None
 
     def test_aabb_intersection(self):
         assert utils.aabb_intersection(self.origin, self.ray, *self.tetrahedron.bounding_box)

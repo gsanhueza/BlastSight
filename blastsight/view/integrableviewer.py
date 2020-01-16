@@ -590,7 +590,7 @@ class IntegrableViewer(QOpenGLWidget):
         attributes_list = []
 
         for mesh in elements:
-            intersections = utils.mesh_intersection(origin, ray, mesh)
+            intersections = mesh.intersect_with_ray(origin, ray)
             closest_point = utils.closest_point_to(origin, intersections)
             if closest_point is not None:
                 attributes = {**mesh.attributes,
