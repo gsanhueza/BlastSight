@@ -5,6 +5,7 @@
 #  Distributed under the MIT License.
 #  See LICENSE for more info.
 
+import gc
 import numpy as np
 import traceback
 
@@ -334,6 +335,7 @@ class IntegrableViewer(QOpenGLWidget):
         self.background_collection.recreate()
         self.drawable_collection.recreate()
         self.update()
+        gc.collect()
 
     def get_all_ids(self) -> list:
         return list(self.drawable_collection.keys())

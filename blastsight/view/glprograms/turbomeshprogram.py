@@ -29,8 +29,12 @@ class TurboMeshProgram(MeshProgram):
         }
 
     def recreate(self) -> None:
-        self.info['opaque']['num_indices'] = 0
-        self.info['transparent']['num_indices'] = 0
+        for visibility in self.info.keys():
+            self.info[visibility]['num_indices'] = 0
+            vbos = self.info[visibility]['vbos']
+
+            if len(vbos) > 0:
+                glDeleteBuffers(len(vbos), vbos)
 
     def set_drawables(self, drawables):
         super().set_drawables(drawables)
