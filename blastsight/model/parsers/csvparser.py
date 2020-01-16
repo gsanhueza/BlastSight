@@ -31,7 +31,7 @@ class CSVParser(Parser):
 
     @staticmethod
     def save_file(*args, **kwargs) -> None:
-        path = kwargs.get('path', None)
+        path = kwargs.get('path')
 
         if path is None:
             raise KeyError('Path missing.')

@@ -65,8 +65,9 @@ class MeshElement(Element):
             raise KeyError(msg)
 
     def _fill_as_data(self, *args, **kwargs):
-        self.vertices = kwargs.get('data', {}).get('vertices', [])
-        self.indices = kwargs.get('data', {}).get('indices', [])
+        data = kwargs.get('data', {})
+        self.vertices = data.get('vertices', [])
+        self.indices = data.get('indices', [])
 
     def _check_integrity(self):
         super()._check_integrity()

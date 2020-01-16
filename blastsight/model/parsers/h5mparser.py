@@ -34,13 +34,13 @@ class H5MParser(Parser):
 
     @staticmethod
     def save_file(*args, **kwargs) -> None:
-        path = kwargs.get('path', None)
+        path = kwargs.get('path')
 
         if path is None:
             raise KeyError('Path missing.')
 
-        vertices = kwargs.get('vertices', None)
-        indices = kwargs.get('indices', None)
+        vertices = kwargs.get('vertices')
+        indices = kwargs.get('indices')
 
         if vertices is None:
             data = kwargs.get('data', {})

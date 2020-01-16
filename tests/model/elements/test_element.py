@@ -65,6 +65,16 @@ class TestElement:
             for j in range(len(expected[0])):
                 assert element.vertices[i][j] == expected[i][j]
 
+        element = Element(data={'vertices': [[0.0, 1.0, 2.0],
+                                             [3.0, 4.0, 5.0]]})
+
+        expected = [[0.0, 1.0, 2.0],
+                    [3.0, 4.0, 5.0]]
+
+        for i in range(len(expected)):
+            for j in range(len(expected[0])):
+                assert element.vertices[i][j] == expected[i][j]
+
     def test_empty_data(self):
         with pytest.raises(Exception):
             Element(vertices={})

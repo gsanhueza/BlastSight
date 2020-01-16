@@ -44,7 +44,6 @@ class TurboMeshProgram(MeshProgram):
     def set_buffers(self, meshes, visibility):
         _POSITION = 0
         _COLOR = 1
-        _WIREFRAME = 2
 
         # VBO
         if len(self.info[visibility]['vbos']) == 0:

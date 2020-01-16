@@ -45,14 +45,14 @@ class OFFParser(Parser):
         if path is None:
             raise KeyError('Path missing.')
 
-        vertices = kwargs.get('vertices', None)
-        indices = kwargs.get('indices', None)
+        vertices = kwargs.get('vertices')
+        indices = kwargs.get('indices')
 
         if vertices is None:
             data = kwargs.get('data', {})
-            try:
+            if 'vertices' in data.keys():
                 vertices = data['vertices']
-            except Exception as e:
+            else:
                 vertices = np.column_stack((data.get('x', []),
                                             data.get('y', []),
                                             data.get('z', []),

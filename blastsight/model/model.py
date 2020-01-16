@@ -55,7 +55,7 @@ class Model:
         self._parser_dict[extension] = handler
 
     def get_parser(self, ext: str) -> Parser:
-        return self._parser_dict.get(ext.lower(), None)
+        return self._parser_dict.get(ext.lower())
 
     @staticmethod
     def get_paths_from_directory(path: str) -> list:
@@ -136,7 +136,7 @@ class Model:
     Element handling
     """
     def get(self, _id: int) -> Element:
-        return self.element_collection.get(_id, None)
+        return self.element_collection.get(_id)
 
     def delete(self, _id: int) -> None:
         self.element_collection.delete(_id)
