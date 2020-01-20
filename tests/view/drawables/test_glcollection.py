@@ -46,7 +46,7 @@ class TestGLCollection:
         assert collection.size() == 0
 
     def test_drawable_collection(self):
-        widget = IntegrableViewer()
+        viewer = IntegrableViewer()
         collection = GLDrawableCollection()
         drawable_1 = GLDrawable(self.element)
         drawable_2 = GLDrawable(self.element)
@@ -55,12 +55,12 @@ class TestGLCollection:
         collection.add(drawable_2)
 
         assert collection._needs_update
-        collection.draw(widget.proj, widget.camera, widget.world)
+        collection.draw(viewer.proj, viewer.camera, viewer.world)
         assert not collection._needs_update
-        collection.draw(widget.proj, widget.camera, widget.world)
+        collection.draw(viewer.proj, viewer.camera, viewer.world)
         assert not collection._needs_update
 
         collection.recreate()
         assert collection._needs_update
-        collection.draw(widget.proj, widget.camera, widget.world)
+        collection.draw(viewer.proj, viewer.camera, viewer.world)
         assert not collection._needs_update

@@ -16,8 +16,8 @@ class TestBackgroundGL:
         assert len(dir(BackgroundGL(NullElement()))) > 0
 
     def test_draw(self):
-        widget = IntegrableViewer()
-        program = BackgroundProgram(widget)
+        viewer = IntegrableViewer()
+        program = BackgroundProgram(viewer)
         program.setup()
         program.bind()
 
@@ -35,8 +35,8 @@ class TestBackgroundGL:
         assert not drawable.is_visible
 
     def test_colors(self):
-        widget = IntegrableViewer()
-        program = BackgroundProgram(widget)
+        viewer = IntegrableViewer()
+        program = BackgroundProgram(viewer)
         program.setup()
         program.bind()
 
@@ -63,8 +63,8 @@ class TestBackgroundGL:
             assert expect == result
 
     def test_program(self):
-        widget = IntegrableViewer()
-        program = BackgroundProgram(widget)
+        viewer = IntegrableViewer()
+        program = BackgroundProgram(viewer)
         program.setup()
         program.bind()
 

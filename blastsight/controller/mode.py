@@ -10,52 +10,52 @@ class Mode:
     def __init__(self):
         self.name = 'Base mode'
 
-    def mousePressEvent(self, event, widget):
+    def mousePressEvent(self, event, viewer):
         pass
 
-    def mouseMoveEvent(self, event, widget):
+    def mouseMoveEvent(self, event, viewer):
         pass
 
-    def mouseReleaseEvent(self, event, widget):
+    def mouseReleaseEvent(self, event, viewer):
         pass
 
-    def mouseDoubleClickEvent(self, event, widget):
+    def mouseDoubleClickEvent(self, event, viewer):
         pass
 
-    def wheelEvent(self, event, widget):
+    def wheelEvent(self, event, viewer):
         dy = event.angleDelta().y()
         sign = dy / abs(dy) if abs(dy) > 1e-12 else 0.0
-        smoothness = max(widget.smoothness, 0.1)
+        smoothness = max(viewer.smoothness, 0.1)
 
         # Arbitrary number, but dependent on viewer's smoothness
         rate = 0.4 / smoothness
         movement_rate = rate / (1.0 + max(0.0, min(sign, rate)))
 
-        off_center = widget.off_center[2]
+        off_center = viewer.off_center[2]
         shift = -sign * movement_rate * max(-sign, off_center) / smoothness
 
-        self.set_z_movement(widget, widget.zCameraPos + shift)
+        self.set_z_movement(viewer, viewer.zCameraPos + shift)
 
     @staticmethod
-    def set_x_rotation(widget, angle: float) -> None:
-        widget.xCenterRot = angle % 360
+    def set_x_rotation(viewer, angle: float) -> None:
+        viewer.xCenterRot = angle % 360
 
     @staticmethod
-    def set_y_rotation(widget, angle: float) -> None:
-        widget.yCenterRot = angle % 360
+    def set_y_rotation(viewer, angle: float) -> None:
+        viewer.yCenterRot = angle % 360
 
     @staticmethod
-    def set_z_rotation(widget, angle: float) -> None:
-        widget.zCenterRot = angle % 360
+    def set_z_rotation(viewer, angle: float) -> None:
+        viewer.zCenterRot = angle % 360
 
     @staticmethod
-    def set_x_movement(widget, position: float) -> None:
-        widget.xCameraPos = position
+    def set_x_movement(viewer, position: float) -> None:
+        viewer.xCameraPos = position
 
     @staticmethod
-    def set_y_movement(widget, position: float) -> None:
-        widget.yCameraPos = position
+    def set_y_movement(viewer, position: float) -> None:
+        viewer.yCameraPos = position
 
     @staticmethod
-    def set_z_movement(widget, position: float) -> None:
-        widget.zCameraPos = position
+    def set_z_movement(viewer, position: float) -> None:
+        viewer.zCameraPos = position

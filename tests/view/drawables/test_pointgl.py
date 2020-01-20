@@ -33,8 +33,8 @@ class TestPointGL:
         assert drawable.is_initialized
 
     def test_draw(self):
-        widget = IntegrableViewer()
-        program = PointProgram(widget)
+        viewer = IntegrableViewer()
+        program = PointProgram(viewer)
         program.setup()
         program.bind()
 
@@ -56,8 +56,8 @@ class TestPointGL:
         assert not drawable.is_visible
 
     def test_program(self):
-        widget = IntegrableViewer()
-        program = PointProgram(widget)
+        viewer = IntegrableViewer()
+        program = PointProgram(viewer)
         program.setup()
         program.bind()
 

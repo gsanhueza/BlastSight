@@ -14,9 +14,9 @@ class TestAutoDrawable:
     qt_app = QApplication(sys.argv)
 
     # Needed to create OpenGLWidget.context()
-    widget = IntegrableViewer()
-    widget.show()
-    widget.hide()
+    viewer = IntegrableViewer()
+    viewer.show()
+    viewer.hide()
 
     element = Element(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0])
     element.id = 0
@@ -53,8 +53,8 @@ class TestAutoDrawable:
         assert drawable.id == 50
 
     def test_program(self):
-        widget = IntegrableViewer()
-        program = ShaderProgram(widget)
+        viewer = IntegrableViewer()
+        program = ShaderProgram(viewer)
         program.setup()
         program.bind()
 
@@ -70,8 +70,8 @@ class TestAutoDrawable:
         assert len(drawable.vaos) == 0
 
     def test_draw(self):
-        widget = IntegrableViewer()
-        program = ShaderProgram(widget)
+        viewer = IntegrableViewer()
+        program = ShaderProgram(viewer)
         assert program.shader_program is None
         program.setup()
         assert program.shader_program is not None

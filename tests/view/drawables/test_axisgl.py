@@ -16,8 +16,8 @@ class TestAxisGL:
         assert len(dir(AxisGL())) > 0
 
     def test_draw(self):
-        widget = IntegrableViewer()
-        program = AxisProgram(widget)
+        viewer = IntegrableViewer()
+        program = AxisProgram(viewer)
         program.setup()
         program.bind()
 
@@ -36,8 +36,8 @@ class TestAxisGL:
         assert not drawable.is_visible
 
     def test_program(self):
-        widget = IntegrableViewer()
-        program = AxisProgram(widget)
+        viewer = IntegrableViewer()
+        program = AxisProgram(viewer)
         program.setup()
         program.bind()
 
