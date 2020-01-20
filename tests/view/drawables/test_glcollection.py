@@ -28,15 +28,6 @@ class TestGLCollection:
         assert isinstance(drawable, GLDrawable)
         assert isinstance(drawable.id, int)
 
-    def test_set(self):
-        collection = GLCollection()
-        collection.add(self.drawable)
-        drawable = collection.get(0)
-        collection.update(0, drawable)
-
-        assert isinstance(drawable, GLDrawable)
-        assert isinstance(drawable.id, int)
-
     def test_delete(self):
         collection = GLCollection()
         collection.add(self.drawable)

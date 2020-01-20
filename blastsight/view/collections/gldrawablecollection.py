@@ -24,28 +24,28 @@ from ..glprograms.turbomeshprogram import TurboMeshProgram
 
 
 class GLDrawableCollection(GLCollection):
-    def __init__(self, widget=None):
-        super().__init__()
+    def __init__(self, viewer=None):
+        super().__init__(viewer)
         # Lines
-        self._programs[LineProgram(widget)] = lambda: self.filter(LineGL)
+        self.associate(LineProgram(viewer), lambda: self.filter(LineGL))
 
         # Tubes
-        self._programs[TubeProgram(widget)] = lambda: self.filter(TubeGL)
+        self.associate(TubeProgram(viewer), lambda: self.filter(TubeGL))
 
         # Points
-        self._programs[PointProgram(widget)] = lambda: self.filter(PointGL)
+        self.associate(PointProgram(viewer), lambda: self.filter(PointGL))
 
         # Blocks
-        self._programs[BlockLegacyProgram(widget)] = lambda: [
-            x for x in self.filter(BlockGL) if x.is_legacy]
+        self.associate(BlockLegacyProgram(viewer), lambda: [
+            x for x in self.filter(BlockGL) if x.is_legacy])
 
-        self._programs[BlockProgram(widget)] = lambda: [
-            x for x in self.filter(BlockGL) if not x.is_legacy]
+        self.associate(BlockProgram(viewer), lambda: [
+            x for x in self.filter(BlockGL) if not x.is_legacy])
 
         # Meshes
-        self._programs[TurboMeshProgram(widget)] = lambda: [
-            x for x in self.filter(MeshGL) if x.is_turbo_ready]
-        self._programs[MeshProgram(widget)] = lambda: [
-            x for x in self.filter(MeshGL) if not x.is_turbo_ready and not x.is_wireframed]
-        self._programs[WireProgram(widget)] = lambda: [
-            x for x in self.filter(MeshGL) if x.is_wireframed]
+        self.associate(TurboMeshProgram(viewer), lambda: [
+            x for x in self.filter(MeshGL) if x.is_turbo_ready])
+        self.associate(MeshProgram(viewer), lambda: [
+            x for x in self.filter(MeshGL) if not x.is_turbo_ready and not x.is_wireframed])
+        self.associate(WireProgram(viewer), lambda: [
+            x for x in self.filter(MeshGL) if x.is_wireframed])

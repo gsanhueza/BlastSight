@@ -10,15 +10,15 @@ from OpenGL.GL import *
 
 
 class MeshProgram(ShaderProgram):
-    def __init__(self, widget):
-        super().__init__(widget)
+    def __init__(self, viewer):
+        super().__init__(viewer)
         self.base_name = 'Mesh'
 
     def draw(self):
         # Highlighted
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
         glLineWidth(3)
-        super().inner_draw(filter(lambda x: x.is_highlighted, self.drawables))
+        super().inner_draw(filter(lambda x: x.is_highlighted, self.opaques))
         glLineWidth(1)
 
         # Opaque

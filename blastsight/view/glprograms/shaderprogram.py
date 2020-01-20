@@ -12,20 +12,24 @@ from qtpy.QtGui import QOpenGLShaderProgram
 
 
 class ShaderProgram:
-    def __init__(self, widget):
+    def __init__(self, viewer):
         self.base_name = None
-        self.widget = widget
+        self.viewer = viewer
         self.shader_program = None
         self.shader_dir = f'{pathlib.Path(__file__).parent.parent}/drawables/shaders'
         self.uniform_locs = {}
-        self.drawables = []
+        self.opaques = []
         self.transparents = []
+
+    @property
+    def drawables(self) -> list:
+        return self.opaques + self.transparents
 
     def setup(self) -> None:
         if self.shader_program:
             return
 
-        self.shader_program = QOpenGLShaderProgram(self.widget.context())
+        self.shader_program = QOpenGLShaderProgram(self.viewer.context())
         self.setup_shaders()
 
         self.add_uniform_loc('model_view_matrix')
@@ -60,10 +64,10 @@ class ShaderProgram:
         self.shader_program.setUniformValue(self.uniform_locs[loc_str], *values)
 
     def set_drawables(self, drawables):
-        self.drawables = [d for d in drawables if d.alpha >= 0.99]
+        self.opaques = [d for d in drawables if d.alpha >= 0.99]
         self.transparents = [d for d in drawables if d.alpha < 0.99]
 
-        for drawable in self.drawables + self.transparents:
+        for drawable in self.drawables:
             drawable.initialize()
 
     def bind(self) -> None:
@@ -77,7 +81,7 @@ class ShaderProgram:
             drawable.draw()
 
     def draw(self):
-        self.inner_draw(self.drawables)
+        self.inner_draw(self.opaques)
 
     def redraw(self):
         self.inner_draw(self.transparents)

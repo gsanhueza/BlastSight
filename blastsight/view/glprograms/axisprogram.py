@@ -10,13 +10,13 @@ from .shaderprogram import ShaderProgram
 
 
 class AxisProgram(ShaderProgram):
-    def __init__(self, widget):
-        super().__init__(widget)
+    def __init__(self, viewer):
+        super().__init__(viewer)
         self.base_name = 'Axis'
 
     def draw(self):
-        viewport = [self.widget.devicePixelRatio() * self.widget.width(),
-                    self.widget.devicePixelRatio() * self.widget.height()]
+        viewport = [self.viewer.devicePixelRatio() * self.viewer.width(),
+                    self.viewer.devicePixelRatio() * self.viewer.height()]
         w, h = viewport
 
         glViewport(w // 100, h // 100, h // 6, h // 6)

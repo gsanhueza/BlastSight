@@ -9,8 +9,8 @@ from .shaderprogram import ShaderProgram
 
 
 class BackgroundProgram(ShaderProgram):
-    def __init__(self, widget):
-        super().__init__(widget)
+    def __init__(self, viewer):
+        super().__init__(viewer)
         self.base_name = 'Background'
 
     def setup(self) -> None:

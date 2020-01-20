@@ -12,6 +12,6 @@ from ..glprograms.backgroundprogram import BackgroundProgram
 
 
 class GLBackgroundCollection(GLCollection):
-    def __init__(self, widget=None):
-        super().__init__()
-        self._programs[BackgroundProgram(widget)] = lambda: self.filter(BackgroundGL)
+    def __init__(self, viewer=None):
+        super().__init__(viewer)
+        self.associate(BackgroundProgram(viewer), lambda: self.filter(BackgroundGL))

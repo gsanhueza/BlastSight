@@ -9,8 +9,8 @@ from .shaderprogram import ShaderProgram
 
 
 class PointProgram(ShaderProgram):
-    def __init__(self, widget):
-        super().__init__(widget)
+    def __init__(self, viewer):
+        super().__init__(viewer)
         self.base_name = 'Point'
 
     def setup(self) -> None:
@@ -21,8 +21,8 @@ class PointProgram(ShaderProgram):
     def inner_draw(self, drawables):
         for drawable in drawables:
             # We need DPI awareness for the size of the impostors
-            viewport = [float(self.widget.devicePixelRatio() * self.widget.width()),
-                        float(self.widget.devicePixelRatio() * self.widget.height())]
+            viewport = [float(self.viewer.devicePixelRatio() * self.viewer.width()),
+                        float(self.viewer.devicePixelRatio() * self.viewer.height())]
             self.update_uniform('viewport', *viewport)
             self.update_uniform('marker', drawable.element.marker_num)
             drawable.draw()

@@ -13,8 +13,8 @@ from ..drawables.gldrawable import GLDrawable
 
 
 class TurboMeshProgram(MeshProgram):
-    def __init__(self, widget):
-        super().__init__(widget)
+    def __init__(self, viewer):
+        super().__init__(viewer)
         self.info = {
             'opaque': {
                 'vaos': [],
@@ -34,7 +34,7 @@ class TurboMeshProgram(MeshProgram):
 
     def set_drawables(self, drawables):
         super().set_drawables(drawables)
-        self.set_buffers(self.drawables, 'opaque')
+        self.set_buffers(self.opaques, 'opaque')
         self.set_buffers(self.transparents, 'transparent')
 
     def set_buffers(self, meshes, visibility):

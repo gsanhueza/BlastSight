@@ -9,8 +9,8 @@ from .shaderprogram import ShaderProgram
 
 
 class BlockProgram(ShaderProgram):
-    def __init__(self, widget):
-        super().__init__(widget)
+    def __init__(self, viewer):
+        super().__init__(viewer)
         self.base_name = 'Block'
 
     def setup(self) -> None:
