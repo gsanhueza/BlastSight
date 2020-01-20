@@ -304,7 +304,7 @@ class TestModel:
         model.blocks_by_path(path=f'{TEST_FILES_FOLDER_PATH}/mini.csv')
         assert model.last_id == 2
 
-        assert len(model.element_collection) == 3
+        assert model.element_collection.size() == 3
 
     def test_export(self):
         model = Model()

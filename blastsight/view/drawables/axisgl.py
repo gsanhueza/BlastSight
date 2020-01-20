@@ -50,7 +50,7 @@ class AxisGL(GLDrawable):
         glDisable(GL_DEPTH_TEST)
         glBindVertexArray(self.vao)
         glLineWidth(5)
-        glDrawArrays(GL_LINES, 0, 18)
+        glDrawArrays(GL_LINES, 0, 6)
         glLineWidth(1)
         glBindVertexArray(0)
         glEnable(GL_DEPTH_TEST)

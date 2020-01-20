@@ -22,6 +22,7 @@ from .elements.meshelement import MeshElement
 from .elements.tubeelement import TubeElement
 
 from .parsers.parser import Parser
+from .parsers.parsercollection import ParserCollection
 from .parsers.dxfparser import DXFParser
 from .parsers.offparser import OFFParser
 from .parsers.h5mparser import H5MParser
@@ -32,9 +33,8 @@ from .parsers.gslibparser import GSLibParser
 
 class Model:
     def __init__(self):
-        self._parser_dict = {}  # Example: {"dxf": DXFParser}
         self._mutex = QMutex()
-
+        self.parser_collection = ParserCollection()
         self.element_collection = ElementCollection()
 
         self.add_parser('dxf', DXFParser)
@@ -52,10 +52,10 @@ class Model:
     Utilities
     """
     def add_parser(self, extension: str, handler: type) -> None:
-        self._parser_dict[extension] = handler
+        self.parser_collection.add(extension, handler)
 
-    def get_parser(self, ext: str) -> Parser:
-        return self._parser_dict.get(ext.lower())
+    def get_parser(self, extension: str) -> Parser:
+        return self.parser_collection.get(extension)
 
     @staticmethod
     def get_paths_from_directory(path: str) -> list:

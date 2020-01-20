@@ -9,20 +9,26 @@ from collections import OrderedDict
 from .element import Element
 
 
-class ElementCollection(OrderedDict):
+class ElementCollection:
     def __init__(self):
-        super().__init__()
-        self.current_id = -1
+        self._collection = OrderedDict()
+        self._current_id = -1
 
     @property
     def last_id(self):
         # bool(dict) evaluates to False if the dictionary is empty
-        return list(self.keys())[-1] if bool(self) else -1
+        return list(self._collection.keys())[-1] if bool(self._collection) else -1
 
     def add(self, element: Element) -> None:
-        self.current_id += 1
-        self[self.current_id] = element
-        element.id = self.current_id  # Auto-update on element add
+        self._current_id += 1
+        self._collection[self._current_id] = element
+        element.id = self._current_id  # Auto-update on element add
 
-    def delete(self, _id):
-        del self[_id]
+    def get(self, _id: int) -> Element:
+        return self._collection.get(_id)
+
+    def size(self) -> int:
+        return len(self._collection)
+
+    def delete(self, _id: int) -> None:
+        del self._collection[_id]
