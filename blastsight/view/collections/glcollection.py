@@ -9,31 +9,52 @@ from collections import OrderedDict
 from ..drawables.gldrawable import GLDrawable
 
 
-class GLCollection(OrderedDict):
+class GLCollection:
     def __init__(self):
         super().__init__()
-        self.programs = OrderedDict()
-        self.needs_update = True
+        self._programs = OrderedDict()
+        self._collection = OrderedDict()
+        self._needs_update = True
 
     def add(self, drawable: GLDrawable) -> None:
-        self[drawable.id] = drawable
+        self._collection[drawable.id] = drawable
+        self._needs_update = True
+
+    def get(self, _id: int) -> GLDrawable:
+        return self._collection.get(_id)
+
+    def get_all_ids(self) -> list:
+        return list(self._collection.keys())
+
+    def get_all_drawables(self) -> list:
+        return list(self._collection.values())
+
+    def update(self, _id: int, drawable: GLDrawable) -> None:
+        self._collection[_id] = drawable
+        self._needs_update = True
 
     def delete(self, _id: int) -> None:
-        self[_id].cleanup()
-        del self[_id]
+        drawable = self._collection.pop(_id)
+        drawable.cleanup()
+
+    def clear(self) -> None:
+        self._collection.clear()
+
+    def size(self) -> int:
+        return len(self._collection)
 
     def recreate(self):
-        self.needs_update = True
-        for gl_program in self.programs.keys():
+        self._needs_update = True
+        for gl_program in self._programs.keys():
             gl_program.recreate()
 
     def draw(self, proj_matrix, view_matrix, model_matrix) -> None:
         # Update shader program so that it knows what to draw.
-        if self.needs_update:
-            for gl_program, lambda_drawables in self.programs.items():
+        if self._needs_update:
+            for gl_program, lambda_drawables in self._programs.items():
                 # Get the meshes that we'll really render
                 gl_program.set_drawables([d for d in lambda_drawables() if d.is_visible])
-            self.needs_update = False
+            self._needs_update = False
 
         def inner_draw(programs, collection, method):
             for program in programs:
@@ -48,14 +69,14 @@ class GLCollection(OrderedDict):
 
                 getattr(program, method)()
 
-        inner_draw(self.programs.keys(), collection='drawables', method='draw')
-        inner_draw(self.programs.keys(), collection='transparents', method='redraw')
+        inner_draw(self._programs.keys(), collection='drawables', method='draw')
+        inner_draw(self._programs.keys(), collection='transparents', method='redraw')
 
     def filter(self, drawable_type: type) -> list:
         # The copy avoids RuntimeError: OrderedDict mutated during iteration
-        return [x for x in self.copy().values() if type(x) is drawable_type]
+        return [x for x in self._collection.copy().values() if type(x) is drawable_type]
 
     @property
     def last_id(self):
         # bool(dict) evaluates to False if the dictionary is empty
-        return list(self.keys())[-1] if bool(self) else -1
+        return list(self._collection.keys())[-1] if bool(self._collection) else -1

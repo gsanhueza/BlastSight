@@ -22,150 +22,150 @@ class TestIntegrableViewer:
     element.id = 0
 
     def test_model(self):
-        widget = IntegrableViewer()
-        orig_model = widget.model
-        widget.model = Model()
-        new_model = widget.model
+        viewer = IntegrableViewer()
+        orig_model = viewer.model
+        viewer.model = Model()
+        new_model = viewer.model
 
         assert orig_model is not new_model
 
     def test_centroid(self):
-        widget = IntegrableViewer()
-        assert widget.rotation_center[0] == 0.0
-        assert widget.rotation_center[1] == 0.0
-        assert widget.rotation_center[2] == 0.0
+        viewer = IntegrableViewer()
+        assert viewer.rotation_center[0] == 0.0
+        assert viewer.rotation_center[1] == 0.0
+        assert viewer.rotation_center[2] == 0.0
 
-        widget.rotation_center = [1.0, 2.0, 3.0]
-        assert widget.rotation_center[0] == 1.0
-        assert widget.rotation_center[1] == 2.0
-        assert widget.rotation_center[2] == 3.0
+        viewer.rotation_center = [1.0, 2.0, 3.0]
+        assert viewer.rotation_center[0] == 1.0
+        assert viewer.rotation_center[1] == 2.0
+        assert viewer.rotation_center[2] == 3.0
 
     def test_camera(self):
-        widget = IntegrableViewer()
+        viewer = IntegrableViewer()
         for i, pos in enumerate([0.0, 0.0, 200.0]):
-            assert widget.camera_position[i] == pos
-            assert widget.off_center[i] == pos
+            assert viewer.camera_position[i] == pos
+            assert viewer.off_center[i] == pos
 
         for i, rot in enumerate([0.0, 0.0, 0.0]):
-            assert widget.rotation_angle[i] == rot
+            assert viewer.rotation_angle[i] == rot
 
-        widget.camera_position = [5.0, 10.0, 15.0]
+        viewer.camera_position = [5.0, 10.0, 15.0]
         for i, pos in enumerate([5.0, 10.0, 15.0]):
-            assert widget.camera_position[i] == pos
-            assert widget.off_center[i] == pos
+            assert viewer.camera_position[i] == pos
+            assert viewer.off_center[i] == pos
 
-        widget.rotation_angle = [90.0, 10.0, 45.0]
+        viewer.rotation_angle = [90.0, 10.0, 45.0]
         for i, rot in enumerate([90.0, 10.0, 45.0]):
-            assert widget.rotation_angle[i] == rot
+            assert viewer.rotation_angle[i] == rot
 
     def test_last_drawable(self):
-        widget = IntegrableViewer()
-        assert widget.last_id == -1
+        viewer = IntegrableViewer()
+        assert viewer.last_id == -1
 
-        mesh = widget.mesh(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], indices=[[0, 1, 2]])
-        assert widget.last_id == 0
-        assert widget.last_drawable is mesh
+        mesh = viewer.mesh(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], indices=[[0, 1, 2]])
+        assert viewer.last_id == 0
+        assert viewer.last_drawable is mesh
 
     def test_add_mesh(self):
-        widget = IntegrableViewer()
-        widget.mesh(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], indices=[[0, 1, 2]])
-        widget.mesh_by_path(f'{TEST_FILES_FOLDER_PATH}/caseron.dxf')
+        viewer = IntegrableViewer()
+        viewer.mesh(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], indices=[[0, 1, 2]])
+        viewer.mesh_by_path(f'{TEST_FILES_FOLDER_PATH}/caseron.dxf')
 
-        assert widget.drawable_collection.__len__() == 2
-        assert isinstance(widget.get_drawable(0), MeshGL)
-        assert isinstance(widget.get_drawable(1), MeshGL)
+        assert viewer.drawable_collection.size() == 2
+        assert isinstance(viewer.get_drawable(0), MeshGL)
+        assert isinstance(viewer.get_drawable(1), MeshGL)
 
     def test_add_wrong_mesh(self):
-        widget = IntegrableViewer()
+        viewer = IntegrableViewer()
 
-        added = widget.mesh()
+        added = viewer.mesh()
         assert added is None
-        assert widget.drawable_collection.__len__() == 0
+        assert viewer.drawable_collection.size() == 0
 
-        added = widget.mesh_by_path('')
+        added = viewer.mesh_by_path('')
         assert added is None
-        assert widget.drawable_collection.__len__() == 0
+        assert viewer.drawable_collection.size() == 0
 
     def test_add_block_model(self):
-        widget = IntegrableViewer()
-        widget.blocks(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], values=[0, 1, 2])
-        widget.blocks_by_path(f'{TEST_FILES_FOLDER_PATH}/mini.csv')
+        viewer = IntegrableViewer()
+        viewer.blocks(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], values=[0, 1, 2])
+        viewer.blocks_by_path(f'{TEST_FILES_FOLDER_PATH}/mini.csv')
 
-        assert widget.drawable_collection.__len__() == 2
-        assert isinstance(widget.get_drawable(0), BlockGL)
-        assert isinstance(widget.get_drawable(1), BlockGL)
+        assert viewer.drawable_collection.size() == 2
+        assert isinstance(viewer.get_drawable(0), BlockGL)
+        assert isinstance(viewer.get_drawable(1), BlockGL)
 
     def test_add_wrong_block_model(self):
-        widget = IntegrableViewer()
+        viewer = IntegrableViewer()
 
-        added = widget.blocks()
+        added = viewer.blocks()
         assert added is None
-        assert widget.drawable_collection.__len__() == 0
+        assert viewer.drawable_collection.size() == 0
 
-        added = widget.blocks_by_path('')
+        added = viewer.blocks_by_path('')
         assert added is None
-        assert widget.drawable_collection.__len__() == 0
+        assert viewer.drawable_collection.size() == 0
 
     def test_add_points(self):
-        widget = IntegrableViewer()
-        widget.points(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], values=[0, 1, 2])
-        widget.points_by_path(f'{TEST_FILES_FOLDER_PATH}/mini.csv')
+        viewer = IntegrableViewer()
+        viewer.points(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], values=[0, 1, 2])
+        viewer.points_by_path(f'{TEST_FILES_FOLDER_PATH}/mini.csv')
 
-        assert widget.drawable_collection.__len__() == 2
-        assert isinstance(widget.get_drawable(0), PointGL)
-        assert isinstance(widget.get_drawable(1), PointGL)
+        assert viewer.drawable_collection.size() == 2
+        assert isinstance(viewer.get_drawable(0), PointGL)
+        assert isinstance(viewer.get_drawable(1), PointGL)
 
     def test_add_wrong_points(self):
-        widget = IntegrableViewer()
+        viewer = IntegrableViewer()
 
-        added = widget.points()
+        added = viewer.points()
         assert added is None
-        assert widget.drawable_collection.__len__() == 0
+        assert viewer.drawable_collection.size() == 0
 
-        added = widget.points_by_path('')
+        added = viewer.points_by_path('')
         assert added is None
-        assert widget.drawable_collection.__len__() == 0
+        assert viewer.drawable_collection.size() == 0
 
     def test_drawable_visibility(self):
-        widget = IntegrableViewer()
-        widget.mesh(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], indices=[[0, 1, 2]])
-        widget.blocks(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], values=[0, 1, 2])
+        viewer = IntegrableViewer()
+        viewer.mesh(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], indices=[[0, 1, 2]])
+        viewer.blocks(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], values=[0, 1, 2])
 
-        assert widget.get_drawable(0).is_visible
-        assert widget.get_drawable(1).is_visible
+        assert viewer.get_drawable(0).is_visible
+        assert viewer.get_drawable(1).is_visible
 
-        widget.hide_drawable(1)
+        viewer.hide_drawable(1)
 
-        assert widget.get_drawable(0).is_visible
-        assert not widget.get_drawable(1).is_visible
+        assert viewer.get_drawable(0).is_visible
+        assert not viewer.get_drawable(1).is_visible
 
-        widget.hide_drawable(0)
-        widget.show_drawable(1)
+        viewer.hide_drawable(0)
+        viewer.show_drawable(1)
 
-        assert not widget.get_drawable(0).is_visible
-        assert widget.get_drawable(1).is_visible
+        assert not viewer.get_drawable(0).is_visible
+        assert viewer.get_drawable(1).is_visible
 
-        widget.show_drawable(0)
-        widget.show_drawable(1)
+        viewer.show_drawable(0)
+        viewer.show_drawable(1)
 
-        assert widget.get_drawable(0).is_visible
-        assert widget.get_drawable(1).is_visible
+        assert viewer.get_drawable(0).is_visible
+        assert viewer.get_drawable(1).is_visible
 
     def test_delete_drawable(self):
-        widget = IntegrableViewer()
-        widget.mesh(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], indices=[[0, 1, 2]])
-        widget.blocks(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], values=[0, 1, 2])
+        viewer = IntegrableViewer()
+        viewer.mesh(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], indices=[[0, 1, 2]])
+        viewer.blocks(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], values=[0, 1, 2])
 
-        assert widget.drawable_collection.__len__() == 2
-        widget.delete(0)
+        assert viewer.drawable_collection.size() == 2
+        viewer.delete(0)
 
-        assert widget.drawable_collection.__len__() == 1
+        assert viewer.drawable_collection.size() == 1
 
         with pytest.raises(Exception):
-            widget.delete(0)
+            viewer.delete(0)
 
-        widget.delete(1)
-        assert widget.drawable_collection.__len__() == 0
+        viewer.delete(1)
+        assert viewer.drawable_collection.size() == 0
 
     def test_load_elements(self):
         viewer = IntegrableViewer()
@@ -213,7 +213,7 @@ class TestIntegrableViewer:
 
         assert viewer.last_id == 4
 
-        assert len(viewer.drawable_collection) == 5
+        assert viewer.drawable_collection.size() == 5
 
         assert viewer.get_drawable(0) is mesh
         assert viewer.get_drawable(1) is blocks
@@ -244,9 +244,9 @@ class TestIntegrableViewer:
         viewer.blocks_by_path(path=f'{TEST_FILES_FOLDER_PATH}/mini.csv')
         viewer.points_by_path(path=f'{TEST_FILES_FOLDER_PATH}/mini.csv')
 
-        assert len(viewer.drawable_collection) == 3
+        assert viewer.drawable_collection.size() == 3
         viewer.clear()
-        assert len(viewer.drawable_collection) == 0
+        assert viewer.drawable_collection.size() == 0
 
     def test_plan_north_east_view(self):
         viewer = IntegrableViewer()

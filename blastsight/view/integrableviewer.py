@@ -336,10 +336,10 @@ class IntegrableViewer(QOpenGLWidget):
         self.update()
 
     def get_all_ids(self) -> list:
-        return list(self.drawable_collection.keys())
+        return self.drawable_collection.get_all_ids()
 
     def get_all_drawables(self) -> list:
-        return list(self.drawable_collection.values())
+        return self.drawable_collection.get_all_drawables()
 
     def update_all(self) -> None:
         for _id in self.get_all_ids():

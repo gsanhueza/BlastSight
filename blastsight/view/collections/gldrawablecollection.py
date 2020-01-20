@@ -27,25 +27,25 @@ class GLDrawableCollection(GLCollection):
     def __init__(self, widget=None):
         super().__init__()
         # Lines
-        self.programs[LineProgram(widget)] = lambda: self.filter(LineGL)
+        self._programs[LineProgram(widget)] = lambda: self.filter(LineGL)
 
         # Tubes
-        self.programs[TubeProgram(widget)] = lambda: self.filter(TubeGL)
+        self._programs[TubeProgram(widget)] = lambda: self.filter(TubeGL)
 
         # Points
-        self.programs[PointProgram(widget)] = lambda: self.filter(PointGL)
+        self._programs[PointProgram(widget)] = lambda: self.filter(PointGL)
 
         # Blocks
-        self.programs[BlockLegacyProgram(widget)] = lambda: [
+        self._programs[BlockLegacyProgram(widget)] = lambda: [
             x for x in self.filter(BlockGL) if x.is_legacy]
 
-        self.programs[BlockProgram(widget)] = lambda: [
+        self._programs[BlockProgram(widget)] = lambda: [
             x for x in self.filter(BlockGL) if not x.is_legacy]
 
         # Meshes
-        self.programs[TurboMeshProgram(widget)] = lambda: [
+        self._programs[TurboMeshProgram(widget)] = lambda: [
             x for x in self.filter(MeshGL) if x.is_turbo_ready]
-        self.programs[MeshProgram(widget)] = lambda: [
+        self._programs[MeshProgram(widget)] = lambda: [
             x for x in self.filter(MeshGL) if not x.is_turbo_ready and not x.is_wireframed]
-        self.programs[WireProgram(widget)] = lambda: [
+        self._programs[WireProgram(widget)] = lambda: [
             x for x in self.filter(MeshGL) if x.is_wireframed]
