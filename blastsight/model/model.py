@@ -98,7 +98,8 @@ class Model:
 
         kwargs['data'] = data
         for k, v in properties.items():
-            kwargs[k] = v
+            # Prioritize kwargs over file properties (useful in CLI)
+            kwargs[k] = kwargs.get(k, v)
 
         return self._load_element(element_class, *args, **kwargs)
 
