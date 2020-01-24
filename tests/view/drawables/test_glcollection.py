@@ -54,13 +54,13 @@ class TestGLCollection:
         collection.add(drawable_1)
         collection.add(drawable_2)
 
-        assert collection._needs_update
+        assert collection.needs_update
         collection.draw(viewer.proj, viewer.camera, viewer.world)
-        assert not collection._needs_update
+        assert not collection.needs_update
         collection.draw(viewer.proj, viewer.camera, viewer.world)
-        assert not collection._needs_update
+        assert not collection.needs_update
 
         collection.recreate()
-        assert collection._needs_update
+        assert collection.needs_update
         collection.draw(viewer.proj, viewer.camera, viewer.world)
-        assert not collection._needs_update
+        assert not collection.needs_update
