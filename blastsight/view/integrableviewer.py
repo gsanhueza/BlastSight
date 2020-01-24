@@ -194,12 +194,12 @@ class IntegrableViewer(QOpenGLWidget):
         try:
             drawable = generator()
             self.signal_load_success.emit(drawable.id)
-            self.signal_file_modified.emit()
 
             return drawable
         except Exception:
             self.signal_load_failure.emit()
             traceback.print_exc()
+
             return None
 
     def generate_mesh(self, generator, *args, **kwargs) -> MeshGL:
@@ -221,9 +221,10 @@ class IntegrableViewer(QOpenGLWidget):
     Register methods
     """
     def register_drawable(self, drawable):
-        if drawable:
+        if drawable is not None:
             drawable.add_observer(self)
             self.drawable_collection.add(drawable)
+            self.signal_file_modified.emit()
 
         return drawable
 
