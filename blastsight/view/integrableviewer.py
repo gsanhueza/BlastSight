@@ -218,7 +218,7 @@ class IntegrableViewer(QOpenGLWidget):
         return self.generate_drawable(lambda: TubeGL(generator(*args, **kwargs), *args, **kwargs))
 
     """
-    Load methods
+    Register methods
     """
     def register_drawable(self, drawable):
         if drawable:

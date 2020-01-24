@@ -70,7 +70,30 @@ class Model:
         return sorted(path_list)
 
     """
-    Element loading
+    Generator methods
+    """
+    @staticmethod
+    def generate_mesh(*args, **kwargs) -> MeshElement:
+        return MeshElement(hint='mesh', *args, **kwargs)
+
+    @staticmethod
+    def generate_blocks(*args, **kwargs) -> BlockElement:
+        return BlockElement(hint='block', *args, **kwargs)
+
+    @staticmethod
+    def generate_points(*args, **kwargs) -> PointElement:
+        return PointElement(hint='point', *args, **kwargs)
+
+    @staticmethod
+    def generate_lines(*args, **kwargs) -> LineElement:
+        return LineElement(hint='line', *args, **kwargs)
+
+    @staticmethod
+    def generate_tubes(*args, **kwargs) -> TubeElement:
+        return TubeElement(hint='tube', *args, **kwargs)
+
+    """
+    Register methods
     """
     def register_element(self, element):
         # In a multi-threaded application, we can't risk assigning
@@ -80,50 +103,54 @@ class Model:
 
         return element
 
-    def register_element_by_path(self, path: str, hint: str, generator, *args, **kwargs):
+    def register_element_by_path(self, path: str, generator, *args, **kwargs):
         ext = path.split('.')[-1]
         info = self.get_parser(ext).load_file(path, *args, **kwargs)
         data = info.data
         properties = info.properties
 
-        kwargs['data'] = data
-        kwargs['hint'] = hint
-
+        # Prioritize kwargs over file properties (useful in CLI)
+        kwargs['data'] = kwargs.get('data', data)
         for k, v in properties.items():
-            # Prioritize kwargs over file properties (useful in CLI)
             kwargs[k] = kwargs.get(k, v)
 
-        return self.register_element(generator(args, kwargs))
+        return self.register_element(generator(*args, **kwargs))
 
+    """
+    Load methods by arguments
+    """
     def mesh(self, *args, **kwargs) -> MeshElement:
-        return self.register_element(MeshElement(*args, **kwargs))
+        return self.register_element(self.generate_mesh(*args, **kwargs))
 
     def blocks(self, *args, **kwargs) -> BlockElement:
-        return self.register_element(BlockElement(*args, **kwargs))
+        return self.register_element(self.generate_blocks(*args, **kwargs))
 
     def points(self, *args, **kwargs) -> PointElement:
-        return self.register_element(PointElement(*args, **kwargs))
+        return self.register_element(self.generate_points(*args, **kwargs))
 
     def lines(self, *args, **kwargs) -> LineElement:
-        return self.register_element(LineElement(*args, **kwargs))
+        return self.register_element(self.generate_lines(*args, **kwargs))
 
     def tubes(self, *args, **kwargs) -> TubeElement:
-        return self.register_element(TubeElement(*args, **kwargs))
+        return self.register_element(self.generate_tubes(*args, **kwargs))
 
+    """
+    Load methods by path
+    """
     def mesh_by_path(self, path: str, *args, **kwargs) -> MeshElement:
-        return self.register_element_by_path(path, 'mesh', lambda a, k: MeshElement(*a, **k), *args, **kwargs)
+        return self.register_element_by_path(path, self.generate_mesh, *args, **kwargs)
 
     def blocks_by_path(self, path: str, *args, **kwargs) -> BlockElement:
-        return self.register_element_by_path(path, 'block', lambda a, k: BlockElement(*a, **k), *args, **kwargs)
+        return self.register_element_by_path(path, self.generate_blocks, *args, **kwargs)
 
     def points_by_path(self, path: str, *args, **kwargs) -> PointElement:
-        return self.register_element_by_path(path, 'point', lambda a, k: PointElement(*a, **k), *args, **kwargs)
+        return self.register_element_by_path(path, self.generate_points, *args, **kwargs)
 
     def lines_by_path(self, path: str, *args, **kwargs) -> LineElement:
-        return self.register_element_by_path(path, 'line', lambda a, k: LineElement(*a, **k), *args, **kwargs)
+        return self.register_element_by_path(path, self.generate_lines, *args, **kwargs)
 
     def tubes_by_path(self, path: str, *args, **kwargs) -> TubeElement:
-        return self.register_element_by_path(path, 'tube', lambda a, k: TubeElement(*a, **k), *args, **kwargs)
+        return self.register_element_by_path(path, self.generate_tubes, *args, **kwargs)
 
     """
     Element handling
