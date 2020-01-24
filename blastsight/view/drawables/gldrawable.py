@@ -123,10 +123,10 @@ class GLDrawable:
     """
     Quick GLDrawable API
     """
-    def add_observer(self, observer):
+    def add_observer(self, observer) -> None:
         self.observers.append(observer)
 
-    def notify(self):
+    def notify(self) -> None:
         for observer in self.observers:
             observer.recreate()
 

@@ -14,7 +14,7 @@ v.mesh_by_path('../test_files/caseron.off')
 
 def update_info(x: list):
     update_title = []
-    for d in v.drawable_collection.values():
+    for d in v.get_all_drawables():
         d.is_highlighted = False
 
     for attr in x:

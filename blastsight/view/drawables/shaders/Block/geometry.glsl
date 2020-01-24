@@ -59,9 +59,11 @@ void add_face(vec4 center, vec4 shift, vec4 dy, vec4 dx, vec3 n)
 void main()
 {
     vec4 center = model_view_matrix * vec4(v_position[0], 1.0);
-    vec4 dx = 0.5f * model_view_matrix[0] * block_size.x;
-    vec4 dy = 0.5f * model_view_matrix[1] * block_size.y;
-    vec4 dz = 0.5f * model_view_matrix[2] * block_size.z;
+    vec3 half_block = 0.5f * block_size;
+
+    vec4 dx = model_view_matrix[0] * half_block.x;
+    vec4 dy = model_view_matrix[1] * half_block.y;
+    vec4 dz = model_view_matrix[2] * half_block.z;
 
     add_face(center, +dx, dy, dz, vec3(1.0, 0.0, 0.0));  // Right
     add_face(center, -dx, dz, dy, vec3(-1.0, 0.0, 0.0)); // Left
