@@ -188,18 +188,13 @@ class IntegrableViewer(QOpenGLWidget):
         self.update()
 
     """
-    Load methods
+    Generator methods
     """
-    def _load_drawable(self, method: classmethod, drawable_type: type, *args, **kwargs):
+    def generate_drawable(self, generator):
         try:
-            element = method(*args, **kwargs)
-            drawable = drawable_type(element, *args, **kwargs)
-            drawable.add_observer(self)
-            self.drawable_collection.add(drawable)
-
+            drawable = generator()
             self.signal_load_success.emit(drawable.id)
             self.signal_file_modified.emit()
-            self.update()
 
             return drawable
         except Exception:
@@ -207,18 +202,40 @@ class IntegrableViewer(QOpenGLWidget):
             traceback.print_exc()
             return None
 
-    def _load_folder(self, method: classmethod, path: str, *args, **kwargs) -> list:
+    def generate_mesh(self, generator, *args, **kwargs) -> MeshGL:
+        return self.generate_drawable(lambda: MeshGL(generator(*args, **kwargs), *args, **kwargs))
+
+    def generate_blocks(self, generator, *args, **kwargs) -> BlockGL:
+        return self.generate_drawable(lambda: BlockGL(generator(*args, **kwargs), *args, **kwargs))
+
+    def generate_points(self, generator, *args, **kwargs) -> PointGL:
+        return self.generate_drawable(lambda: PointGL(generator(*args, **kwargs), *args, **kwargs))
+
+    def generate_lines(self, generator, *args, **kwargs) -> LineGL:
+        return self.generate_drawable(lambda: LineGL(generator(*args, **kwargs), *args, **kwargs))
+
+    def generate_tubes(self, generator, *args, **kwargs) -> TubeGL:
+        return self.generate_drawable(lambda: TubeGL(generator(*args, **kwargs), *args, **kwargs))
+
+    """
+    Load methods
+    """
+    def register_drawable(self, drawable):
+        if drawable:
+            drawable.add_observer(self)
+            self.drawable_collection.add(drawable)
+
+        return drawable
+
+    def register_folder(self, path: str, generator, *args, **kwargs) -> list:
         path_list = self.model.get_paths_from_directory(path)
-        drawables = []
 
         # We'll block viewer._load_drawable's signal_file_modified until last item has been loaded.
         self.blockSignals(True)
-        for path in path_list:
-            drawables.append(method(path, *args, **kwargs))
+        loaded = [d for d in [generator(path) for path in path_list] if d is not None]
         self.blockSignals(False)
 
         # We'll manually emit the signals we didn't emit before.
-        loaded = [d for d in drawables if d is not None]
         if len(loaded) > 0:
             self.signal_file_modified.emit()
             self.signal_load_success.emit(self.last_id)
@@ -231,59 +248,59 @@ class IntegrableViewer(QOpenGLWidget):
     Load methods by arguments
     """
     def mesh(self, *args, **kwargs) -> MeshGL:
-        return self._load_drawable(self.model.mesh, MeshGL, *args, **kwargs)
+        return self.register_drawable(self.generate_mesh(self.model.mesh, *args, **kwargs))
 
     def blocks(self, *args, **kwargs) -> BlockGL:
-        return self._load_drawable(self.model.blocks, BlockGL, *args, **kwargs)
+        return self.register_drawable(self.generate_blocks(self.model.blocks, *args, **kwargs))
 
     def points(self, *args, **kwargs) -> PointGL:
-        return self._load_drawable(self.model.points, PointGL, *args, **kwargs)
+        return self.register_drawable(self.generate_points(self.model.points, *args, **kwargs))
 
     def lines(self, *args, **kwargs) -> LineGL:
-        return self._load_drawable(self.model.lines, LineGL, *args, **kwargs)
+        return self.register_drawable(self.generate_lines(self.model.lines, *args, **kwargs))
 
     def tubes(self, *args, **kwargs) -> TubeGL:
-        return self._load_drawable(self.model.tubes, TubeGL, *args, **kwargs)
+        return self.register_drawable(self.generate_tubes(self.model.tubes, *args, **kwargs))
 
     """
     Load methods by path
     """
     def mesh_by_path(self, path: str, *args, **kwargs) -> MeshGL:
-        return self._load_drawable(self.model.mesh_by_path, MeshGL, path, *args, **kwargs)
+        return self.register_drawable(self.generate_mesh(self.model.mesh_by_path, path, *args, **kwargs))
 
     def blocks_by_path(self, path: str, *args, **kwargs) -> BlockGL:
-        return self._load_drawable(self.model.blocks_by_path, BlockGL, path, *args, **kwargs)
+        return self.register_drawable(self.generate_blocks(self.model.blocks_by_path, path, *args, **kwargs))
 
     def points_by_path(self, path: str, *args, **kwargs) -> PointGL:
-        return self._load_drawable(self.model.points_by_path, PointGL, path, *args, **kwargs)
+        return self.register_drawable(self.generate_points(self.model.points_by_path, path, *args, **kwargs))
 
-    def lines_by_path(self, path: str, *args, **kwargs) -> PointGL:
-        return self._load_drawable(self.model.lines_by_path, LineGL, path, *args, **kwargs)
+    def lines_by_path(self, path: str, *args, **kwargs) -> LineGL:
+        return self.register_drawable(self.generate_lines(self.model.lines_by_path, path, *args, **kwargs))
 
     def tubes_by_path(self, path: str, *args, **kwargs) -> TubeGL:
-        return self._load_drawable(self.model.tubes_by_path, TubeGL, path, *args, **kwargs)
+        return self.register_drawable(self.generate_tubes(self.model.tubes_by_path, path, *args, **kwargs))
 
     def meshes_by_folder_path(self, path: str, *args, **kwargs) -> list:
-        return self._load_folder(self.mesh_by_path, path, *args, **kwargs)
+        return self.register_folder(path, self.mesh_by_path, *args, **kwargs)
 
     def blocks_by_folder_path(self, path: str, *args, **kwargs) -> list:
-        return self._load_folder(self.blocks_by_path, path, *args, **kwargs)
+        return self.register_folder(path, self.blocks_by_path, *args, **kwargs)
 
     def points_by_folder_path(self, path: str, *args, **kwargs) -> list:
-        return self._load_folder(self.points_by_path, path, *args, **kwargs)
+        return self.register_folder(path, self.points_by_path, *args, **kwargs)
 
     def lines_by_folder_path(self, path: str, *args, **kwargs) -> list:
-        return self._load_folder(self.lines_by_path, path, *args, **kwargs)
+        return self.register_folder(path, self.lines_by_path, *args, **kwargs)
 
     def tubes_by_folder_path(self, path: str, *args, **kwargs) -> list:
-        return self._load_folder(self.tubes_by_path, path, *args, **kwargs)
+        return self.register_folder(path, self.tubes_by_path, *args, **kwargs)
 
     """
     Export methods
     """
-    def _export_element(self, method: classmethod, path: str, _id: int) -> None:
+    def _export_element(self, exporter, path: str, _id: int) -> None:
         try:
-            method(path, _id)
+            exporter(path, _id)
             self.signal_export_success.emit(_id)
         except Exception:
             self.signal_export_failure.emit()
