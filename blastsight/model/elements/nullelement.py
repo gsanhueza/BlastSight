@@ -16,8 +16,8 @@ class NullElement(Element):
         """
         super().__init__(*args, **kwargs)
 
-    def _fill_element(self, *args, **kwargs):
+    def _fill_element(self, *args, **kwargs) -> None:
         pass
 
-    def _check_integrity(self):
+    def _check_integrity(self) -> None:
         pass

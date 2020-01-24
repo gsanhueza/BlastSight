@@ -43,7 +43,7 @@ class LineGL(GLDrawable):
 
         glBindVertexArray(0)
 
-    def draw(self):
+    def draw(self) -> None:
         glBindVertexArray(self.vao)
         glDrawArrays(GL_LINE_STRIP, 0, self.num_vertices)
         glBindVertexArray(0)

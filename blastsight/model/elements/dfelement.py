@@ -64,7 +64,7 @@ class DFElement(Element):
     """
     Element filling
     """
-    def _fill_element(self, *args, **kwargs):
+    def _fill_element(self, *args, **kwargs) -> None:
         # Base data
         msg = f'Data must contain ["x", "y", "z"], "vertices" or "data", got {list(kwargs.keys())}.'
         if 'data' in kwargs.keys():
@@ -78,13 +78,13 @@ class DFElement(Element):
         else:
             raise KeyError(msg)
 
-    def _fill_as_values(self, *args, **kwargs):
+    def _fill_as_values(self, *args, **kwargs) -> None:
         self.values = np.array(kwargs.get('values', np.empty(self.x.size)))
 
-    def _fill_as_data(self, *args, **kwargs):
+    def _fill_as_data(self, *args, **kwargs) -> None:
         self.data = kwargs.get('data')
 
-    def _fill_properties(self, *args, **kwargs):
+    def _fill_properties(self, *args, **kwargs) -> None:
         self.headers = kwargs.get('headers', list(self.data.keys())[:4])
         self.alpha = kwargs.get('alpha', 1.0)
         self.colormap = kwargs.get('colormap', 'red-blue')  # red-blue (min is red, max is blue)
@@ -151,7 +151,7 @@ class DFElement(Element):
     Properties
     """
     @property
-    def color(self):
+    def color(self) -> np.ndarray:
         if self.datasets.get('color').size == 0:
             return utils.values_to_rgb(self.values, self.vmin, self.vmax, self.colormap)
         return self.datasets.get('color')
@@ -169,7 +169,7 @@ class DFElement(Element):
         return self.properties.get('vmax')
 
     @color.setter
-    def color(self, _colors: list):
+    def color(self, _colors: list) -> None:
         self.datasets['color'] = np.array(_colors)
 
     @property

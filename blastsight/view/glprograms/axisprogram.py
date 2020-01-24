@@ -14,7 +14,7 @@ class AxisProgram(ShaderProgram):
         super().__init__(viewer)
         self.base_name = 'Axis'
 
-    def draw(self):
+    def draw(self) -> None:
         viewport = [self.viewer.devicePixelRatio() * self.viewer.width(),
                     self.viewer.devicePixelRatio() * self.viewer.height()]
         w, h = viewport

@@ -14,7 +14,7 @@ class WireProgram(ShaderProgram):
         super().__init__(viewer)
         self.base_name = 'Wireframe'
 
-    def inner_draw(self, drawables):
+    def inner_draw(self, drawables: list) -> None:
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
         super().inner_draw(drawables)
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)

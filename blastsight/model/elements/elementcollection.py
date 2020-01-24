@@ -15,7 +15,7 @@ class ElementCollection:
         self._current_id = -1
 
     @property
-    def last_id(self):
+    def last_id(self) -> int:
         # bool(dict) evaluates to False if the dictionary is empty
         return list(self._collection.keys())[-1] if bool(self._collection) else -1
 

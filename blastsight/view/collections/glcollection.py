@@ -42,7 +42,7 @@ class GLCollection:
         return len(self._collection)
 
     # Programs
-    def associate(self, program, association):
+    def associate(self, program, association) -> None:
         """
         :param program: AxisProgram, for example
         :param association: lambda
@@ -50,7 +50,7 @@ class GLCollection:
         """
         self._programs.associate(program, association)
 
-    def recreate(self):
+    def recreate(self) -> None:
         self._needs_update = True
         for gl_program in self._programs.get_programs():
             gl_program.recreate()
@@ -64,7 +64,7 @@ class GLCollection:
 
             self._needs_update = False
 
-        def inner_draw(programs, collection, method):
+        def inner_draw(programs, collection, method) -> None:
             for program in programs:
                 if len(getattr(program, collection)) == 0:
                     continue
@@ -85,6 +85,6 @@ class GLCollection:
         return [x for x in self._collection.copy().values() if type(x) is drawable_type]
 
     @property
-    def last_id(self):
+    def last_id(self) -> int:
         # bool(dict) evaluates to False if the dictionary is empty
         return list(self._collection.keys())[-1] if bool(self._collection) else -1

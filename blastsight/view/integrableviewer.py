@@ -23,6 +23,7 @@ from .collections.glaxiscollection import GLAxisCollection
 from .collections.glbackgroundcollection import GLBackgroundCollection
 from .collections.gldrawablecollection import GLDrawableCollection
 
+from .drawables.gldrawable import GLDrawable
 from .drawables.axisgl import AxisGL
 from .drawables.backgroundgl import BackgroundGL
 from .drawables.blockgl import BlockGL
@@ -121,7 +122,7 @@ class IntegrableViewer(QOpenGLWidget):
         return self.drawable_collection.last_id
 
     @property
-    def last_drawable(self):
+    def last_drawable(self) -> GLDrawable:
         return self.get_drawable(self.last_id)
 
     @property
@@ -170,7 +171,7 @@ class IntegrableViewer(QOpenGLWidget):
             d.is_boostable = self._turbo_rendering
 
     @autofit_to_screen.setter
-    def autofit_to_screen(self, status) -> None:
+    def autofit_to_screen(self, status: bool) -> None:
         self._autofit_to_screen = status
 
         if self._autofit_to_screen:
@@ -231,9 +232,9 @@ class IntegrableViewer(QOpenGLWidget):
     def register_folder(self, path: str, generator, *args, **kwargs) -> list:
         path_list = self.model.get_paths_from_directory(path)
 
-        # We'll block viewer._load_drawable's signal_file_modified until last item has been loaded.
+        # We'll block viewer.register_drawable's signal_file_modified until last item has been loaded.
         self.blockSignals(True)
-        loaded = [d for d in [generator(path) for path in path_list] if d is not None]
+        loaded = [d for d in [generator(path, *args, **kwargs) for path in path_list] if d is not None]
         self.blockSignals(False)
 
         # We'll manually emit the signals we didn't emit before.
@@ -623,7 +624,7 @@ class IntegrableViewer(QOpenGLWidget):
     """
     Controller
     """
-    def add_controller(self, mode, mode_name: str):
+    def add_controller(self, mode, mode_name: str) -> None:
         self.controllers[mode_name] = mode
 
     def set_controller(self, mode_name: str) -> None:
@@ -654,7 +655,7 @@ class IntegrableViewer(QOpenGLWidget):
         self.current_mode.mousePressEvent(event, self)
         self.update()
 
-    def mouseDoubleClickEvent(self, event, *args, **kwargs):
+    def mouseDoubleClickEvent(self, event, *args, **kwargs) -> None:
         self.current_mode.mouseDoubleClickEvent(event, self)
         self.update()
 

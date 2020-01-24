@@ -11,7 +11,7 @@
 import numpy as np
 
 
-def cylinder(radius, resolution, segment):
+def cylinder(radius: float, resolution: int, segment: tuple) -> tuple:
     Z = np.array([0.0, 0.0, 1.0])
     p0, p1 = segment
 
@@ -63,7 +63,7 @@ def cylinder(radius, resolution, segment):
     return vertices, indices
 
 
-def quat_from_data(v1, v2):
+def quat_from_data(v1: np.ndarray, v2: np.ndarray) -> np.ndarray:
     eps = 1e-12
     v1 /= np.linalg.norm(v1)
     v2 /= np.linalg.norm(v2)
@@ -88,7 +88,7 @@ def quat_from_data(v1, v2):
     return quat
 
 
-def to_matrix(a):
+def to_matrix(a: np.ndarray) -> np.ndarray:
     return np.array([
         [1 - 2 * a[2] * a[2] - 2 * a[3] * a[3], 2 * a[1] * a[2] - 2 * a[3] * a[0],
          2 * a[1] * a[3] + 2 * a[2] * a[0]],

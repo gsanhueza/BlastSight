@@ -51,7 +51,7 @@ class PointGL(GLDrawable):
 
         glBindVertexArray(0)
 
-    def draw(self):
+    def draw(self) -> None:
         glBindVertexArray(self.vao)
         glDrawArrays(GL_POINTS, 0, self.num_points)
         glBindVertexArray(0)

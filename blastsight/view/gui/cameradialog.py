@@ -21,7 +21,7 @@ class CameraDialog(QDialog):
         self.setAttribute(Qt.WA_DeleteOnClose)
         self.viewer = parent
 
-    def accept(self):
+    def accept(self) -> None:
         self.viewer.camera_position = [self.doubleSpinBox_x.value(),
                                        self.doubleSpinBox_y.value(),
                                        self.doubleSpinBox_z.value()]
@@ -34,7 +34,7 @@ class CameraDialog(QDialog):
 
         super().accept()
 
-    def show(self):
+    def show(self) -> None:
         positions = self.viewer.camera_position
         rotations = self.viewer.rotation_angle
         centers = self.viewer.rotation_center

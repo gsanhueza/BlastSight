@@ -6,23 +6,26 @@
 #  Distributed under the MIT License.
 #  See LICENSE for more info.
 
+from qtpy.QtGui import QMouseEvent, QWheelEvent
+
+
 class Mode:
     def __init__(self):
         self.name = 'Base mode'
 
-    def mousePressEvent(self, event, viewer):
+    def mousePressEvent(self, event: QMouseEvent, viewer) -> None:
         pass
 
-    def mouseMoveEvent(self, event, viewer):
+    def mouseMoveEvent(self, event: QMouseEvent, viewer) -> None:
         pass
 
-    def mouseReleaseEvent(self, event, viewer):
+    def mouseReleaseEvent(self, event: QMouseEvent, viewer) -> None:
         pass
 
-    def mouseDoubleClickEvent(self, event, viewer):
+    def mouseDoubleClickEvent(self, event: QMouseEvent, viewer) -> None:
         pass
 
-    def wheelEvent(self, event, viewer):
+    def wheelEvent(self, event: QWheelEvent, viewer) -> None:
         dy = event.angleDelta().y()
         sign = dy / abs(dy) if abs(dy) > 1e-12 else 0.0
         smoothness = max(viewer.smoothness, 0.1)

@@ -50,7 +50,7 @@ class PointElement(DFElement):
             'sphere': 2,
         }
 
-    def _fill_properties(self, *args, **kwargs):
+    def _fill_properties(self, *args, **kwargs) -> None:
         super()._fill_properties(*args, **kwargs)
         self.marker = kwargs.get('marker', 'square')
         self.point_size = kwargs.get('point_size', float(kwargs.get('avg_size', 1.0)))
@@ -59,11 +59,11 @@ class PointElement(DFElement):
     Properties
     """
     @property
-    def customizable_properties(self):
+    def customizable_properties(self) -> list:
         return ['alpha', 'colormap', 'vmin', 'vmax', 'marker', 'avg_size']
 
     @property
-    def exportable_properties(self):
+    def exportable_properties(self) -> list:
         return ['alpha', 'colormap', 'headers', 'marker', 'avg_size']
 
     @property
@@ -83,7 +83,7 @@ class PointElement(DFElement):
         return self.properties.get('marker', 'square')
 
     @avg_size.setter
-    def avg_size(self, _avg_size: float):
+    def avg_size(self, _avg_size: float) -> None:
         self.point_size = _avg_size
 
     @point_size.setter

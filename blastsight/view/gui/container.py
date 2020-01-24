@@ -38,7 +38,7 @@ class Container(QWidget):
 
         self.connect_actions()
 
-    def connect_actions(self):
+    def connect_actions(self) -> None:
         self.toolbar.connect_tree(self.treeWidget)
         self.toolbar.connect_viewer(self.viewer)
         self.toolbar.connect_main_widget(self)

@@ -18,7 +18,7 @@ class PointProgram(ShaderProgram):
         self.add_uniform_loc('viewport')
         self.add_uniform_loc('marker')
 
-    def inner_draw(self, drawables):
+    def inner_draw(self, drawables: list) -> None:
         for drawable in drawables:
             # We need DPI awareness for the size of the impostors
             viewport = [float(self.viewer.devicePixelRatio() * self.viewer.width()),

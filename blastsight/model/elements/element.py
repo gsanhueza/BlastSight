@@ -40,7 +40,7 @@ class Element:
 
         self._initialize(*args, **kwargs)
 
-    def _initialize(self, *args, **kwargs):
+    def _initialize(self, *args, **kwargs) -> None:
         self._fill_element(*args, **kwargs)
         self._fill_metadata(*args, **kwargs)
         self._fill_properties(*args, **kwargs)
@@ -49,7 +49,7 @@ class Element:
     """
     Element filling
     """
-    def _fill_element(self, *args, **kwargs):
+    def _fill_element(self, *args, **kwargs) -> None:
         msg = f'Data must contain ["x", "y", "z"], "vertices" or "data", got {list(kwargs.keys())}.'
         if 'data' in kwargs.keys():
             self._fill_as_data(*args, **kwargs)
@@ -60,7 +60,7 @@ class Element:
         else:
             raise KeyError(msg)
 
-    def _fill_as_data(self, *args, **kwargs):
+    def _fill_as_data(self, *args, **kwargs) -> None:
         data = kwargs.get('data', {})
         if 'vertices' in data.keys():
             self.vertices = data.get('vertices', [])
@@ -69,24 +69,24 @@ class Element:
             self.y = data.get('y', [])
             self.z = data.get('z', [])
 
-    def _fill_as_vertices(self, *args, **kwargs):
+    def _fill_as_vertices(self, *args, **kwargs) -> None:
         self.vertices = kwargs.get('vertices', [])
 
-    def _fill_as_xyz(self, *args, **kwargs):
+    def _fill_as_xyz(self, *args, **kwargs) -> None:
         self.x = kwargs.get('x', [])
         self.y = kwargs.get('y', [])
         self.z = kwargs.get('z', [])
 
-    def _fill_properties(self, *args, **kwargs):
+    def _fill_properties(self, *args, **kwargs) -> None:
         self.color = kwargs.get('color', np.random.rand(3))
         self.alpha = kwargs.get('alpha', 1.0)
 
-    def _fill_metadata(self, *args, **kwargs):
+    def _fill_metadata(self, *args, **kwargs) -> None:
         self.name = kwargs.get('name')
         self.extension = kwargs.get('extension')
         self.id = kwargs.get('id', -1)
 
-    def _check_integrity(self):
+    def _check_integrity(self) -> None:
         msg = f'Coordinates have different lengths: ({self.x.size}, {self.y.size}, {self.z.size})'
         if not (self.x.size == self.y.size == self.z.size):
             raise ValueError(msg)
@@ -115,7 +115,7 @@ class Element:
         self._data = _data
 
     @properties.setter
-    def properties(self, _properties):
+    def properties(self, _properties: dict) -> None:
         for k, v in _properties.items():
             self._properties[k] = v
 
@@ -158,11 +158,11 @@ class Element:
     Properties
     """
     @property
-    def customizable_properties(self):
+    def customizable_properties(self) -> list:
         return ['color', 'alpha']
 
     @property
-    def exportable_properties(self):
+    def exportable_properties(self) -> list:
         return ['color', 'alpha']
 
     @property

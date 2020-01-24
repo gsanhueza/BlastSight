@@ -15,5 +15,5 @@ class ThreadWorker(QRunnable):
         self.args = args
         self.kwargs = kwargs
 
-    def run(self):
+    def run(self) -> None:
         self.method(*self.args, **self.kwargs)

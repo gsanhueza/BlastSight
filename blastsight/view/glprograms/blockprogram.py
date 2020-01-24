@@ -17,7 +17,7 @@ class BlockProgram(ShaderProgram):
         super().setup()
         self.add_uniform_loc('block_size')
 
-    def setup_shaders(self):
+    def setup_shaders(self) -> None:
         # Placeholders to avoid early garbage collection
         vs = self.enable_vertex_shader()
         fs = self.enable_fragment_shader()
@@ -25,7 +25,7 @@ class BlockProgram(ShaderProgram):
 
         self.shader_program.link()
 
-    def inner_draw(self, drawables):
+    def inner_draw(self, drawables: list) -> None:
         for drawable in drawables:
             self.update_uniform('block_size', *drawable.element.block_size)
             drawable.draw()

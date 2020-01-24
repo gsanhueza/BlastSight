@@ -36,13 +36,13 @@ class TubeElement(Element):
         """
         super().__init__(*args, **kwargs)
 
-    def _fill_properties(self, *args, **kwargs):
+    def _fill_properties(self, *args, **kwargs) -> None:
         super()._fill_properties(*args, **kwargs)
         self.radius = kwargs.get('radius', 0.15)
         self.resolution = kwargs.get('resolution', 15)
         self.loop = kwargs.get('loop', False)
 
-    def _check_integrity(self):
+    def _check_integrity(self) -> None:
         super()._check_integrity()
         if len(self.vertices) < 2:
             raise ValueError("Not enough data to create this element.")
@@ -63,7 +63,7 @@ class TubeElement(Element):
         return self.properties.get('resolution')
 
     @property
-    def loop(self):
+    def loop(self) -> bool:
         return self.properties.get('loop')
 
     @radius.setter
@@ -75,13 +75,13 @@ class TubeElement(Element):
         self.properties['resolution'] = _resolution
 
     @loop.setter
-    def loop(self, _loop: bool):
+    def loop(self, _loop: bool) -> None:
         self.properties['loop'] = _loop
 
     """
     Utilities
     """
-    def as_mesh(self):
+    def as_mesh(self) -> tuple:
         vertices = []
         indices = []
         delta = 0

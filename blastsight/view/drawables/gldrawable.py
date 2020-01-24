@@ -29,13 +29,13 @@ class GLDrawable:
     # Example:
     # d = GLDrawable(element, *args, **kwargs)
     # assert d.alpha is d.element.alpha  => True
-    def __dir__(self):
+    def __dir__(self) -> list:
         # Hack to expose GLDrawable's attributes AND self.element's attributes
         # as if they were GLDrawable's attributes.
         # https://stackoverflow.com/q/15507848
         return sorted(set(dir(type(self)) + list(self.__dict__.keys()) + dir(self.element)))
 
-    def __getattribute__(self, attr):
+    def __getattribute__(self, attr: str):
         # Hack to get our attributes.
         # If not found, search self.element's attributes.
         # https://stackoverflow.com/a/2405617
@@ -44,7 +44,7 @@ class GLDrawable:
         except AttributeError:
             return self.element.__getattribute__(attr)
 
-    def __setattr__(self, key, value):
+    def __setattr__(self, key, value) -> None:
         # Hack to set our attributes.
         # We'll try to set our element's attribute first, then ourselves.
         # https://stackoverflow.com/a/7042247
@@ -67,7 +67,7 @@ class GLDrawable:
     def setup_attributes(self) -> None:
         pass
 
-    def create_vao_vbos(self, vbo_count):
+    def create_vao_vbos(self, vbo_count: int) -> None:
         if len(self.vaos) == 0:
             self.vaos = [glGenVertexArrays(1)]
             self.vbos = glGenBuffers(vbo_count)
@@ -86,7 +86,7 @@ class GLDrawable:
     def draw(self) -> None:
         pass
 
-    def cleanup(self):
+    def cleanup(self) -> None:
         if self.is_initialized:
             glDeleteBuffers(len(self.vbos), self.vbos)
             glDeleteVertexArrays(len(self.vaos), self.vaos)

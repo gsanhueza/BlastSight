@@ -14,7 +14,7 @@ class FPSCounter:
         self.resolution = resolution
         self.counter = 0
 
-    def tick(self, callback=lambda *args: None):
+    def tick(self, callback=lambda *args: None) -> None:
         self.counter += 1
         if time.time() - self.start_time > self.resolution:
             diff = (time.time() - self.start_time)

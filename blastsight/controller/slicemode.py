@@ -6,6 +6,7 @@
 #  See LICENSE for more info.
 
 from qtpy.QtCore import Qt
+from qtpy.QtGui import QMouseEvent
 from .mode import Mode
 
 
@@ -16,14 +17,14 @@ class SliceMode(Mode):
         self.origins = []
         self.rays = []
 
-    def mousePressEvent(self, event, viewer):
+    def mousePressEvent(self, event: QMouseEvent, viewer) -> None:
         if event.buttons() == Qt.LeftButton:
             self.detect_rays(event, viewer)
         else:
             self.origins.clear()
             self.rays.clear()
 
-    def detect_rays(self, event, viewer):
+    def detect_rays(self, event: QMouseEvent, viewer) -> None:
         ray, origin = viewer.ray_from_click(event.pos().x(), event.pos().y(), 1.0)
         self.origins.append(origin)
         self.rays.append(ray)

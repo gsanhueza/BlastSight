@@ -42,19 +42,19 @@ class ShaderProgram:
 
         self.shader_program.link()
 
-    def _enable_shader(self, shader_type, filename: str):
+    def _enable_shader(self, shader_type, filename: str) -> QOpenGLShader:
         shader = QOpenGLShader(shader_type)
         shader.compileSourceFile(f'{self.shader_dir}/{self.base_name}/{filename}')
         self.shader_program.addShader(shader)
         return shader
 
-    def enable_vertex_shader(self, filename='vertex.glsl'):
+    def enable_vertex_shader(self, filename='vertex.glsl') -> QOpenGLShader:
         return self._enable_shader(QOpenGLShader.Vertex, filename)
 
-    def enable_fragment_shader(self, filename='fragment.glsl'):
+    def enable_fragment_shader(self, filename='fragment.glsl') -> QOpenGLShader:
         return self._enable_shader(QOpenGLShader.Fragment, filename)
 
-    def enable_geometry_shader(self, filename='geometry.glsl'):
+    def enable_geometry_shader(self, filename='geometry.glsl') -> QOpenGLShader:
         return self._enable_shader(QOpenGLShader.Geometry, filename)
 
     def add_uniform_loc(self, loc_str) -> None:
@@ -63,7 +63,7 @@ class ShaderProgram:
     def update_uniform(self, loc_str, *values) -> None:
         self.shader_program.setUniformValue(self.uniform_locs[loc_str], *values)
 
-    def set_drawables(self, drawables):
+    def set_drawables(self, drawables: list) -> None:
         self.opaques = [d for d in drawables if d.alpha >= 0.99]
         self.transparents = [d for d in drawables if d.alpha < 0.99]
 
@@ -76,12 +76,12 @@ class ShaderProgram:
     def recreate(self) -> None:
         pass
 
-    def inner_draw(self, drawables):
+    def inner_draw(self, drawables: list) -> None:
         for drawable in drawables:
             drawable.draw()
 
-    def draw(self):
+    def draw(self) -> None:
         self.inner_draw(self.opaques)
 
-    def redraw(self):
+    def redraw(self) -> None:
         self.inner_draw(self.transparents)

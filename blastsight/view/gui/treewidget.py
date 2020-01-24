@@ -7,6 +7,7 @@
 
 from qtpy.QtCore import Qt
 from qtpy.QtCore import Signal
+from qtpy.QtGui import QKeyEvent
 from qtpy.QtWidgets import QAbstractItemView
 from qtpy.QtWidgets import QMenu
 from qtpy.QtWidgets import QTreeWidget
@@ -48,7 +49,7 @@ class TreeWidget(QTreeWidget):
 
         self.enable_export = enable_export
 
-    def connect_viewer(self, viewer):
+    def connect_viewer(self, viewer) -> None:
         viewer.signal_file_modified.connect(
             lambda: self.fill_from_viewer(viewer))
 
@@ -77,7 +78,7 @@ class TreeWidget(QTreeWidget):
         if item:
             self.show_context_menu(item, self.viewport().mapToGlobal(event))
 
-    def show_context_menu(self, item, global_pos):
+    def show_context_menu(self, item, global_pos) -> None:
         menu = QMenu()
         actions = ActionCollection(self)
 
@@ -145,18 +146,18 @@ class TreeWidget(QTreeWidget):
 
         menu.exec_(global_pos)
 
-    def center_camera(self):
+    def center_camera(self) -> None:
         row = min([self.indexOfTopLevelItem(x) for x in self.selectedItems()], default=0)
         self.topLevelItem(row).show()
         self.topLevelItem(row).center_camera()
 
-    def select_item(self, row):
+    def select_item(self, row: int) -> None:
         row = max(min(row, self.topLevelItemCount() - 1), 0)
         item = self.topLevelItem(row)
         item.setSelected(True)
         self.scrollToItem(item, QAbstractItemView.EnsureVisible)
 
-    def select_by_id_list(self, id_list):
+    def select_by_id_list(self, id_list: list) -> None:
         self.clearSelection()
         it = QTreeWidgetItemIterator(self)
 
@@ -171,19 +172,19 @@ class TreeWidget(QTreeWidget):
                 self.select_item(self.indexOfTopLevelItem(item))
             it += 1
 
-    def show_items(self):
+    def show_items(self) -> None:
         for item in self.selectedItems():
             item.show()
 
-    def hide_items(self):
+    def hide_items(self) -> None:
         for item in self.selectedItems():
             item.hide()
 
-    def toggle_items_visibility(self):
+    def toggle_items_visibility(self) -> None:
         for item in self.selectedItems():
             item.toggle_visibility()
 
-    def delete_items(self):
+    def delete_items(self) -> None:
         closest_row = min([self.indexOfTopLevelItem(x) for x in self.selectedItems()], default=0)
 
         # We'll trick the viewer so it doesn't emit file_modified_signal until last item
@@ -197,7 +198,7 @@ class TreeWidget(QTreeWidget):
 
         self.setCurrentItem(self.topLevelItem(max(closest_row - 1, 0)))
 
-    def keyPressEvent(self, event):
+    def keyPressEvent(self, event: QKeyEvent) -> None:
         super().keyPressEvent(event)
         if self.topLevelItemCount() == 0:
             return

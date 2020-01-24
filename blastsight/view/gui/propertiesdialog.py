@@ -45,7 +45,7 @@ class PropertiesDialog(QDialog):
             text = str(v.tolist()) if type(v) is np.ndarray else str(v)
             self.tableWidget_properties.setItem(i, 0, QTableWidgetItem(text))
 
-    def accept(self):
+    def accept(self) -> None:
         element = self.viewer.get_drawable(self.id).element
 
         # Check alteration of coordinates
@@ -83,7 +83,7 @@ class PropertiesDialog(QDialog):
 
         super().accept()
 
-    def show(self):
+    def show(self) -> None:
         element = self.viewer.get_drawable(self.id).element
 
         self.comboBox_x.setCurrentIndex(

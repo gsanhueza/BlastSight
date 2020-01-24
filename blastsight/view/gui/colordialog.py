@@ -22,7 +22,7 @@ class ColorDialog(QColorDialog):
         self.setWindowTitle(f'{self.windowTitle()} ({element.name}.{element.extension})')
         self.setCurrentColor(QColor.fromRgb(*[int(255 * x) for x in element.rgba.tolist()]))
 
-    def accept(self):
+    def accept(self) -> None:
         element = self.viewer.get_drawable(self.id).element
 
         element.color = [self.currentColor().red() / 255,

@@ -57,7 +57,7 @@ class MeshGL(GLDrawable):
         self.is_highlighted = not self.is_highlighted
         return self.is_highlighted
 
-    def enable_wireframe(self):
+    def enable_wireframe(self) -> None:
         self.is_wireframed = True
 
     def disable_wireframe(self) -> None:
@@ -103,7 +103,7 @@ class MeshGL(GLDrawable):
 
         glBindVertexArray(0)
 
-    def draw(self):
+    def draw(self) -> None:
         glBindVertexArray(self.vao)
         glDrawElements(GL_TRIANGLES, self.indices_size, GL_UNSIGNED_INT, None)
         glBindVertexArray(0)

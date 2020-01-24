@@ -40,7 +40,7 @@ class MeshElement(Element):
     """
     Element filling
     """
-    def _fill_element(self, *args, **kwargs):
+    def _fill_element(self, *args, **kwargs) -> None:
         # Vertices
         msg = f'Data must contain ["x", "y", "z"] or "vertices", got {list(kwargs.keys())}.'
 
@@ -55,7 +55,7 @@ class MeshElement(Element):
         else:
             raise KeyError(msg)
 
-    def _fill_indices(self, *args, **kwargs):
+    def _fill_indices(self, *args, **kwargs) -> None:
         # Indices
         msg = f'Data must contain "indices", got {list(kwargs.keys())}.'
 
@@ -64,12 +64,12 @@ class MeshElement(Element):
         else:
             raise KeyError(msg)
 
-    def _fill_as_data(self, *args, **kwargs):
+    def _fill_as_data(self, *args, **kwargs) -> None:
         data = kwargs.get('data', {})
         self.vertices = data.get('vertices', [])
         self.indices = data.get('indices', [])
 
-    def _check_integrity(self):
+    def _check_integrity(self) -> None:
         super()._check_integrity()
         if self.x.size != self.indices.max() + 1:
             raise ValueError('Wrong number of indices for mesh.')
@@ -82,7 +82,7 @@ class MeshElement(Element):
         return self.data.get('indices', np.empty(0))
 
     @indices.setter
-    def indices(self, indices):
+    def indices(self, indices) -> None:
         # GL_UNSIGNED_INT = np.uint32
         self.data['indices'] = np.array(indices, np.uint32)
 
@@ -90,7 +90,7 @@ class MeshElement(Element):
     Utilities
     """
     @property
-    def volume(self):
+    def volume(self) -> float:
         # Idea from https://www.geometrictools.com/Documentation/PolyhedralMassProperties.pdf
         # Optimizations taken from https://github.com/mikedh/trimesh/blob/master/trimesh/triangles.py
         triangles = self.vertices[self.indices]

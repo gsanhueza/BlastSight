@@ -17,27 +17,27 @@ class BackgroundGL(GLDrawable):
         self._bot_color = [0.4, 0.5, 0.6]
 
     @property
-    def top_color(self):
+    def top_color(self) -> list:
         return self._top_color
 
     @property
-    def bot_color(self):
+    def bot_color(self) -> list:
         return self._bot_color
 
     @top_color.setter
-    def top_color(self, color):
+    def top_color(self, color: list) -> None:
         self._top_color = color
         self.notify()
 
     @bot_color.setter
-    def bot_color(self, color):
+    def bot_color(self, color: list) -> None:
         self._bot_color = color
         self.notify()
 
-    def __dir__(self):
+    def __dir__(self) -> list:
         return sorted(set(dir(type(self)) + list(self.__dict__.keys())))
 
-    def draw(self):
+    def draw(self) -> None:
         glDisable(GL_DEPTH_TEST)
         glDrawArrays(GL_TRIANGLES, 0, 3)
         glEnable(GL_DEPTH_TEST)

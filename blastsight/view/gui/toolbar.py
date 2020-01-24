@@ -17,7 +17,7 @@ class ToolBar(QToolBar):
         self.action_collection = ActionCollection(self)
         self.add_actions()
 
-    def add_actions(self):
+    def add_actions(self) -> None:
         self.addAction(self.action_collection.action_show_tree)
         self.addSeparator()
         self.addAction(self.action_collection.action_plan_view)
@@ -30,11 +30,11 @@ class ToolBar(QToolBar):
         self.addSeparator()
         self.addAction(self.action_collection.action_take_screenshot)
 
-    def connect_tree(self, tree):
+    def connect_tree(self, tree) -> None:
         self.action_collection.connect_tree(tree)
 
-    def connect_main_widget(self, widget):
+    def connect_main_widget(self, widget) -> None:
         self.action_collection.connect_main_widget(widget)
 
-    def connect_viewer(self, viewer):
+    def connect_viewer(self, viewer) -> None:
         self.action_collection.connect_viewer(viewer)

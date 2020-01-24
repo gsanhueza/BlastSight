@@ -33,11 +33,11 @@ class LineElement(Element):
         """
         super().__init__(*args, **kwargs)
 
-    def _fill_properties(self, *args, **kwargs):
+    def _fill_properties(self, *args, **kwargs) -> None:
         super()._fill_properties(*args, **kwargs)
         self.loop = kwargs.get('loop', False)
 
-    def _check_integrity(self):
+    def _check_integrity(self) -> None:
         super()._check_integrity()
         if len(self.vertices) < 2:
             raise ValueError("Not enough data to create this element.")
@@ -47,9 +47,9 @@ class LineElement(Element):
             self.vertices = np.append(self.vertices, [self.vertices[0, :]], axis=0)
 
     @property
-    def loop(self):
+    def loop(self) -> bool:
         return self.properties.get('loop')
 
     @loop.setter
-    def loop(self, _loop: bool):
+    def loop(self, _loop: bool) -> None:
         self.properties['loop'] = _loop

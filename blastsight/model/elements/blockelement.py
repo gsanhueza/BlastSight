@@ -45,7 +45,7 @@ class BlockElement(DFElement):
         """
         super().__init__(*args, **kwargs)
 
-    def _fill_properties(self, *args, **kwargs):
+    def _fill_properties(self, *args, **kwargs) -> None:
         super()._fill_properties(*args, **kwargs)
         if kwargs.get('autosize', True):
             self.block_size = kwargs.get('block_size', self.get_autosize())
@@ -65,11 +65,11 @@ class BlockElement(DFElement):
     Properties
     """
     @property
-    def customizable_properties(self):
+    def customizable_properties(self) -> list:
         return ['alpha', 'colormap', 'vmin', 'vmax', 'block_size']
 
     @property
-    def exportable_properties(self):
+    def exportable_properties(self) -> list:
         return ['alpha', 'colormap', 'headers', 'block_size']
 
     @property

@@ -9,7 +9,7 @@ import argparse
 import sys
 
 
-def application(paths: list):
+def application(paths: list) -> None:
     from qtpy.QtWidgets import QApplication
     from blastsight.view.gui.mainwindow import MainWindow
 
@@ -24,7 +24,7 @@ def application(paths: list):
     sys.exit(qt_app.exec_())
 
 
-def container(paths: list):
+def container(paths: list) -> None:
     from qtpy.QtWidgets import QApplication
     from blastsight.view.gui.container import Container
 
@@ -39,7 +39,7 @@ def container(paths: list):
     sys.exit(qt_app.exec_())
 
 
-def viewer(paths: list):
+def viewer(paths: list) -> None:
     from blastsight.view.viewer import Viewer
     v = Viewer()
 
@@ -49,7 +49,7 @@ def viewer(paths: list):
     v.show()
 
 
-def main():
+def main() -> None:
     parser = argparse.ArgumentParser(description='Starts BlastSight in App/Container/Viewer mode.')
     parser.add_argument('-a', '--app', action='store_true', help='Starts in App mode.')
     parser.add_argument('-c', '--container', action='store_true', help='Starts in Container mode.')

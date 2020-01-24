@@ -15,11 +15,11 @@ class GLProgramCollection:
     def associate(self, program_type, association) -> None:
         self._collection[program_type] = association
 
-    def get_programs(self):
+    def get_programs(self) -> dict.keys:
         return self._collection.keys()
 
-    def get_associations(self):
+    def get_associations(self) -> dict.values:
         return self._collection.values()
 
-    def get_pairs(self):
+    def get_pairs(self) -> dict.items:
         return self._collection.items()

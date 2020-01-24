@@ -15,7 +15,7 @@ class AxisGL(GLDrawable):
     def __init__(self, element=None, *args, **kwargs):
         super().__init__(element, *args, **kwargs)
 
-    def __dir__(self):
+    def __dir__(self) -> list:
         return sorted(set(dir(type(self)) + list(self.__dict__.keys())))
 
     def setup_attributes(self) -> None:
@@ -46,7 +46,7 @@ class AxisGL(GLDrawable):
 
         glBindVertexArray(0)
 
-    def draw(self):
+    def draw(self) -> None:
         glDisable(GL_DEPTH_TEST)
         glBindVertexArray(self.vao)
         glLineWidth(5)

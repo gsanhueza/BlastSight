@@ -6,6 +6,7 @@
 #  See LICENSE for more info.
 
 from qtpy.QtCore import Qt, QPoint
+from qtpy.QtGui import QMouseEvent
 from .mode import Mode
 
 
@@ -15,13 +16,13 @@ class NormalMode(Mode):
         self.name = 'Normal Mode'
         self.lastPos = None
 
-    def mousePressEvent(self, event, viewer):
+    def mousePressEvent(self, event: QMouseEvent, viewer) -> None:
         self.lastPos = QPoint(event.pos())
 
-    def mouseDoubleClickEvent(self, event, viewer):
+    def mouseDoubleClickEvent(self, event: QMouseEvent, viewer) -> None:
         viewer.detect_mesh_intersection(event.pos().x(), event.pos().y(), 1.0)
 
-    def mouseMoveEvent(self, event, viewer):
+    def mouseMoveEvent(self, event: QMouseEvent, viewer) -> None:
         if self.lastPos is None:
             return
 

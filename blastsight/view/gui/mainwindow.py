@@ -111,7 +111,7 @@ class MainWindow(QMainWindow):
         # self.title = self.windowTitle()
         # self.viewer.signal_fps_updated.connect(lambda x: self.setWindowTitle(f'{self.title} (FPS: {x:.1f})'))
 
-    def generate_menubar(self):
+    def generate_menubar(self) -> None:
         self.menu_File.addAction(self.toolbar.action_collection.action_load_mesh)
         self.menu_File.addAction(self.toolbar.action_collection.action_load_blocks)
         self.menu_File.addAction(self.toolbar.action_collection.action_load_points)
@@ -149,7 +149,7 @@ class MainWindow(QMainWindow):
         self.menu_Help.addAction(self.toolbar.action_collection.action_help)
         self.menu_Help.addAction(self.toolbar.action_collection.action_about)
 
-    def connect_actions(self):
+    def connect_actions(self) -> None:
         # Auto-connections
         self.toolbar.connect_tree(self.treeWidget)  # Handles tree.show()
         self.toolbar.connect_viewer(self.viewer)  # Handles Plan/North/East/Fit/Camera/Turbo/Screenshot
@@ -220,29 +220,29 @@ class MainWindow(QMainWindow):
     """
     Status bar updates
     """
-    def slot_element_load_success(self, _id: int):
+    def slot_element_load_success(self, _id: int) -> None:
         self.statusBar.showMessage(f'Load successful (id: {_id}).')
 
-    def slot_element_load_failure(self):
+    def slot_element_load_failure(self) -> None:
         self.statusBar.showMessage(f'Failed to load.')
 
-    def slot_element_export_success(self, _id: int):
+    def slot_element_export_success(self, _id: int) -> None:
         self.statusBar.showMessage(f'Export successful (id: {_id}).')
 
-    def slot_element_export_failure(self):
+    def slot_element_export_failure(self) -> None:
         self.statusBar.showMessage(f'Failed to export.')
 
-    def slot_mode_updated(self, mode: str):
+    def slot_mode_updated(self, mode: str) -> None:
         self.statusBar.showMessage(f'Mode: {mode}')
 
-    def slot_mesh_distances(self, distance_dict: dict):
+    def slot_mesh_distances(self, distance_dict: dict) -> None:
         self.statusBar.showMessage(f'Distance: {distance_dict.get("distance")}')
 
-    def slot_mesh_clicked(self, mesh_attributes: list):
+    def slot_mesh_clicked(self, mesh_attributes: list) -> None:
         id_list = [attr.get('id', -1) for attr in mesh_attributes]
         self.statusBar.showMessage(f'Detected meshes: {id_list}')
 
-    def slot_mesh_sliced(self, slice_dict: dict):
+    def slot_mesh_sliced(self, slice_dict: dict) -> None:
         slice_list = slice_dict.get('slices', [])
 
         for sliced_meshes in slice_list:
@@ -260,7 +260,7 @@ class MainWindow(QMainWindow):
                                   extension=mesh.extension,
                                   loop=True)
 
-    def slot_blocks_sliced(self, slice_dict: dict):
+    def slot_blocks_sliced(self, slice_dict: dict) -> None:
         slice_list = slice_dict.get('slices', [])
 
         for sliced_blocks in slice_list:

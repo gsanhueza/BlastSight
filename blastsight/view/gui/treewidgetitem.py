@@ -33,7 +33,7 @@ class TreeWidgetItem(QTreeWidgetItem):
     def drawable(self):
         return self.viewer.get_drawable(self.id)
 
-    def set_visible(self, is_visible):
+    def set_visible(self, is_visible: bool) -> None:
         font = QFont()
         font.setBold(is_visible)
         font.setItalic(not is_visible)

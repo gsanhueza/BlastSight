@@ -180,13 +180,13 @@ class ActionCollection:
     """
     Basic handlers
     """
-    def connect_tree(self, tree):
+    def connect_tree(self, tree) -> None:
         self.action_show_tree.triggered.connect(tree.show)
 
-    def connect_main_widget(self, widget):
+    def connect_main_widget(self, widget) -> None:
         self.action_quit.triggered.connect(widget.close)
 
-    def connect_viewer(self, viewer):
+    def connect_viewer(self, viewer) -> None:
         self.action_plan_view.triggered.connect(viewer.plan_view)
         self.action_north_view.triggered.connect(viewer.north_view)
         self.action_east_view.triggered.connect(viewer.east_view)
@@ -209,17 +209,17 @@ class ActionCollection:
     """
     Advanced handlers
     """
-    def handle_autofit(self, viewer):
+    def handle_autofit(self, viewer) -> None:
         viewer.autofit_to_screen = self.action_autofit_to_screen.isChecked()
 
-    def handle_turbo(self, viewer):
+    def handle_turbo(self, viewer) -> None:
         viewer.turbo_rendering = self.action_turbo_rendering.isChecked()
 
-    def handle_camera_properties(self, viewer):
+    def handle_camera_properties(self, viewer) -> None:
         dialog = CameraDialog(viewer)
         dialog.show()
 
-    def handle_screenshot(self, viewer):
+    def handle_screenshot(self, viewer) -> None:
         (path, selected_filter) = QFileDialog.getSaveFileName(
             parent=viewer,
             directory=f'BlastSight Screenshot ({datetime.now().strftime("%Y%m%d-%H%M%S")})',

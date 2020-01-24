@@ -14,7 +14,7 @@ class MeshProgram(ShaderProgram):
         super().__init__(viewer)
         self.base_name = 'Mesh'
 
-    def draw(self):
+    def draw(self) -> None:
         # Highlighted
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
         glLineWidth(3)
@@ -25,7 +25,7 @@ class MeshProgram(ShaderProgram):
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)
         super().draw()
 
-    def redraw(self):
+    def redraw(self) -> None:
         # Highlighted
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
         glLineWidth(3)

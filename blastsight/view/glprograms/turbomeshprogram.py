@@ -32,12 +32,12 @@ class TurboMeshProgram(MeshProgram):
         for visibility in self.info.keys():
             self.info[visibility]['num_indices'] = 0
 
-    def set_drawables(self, drawables):
+    def set_drawables(self, drawables: list) -> None:
         super().set_drawables(drawables)
         self.set_buffers(self.opaques, 'opaque')
         self.set_buffers(self.transparents, 'transparent')
 
-    def set_buffers(self, meshes, visibility):
+    def set_buffers(self, meshes: list, visibility: str) -> None:
         _POSITION = 0
         _COLOR = 1
 
@@ -86,12 +86,12 @@ class TurboMeshProgram(MeshProgram):
 
         glBindVertexArray(0)
 
-    def draw(self):
+    def draw(self) -> None:
         glBindVertexArray(self.info['opaque']['vaos'][-1])
         glDrawElements(GL_TRIANGLES, self.info['opaque']['num_indices'], GL_UNSIGNED_INT, None)
         glBindVertexArray(0)
 
-    def redraw(self):
+    def redraw(self) -> None:
         glBindVertexArray(self.info['transparent']['vaos'][-1])
         glDepthMask(GL_FALSE)
         glEnable(GL_CULL_FACE)
