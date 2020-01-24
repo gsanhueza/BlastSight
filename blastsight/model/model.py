@@ -72,9 +72,7 @@ class Model:
     """
     Element loading
     """
-    def _load_element(self, element_class, *args, **kwargs):
-        element = element_class(*args, **kwargs)
-
+    def register_element(self, element):
         # In a multi-threaded application, we can't risk assigning
         # the same ID to different elements, so we use a mutex here.
         with QMutexLocker(self._mutex):
@@ -82,56 +80,50 @@ class Model:
 
         return element
 
-    def _load_element_by_path(self, path: str, element_class, *args, **kwargs):
-        hints = {MeshElement: 'mesh',
-                 BlockElement: 'block',
-                 PointElement: 'point',
-                 LineElement: 'line',
-                 TubeElement: 'tube',
-                 }
-        kwargs['hint'] = hints.get(element_class, 'mesh')
-
+    def register_element_by_path(self, path: str, hint: str, generator, *args, **kwargs):
         ext = path.split('.')[-1]
         info = self.get_parser(ext).load_file(path, *args, **kwargs)
         data = info.data
         properties = info.properties
 
         kwargs['data'] = data
+        kwargs['hint'] = hint
+
         for k, v in properties.items():
             # Prioritize kwargs over file properties (useful in CLI)
             kwargs[k] = kwargs.get(k, v)
 
-        return self._load_element(element_class, *args, **kwargs)
+        return self.register_element(generator(args, kwargs))
 
     def mesh(self, *args, **kwargs) -> MeshElement:
-        return self._load_element(MeshElement, *args, **kwargs)
+        return self.register_element(MeshElement(*args, **kwargs))
 
     def blocks(self, *args, **kwargs) -> BlockElement:
-        return self._load_element(BlockElement, *args, **kwargs)
+        return self.register_element(BlockElement(*args, **kwargs))
 
     def points(self, *args, **kwargs) -> PointElement:
-        return self._load_element(PointElement, *args, **kwargs)
+        return self.register_element(PointElement(*args, **kwargs))
 
     def lines(self, *args, **kwargs) -> LineElement:
-        return self._load_element(LineElement, *args, **kwargs)
+        return self.register_element(LineElement(*args, **kwargs))
 
     def tubes(self, *args, **kwargs) -> TubeElement:
-        return self._load_element(TubeElement, *args, **kwargs)
+        return self.register_element(TubeElement(*args, **kwargs))
 
     def mesh_by_path(self, path: str, *args, **kwargs) -> MeshElement:
-        return self._load_element_by_path(path, MeshElement, *args, **kwargs)
+        return self.register_element_by_path(path, 'mesh', lambda a, k: MeshElement(*a, **k), *args, **kwargs)
 
     def blocks_by_path(self, path: str, *args, **kwargs) -> BlockElement:
-        return self._load_element_by_path(path, BlockElement, *args, **kwargs)
+        return self.register_element_by_path(path, 'block', lambda a, k: BlockElement(*a, **k), *args, **kwargs)
 
     def points_by_path(self, path: str, *args, **kwargs) -> PointElement:
-        return self._load_element_by_path(path, PointElement, *args, **kwargs)
+        return self.register_element_by_path(path, 'point', lambda a, k: PointElement(*a, **k), *args, **kwargs)
 
     def lines_by_path(self, path: str, *args, **kwargs) -> LineElement:
-        return self._load_element_by_path(path, LineElement, *args, **kwargs)
+        return self.register_element_by_path(path, 'line', lambda a, k: LineElement(*a, **k), *args, **kwargs)
 
     def tubes_by_path(self, path: str, *args, **kwargs) -> TubeElement:
-        return self._load_element_by_path(path, TubeElement, *args, **kwargs)
+        return self.register_element_by_path(path, 'tube', lambda a, k: TubeElement(*a, **k), *args, **kwargs)
 
     """
     Element handling

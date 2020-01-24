@@ -306,7 +306,7 @@ class MainWindow(QMainWindow):
 
         path_list = [p for p in paths if p != '']
         for path in sorted(path_list):
-            self._threaded_load(method, path, hint=hint, *args, **kwargs)
+            self._threaded_load(method, path, *args, **kwargs)
             self.last_dir = QFileInfo(path).absoluteDir().absolutePath()
 
     def _dialog_load_folder(self, method: classmethod, hint: str, *args, **kwargs) -> None:
@@ -316,7 +316,7 @@ class MainWindow(QMainWindow):
             options=QFileDialog.ShowDirsOnly)
 
         # Execute method
-        self._threaded_load(method, path, hint=hint, *args, **kwargs)
+        self._threaded_load(method, path, *args, **kwargs)
         self.last_dir = path
 
     def _dialog_export_element(self, _id: int, filters: str, method: classmethod) -> None:
