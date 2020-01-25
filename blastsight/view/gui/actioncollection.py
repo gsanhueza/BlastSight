@@ -80,7 +80,7 @@ class ActionCollection:
 
         self.action_load_tubes = QAction('Load &tubes', parent)
         self.action_load_tubes.setIcon(QIcon(f'{self.icons_path}/radar_plot.svg'))
-        self.action_load_tubes.setShortcut('Ctrl+U')
+        self.action_load_tubes.setShortcut('Ctrl+T')
 
         self.action_load_mesh_folder = QAction('Load m&esh folder', parent)
         self.action_load_mesh_folder.setIcon(QIcon(f'{self.icons_path}/area_chart.svg'))
@@ -100,7 +100,7 @@ class ActionCollection:
 
         self.action_load_tubes_folder = QAction('Load t&ubes folder', parent)
         self.action_load_tubes_folder.setIcon(QIcon(f'{self.icons_path}/radar_plot.svg'))
-        self.action_load_tubes_folder.setShortcut('Ctrl+Shift+U')
+        self.action_load_tubes_folder.setShortcut('Ctrl+Shift+T')
 
         self.action_quit = QAction('&Quit', parent)
         self.action_quit.setIcon(QIcon(f'{self.icons_path}/cancel.svg'))
@@ -120,7 +120,7 @@ class ActionCollection:
 
         self.action_turbo_rendering = QAction('Tur&bo rendering', parent)
         self.action_turbo_rendering.setIcon(QIcon(f'{self.icons_path}/sports_mode.svg'))
-        self.action_turbo_rendering.setShortcut('Ctrl+B')
+        self.action_turbo_rendering.setShortcut('Ctrl+Shift+R')
         self.action_turbo_rendering.setCheckable(True)
 
         self.action_normal_mode = QAction('Return to &normal', parent)
@@ -175,7 +175,7 @@ class ActionCollection:
 
         self.action_take_screenshot = QAction('&Take screenshot', parent)
         self.action_take_screenshot.setIcon(QIcon(f'{self.icons_path}/webcam.svg'))
-        self.action_take_screenshot.setShortcut('Ctrl+T')
+        self.action_take_screenshot.setShortcut('Ctrl+Shift+S')
 
     """
     Basic handlers
