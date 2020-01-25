@@ -25,9 +25,9 @@ class MeasurementMode(Mode):
             self.rays.clear()
 
     def detect_rays(self, event: QMouseEvent, viewer) -> None:
-        ray, origin = viewer.ray_from_click(event.pos().x(), event.pos().y(), 1.0)
-        self.origins.append(origin)
-        self.rays.append(ray)
+        x, y, z = [event.pos().x(), event.pos().y(), 1.0]
+        self.rays.append(viewer.ray_from_click(x, y, z))
+        self.origins.append(viewer.origin_from_click(x, y, z))
 
         if len(self.rays) == 2:
             viewer.measure_from_rays(self.origins, self.rays)

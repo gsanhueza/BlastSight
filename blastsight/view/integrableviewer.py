@@ -520,40 +520,42 @@ class IntegrableViewer(QOpenGLWidget):
         ray = ray_world.normalized()
         return np.array([ray.x(), ray.y(), ray.z()])
 
-    def get_origin(self, model, view) -> np.ndarray:
-        origin = (view * model).inverted()[0].column(3).toVector3D()
-        return np.array([origin.x(), origin.y(), origin.z()])
+    def ray_from_click(self, x: float, y: float, z: float) -> np.ndarray:
+        # Perspective projection is straightforward
+        if self.projection_mode == 'perspective':
+            return self.unproject(x, y, z, self.world, self.camera, self.proj)
 
-    def ray_from_click(self, x: float, y: float, z: float) -> tuple:
-        # Generates a ray from a click on screen
-        # Assume perspective first
-        ray = self.unproject(x, y, z, self.world, self.camera, self.proj)
-        origin = self.get_origin(self.world, self.camera)
+        # Orthographic projection "forces" a click in the center
+        return self.unproject(self.width() / 2, self.height() / 2, z,
+                              self.world, self.camera, self.proj)
+
+    def origin_from_click(self, x: float, y: float, z: float) -> np.ndarray:
+        # Perspective projection is straightforward
+        if self.projection_mode == 'perspective':
+            origin = (self.camera * self.world).inverted()[0].column(3).toVector3D()
+            return np.array([origin.x(), origin.y(), origin.z()])
 
         # Orthographic projection needs a bit more of vector arithmetic.
-        if self.projection_mode == 'orthographic':
-            # A click in the center of the screen gives us the perfect ray,
-            # by recycling the perspective's un-project method.
-            ray = self.unproject(self.width() / 2, self.height() / 2, z,
-                                 self.world, self.camera, self.proj)
+        # A click in the center of the screen gives us the perfect ray,
+        # by recycling the perspective's un-project method.
 
-            # But if we don't click in the exact center of screen,
-            # we need to trick the origin calculation.
-            ndc = self.screen_to_ndc(x, y, z)
-            aspect = self.width() / self.height()
-            aspect_bias = np.array([1.0, 1.0 / aspect, 0.0])
+        # But if we don't click in the exact center of screen,
+        # we need to trick the origin calculation.
+        ndc = self.screen_to_ndc(x, y, z)
+        aspect = self.width() / self.height()
+        aspect_bias = np.array([1.0, 1.0 / aspect, 0.0])
 
-            # The idea is to strategically move the camera by an offset, so that
-            # clicking anywhere in the screen will give us the same result as
-            # clicking at the exact center of the screen from a shifted camera.
-            offset = self.off_center[2] * ndc * aspect_bias
+        # The idea is to strategically move the camera by an offset, so that
+        # clicking anywhere in the screen will give us the same result as
+        # clicking at the exact center of the screen from a shifted camera.
+        offset = self.off_center[2] * ndc * aspect_bias
 
-            # Hack to get the origin when the click is not exactly at center of screen.
-            self.camera.translate(*-offset)
-            origin = self.get_origin(self.world, self.camera)
-            self.camera.translate(*offset)
+        # Hack to get the origin when the click is not exactly at center of screen.
+        self.camera.translate(*-offset)
+        origin = self.get_origin(self.world, self.camera)
+        self.camera.translate(*offset)
 
-        return ray, origin
+        return origin
 
     def slice_meshes(self, origin: np.ndarray, plane_normal: np.ndarray) -> None:
         # Slicing all *visible* meshes
@@ -601,7 +603,8 @@ class IntegrableViewer(QOpenGLWidget):
         self.signal_mesh_distances.emit(results)
 
     def detect_mesh_intersection(self, x: float, y: float, z: float) -> None:
-        ray, origin = self.ray_from_click(x, y, z)
+        ray = self.ray_from_click(x, y, z)
+        origin = self.origin_from_click(x, y, z)
         elements = [m.element for m in self.drawable_collection.filter(MeshGL) if m.is_visible]
 
         attributes_list = []
