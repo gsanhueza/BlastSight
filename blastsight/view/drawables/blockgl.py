@@ -49,15 +49,11 @@ class BlockGL(GLDrawable):
 
         glBindVertexArray(self.vao)
 
-        # buffer_properties = [(pointer, basesize, array, glsize, gltype)]
-        buffer_properties = [(_POSITION, 3, vertices, GLfloat, GL_FLOAT),
-                             (_COLOR, 3, colors, GLfloat, GL_FLOAT),
-                             (_ALPHA, 1, alpha, GLfloat, GL_FLOAT),
-                             (_TEMPLATE, 3, template, GLfloat, GL_FLOAT),
-                             ]
-
         # Fill buffers (see GLDrawable)
-        self.fill_buffers(buffer_properties, self.vbos)
+        self.fill_buffer(_POSITION, 3, vertices, GLfloat, GL_FLOAT, self.vbos[_POSITION])
+        self.fill_buffer(_COLOR, 3, colors, GLfloat, GL_FLOAT, self.vbos[_COLOR])
+        self.fill_buffer(_ALPHA, 1, alpha, GLfloat, GL_FLOAT, self.vbos[_ALPHA])
+        self.fill_buffer(_TEMPLATE, 3, template, GLfloat, GL_FLOAT, self.vbos[_TEMPLATE])
 
         # The attribute advances once per divisor instances of the set(s) of vertices being rendered.
         if self.is_legacy:

@@ -73,13 +73,11 @@ class TurboMeshProgram(MeshProgram):
 
         glBindVertexArray(self.info[visibility]['vaos'][-1])
 
-        # buffer_properties = [(pointer, basesize, array, glsize, gltype)]
-        properties = [(_POSITION, 3, vertices, GLfloat, GL_FLOAT),
-                      (_COLOR, 4, colors, GLfloat, GL_FLOAT),
-                      ]
-
-        # Recycle GLDrawable's fill buffers method
-        GLDrawable.fill_buffers(properties, self.info[visibility]['vbos'])
+        # Recycle GLDrawable's fill_buffers method
+        GLDrawable.fill_buffer(_POSITION, 3, vertices, GLfloat, GL_FLOAT,
+                               self.info[visibility]['vbos'][_POSITION])
+        GLDrawable.fill_buffer(_COLOR, 4, colors, GLfloat, GL_FLOAT,
+                               self.info[visibility]['vbos'][_COLOR])
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, self.info[visibility]['vbos'][-1])
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices, GL_STATIC_DRAW)

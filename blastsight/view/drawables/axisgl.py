@@ -36,13 +36,9 @@ class AxisGL(GLDrawable):
 
         glBindVertexArray(self.vao)
 
-        # buffer_properties = [(pointer, basesize, array, glsize, gltype)]
-        buffer_properties = [(_POSITION, 3, vertices, GLfloat, GL_FLOAT),
-                             (_COLOR, 3, colors, GLfloat, GL_FLOAT),
-                             ]
-
         # Fill buffers (see GLDrawable)
-        self.fill_buffers(buffer_properties, self.vbos)
+        self.fill_buffer(_POSITION, 3, vertices, GLfloat, GL_FLOAT, self.vbos[_POSITION])
+        self.fill_buffer(_COLOR, 3, colors, GLfloat, GL_FLOAT, self.vbos[_COLOR])
 
         glBindVertexArray(0)
 

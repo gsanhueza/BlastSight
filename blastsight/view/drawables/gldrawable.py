@@ -73,15 +73,11 @@ class GLDrawable:
             self.vbos = glGenBuffers(vbo_count)
 
     @staticmethod
-    def fill_buffers(buffer_properties: list, vbos: list) -> None:
-        # buffer_properties = [(pointer, basesize, array, glsize, gltype)]
-
-        for i, buf in enumerate(buffer_properties):
-            pointer, basesize, array, glsize, gltype = buf
-            glBindBuffer(GL_ARRAY_BUFFER, vbos[i])
-            glBufferData(GL_ARRAY_BUFFER, sizeof(glsize) * array.size, array, GL_STATIC_DRAW)
-            glVertexAttribPointer(pointer, basesize, gltype, False, 0, None)
-            glEnableVertexAttribArray(pointer)
+    def fill_buffer(pointer, basesize, array, glsize, gltype, vbo):
+        glBindBuffer(GL_ARRAY_BUFFER, vbo)
+        glBufferData(GL_ARRAY_BUFFER, sizeof(glsize) * array.size, array, GL_STATIC_DRAW)
+        glVertexAttribPointer(pointer, basesize, gltype, False, 0, None)
+        glEnableVertexAttribArray(pointer)
 
     def draw(self) -> None:
         pass

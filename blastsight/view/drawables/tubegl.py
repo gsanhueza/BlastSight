@@ -35,13 +35,9 @@ class TubeGL(GLDrawable):
 
         glBindVertexArray(self.vao)
 
-        # buffer_properties = [(pointer, basesize, array, glsize, gltype)]
-        buffer_properties = [(_POSITION, 3, vertices, GLfloat, GL_FLOAT),
-                             (_COLOR, 4, colors, GLfloat, GL_FLOAT),
-                             ]
-
         # Fill buffers (see GLDrawable)
-        self.fill_buffers(buffer_properties, self.vbos)
+        self.fill_buffer(_POSITION, 3, vertices, GLfloat, GL_FLOAT, self.vbos[_POSITION])
+        self.fill_buffer(_COLOR, 4, colors, GLfloat, GL_FLOAT, self.vbos[_COLOR])
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, self.vbos[-1])
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices, GL_STATIC_DRAW)
