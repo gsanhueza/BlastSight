@@ -18,9 +18,9 @@ but if you need to see it anyway, uncomment those "optional" lines.
 """
 
 for i in range(3):
-    # v.show(detached=True, timer=100)  # Optional
+    v.show(detached=True, timer=1)  # Optional
     v.take_screenshot(f'screenshot_{i}.png')
     v.rotation_angle += [0.0, 120.0, 0.0]
-    # v.close()  # Optional
+    v.close()  # Optional, needed if v.show is used
 
 print('Ready!')

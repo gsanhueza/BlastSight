@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
+import numpy
 from blastsight.view.viewer import Viewer
-from blastsight.model import utils
 
 """
 In this demo, we'll manually detect which blocks can be sliced by a plane.
@@ -16,10 +16,11 @@ Then, we'll slice the blocks by a plane.
 We need the plane's normal and any point that belongs to that plane.
 """
 blocks = v.blocks_by_path(path).element
-indices = utils.slice_blocks(blocks=blocks,
-                             block_size=blocks.block_size,
-                             plane_origin=blocks.center,
-                             plane_normal=[0.5, 1.0, 1.0])
+description = v.model.slice_blocks(block_list=[blocks],
+                                   origin=blocks.center,
+                                   plane_normal=[0.5, 1.0, 1.0])
+
+indices = description.get('slices')[0].get('indices')
 
 """
 Then, we'll show the detected blocks.

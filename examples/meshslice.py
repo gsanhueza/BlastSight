@@ -19,17 +19,22 @@ mesh = v.mesh_by_path('../test_files/caseron.off',
                       color=[0.0, 0.0, 1.0],
                       alpha=0.3).element
 
-vertices = utils.slice_mesh(mesh=mesh,
-                            plane_origin=mesh.centroid,
-                            plane_normal=[0.2, 1.0, 0.8])
+description = v.model.slice_meshes(meshes=[mesh],
+                                   origin=mesh.centroid,
+                                   plane_normal=[0.2, 1.0, 0.8])
+
+slices = description.get('slices')
 
 """
 Then, we'll show the detected vertices.
 We'll draw them as a line, so the slice is more evident.
 """
-v.lines(vertices=vertices,
-        color=[0.0, 1.0, 0.0],
-        loop=True)
+
+for m_slice in slices:
+    vertices = m_slice.get('vertices')
+    v.lines(vertices=vertices,
+            color=[0.0, 1.0, 0.0],
+            loop=True)
 
 v.fit_to_screen()
 v.show()
