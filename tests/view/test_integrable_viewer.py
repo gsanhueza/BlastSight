@@ -18,8 +18,42 @@ from tests.globals import *
 
 
 class TestIntegrableViewer:
-    element = Element(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0])
-    element.id = 0
+    element = Element(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], id=0)
+
+    def test_init(self):
+        viewer = IntegrableViewer()
+
+        assert viewer.model
+        assert viewer.axis_collection
+        assert viewer.background_collection
+        assert viewer.drawable_collection
+
+        assert viewer.axis
+        assert viewer.bg
+
+        assert len(viewer.controllers) > 0
+
+        expected = [0.0, 0.0, 0.0]
+        for e, r in zip(expected, viewer.rotation_angle):
+            assert e == r
+        for e, r in zip(expected, viewer.rotation_center):
+            assert e == r
+
+        expected = [0.0, 0.0, 200.0]
+        for e, r in zip(expected, viewer.camera_position):
+            assert e == r
+        for e, r in zip(expected, viewer.off_center):
+            assert e == r
+
+        assert not viewer.turbo_rendering
+        assert not viewer.autofit_to_screen
+
+        assert viewer.fov == 45.0
+        assert viewer.smoothness == 2.0
+        assert viewer.projection_mode == 'perspective'
+
+        assert viewer.last_id == -1
+        assert viewer.last_drawable is None
 
     def test_model(self):
         viewer = IntegrableViewer()
@@ -65,6 +99,14 @@ class TestIntegrableViewer:
         mesh = viewer.mesh(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], indices=[[0, 1, 2]])
         assert viewer.last_id == 0
         assert viewer.last_drawable is mesh
+
+    def test_update_drawable(self):
+        viewer = IntegrableViewer()
+        mesh = viewer.mesh(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], indices=[[0, 1, 2]])
+        viewer.update_drawable(mesh.id)
+        viewer.update_all()
+
+        assert mesh
 
     def test_add_mesh(self):
         viewer = IntegrableViewer()
@@ -157,8 +199,11 @@ class TestIntegrableViewer:
         viewer.blocks(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], values=[0, 1, 2])
 
         assert viewer.drawable_collection.size() == 2
-        viewer.delete(0)
 
+        viewer.delete(-1)
+        assert viewer.drawable_collection.size() == 2
+
+        viewer.delete(0)
         assert viewer.drawable_collection.size() == 1
 
         with pytest.raises(Exception):
@@ -226,16 +271,25 @@ class TestIntegrableViewer:
 
         mesh = viewer.mesh_by_path(path=f'{TEST_FILES_FOLDER_PATH}/caseron.off')
         blocks = viewer.blocks_by_path(path=f'{TEST_FILES_FOLDER_PATH}/mini.csv')
-        points = viewer.points_by_path(path=f'{TEST_FILES_FOLDER_PATH}/mini.csv')
 
         viewer.export_mesh(f'{TEST_FILES_FOLDER_PATH}/caseron_model_export.h5m', mesh.id)
         viewer.export_blocks(f'{TEST_FILES_FOLDER_PATH}/mini_model_export_blocks.h5p', blocks.id)
-        viewer.export_points(f'{TEST_FILES_FOLDER_PATH}/mini_model_export_points.h5p', points.id)
+        viewer.export_points(f'{TEST_FILES_FOLDER_PATH}/mini_model_export_points.h5p', blocks.id)
+        viewer.export_lines(f'{TEST_FILES_FOLDER_PATH}/mini_model_export_lines.h5p', blocks.id)
+        viewer.export_tubes(f'{TEST_FILES_FOLDER_PATH}/mini_model_export_tubes.h5p', blocks.id)
+
+        # Failure deliberate
+        viewer.export_mesh('a.asdf', -1)
 
         # Cleanup
         os.remove(f'{TEST_FILES_FOLDER_PATH}/caseron_model_export.h5m')
         os.remove(f'{TEST_FILES_FOLDER_PATH}/mini_model_export_blocks.h5p')
         os.remove(f'{TEST_FILES_FOLDER_PATH}/mini_model_export_points.h5p')
+        os.remove(f'{TEST_FILES_FOLDER_PATH}/mini_model_export_lines.h5p')
+        os.remove(f'{TEST_FILES_FOLDER_PATH}/mini_model_export_tubes.h5p')
+
+        with pytest.raises(Exception):
+            os.remove('a.asdf')
 
     def test_clear(self):
         viewer = IntegrableViewer()
@@ -294,3 +348,78 @@ class TestIntegrableViewer:
         assert viewer.projection_mode == 'orthographic'
         viewer.perspective_projection()
         assert viewer.projection_mode == 'perspective'
+
+    def test_turbo_rendering(self):
+        viewer = IntegrableViewer()
+        viewer.mesh(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], indices=[[0, 1, 2]])
+
+        assert not viewer.last_drawable.is_boostable
+        viewer.turbo_rendering = True
+        assert viewer.last_drawable.is_boostable
+
+        viewer.turbo_rendering = False
+        assert not viewer.last_drawable.is_boostable
+
+    def test_fit_camera(self):
+        viewer = IntegrableViewer()
+
+        assert viewer.off_center[2] == 200.0
+        viewer.fit_to_screen()  # No drawables, no fit
+        assert viewer.off_center[2] == 200.0
+
+        viewer.mesh(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], indices=[[0, 1, 2]])
+
+        assert not viewer.autofit_to_screen
+        viewer.autofit_to_screen = True
+
+        assert viewer.off_center[2] != 200.0
+
+        viewer.camera_position = [0.0, 0.0, 200.0]
+        viewer.camera_at(viewer.last_id)
+
+        assert viewer.off_center[2] != 200.0
+
+        viewer.camera_position = [0.0, 0.0, 200.0]
+        viewer.projection_mode = 'orthographic'
+
+        viewer.fit_to_bounds(*viewer.last_drawable.element.bounding_box)
+        assert viewer.off_center[2] != 200.0
+
+        viewer.resizeGL(viewer.width(), viewer.height())
+
+    def test_load_folder(self):
+        viewer = IntegrableViewer()
+        meshes = viewer.meshes_by_folder_path(f'{TEST_FILES_FOLDER_PATH}')
+
+        failure = viewer.blocks_by_folder_path(f'{TEST_FILES_FOLDER_PATH}/../blastsight')
+        assert len(failure) == 0
+        failure = viewer.points_by_folder_path(f'{TEST_FILES_FOLDER_PATH}/../blastsight')
+        assert len(failure) == 0
+        failure = viewer.lines_by_folder_path(f'{TEST_FILES_FOLDER_PATH}/../blastsight')
+        assert len(failure) == 0
+        failure = viewer.tubes_by_folder_path(f'{TEST_FILES_FOLDER_PATH}/../blastsight')
+        assert len(failure) == 0
+
+        assert viewer.drawable_collection.size() == len(meshes) > 0
+
+        assert viewer.drawable_collection.size() == len(failure) + len(meshes)
+
+    def test_screen_to_ndc(self):
+        viewer = IntegrableViewer()
+        viewer.resize(800, 600)
+        ndc = viewer.screen_to_ndc(400, 150, 0)
+
+        expected = [0.0, 0.5, 1.0]
+        for e, r in zip(expected, ndc):
+            assert e == r
+
+    def test_unproject(self):
+        viewer = IntegrableViewer()
+        viewer.resize(800, 600)
+
+        expected = [0.0, 0.0, -1.0]
+        for e, r in zip(expected, viewer.unproject(400, 300, 0, viewer.world, viewer.camera, viewer.proj)):
+            assert e == r
+
+        assert viewer.unproject(500, 300, 0, viewer.world, viewer.camera, viewer.proj)[0] > 0.0
+        assert viewer.unproject(500, 400, 0, viewer.world, viewer.camera, viewer.proj)[1] < 0.0
