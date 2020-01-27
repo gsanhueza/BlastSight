@@ -37,12 +37,12 @@ class Model:
         self.parser_collection = ParserCollection()
         self.element_collection = ElementCollection()
 
-        self.add_parser('dxf', DXFParser)
-        self.add_parser('off', OFFParser)
-        self.add_parser('h5m', H5MParser)
-        self.add_parser('h5p', H5PParser)
-        self.add_parser('csv', CSVParser)
-        self.add_parser('out', GSLibParser)
+        self.add_parser('dxf', DXFParser())
+        self.add_parser('off', OFFParser())
+        self.add_parser('h5m', H5MParser())
+        self.add_parser('h5p', H5PParser())
+        self.add_parser('csv', CSVParser())
+        self.add_parser('out', GSLibParser())
 
     @property
     def last_id(self) -> int:
@@ -51,7 +51,7 @@ class Model:
     """
     Utilities
     """
-    def add_parser(self, extension: str, handler: type) -> None:
+    def add_parser(self, extension: str, handler: Parser) -> None:
         self.parser_collection.add(extension, handler)
 
     def get_parser(self, extension: str) -> Parser:

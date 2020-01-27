@@ -1,9 +1,12 @@
 #!/usr/bin/env python
 
+from qtpy.QtGui import QMatrix4x4
+
 from blastsight.model.elements.element import Element
 from blastsight.view.drawables.gldrawable import GLDrawable
 from blastsight.view.collections.glcollection import GLCollection
 from blastsight.view.collections.gldrawablecollection import GLDrawableCollection
+from blastsight.view.glprograms.shaderprogram import ShaderProgram
 from blastsight.view.integrableviewer import IntegrableViewer
 
 
@@ -28,6 +31,16 @@ class TestGLCollection:
         assert isinstance(drawable, GLDrawable)
         assert isinstance(drawable.id, int)
 
+    def test_get(self):
+        collection = GLCollection()
+        assert collection.size() == 0
+
+        collection.add(self.drawable)
+
+        assert collection.size() == 1
+        assert collection.get_all_ids()[0] == collection.get_all_ids()[-1] == 0
+        assert self.drawable in collection.get_all_drawables()
+
     def test_delete(self):
         collection = GLCollection()
         collection.add(self.drawable)
@@ -46,21 +59,55 @@ class TestGLCollection:
         assert collection.size() == 0
 
     def test_drawable_collection(self):
-        viewer = IntegrableViewer()
         collection = GLDrawableCollection()
-        drawable_1 = GLDrawable(self.element)
-        drawable_2 = GLDrawable(self.element)
+
+        element_1 = Element(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], alpha=1.0)
+        element_2 = Element(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], alpha=0.5)
+
+        drawable_1 = GLDrawable(element_1)
+        drawable_2 = GLDrawable(element_2)
 
         collection.add(drawable_1)
         collection.add(drawable_2)
 
         assert collection.needs_update
-        collection.draw(viewer.proj, viewer.camera, viewer.world)
+        collection.draw(*3 * [QMatrix4x4()])
         assert not collection.needs_update
-        collection.draw(viewer.proj, viewer.camera, viewer.world)
+        collection.draw(*3 * [QMatrix4x4()])
         assert not collection.needs_update
 
         collection.recreate()
         assert collection.needs_update
-        collection.draw(viewer.proj, viewer.camera, viewer.world)
+        collection.draw(*3 * [QMatrix4x4()])
         assert not collection.needs_update
+
+    def test_program_collection(self):
+        program = ShaderProgram(IntegrableViewer())
+
+        assert len(program.drawables) == 0
+        assert len(program.opaques) == 0
+        assert len(program.transparents) == 0
+
+        collection = GLCollection()
+        assert len(collection._programs.get_associations()) == 0
+        collection.associate(program, lambda: collection.filter(GLDrawable))
+        assert len(collection._programs.get_associations()) == 1
+
+        element_1 = Element(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], alpha=1.0, id=0)
+        element_2 = Element(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], alpha=0.5, id=1)
+
+        drawable_1 = GLDrawable(element_1)
+        drawable_2 = GLDrawable(element_2)
+
+        collection.add(drawable_1)
+        collection.add(drawable_2)
+
+        collection.recreate()
+
+        assert collection.needs_update
+        collection.draw(*3 * [QMatrix4x4()])
+        assert not collection.needs_update
+
+        assert len(program.drawables) == 2
+        assert len(program.opaques) == 1
+        assert len(program.transparents) == 1

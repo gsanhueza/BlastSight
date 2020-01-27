@@ -12,7 +12,7 @@ class ParserCollection:
     def __init__(self):
         self._collection = {}
 
-    def add(self, extension: str, handler: type) -> None:
+    def add(self, extension: str, handler: Parser) -> None:
         self._collection[extension] = handler
 
     def get(self, extension: str) -> Parser:
