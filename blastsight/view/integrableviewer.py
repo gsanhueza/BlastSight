@@ -520,7 +520,8 @@ class IntegrableViewer(QOpenGLWidget):
         ray = ray_world.normalized()
         return np.array([ray.x(), ray.y(), ray.z()])
 
-    def get_origin(self, model: QMatrix4x4, view: QMatrix4x4) -> np.ndarray:
+    @staticmethod
+    def get_origin(model: QMatrix4x4, view: QMatrix4x4) -> np.ndarray:
         origin = (view * model).inverted()[0].column(3).toVector3D()
         return np.array([origin.x(), origin.y(), origin.z()])
 

@@ -34,7 +34,7 @@ class LineGL(GLDrawable):
 
         # Fill buffers (see GLDrawable)
         self.fill_buffer(_POSITION, 3, vertices, GLfloat, GL_FLOAT, self.vbos[_POSITION])
-        self.fill_buffer(_COLOR, 4, colors, GLfloat, GL_FLOAT, self.vbos[_POSITION])
+        self.fill_buffer(_COLOR, 4, colors, GLfloat, GL_FLOAT, self.vbos[_COLOR])
 
         glVertexAttribDivisor(_COLOR, 1)
 
