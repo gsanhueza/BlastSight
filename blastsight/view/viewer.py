@@ -11,6 +11,7 @@ from qtpy.QtCore import Qt
 from qtpy.QtCore import QTimer
 from qtpy.QtWidgets import QApplication
 
+from .gui.iconcollection import IconCollection
 from .integrableviewer import IntegrableViewer
 
 
@@ -19,6 +20,7 @@ class Viewer(IntegrableViewer):
         self.app = QApplication(sys.argv)
         super().__init__()
         self.setWindowTitle('BlastSight (Viewer)')
+        self.setWindowIcon(IconCollection.get('blastsight.png'))
 
     def show(self, detached: bool = False, timer: int = 0, autofit: bool = True) -> None:
         # This will auto-fit to screen when used from a script,

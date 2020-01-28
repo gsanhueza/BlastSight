@@ -11,6 +11,7 @@ from qtpy.QtWidgets import QWidget
 
 from .toolbar import ToolBar
 from .treewidget import TreeWidget
+from .iconcollection import IconCollection
 from ..integrableviewer import IntegrableViewer
 
 
@@ -22,6 +23,7 @@ class Container(QWidget):
         self.toolbar = ToolBar(self)
         self.actions = self.toolbar.action_collection
         self.viewer = IntegrableViewer(self)
+
         self.treeWidget = TreeWidget()
         self.treeWidget.setWindowTitle('Drawables')
 
@@ -30,6 +32,7 @@ class Container(QWidget):
         self.verticalLayout.addWidget(self.toolbar)
 
         self.setWindowTitle('BlastSight (Container)')
+        self.setWindowIcon(IconCollection.get('blastsight.png'))
         self.setMinimumSize(600, 500)
 
         self.toolbar.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)

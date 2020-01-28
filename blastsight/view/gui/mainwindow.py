@@ -24,6 +24,7 @@ from .aboutdialog import AboutDialog
 from .threadworker import ThreadWorker
 
 from ..integrableviewer import IntegrableViewer
+from .iconcollection import IconCollection
 from .toolbar import ToolBar
 from .treewidget import TreeWidget
 
@@ -63,6 +64,7 @@ class MainWindow(QMainWindow):
         self.menuBar.addAction(self.menu_Help.menuAction())
 
         self.setWindowTitle('BlastSight')
+        self.setWindowIcon(IconCollection.get('blastsight.png'))
         self.toolbar.setWindowTitle('Toolbar')
         self.dockWidget.setWindowTitle('Element tree')
         self.treeWidget.headerItem().setText(0, 'Elements')
