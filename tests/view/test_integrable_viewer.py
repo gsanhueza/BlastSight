@@ -45,8 +45,8 @@ class TestIntegrableViewer:
         for e, r in zip(expected, viewer.off_center):
             assert e == r
 
-        assert not viewer.turbo_rendering
-        assert not viewer.autofit_to_screen
+        assert not viewer.get_turbo_status()
+        assert not viewer.get_autofit_status()
 
         assert viewer.fov == 45.0
         assert viewer.smoothness == 2.0
@@ -354,10 +354,10 @@ class TestIntegrableViewer:
         viewer.mesh(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], indices=[[0, 1, 2]])
 
         assert not viewer.last_drawable.is_boostable
-        viewer.turbo_rendering = True
+        viewer.set_turbo_status(True)
         assert viewer.last_drawable.is_boostable
 
-        viewer.turbo_rendering = False
+        viewer.set_turbo_status(False)
         assert not viewer.last_drawable.is_boostable
 
     def test_fit_camera(self):
@@ -369,8 +369,8 @@ class TestIntegrableViewer:
 
         viewer.mesh(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], indices=[[0, 1, 2]])
 
-        assert not viewer.autofit_to_screen
-        viewer.autofit_to_screen = True
+        assert not viewer.get_autofit_status()
+        viewer.set_autofit_status(True)
 
         assert viewer.off_center[2] != 200.0
 

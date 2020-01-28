@@ -110,6 +110,10 @@ class MainWindow(QMainWindow):
         self.generate_menubar()
         self.connect_actions()
 
+        # Set auto-fit as True when starting the app
+        if not self.toolbar.action_collection.action_autofit_to_screen.isChecked():
+            self.toolbar.action_collection.action_autofit_to_screen.trigger()
+
         # self.title = self.windowTitle()
         # self.viewer.signal_fps_updated.connect(lambda x: self.setWindowTitle(f'{self.title} (FPS: {x:.1f})'))
 

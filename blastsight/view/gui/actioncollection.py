@@ -159,7 +159,6 @@ class ActionCollection:
         self.action_autofit_to_screen.setIcon(IconCollection.get('globe.svg'))
         self.action_autofit_to_screen.setShortcut('Ctrl+Shift+F')
         self.action_autofit_to_screen.setCheckable(True)
-        self.action_autofit_to_screen.setChecked(True)
 
         self.action_perspective_projection = QAction('P&erspective projection', parent)
         self.action_perspective_projection.setIcon(IconCollection.get('ruler.svg'))
@@ -188,33 +187,18 @@ class ActionCollection:
         self.action_east_view.triggered.connect(viewer.east_view)
         self.action_fit_to_screen.triggered.connect(viewer.fit_to_screen)
 
-        self.action_autofit_to_screen.triggered.connect(
-            lambda: self.handle_autofit(viewer))
-        self.action_turbo_rendering.triggered.connect(
-            lambda: self.handle_turbo(viewer))
-        self.action_camera_properties.triggered.connect(
-            lambda: self.handle_camera_properties(viewer))
-        self.action_take_screenshot.triggered.connect(
-            lambda: self.handle_screenshot(viewer))
+        self.action_autofit_to_screen.triggered.connect(viewer.set_autofit_status)
+        self.action_turbo_rendering.triggered.connect(viewer.set_turbo_status)
 
-        viewer.signal_file_modified.connect(
-            lambda: self.handle_turbo(viewer))
-        viewer.signal_load_success.connect(
-            lambda: self.handle_autofit(viewer))
+        self.action_camera_properties.triggered.connect(CameraDialog(viewer).show)
+        self.action_take_screenshot.triggered.connect(lambda: self.handle_screenshot(viewer))
+
+        viewer.signal_load_success.connect(viewer.update_turbo)
+        viewer.signal_load_success.connect(viewer.update_autofit)
 
     """
     Advanced handlers
     """
-    def handle_autofit(self, viewer) -> None:
-        viewer.autofit_to_screen = self.action_autofit_to_screen.isChecked()
-
-    def handle_turbo(self, viewer) -> None:
-        viewer.turbo_rendering = self.action_turbo_rendering.isChecked()
-
-    def handle_camera_properties(self, viewer) -> None:
-        dialog = CameraDialog(viewer)
-        dialog.show()
-
     def handle_screenshot(self, viewer) -> None:
         (path, selected_filter) = QFileDialog.getSaveFileName(
             parent=viewer,

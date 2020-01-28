@@ -141,14 +141,6 @@ class IntegrableViewer(QOpenGLWidget):
     def rotation_center(self) -> np.ndarray:
         return np.array([self.xCenterPos, self.yCenterPos, self.zCenterPos])
 
-    @property
-    def turbo_rendering(self) -> bool:
-        return self._turbo_rendering
-
-    @property
-    def autofit_to_screen(self) -> bool:
-        return self._autofit_to_screen
-
     @camera_position.setter
     def camera_position(self, pos: list) -> None:
         self.xCameraPos, self.yCameraPos, self.zCameraPos = pos
@@ -161,20 +153,32 @@ class IntegrableViewer(QOpenGLWidget):
     def rotation_center(self, center: list) -> None:
         self.xCenterPos, self.yCenterPos, self.zCenterPos = center
 
-    @turbo_rendering.setter
-    def turbo_rendering(self, status: bool) -> None:
+    """
+    Turbo/Autofit
+    """
+    def get_turbo_status(self) -> bool:
+        return self._turbo_rendering
+
+    def get_autofit_status(self) -> bool:
+        return self._autofit_to_screen
+
+    def set_turbo_status(self, status: bool) -> None:
         if status:
             print('WARNING: Turbo-rendering might leave you without memory!')
 
         self._turbo_rendering = status
-        for d in self.get_all_drawables():
-            d.is_boostable = self._turbo_rendering
+        self.update_turbo()
 
-    @autofit_to_screen.setter
-    def autofit_to_screen(self, status: bool) -> None:
+    def set_autofit_status(self, status: bool) -> None:
         self._autofit_to_screen = status
+        self.update_autofit()
 
-        if self._autofit_to_screen:
+    def update_turbo(self) -> None:
+        for d in self.get_all_drawables():
+            d.is_boostable = self.get_turbo_status()
+
+    def update_autofit(self) -> None:
+        if self.get_autofit_status():
             self.fit_to_screen()
 
     """
@@ -625,8 +629,6 @@ class IntegrableViewer(QOpenGLWidget):
 
         # Emit signal with clicked mesh
         self.signal_mesh_clicked.emit(attributes_list)
-
-        # print('-------------------------------')
 
     """
     Controller

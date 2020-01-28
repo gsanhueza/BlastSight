@@ -26,9 +26,7 @@ class Viewer(IntegrableViewer):
         # This will auto-fit to screen when used from a script,
         # as it's reasonable to expect the figure to be shown
         # immediately, even if it's far from [0.0, 0.0, 0.0].
-        if autofit:
-            self.fit_to_screen()
-
+        self.set_autofit_status(autofit)
         super().show()
 
         if detached:
@@ -41,10 +39,7 @@ class Viewer(IntegrableViewer):
         self.app.exec_()
 
     def take_screenshot(self, save_path=None, width=None, height=None) -> None:
-        width = width or self.width()
-        height = height or self.height()
-
-        self.resize(width, height)
+        self.resize(width or self.width(), height or self.height())
         super().take_screenshot(save_path)
 
     def dragEnterEvent(self, event, *args, **kwargs) -> None:
