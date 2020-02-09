@@ -13,42 +13,49 @@ from qtpy import uic
 
 
 class CameraDialog(QDialog):
-    def __init__(self, parent=None):
-        QDialog.__init__(self, parent)
+    def __init__(self, viewer=None):
+        QDialog.__init__(self, viewer)
         uic.loadUi(f'{pathlib.Path(__file__).parent}/UI/cameradialog.ui', self)
 
         # Avoids the QObject::startTimer warning (maybe)
         self.setAttribute(Qt.WA_DeleteOnClose)
-        self.viewer = parent
 
-    def accept(self) -> None:
-        self.viewer.camera_position = [self.doubleSpinBox_x.value(),
-                                       self.doubleSpinBox_y.value(),
-                                       self.doubleSpinBox_z.value()]
-        self.viewer.rotation_angle = [self.doubleSpinBox_rot_x.value(),
-                                      self.doubleSpinBox_rot_y.value(),
-                                      self.doubleSpinBox_rot_z.value()]
-        self.viewer.rotation_center = [self.doubleSpinBox_center_x.value(),
-                                       self.doubleSpinBox_center_y.value(),
-                                       self.doubleSpinBox_center_z.value()]
+        self.camera_position = viewer.camera_position
+        self.rotation_angle = viewer.rotation_angle
+        self.rotation_center = viewer.rotation_center
 
-        super().accept()
+    @property
+    def camera_position(self) -> list:
+        return [self.doubleSpinBox_x.value(),
+                self.doubleSpinBox_y.value(),
+                self.doubleSpinBox_z.value()]
 
-    def show(self) -> None:
-        positions = self.viewer.camera_position
-        rotations = self.viewer.rotation_angle
-        centers = self.viewer.rotation_center
+    @property
+    def rotation_angle(self) -> list:
+        return [self.doubleSpinBox_rot_x.value(),
+                self.doubleSpinBox_rot_y.value(),
+                self.doubleSpinBox_rot_z.value()]
 
-        self.doubleSpinBox_x.setValue(positions[0])
-        self.doubleSpinBox_y.setValue(positions[1])
-        self.doubleSpinBox_z.setValue(positions[2])
+    @property
+    def rotation_center(self) -> list:
+        return [self.doubleSpinBox_center_x.value(),
+                self.doubleSpinBox_center_y.value(),
+                self.doubleSpinBox_center_z.value()]
 
-        self.doubleSpinBox_rot_x.setValue(rotations[0])
-        self.doubleSpinBox_rot_y.setValue(rotations[1])
-        self.doubleSpinBox_rot_z.setValue(rotations[2])
+    @camera_position.setter
+    def camera_position(self, position: list) -> None:
+        self.doubleSpinBox_x.setValue(position[0])
+        self.doubleSpinBox_y.setValue(position[1])
+        self.doubleSpinBox_z.setValue(position[2])
 
-        self.doubleSpinBox_center_x.setValue(centers[0])
-        self.doubleSpinBox_center_y.setValue(centers[1])
-        self.doubleSpinBox_center_z.setValue(centers[2])
+    @rotation_angle.setter
+    def rotation_angle(self, angle: list) -> None:
+        self.doubleSpinBox_rot_x.setValue(angle[0])
+        self.doubleSpinBox_rot_y.setValue(angle[1])
+        self.doubleSpinBox_rot_z.setValue(angle[2])
 
-        super().show()
+    @rotation_center.setter
+    def rotation_center(self, center: list) -> None:
+        self.doubleSpinBox_center_x.setValue(center[0])
+        self.doubleSpinBox_center_y.setValue(center[1])
+        self.doubleSpinBox_center_z.setValue(center[2])

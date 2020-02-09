@@ -190,8 +190,8 @@ class ActionCollection:
         self.action_autofit_to_screen.triggered.connect(viewer.set_autofit_status)
         self.action_turbo_rendering.triggered.connect(viewer.set_turbo_status)
 
-        self.action_camera_properties.triggered.connect(CameraDialog(viewer).show)
-        self.action_take_screenshot.triggered.connect(lambda: self.handle_screenshot(viewer))
+        self.action_camera_properties.triggered.connect(lambda: ActionCollection.handle_camera(viewer))
+        self.action_take_screenshot.triggered.connect(lambda: ActionCollection.handle_screenshot(viewer))
 
         viewer.signal_load_success.connect(viewer.update_turbo)
         viewer.signal_load_success.connect(viewer.update_autofit)
@@ -199,7 +199,21 @@ class ActionCollection:
     """
     Advanced handlers
     """
-    def handle_screenshot(self, viewer) -> None:
+    @staticmethod
+    def handle_camera(viewer) -> None:
+        dialog = CameraDialog(viewer)
+        dialog.accepted.connect(lambda: ActionCollection.update_viewer(viewer, dialog))
+        dialog.show()
+
+    @staticmethod
+    def update_viewer(viewer, dialog: CameraDialog) -> None:
+        viewer.camera_position = dialog.camera_position
+        viewer.rotation_angle = dialog.rotation_angle
+        viewer.rotation_center = dialog.rotation_center
+        viewer.update()
+
+    @staticmethod
+    def handle_screenshot(viewer) -> None:
         (path, selected_filter) = QFileDialog.getSaveFileName(
             parent=viewer,
             directory=f'BlastSight Screenshot ({datetime.now().strftime("%Y%m%d-%H%M%S")})',
