@@ -100,10 +100,10 @@ class TestPointElement:
                 }
 
         element = PointElement(data=data)
-        assert element.x_str == 'x'
-        assert element.y_str == 'y'
-        assert element.z_str == 'z'
-        assert element.value_str == 'CuT'
+        expected = list(data.keys())
+
+        for e, r in zip(expected, element.headers):
+            assert e == r
 
         assert element.x.size == 6
         assert element.y.size == 6
@@ -148,25 +148,18 @@ class TestPointElement:
         with pytest.raises(Exception):
             PointElement(data)
 
-    def test_data_wrong_string(self):
-        data = {'x': ['0', '2', '4', '6', '8', '10'],
-                'y': ['0', '0', '0', '3', '3', '1'],
-                'z': ['0', '3', '3', '3', '3', '3'],
-                'CuT': ['1', '0.4', '0.5', '0.8', '0.3', '0.2']}
+    def test_alter_headers(self):
+        data = {'x': [0.0, 2.0, 4.0, 6.0, 8.0, 10.0],
+                'y': [0.0, 0.0, 0.0, 3.0, 3.0, 1.0],
+                'z': [0.0, 3.0, 3.0, 3.0, 3.0, 3.0],
+                'CuT': [1.0, 0.4, 0.5, 0.8, 0.3, 0.2]}
 
         element = PointElement(data=data)
-        element.x_str = 'x'
-        element.y_str = 'y'
-        element.z_str = 'z'
-        element.value_str = 'value'
+        element.headers = ['x', 'y', 'z', 'value']
+        expected = ['x', 'y', 'z', 'value']
 
-        assert element.x_str == 'x'
-        assert element.y_str == 'y'
-        assert element.z_str == 'z'
-        assert element.value_str == 'value'
-
-        with pytest.raises(Exception):
-            element.update_values()
+        for e, r in zip(expected, element.headers):
+            assert e == r
 
     def test_available_coordinates(self):
         data = {'easting': ['0', '2', '4', '6', '8', '10'],

@@ -5,6 +5,8 @@
 #  Distributed under the MIT License.
 #  See LICENSE for more info.
 
+import json
+
 from qtpy.QtCore import Qt
 from qtpy.QtCore import Signal
 from qtpy.QtGui import QKeyEvent
@@ -73,13 +75,37 @@ class TreeWidget(QTreeWidget):
 
     @staticmethod
     def handle_properties(viewer, _id: int) -> None:
-        dialog = PropertiesDialog(viewer, _id)
-        dialog.accepted.connect(lambda: TreeWidget.update_properties(viewer, dialog))
+        element = viewer.get_drawable(_id)
+        dialog = PropertiesDialog(viewer, element)
+        dialog.accepted.connect(lambda: TreeWidget.update_properties(viewer, dialog, element))
         dialog.show()
 
     @staticmethod
-    def update_properties(viewer, dialog) -> None:
-        pass
+    def update_properties(viewer, dialog, element) -> None:
+        # Parse values in QTableWidget
+        for i in range(dialog.tableWidget_properties.rowCount()):
+            k = dialog.tableWidget_properties.verticalHeaderItem(i).text()
+            v = dialog.tableWidget_properties.item(i, 0).text()
+            try:
+                setattr(element, k, float(v))
+            except ValueError:  # Element might be a list or string
+                try:  # Element is a list
+                    setattr(element, k, json.loads(v))
+                except json.decoder.JSONDecodeError:  # Element is a string
+                    setattr(element, k, v)
+            except KeyError:  # Element clearly is not a property
+                print(f'{k} property does not exist.')
+
+        # Update headers
+        altered = dialog.has_altered_coordinates(element)
+        element.headers = dialog.current_headers
+
+        # Recreate instance with the "new" data
+        viewer.update_drawable(element.id)
+
+        # If coordinates were altered and auto-fit is enabled, call fit_to_screen()
+        if altered and viewer.get_autofit_status():
+            viewer.fit_to_screen()
 
     def fill_from_viewer(self, viewer) -> None:
         self.clear()

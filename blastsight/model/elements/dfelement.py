@@ -202,38 +202,3 @@ class DFElement(Element):
     @headers.setter
     def headers(self, _headers: list) -> None:
         self.mapper['x'], self.mapper['y'], self.mapper['z'], self.mapper['values'] = _headers
-
-    """
-    Mapper handling
-    """
-    @property
-    def x_str(self) -> str:
-        return self.mapper.get('x')
-
-    @property
-    def y_str(self) -> str:
-        return self.mapper.get('y')
-
-    @property
-    def z_str(self) -> str:
-        return self.mapper.get('z')
-
-    @property
-    def value_str(self) -> str:
-        return self.mapper.get('values')
-
-    @x_str.setter
-    def x_str(self, _x_str: str) -> None:
-        self.mapper['x'] = _x_str
-
-    @y_str.setter
-    def y_str(self, _y_str: str) -> None:
-        self.mapper['y'] = _y_str
-
-    @z_str.setter
-    def z_str(self, _z_str: str) -> None:
-        self.mapper['z'] = _z_str
-
-    @value_str.setter
-    def value_str(self, _value_str: str) -> None:
-        self.mapper['values'] = _value_str

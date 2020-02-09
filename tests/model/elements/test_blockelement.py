@@ -100,10 +100,10 @@ class TestBlockElement:
                 }
 
         element = BlockElement(data=data)
-        assert element.x_str == 'x'
-        assert element.y_str == 'y'
-        assert element.z_str == 'z'
-        assert element.value_str == 'CuT'
+        expected = list(data.keys())
+
+        for e, r in zip(expected, element.headers):
+            assert e == r
 
         assert element.x.size == 6
         assert element.y.size == 6
@@ -148,22 +148,18 @@ class TestBlockElement:
         with pytest.raises(Exception):
             BlockElement(data)
 
-    def test_data_wrong_string(self):
+    def test_alter_headers(self):
         data = {'x': [0.0, 2.0, 4.0, 6.0, 8.0, 10.0],
                 'y': [0.0, 0.0, 0.0, 3.0, 3.0, 1.0],
                 'z': [0.0, 3.0, 3.0, 3.0, 3.0, 3.0],
                 'CuT': [1.0, 0.4, 0.5, 0.8, 0.3, 0.2]}
 
         element = BlockElement(data=data)
-        element.x_str = 'x'
-        element.y_str = 'y'
-        element.z_str = 'z'
-        element.value_str = 'value'
+        element.headers = ['x', 'y', 'z', 'value']
+        expected = ['x', 'y', 'z', 'value']
 
-        assert element.x_str == 'x'
-        assert element.y_str == 'y'
-        assert element.z_str == 'z'
-        assert element.value_str == 'value'
+        for e, r in zip(expected, element.headers):
+            assert e == r
 
     def test_available_coordinates(self):
         data = {'easting': [0.0, 2.0, 4.0, 6.0, 8.0, 10.0],

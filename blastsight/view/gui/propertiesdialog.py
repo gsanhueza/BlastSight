@@ -6,7 +6,6 @@
 #  See LICENSE for more info.
 
 import numpy as np
-import json
 import pathlib
 
 from qtpy.QtCore import Qt
@@ -16,25 +15,17 @@ from qtpy import uic
 
 
 class PropertiesDialog(QDialog):
-    def __init__(self, parent=None, _id=None):
+    def __init__(self, parent=None, element=None):
         QDialog.__init__(self, parent)
+        uic.loadUi(f'{pathlib.Path(__file__).parent}/UI/propertiesdialog.ui', self)
 
         # Avoids the QObject::startTimer warning (maybe)
         self.setAttribute(Qt.WA_DeleteOnClose)
-
-        uic.loadUi(f'{pathlib.Path(__file__).parent}/UI/propertiesdialog.ui', self)
-        self.viewer = parent
-        self.id = _id
-
-        element = self.viewer.get_drawable(self.id).element
         self.setWindowTitle(f'Set properties ({element.name}.{element.extension})')
 
-        # Fill content
-        for i in element.all_headers:
-            self.comboBox_x.addItem(i)
-            self.comboBox_y.addItem(i)
-            self.comboBox_z.addItem(i)
-            self.comboBox_values.addItem(i)
+        # Fill headers and set current ones
+        self.fill_headers(element.all_headers)
+        self.current_headers = element.headers
 
         # Fill properties in QTableWidget
         self.tableWidget_properties.setRowCount(len(element.customizable_properties))
@@ -45,58 +36,30 @@ class PropertiesDialog(QDialog):
             text = str(v.tolist()) if type(v) is np.ndarray else str(v)
             self.tableWidget_properties.setItem(i, 0, QTableWidgetItem(text))
 
-    def accept(self) -> None:
-        element = self.viewer.get_drawable(self.id).element
+    def fill_headers(self, headers: list) -> None:
+        for i in headers:
+            self.comboBox_x.addItem(i)
+            self.comboBox_y.addItem(i)
+            self.comboBox_z.addItem(i)
+            self.comboBox_values.addItem(i)
 
-        # Check alteration of coordinates
-        coordinates_altered = not (
-            element.x_str == self.comboBox_x.currentText() and
-            element.y_str == self.comboBox_y.currentText() and
-            element.z_str == self.comboBox_z.currentText()
-        )
+    def has_altered_coordinates(self, element) -> bool:
+        altered = False
+        for e, c in list(zip(element.headers, self.current_headers))[:3]:
+            altered |= not (e == c)
 
-        element.x_str = self.comboBox_x.currentText()
-        element.y_str = self.comboBox_y.currentText()
-        element.z_str = self.comboBox_z.currentText()
-        element.value_str = self.comboBox_values.currentText()
+        return altered
 
-        # Parse values in QTableWidget
-        for i in range(self.tableWidget_properties.rowCount()):
-            k = self.tableWidget_properties.verticalHeaderItem(i).text()
-            v = self.tableWidget_properties.item(i, 0).text()
-            try:
-                setattr(element, k, float(v))
-            except ValueError:  # Element might be a list or string
-                try:  # Element is a list
-                    setattr(element, k, json.loads(v))
-                except json.decoder.JSONDecodeError:  # Element is a string
-                    setattr(element, k, v)
-            except KeyError:  # Element clearly is not a property
-                print(f'{k} property does not exist.')
+    @property
+    def current_headers(self) -> list:
+        return [self.comboBox_x.currentText(),
+                self.comboBox_y.currentText(),
+                self.comboBox_z.currentText(),
+                self.comboBox_values.currentText()]
 
-        # Recreate the BlockModelGL instance with the "new" data
-        self.viewer.update_drawable(self.id)
-
-        # If coordinates were altered and auto-fit is enabled, call fit_to_screen()
-        if coordinates_altered and self.viewer.autofit_to_screen:
-            self.viewer.fit_to_screen()
-
-        super().accept()
-
-    def show(self) -> None:
-        element = self.viewer.get_drawable(self.id).element
-
-        self.comboBox_x.setCurrentIndex(
-            self.comboBox_x.findText(element.x_str)
-        )
-        self.comboBox_y.setCurrentIndex(
-            self.comboBox_y.findText(element.y_str)
-        )
-        self.comboBox_z.setCurrentIndex(
-            self.comboBox_z.findText(element.z_str)
-        )
-        self.comboBox_values.setCurrentIndex(
-            self.comboBox_values.findText(element.value_str)
-        )
-
-        super().show()
+    @current_headers.setter
+    def current_headers(self, headers: list) -> None:
+        self.comboBox_x.setCurrentIndex(self.comboBox_x.findText(headers[0]))
+        self.comboBox_y.setCurrentIndex(self.comboBox_y.findText(headers[1]))
+        self.comboBox_z.setCurrentIndex(self.comboBox_z.findText(headers[2]))
+        self.comboBox_values.setCurrentIndex(self.comboBox_values.findText(headers[3]))
