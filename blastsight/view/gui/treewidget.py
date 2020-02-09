@@ -50,19 +50,36 @@ class TreeWidget(QTreeWidget):
         self.enable_export = enable_export
 
     def connect_viewer(self, viewer) -> None:
-        viewer.signal_file_modified.connect(
-            lambda: self.fill_from_viewer(viewer))
+        viewer.signal_file_modified.connect(lambda: self.fill_from_viewer(viewer))
+        viewer.signal_mesh_clicked.connect(self.handle_mesh_clicked)
 
-        viewer.signal_mesh_clicked.connect(
-            lambda mesh_attributes: self.select_by_id_list(
-                [attr.get('id', -1) for attr in mesh_attributes]
-            )
-        )
+        self.signal_colors_triggered.connect(lambda _id: TreeWidget.handle_color(viewer, _id))
+        self.signal_headers_triggered.connect(lambda _id: TreeWidget.handle_properties(viewer, _id))
 
-        self.signal_colors_triggered.connect(
-            lambda _id: ColorDialog(viewer, _id).show())
-        self.signal_headers_triggered.connect(
-            lambda _id: PropertiesDialog(viewer, _id).show())
+    def handle_mesh_clicked(self, attributes: list) -> None:
+        self.select_by_id_list([attr.get('id', -1) for attr in attributes])
+
+    @staticmethod
+    def handle_color(viewer, _id: int) -> None:
+        element = viewer.get_drawable(_id)
+        dialog = ColorDialog(viewer, element)
+        dialog.accepted.connect(lambda: TreeWidget.update_color(viewer, dialog, element))
+        dialog.show()
+
+    @staticmethod
+    def update_color(viewer, dialog, element) -> None:
+        element.rgba = [x / 255 for x in dialog.currentColor().getRgb()]
+        viewer.update_drawable(element.id)
+
+    @staticmethod
+    def handle_properties(viewer, _id: int) -> None:
+        dialog = PropertiesDialog(viewer, _id)
+        dialog.accepted.connect(lambda: TreeWidget.update_properties(viewer, dialog))
+        dialog.show()
+
+    @staticmethod
+    def update_properties(viewer, dialog) -> None:
+        pass
 
     def fill_from_viewer(self, viewer) -> None:
         self.clear()
