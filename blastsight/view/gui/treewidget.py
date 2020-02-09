@@ -37,7 +37,7 @@ class TreeWidget(QTreeWidget):
     signal_export_lines = Signal(int)
     signal_export_tubes = Signal(int)
 
-    def __init__(self, parent=None, enable_export=False):
+    def __init__(self, parent=None, viewer=None, enable_export=False):
         super().__init__(parent)
         self.setContextMenuPolicy(Qt.CustomContextMenu)
         self.setWindowFlags(Qt.WindowStaysOnTopHint)
@@ -49,39 +49,36 @@ class TreeWidget(QTreeWidget):
         self.setWindowTitle('Element list')
         self.headerItem().setText(0, 'Elements')
 
+        self.viewer = viewer
         self.enable_export = enable_export
 
     def connect_viewer(self, viewer) -> None:
-        viewer.signal_file_modified.connect(lambda: self.fill_from_viewer(viewer))
-        viewer.signal_mesh_clicked.connect(self.handle_mesh_clicked)
-
-        self.signal_colors_triggered.connect(lambda _id: TreeWidget.handle_color(viewer, _id))
-        self.signal_headers_triggered.connect(lambda _id: TreeWidget.handle_properties(viewer, _id))
+        self.viewer = viewer
+        self.viewer.signal_file_modified.connect(self.fill_from_viewer)
+        self.viewer.signal_mesh_clicked.connect(self.handle_mesh_clicked)
+        self.signal_colors_triggered.connect(self.handle_color)
+        self.signal_headers_triggered.connect(self.handle_properties)
 
     def handle_mesh_clicked(self, attributes: list) -> None:
         self.select_by_id_list([attr.get('id', -1) for attr in attributes])
 
-    @staticmethod
-    def handle_color(viewer, _id: int) -> None:
-        element = viewer.get_drawable(_id)
-        dialog = ColorDialog(viewer, element)
-        dialog.accepted.connect(lambda: TreeWidget.update_color(viewer, dialog, element))
+    def handle_color(self, _id: int) -> None:
+        element = self.viewer.get_drawable(_id)
+        dialog = ColorDialog(self.viewer, element)
+        dialog.accepted.connect(lambda: self.update_color(dialog, element))
         dialog.show()
 
-    @staticmethod
-    def update_color(viewer, dialog, element) -> None:
+    def update_color(self, dialog, element) -> None:
         element.rgba = [x / 255 for x in dialog.currentColor().getRgb()]
-        viewer.update_drawable(element.id)
+        self.viewer.update_drawable(element.id)
 
-    @staticmethod
-    def handle_properties(viewer, _id: int) -> None:
-        element = viewer.get_drawable(_id)
-        dialog = PropertiesDialog(viewer, element)
-        dialog.accepted.connect(lambda: TreeWidget.update_properties(viewer, dialog, element))
+    def handle_properties(self, _id: int) -> None:
+        element = self.viewer.get_drawable(_id)
+        dialog = PropertiesDialog(self.viewer, element)
+        dialog.accepted.connect(lambda: self.update_properties(dialog, element))
         dialog.show()
 
-    @staticmethod
-    def update_properties(viewer, dialog, element) -> None:
+    def update_properties(self, dialog, element) -> None:
         # Parse values in QTableWidget
         for i in range(dialog.tableWidget_properties.rowCount()):
             k = dialog.tableWidget_properties.verticalHeaderItem(i).text()
@@ -101,18 +98,17 @@ class TreeWidget(QTreeWidget):
         element.headers = dialog.current_headers
 
         # Recreate instance with the "new" data
-        viewer.update_drawable(element.id)
+        self.viewer.update_drawable(element.id)
 
         # If coordinates were altered and auto-fit is enabled, call fit_to_screen()
-        if altered and viewer.get_autofit_status():
-            viewer.fit_to_screen()
+        if altered and self.viewer.get_autofit_status():
+            self.viewer.fit_to_screen()
 
-    def fill_from_viewer(self, viewer) -> None:
+    def fill_from_viewer(self) -> None:
         self.clear()
 
-        for drawable in viewer.get_all_drawables():
-            item = TreeWidgetItem(self, viewer, drawable.id)
-            self.addTopLevelItem(item)
+        for drawable in self.viewer.get_all_drawables():
+            self.addTopLevelItem(TreeWidgetItem(self, drawable))
 
     def context_menu(self, event) -> None:
         # Pop-up the context menu on current position, if an item is there
@@ -130,7 +126,7 @@ class TreeWidget(QTreeWidget):
         actions.action_hide.triggered.connect(self.hide_items)
         actions.action_delete.triggered.connect(self.delete_items)
 
-        actions.action_focus_camera.triggered.connect(item.center_camera)
+        actions.action_focus_camera.triggered.connect(self.center_camera)
         actions.action_highlight.triggered.connect(item.toggle_highlighting)
         actions.action_wireframe.triggered.connect(item.toggle_wireframe)
 
@@ -160,8 +156,8 @@ class TreeWidget(QTreeWidget):
         menu.addSeparator()
 
         # WARNING: MeshGL.is_boostable == True means no highlight/wireframe support yet.
-        if item.type in [MeshGL, LineGL, TubeGL]:
-            if item.type is MeshGL:
+        if type(item.drawable) in [MeshGL, LineGL, TubeGL]:
+            if type(item.drawable) is MeshGL:
                 # Dynamic checkbox in actions
                 actions.action_highlight.setChecked(item.drawable.is_highlighted)
                 actions.action_wireframe.setChecked(item.drawable.is_wireframed)
@@ -169,7 +165,7 @@ class TreeWidget(QTreeWidget):
                 menu.addAction(actions.action_highlight)
                 menu.addAction(actions.action_wireframe)
             menu.addAction(actions.action_setup_colors)
-        elif item.type in [BlockGL, PointGL]:
+        elif type(item.drawable) in [BlockGL, PointGL]:
             menu.addAction(actions.action_properties)
 
         menu.addSeparator()
@@ -183,22 +179,23 @@ class TreeWidget(QTreeWidget):
         }
 
         if self.enable_export:
-            menu.addAction(export_dict.get(item.type))
+            menu.addAction(export_dict.get(type(item.drawable)))
 
         menu.addAction(actions.action_delete)
-
         menu.exec_(global_pos)
 
     def center_camera(self) -> None:
         row = min([self.indexOfTopLevelItem(x) for x in self.selectedItems()], default=0)
-        self.topLevelItem(row).show()
-        self.topLevelItem(row).center_camera()
+        drawable = self.topLevelItem(row).drawable
+        self.viewer.show_drawable(drawable.id)
+        self.viewer.camera_at(drawable.id)
 
     def select_item(self, row: int) -> None:
         row = max(min(row, self.topLevelItemCount() - 1), 0)
         item = self.topLevelItem(row)
-        item.setSelected(True)
-        self.scrollToItem(item, QAbstractItemView.EnsureVisible)
+        if item:
+            item.setSelected(True)
+            self.scrollToItem(item, QAbstractItemView.EnsureVisible)
 
     def select_by_id_list(self, id_list: list) -> None:
         self.clearSelection()
@@ -232,12 +229,13 @@ class TreeWidget(QTreeWidget):
 
         # We'll trick the viewer so it doesn't emit file_modified_signal until last item
         # has been deleted, so we're not forced to auto-fill for each deleted item.
-        selected = self.selectedItems()
-        for item in selected[:-1]:
-            item.delete(no_signal=True)
+        self.viewer.blockSignals(True)
 
-        if len(selected) > 0:
-            selected[-1].delete()
+        for _id in [item.drawable.id for item in self.selectedItems()]:
+            self.viewer.delete(_id)
+
+        self.viewer.blockSignals(False)
+        self.viewer.signal_file_modified.emit()
 
         self.setCurrentItem(self.topLevelItem(max(closest_row - 1, 0)))
 
