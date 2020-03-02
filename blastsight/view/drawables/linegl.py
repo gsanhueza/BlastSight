@@ -42,5 +42,7 @@ class LineGL(GLDrawable):
 
     def draw(self) -> None:
         glBindVertexArray(self.vao)
+        glLineWidth(self.element.thickness)
         glDrawArrays(GL_LINE_STRIP, 0, self.num_vertices)
+        glLineWidth(1)
         glBindVertexArray(0)

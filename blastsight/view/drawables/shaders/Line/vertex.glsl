@@ -2,9 +2,9 @@
 #extension GL_ARB_explicit_attrib_location : require
 
 layout (location = 0) in vec3 a_position;
-layout (location = 1) in vec3 a_color;
+layout (location = 1) in vec4 a_color;
 
-out vec3 v_color;
+out vec4 v_color;
 
 uniform mat4 proj_matrix;
 uniform mat4 model_view_matrix;

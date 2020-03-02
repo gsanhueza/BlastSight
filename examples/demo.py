@@ -134,7 +134,19 @@ def demo():
                  color=[0.2, 0.8, 0.8],
                  alpha=1.0,
                  loop=True,
-                 name='Lines')
+                 name='Looped lines')
+
+    """
+    You can also create a thicker line with the thickness argument.
+    """
+    viewer.lines(x=[-1.0, 1.0, -1.0, 1.0],
+                 y=[0.5, 0.5, -0.5, -0.5],
+                 z=[-2.5, -2.5, -2.5, -2.5],
+                 color=[0.8, 0.8, 0.2],
+                 alpha=0.7,
+                 thickness=10,
+                 loop=False,
+                 name='Un-looped thick lines')
 
     """
     A tube is practically the same as a line, except

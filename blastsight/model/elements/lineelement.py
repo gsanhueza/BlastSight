@@ -21,6 +21,7 @@ class LineElement(Element):
                 'z': list[float],
             }
             'properties': {
+                'thickness': int,
                 'color': list[float],
                 'alpha': float
             },
@@ -35,6 +36,7 @@ class LineElement(Element):
 
     def _fill_properties(self, *args, **kwargs) -> None:
         super()._fill_properties(*args, **kwargs)
+        self.thickness = kwargs.get('thickness', 1.0)
         self.loop = kwargs.get('loop', False)
 
     def _check_integrity(self) -> None:
@@ -47,9 +49,25 @@ class LineElement(Element):
             self.vertices = np.append(self.vertices, [self.vertices[0, :]], axis=0)
 
     @property
+    def customizable_properties(self) -> list:
+        return ['color', 'alpha', 'thickness', 'loop']
+
+    @property
+    def exportable_properties(self) -> list:
+        return ['color', 'alpha', 'thickness', 'loop']
+
+    @property
     def loop(self) -> bool:
         return self.properties.get('loop')
+
+    @property
+    def thickness(self) -> int:
+        return self.properties.get('thickness')
 
     @loop.setter
     def loop(self, _loop: bool) -> None:
         self.properties['loop'] = _loop
+
+    @thickness.setter
+    def thickness(self, value: float) -> None:
+        self.properties['thickness'] = value
