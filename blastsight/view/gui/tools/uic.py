@@ -1,17 +1,12 @@
 #!/usr/bin/env python
 
-import os
-import importlib
-from xml.etree import ElementTree
-from io import StringIO
-
-
 """
 Adapted from https://github.com/mottosso/Qt.py
 
 Dynamically loads an UI file using either PyQt5 or PySide2.
 At least works better than qtpy for the PySide2 binding.
 """
+
 
 def loadUi(uifile, baseinstance=None):
     try:
@@ -21,9 +16,14 @@ def loadUi(uifile, baseinstance=None):
         return uic.loadUi(uifile, baseinstance)
     except ImportError:
         # Implement `PyQt5.uic.loadUi` for PySide(2)
+        import os
+        import importlib
+
         from PySide2.QtUiTools import QUiLoader
         from PySide2 import QtCore
         from PySide2 import QtWidgets
+        from xml.etree import ElementTree
+        from io import StringIO
 
         class _UiLoader(QUiLoader):
             """Create the user interface in a base instance.
@@ -72,8 +72,7 @@ def loadUi(uifile, baseinstance=None):
                     class_name = custom_widget.find("class").text
                     header = custom_widget.find("header").text
                     module = importlib.import_module(headerToModule(header))
-                    self.custom_widgets[class_name] = getattr(module,
-                                                                class_name)
+                    self.custom_widgets[class_name] = getattr(module, class_name)
 
             def load(self, uifile, *args, **kwargs):
                 from xml.etree.ElementTree import ElementTree
@@ -85,8 +84,7 @@ def loadUi(uifile, baseinstance=None):
                 etree.parse(uifile)
                 self._loadCustomWidgets(etree)
 
-                widget = QUiLoader.load(
-                    self, uifile, *args, **kwargs)
+                widget = QUiLoader.load(self, uifile, *args, **kwargs)
 
                 # Workaround for PySide 1.0.9, see issue #208
                 widget.parentWidget()
@@ -110,9 +108,9 @@ def loadUi(uifile, baseinstance=None):
                 if class_name in self.availableWidgets() + ["Line"]:
                     # Create a new widget for child widgets
                     widget = QUiLoader.createWidget(self,
-                                                                    class_name,
-                                                                    parent,
-                                                                    name)
+                                                    class_name,
+                                                    parent,
+                                                    name)
                 elif class_name in self.custom_widgets:
                     widget = self.custom_widgets[class_name](parent)
                 else:
