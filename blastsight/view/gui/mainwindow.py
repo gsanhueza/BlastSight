@@ -31,6 +31,7 @@ class MainWindow(QMainWindow):
         self.setWindowTitle('BlastSight')
         self.setWindowIcon(IconCollection.get('blastsight.png'))
         self.toolbar.setWindowTitle('Toolbar')
+        self.treeWidget.enable_exportability(True)
 
         self.setFocusPolicy(Qt.StrongFocus)
         self.setAcceptDrops(True)

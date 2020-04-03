@@ -37,7 +37,7 @@ class TreeWidget(QTreeWidget):
     signal_export_lines = Signal(int)
     signal_export_tubes = Signal(int)
 
-    def __init__(self, parent=None, viewer=None, enable_export=False):
+    def __init__(self, parent=None, viewer=None):
         super().__init__(parent)
         self.setContextMenuPolicy(Qt.CustomContextMenu)
         self.setWindowFlags(Qt.WindowStaysOnTopHint)
@@ -50,7 +50,7 @@ class TreeWidget(QTreeWidget):
         self.headerItem().setText(0, 'Elements')
 
         self.viewer = viewer
-        self.enable_export = enable_export
+        self.is_export_enabled = False
 
     def connect_viewer(self, viewer) -> None:
         self.viewer = viewer
@@ -103,6 +103,9 @@ class TreeWidget(QTreeWidget):
         # If coordinates were altered and auto-fit is enabled, call fit_to_screen()
         if altered and self.viewer.get_autofit_status():
             self.viewer.fit_to_screen()
+
+    def enable_exportability(self, value: bool) -> None:
+        self.is_export_enabled = value
 
     def fill_from_viewer(self) -> None:
         self.clear()
@@ -172,7 +175,8 @@ class TreeWidget(QTreeWidget):
         menu.addAction(actions.action_setup_colors)
         menu.addSeparator()
 
-        menu.addAction(actions.action_export_mesh)
+        if self.is_export_enabled:
+            menu.addAction(actions.action_export_mesh)
         menu.addAction(actions.action_delete)
 
         return menu
@@ -190,7 +194,8 @@ class TreeWidget(QTreeWidget):
         menu.addAction(actions.action_properties)
         menu.addSeparator()
 
-        menu.addAction(actions.action_export_blocks)
+        if self.is_export_enabled:
+            menu.addAction(actions.action_export_blocks)
         menu.addAction(actions.action_delete)
 
         return menu
@@ -208,7 +213,8 @@ class TreeWidget(QTreeWidget):
         menu.addAction(actions.action_properties)
         menu.addSeparator()
 
-        menu.addAction(actions.action_export_points)
+        if self.is_export_enabled:
+            menu.addAction(actions.action_export_points)
         menu.addAction(actions.action_delete)
 
         return menu
@@ -226,7 +232,8 @@ class TreeWidget(QTreeWidget):
         menu.addAction(actions.action_setup_colors)
         menu.addSeparator()
 
-        menu.addAction(actions.action_export_lines)
+        if self.is_export_enabled:
+            menu.addAction(actions.action_export_lines)
         menu.addAction(actions.action_delete)
 
         return menu
@@ -244,7 +251,8 @@ class TreeWidget(QTreeWidget):
         menu.addAction(actions.action_setup_colors)
         menu.addSeparator()
 
-        menu.addAction(actions.action_export_tubes)
+        if self.is_export_enabled:
+            menu.addAction(actions.action_export_tubes)
         menu.addAction(actions.action_delete)
 
         return menu
