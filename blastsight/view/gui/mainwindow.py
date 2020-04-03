@@ -11,63 +11,25 @@ from qtpy.QtCore import QSettings
 from qtpy.QtCore import QThreadPool
 from qtpy.QtWidgets import QFileDialog
 from qtpy.QtWidgets import QMainWindow
-from qtpy.QtWidgets import QHBoxLayout
-from qtpy.QtWidgets import QVBoxLayout
-from qtpy.QtWidgets import QWidget
-from qtpy.QtWidgets import QMenu
-from qtpy.QtWidgets import QMenuBar
-from qtpy.QtWidgets import QStatusBar
-from qtpy.QtWidgets import QDockWidget
 
 from .helpdialog import HelpDialog
 from .aboutdialog import AboutDialog
 from .threadworker import ThreadWorker
-
-from ..integrableviewer import IntegrableViewer
 from .iconcollection import IconCollection
-from .toolbar import ToolBar
-from .treewidget import TreeWidget
+
+import pathlib
+from .tools import uic
 
 
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):
         QMainWindow.__init__(self, parent)
+        uic.loadUi(f'{pathlib.Path(__file__).parent}/UI/mainwindow.ui', self)
         self.resize(1000, 500)
-
-        # Widget definition
-        self.centralWidget = QWidget(self)
-        self.horizontalLayout = QHBoxLayout(self.centralWidget)
-        self.viewer = IntegrableViewer(self.centralWidget)
-        self.horizontalLayout.addWidget(self.viewer)
-        self.setCentralWidget(self.centralWidget)
-        self.menuBar = QMenuBar(self)
-        self.menu_File = QMenu('&File', self.menuBar)
-        self.menu_Help = QMenu('&Help', self.menuBar)
-        self.menu_View = QMenu('&View', self.menuBar)
-        self.menu_Tools = QMenu('&Tools', self.menuBar)
-        self.setMenuBar(self.menuBar)
-        self.toolbar = ToolBar(self)
-        self.addToolBar(Qt.TopToolBarArea, self.toolbar)
-        self.statusBar = QStatusBar(self)
-        self.setStatusBar(self.statusBar)
-        self.dockWidget = QDockWidget(self)
-        self.dockWidgetContents = QWidget()
-        self.verticalLayout = QVBoxLayout(self.dockWidgetContents)
-        self.treeWidget = TreeWidget(self.dockWidgetContents, enable_export=True)
-        self.verticalLayout.addWidget(self.treeWidget)
-        self.dockWidget.setWidget(self.dockWidgetContents)
-        self.addDockWidget(Qt.DockWidgetArea(1), self.dockWidget)
-
-        self.menuBar.addAction(self.menu_File.menuAction())
-        self.menuBar.addAction(self.menu_View.menuAction())
-        self.menuBar.addAction(self.menu_Tools.menuAction())
-        self.menuBar.addAction(self.menu_Help.menuAction())
 
         self.setWindowTitle('BlastSight')
         self.setWindowIcon(IconCollection.get('blastsight.png'))
         self.toolbar.setWindowTitle('Toolbar')
-        self.dockWidget.setWindowTitle('Element tree')
-        self.treeWidget.headerItem().setText(0, 'Elements')
 
         self.setFocusPolicy(Qt.StrongFocus)
         self.setAcceptDrops(True)
