@@ -5,6 +5,8 @@
 #  Distributed under the MIT License.
 #  See LICENSE for more info.
 
+import pathlib
+
 from qtpy.QtCore import Qt
 from qtpy.QtCore import QFileInfo
 from qtpy.QtCore import QSettings
@@ -17,7 +19,6 @@ from .aboutdialog import AboutDialog
 from .threadworker import ThreadWorker
 from .iconcollection import IconCollection
 
-import pathlib
 from .tools import uic
 
 

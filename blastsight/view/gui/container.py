@@ -48,7 +48,7 @@ class Container(QWidget):
         self.viewer.signal_file_modified.connect(self.handle_file_modified)
 
     def handle_file_modified(self) -> None:
-        self.treeWidget.fill_from_viewer(self.viewer)
+        self.treeWidget.fill_from_viewer()
 
     def dragEnterEvent(self, event, *args, **kwargs) -> None:
         self.viewer.dragEnterEvent(event, *args, **kwargs)

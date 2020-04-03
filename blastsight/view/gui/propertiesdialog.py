@@ -11,7 +11,7 @@ import pathlib
 from qtpy.QtCore import Qt
 from qtpy.QtWidgets import QDialog
 from qtpy.QtWidgets import QTableWidgetItem
-from qtpy import uic
+from .tools import uic
 
 
 class PropertiesDialog(QDialog):
