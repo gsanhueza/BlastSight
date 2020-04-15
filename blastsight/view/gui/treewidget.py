@@ -54,7 +54,7 @@ class TreeWidget(QTreeWidget):
 
     def connect_viewer(self, viewer) -> None:
         self.viewer = viewer
-        self.viewer.signal_file_modified.connect(self.fill_from_viewer)
+        self.viewer.signal_file_modified.connect(self.auto_refill)
         self.viewer.signal_mesh_clicked.connect(self.handle_mesh_clicked)
         self.signal_colors_triggered.connect(self.handle_color)
         self.signal_headers_triggered.connect(self.handle_properties)
@@ -107,7 +107,7 @@ class TreeWidget(QTreeWidget):
     def enable_exportability(self, value: bool) -> None:
         self.is_export_enabled = value
 
-    def fill_from_viewer(self) -> None:
+    def auto_refill(self) -> None:
         self.clear()
 
         for drawable in self.viewer.get_all_drawables():

@@ -24,7 +24,7 @@ class Container(QWidget):
         self.actions = self.toolbar.action_collection
         self.viewer = IntegrableViewer(self)
 
-        self.treeWidget = TreeWidget()
+        self.treeWidget = TreeWidget(viewer=self.viewer)
         self.treeWidget.setWindowTitle('Drawables')
 
         self.verticalLayout = QVBoxLayout(self)
@@ -45,10 +45,7 @@ class Container(QWidget):
         self.toolbar.connect_tree(self.treeWidget)
         self.toolbar.connect_viewer(self.viewer)
         self.toolbar.connect_main_widget(self)
-        self.viewer.signal_file_modified.connect(self.handle_file_modified)
-
-    def handle_file_modified(self) -> None:
-        self.treeWidget.fill_from_viewer()
+        self.viewer.signal_file_modified.connect(self.treeWidget.auto_refill)
 
     def dragEnterEvent(self, event, *args, **kwargs) -> None:
         self.viewer.dragEnterEvent(event, *args, **kwargs)
