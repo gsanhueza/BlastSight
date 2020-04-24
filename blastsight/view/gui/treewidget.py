@@ -146,7 +146,7 @@ class TreeWidget(QTreeWidget):
     def generate_multiple_menu(self) -> QMenu:
         menu = QMenu()
         actions = ActionCollection(self)
-        self._connect_standalone(actions)
+        self._connect_standalone_actions(actions)
 
         menu.addAction(actions.action_show)
         menu.addAction(actions.action_hide)
