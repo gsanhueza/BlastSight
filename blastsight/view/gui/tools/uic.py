@@ -14,8 +14,12 @@ def loadUi(uifile, baseinstance=None):
         from PyQt5 import uic
 
         return uic.loadUi(uifile, baseinstance)
-    except ImportError:
+    except (ImportError, TypeError):
         # Implement `PyQt5.uic.loadUi` for PySide(2)
+
+        # ImportError: We'll use PySide2 because PyQt5 is not installed.
+        # TypeError: We'll use PySide2 because the code uses it, but PyQt5 is also installed.
+
         import os
         import importlib
 
@@ -107,10 +111,7 @@ def loadUi(uifile, baseinstance=None):
                 # widgets, but works fine, so we have to special case it here.
                 if class_name in self.availableWidgets() + ["Line"]:
                     # Create a new widget for child widgets
-                    widget = QUiLoader.createWidget(self,
-                                                    class_name,
-                                                    parent,
-                                                    name)
+                    widget = QUiLoader.createWidget(self, class_name, parent, name)
                 elif class_name in self.custom_widgets:
                     widget = self.custom_widgets[class_name](parent)
                 else:
