@@ -16,4 +16,4 @@ class ColorDialog(QColorDialog):
         self.setOption(self.DontUseNativeDialog)
 
         self.setWindowTitle(f'{self.windowTitle()} ({element.name}.{element.extension})')
-        self.setCurrentColor(QColor.fromRgb(*[int(255 * x) for x in element.rgba.tolist()]))
+        self.setCurrentColor(QColor.fromRgbF(*element.rgba))

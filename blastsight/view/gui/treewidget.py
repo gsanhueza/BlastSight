@@ -73,7 +73,7 @@ class TreeWidget(QTreeWidget):
         dialog.show()
 
     def update_color(self, dialog, element) -> None:
-        element.rgba = [x / 255 for x in dialog.currentColor().getRgb()]
+        element.rgba = dialog.currentColor().getRgbF()
         self.viewer.update_drawable(element.id)
 
     def handle_properties(self, _id: int) -> None:
