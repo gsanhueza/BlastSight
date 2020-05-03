@@ -15,7 +15,7 @@ from .tools import uic
 
 
 class PropertiesDialog(QDialog):
-    def __init__(self, parent=None, element=None):
+    def __init__(self, element, parent=None):
         QDialog.__init__(self, parent)
         uic.loadUi(f'{pathlib.Path(__file__).parent}/UI/propertiesdialog.ui', self)
 

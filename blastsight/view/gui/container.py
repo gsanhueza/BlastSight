@@ -5,7 +5,9 @@
 #  Distributed under the MIT License.
 #  See LICENSE for more info.
 
-from qtpy.QtCore import Qt
+from datetime import datetime
+
+from qtpy.QtWidgets import QFileDialog
 from qtpy.QtWidgets import QVBoxLayout
 from qtpy.QtWidgets import QWidget
 
@@ -21,31 +23,36 @@ class Container(QWidget):
         self.setAcceptDrops(True)
 
         self.toolbar = ToolBar(self)
-        self.actions = self.toolbar.action_collection
+        self.tree = TreeWidget()
         self.viewer = IntegrableViewer(self)
 
-        self.treeWidget = TreeWidget(viewer=self.viewer)
-        self.treeWidget.setWindowTitle('Drawables')
+        self.layout = QVBoxLayout(self)
+        self.layout.addWidget(self.viewer)
+        self.layout.addWidget(self.toolbar)
 
-        self.verticalLayout = QVBoxLayout(self)
-        self.verticalLayout.addWidget(self.viewer)
-        self.verticalLayout.addWidget(self.toolbar)
-
+        # Container
         self.setWindowTitle('BlastSight (Container)')
         self.setWindowIcon(IconCollection.get('blastsight.png'))
-        self.setMinimumSize(600, 500)
+        self.resize(600, 500)
 
-        self.toolbar.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
-        self.toolbar.insertAction(self.actions.action_plan_view, self.actions.action_camera_properties)
-        self.toolbar.addAction(self.actions.action_quit)
+        # Tree
+        self.tree.setWindowTitle('Drawables')
 
-        self.connect_actions()
-
-    def connect_actions(self) -> None:
-        self.toolbar.connect_tree(self.treeWidget)
+        # Actions
+        self.toolbar.connect_tree(self.tree)
         self.toolbar.connect_viewer(self.viewer)
-        self.toolbar.connect_main_widget(self)
-        self.viewer.signal_file_modified.connect(self.treeWidget.auto_refill)
+        self.tree.connect_viewer(self.viewer)
+
+        actions = self.toolbar.action_collection
+        actions.action_take_screenshot.triggered.connect(self.handle_screenshot)
+
+    def handle_screenshot(self) -> None:
+        (path, selected_filter) = QFileDialog.getSaveFileName(
+            parent=self.viewer,
+            directory=f'BlastSight Screenshot ({datetime.now().strftime("%Y%m%d-%H%M%S")})',
+            filter='PNG image (*.png);;')
+
+        self.viewer.take_screenshot(path)
 
     def dragEnterEvent(self, event, *args, **kwargs) -> None:
         self.viewer.dragEnterEvent(event, *args, **kwargs)

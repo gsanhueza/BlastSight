@@ -7,13 +7,16 @@
 
 import pathlib
 
+from datetime import datetime
 from qtpy.QtCore import Qt
 from qtpy.QtCore import QFileInfo
 from qtpy.QtCore import QSettings
 from qtpy.QtCore import QThreadPool
 from qtpy.QtWidgets import QFileDialog
 from qtpy.QtWidgets import QMainWindow
+from qtpy.QtWidgets import QMenu
 
+from .cameradialog import CameraDialog
 from .helpdialog import HelpDialog
 from .aboutdialog import AboutDialog
 from .threadworker import ThreadWorker
@@ -31,7 +34,6 @@ class MainWindow(QMainWindow):
         self.setWindowTitle('BlastSight')
         self.setWindowIcon(IconCollection.get('blastsight.png'))
         self.toolbar.setWindowTitle('Toolbar')
-        self.treeWidget.enable_exportability(True)
 
         self.setFocusPolicy(Qt.StrongFocus)
         self.setAcceptDrops(True)
@@ -66,93 +68,99 @@ class MainWindow(QMainWindow):
         }
 
         # Extra actions
-        self.toolbar.insertAction(self.toolbar.action_collection.action_plan_view,
-                                  self.toolbar.action_collection.action_camera_properties)
-        self.toolbar.addAction(self.toolbar.action_collection.action_quit)
+        actions = self.toolbar.action_collection
+        self.toolbar.insertAction(actions.action_plan_view,
+                                  actions.action_camera_properties)
+        self.toolbar.addAction(actions.action_quit)
         self.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
 
         self.generate_menubar()
         self.connect_actions()
 
         # Set auto-fit as True when starting the app
-        if not self.toolbar.action_collection.action_autofit_to_screen.isChecked():
-            self.toolbar.action_collection.action_autofit_to_screen.trigger()
+        if not actions.action_autofit_to_screen.isChecked():
+            actions.action_autofit_to_screen.trigger()
 
         # self.title = self.windowTitle()
         # self.viewer.signal_fps_updated.connect(lambda x: self.setWindowTitle(f'{self.title} (FPS: {x:.1f})'))
 
     def generate_menubar(self) -> None:
-        self.menu_File.addAction(self.toolbar.action_collection.action_load_mesh)
-        self.menu_File.addAction(self.toolbar.action_collection.action_load_blocks)
-        self.menu_File.addAction(self.toolbar.action_collection.action_load_points)
-        self.menu_File.addAction(self.toolbar.action_collection.action_load_lines)
-        self.menu_File.addAction(self.toolbar.action_collection.action_load_tubes)
-        self.menu_File.addSeparator()
-        self.menu_File.addAction(self.toolbar.action_collection.action_load_mesh_folder)
-        self.menu_File.addAction(self.toolbar.action_collection.action_load_blocks_folder)
-        self.menu_File.addAction(self.toolbar.action_collection.action_load_points_folder)
-        self.menu_File.addAction(self.toolbar.action_collection.action_load_lines_folder)
-        self.menu_File.addAction(self.toolbar.action_collection.action_load_tubes_folder)
-        self.menu_File.addSeparator()
-        self.menu_File.addAction(self.toolbar.action_collection.action_quit)
+        actions = self.toolbar.action_collection
 
-        self.menu_View.addAction(self.toolbar.action_collection.action_camera_properties)
-        self.menu_View.addAction(self.toolbar.action_collection.action_plan_view)
-        self.menu_View.addAction(self.toolbar.action_collection.action_north_view)
-        self.menu_View.addAction(self.toolbar.action_collection.action_east_view)
-        self.menu_View.addAction(self.toolbar.action_collection.action_fit_to_screen)
-        self.menu_View.addSeparator()
-        self.menu_View.addAction(self.toolbar.action_collection.action_autofit_to_screen)
-        self.menu_View.addAction(self.toolbar.action_collection.action_turbo_rendering)
-        self.menu_View.addSeparator()
-        self.menu_View.addAction(self.toolbar.action_collection.action_perspective_projection)
-        self.menu_View.addAction(self.toolbar.action_collection.action_orthographic_projection)
-        self.menu_View.addSeparator()
-        self.menu_View.addAction(self.toolbar.action_collection.action_take_screenshot)
+        self.menu_File.addAction(actions.action_load_mesh)
+        self.menu_File.addAction(actions.action_load_blocks)
+        self.menu_File.addAction(actions.action_load_points)
+        self.menu_File.addAction(actions.action_load_lines)
+        self.menu_File.addAction(actions.action_load_tubes)
+        self.menu_File.addSeparator()
+        self.menu_File.addAction(actions.action_load_mesh_folder)
+        self.menu_File.addAction(actions.action_load_blocks_folder)
+        self.menu_File.addAction(actions.action_load_points_folder)
+        self.menu_File.addAction(actions.action_load_lines_folder)
+        self.menu_File.addAction(actions.action_load_tubes_folder)
+        self.menu_File.addSeparator()
+        self.menu_File.addAction(actions.action_quit)
 
-        self.menu_Tools.addAction(self.toolbar.action_collection.action_slice_mode)
-        self.menu_Tools.addAction(self.toolbar.action_collection.action_detection_mode)
-        self.menu_Tools.addAction(self.toolbar.action_collection.action_measurement_mode)
+        self.menu_View.addAction(actions.action_camera_properties)
+        self.menu_View.addAction(actions.action_plan_view)
+        self.menu_View.addAction(actions.action_north_view)
+        self.menu_View.addAction(actions.action_east_view)
+        self.menu_View.addAction(actions.action_fit_to_screen)
+        self.menu_View.addSeparator()
+        self.menu_View.addAction(actions.action_autofit_to_screen)
+        self.menu_View.addAction(actions.action_turbo_rendering)
+        self.menu_View.addSeparator()
+        self.menu_View.addAction(actions.action_perspective_projection)
+        self.menu_View.addAction(actions.action_orthographic_projection)
+        self.menu_View.addSeparator()
+        self.menu_View.addAction(actions.action_take_screenshot)
+
+        self.menu_Tools.addAction(actions.action_slice_mode)
+        self.menu_Tools.addAction(actions.action_detection_mode)
+        self.menu_Tools.addAction(actions.action_measurement_mode)
         self.menu_Tools.addSeparator()
-        self.menu_Tools.addAction(self.toolbar.action_collection.action_normal_mode)
+        self.menu_Tools.addAction(actions.action_normal_mode)
 
-        self.menu_Help.addAction(self.toolbar.action_collection.action_help)
-        self.menu_Help.addAction(self.toolbar.action_collection.action_about)
+        self.menu_Help.addAction(actions.action_help)
+        self.menu_Help.addAction(actions.action_about)
 
     def connect_actions(self) -> None:
-        # Auto-connections
-        self.toolbar.connect_tree(self.treeWidget)  # Handles tree.show()
-        self.toolbar.connect_viewer(self.viewer)  # Handles Plan/North/East/Fit/Camera/Turbo/Screenshot
-        self.toolbar.connect_main_widget(self)  # Handles Exit
-        self.treeWidget.connect_viewer(self.viewer)  # Handles signals from viewer
+        actions = self.toolbar.action_collection
+
+        # Toolbar/Tree
+        self.toolbar.connect_tree(self.dockWidget)
+        self.toolbar.connect_viewer(self.viewer)
+        self.treeWidget.connect_viewer(self.viewer)
+        self.treeWidget.enable_exportability(True)
 
         # File
-        self.toolbar.action_collection.action_load_mesh.triggered.connect(self.dialog_load_mesh)
-        self.toolbar.action_collection.action_load_blocks.triggered.connect(self.dialog_load_blocks)
-        self.toolbar.action_collection.action_load_points.triggered.connect(self.dialog_load_points)
-        self.toolbar.action_collection.action_load_lines.triggered.connect(self.dialog_load_lines)
-        self.toolbar.action_collection.action_load_tubes.triggered.connect(self.dialog_load_tubes)
+        actions.action_load_mesh.triggered.connect(self.dialog_load_mesh)
+        actions.action_load_blocks.triggered.connect(self.dialog_load_blocks)
+        actions.action_load_points.triggered.connect(self.dialog_load_points)
+        actions.action_load_lines.triggered.connect(self.dialog_load_lines)
+        actions.action_load_tubes.triggered.connect(self.dialog_load_tubes)
 
-        self.toolbar.action_collection.action_load_mesh_folder.triggered.connect(self.dialog_load_mesh_folder)
-        self.toolbar.action_collection.action_load_blocks_folder.triggered.connect(self.dialog_load_blocks_folder)
-        self.toolbar.action_collection.action_load_points_folder.triggered.connect(self.dialog_load_points_folder)
-        self.toolbar.action_collection.action_load_lines_folder.triggered.connect(self.dialog_load_lines_folder)
-        self.toolbar.action_collection.action_load_tubes_folder.triggered.connect(self.dialog_load_tubes_folder)
+        actions.action_load_mesh_folder.triggered.connect(self.dialog_load_mesh_folder)
+        actions.action_load_blocks_folder.triggered.connect(self.dialog_load_blocks_folder)
+        actions.action_load_points_folder.triggered.connect(self.dialog_load_points_folder)
+        actions.action_load_lines_folder.triggered.connect(self.dialog_load_lines_folder)
+        actions.action_load_tubes_folder.triggered.connect(self.dialog_load_tubes_folder)
+
+        actions.action_quit.triggered.connect(self.close)
 
         # View
-        self.toolbar.action_collection.action_show_tree.triggered.connect(self.dockWidget.show)
-        self.toolbar.action_collection.action_perspective_projection.triggered.connect(self.viewer.perspective_projection)
-        self.toolbar.action_collection.action_orthographic_projection.triggered.connect(self.viewer.orthographic_projection)
+        actions.action_camera_properties.triggered.connect(self.handle_camera)
+        actions.action_take_screenshot.triggered.connect(self.handle_screenshot)
 
         # Tools
-        self.toolbar.action_collection.action_detection_mode.triggered.connect(self.slot_detection_mode)
-        self.toolbar.action_collection.action_slice_mode.triggered.connect(self.slot_slice_mode)
-        self.toolbar.action_collection.action_measurement_mode.triggered.connect(self.slot_measurement_mode)
-        self.toolbar.action_collection.action_normal_mode.triggered.connect(self.slot_normal_mode)
+        actions.action_detection_mode.triggered.connect(self.slot_detection_mode)
+        actions.action_slice_mode.triggered.connect(self.slot_slice_mode)
+        actions.action_measurement_mode.triggered.connect(self.slot_measurement_mode)
+        actions.action_normal_mode.triggered.connect(self.slot_normal_mode)
 
         # Help
-        self.toolbar.action_collection.action_help.triggered.connect(self.slot_help)
-        self.toolbar.action_collection.action_about.triggered.connect(self.slot_about)
+        actions.action_help.triggered.connect(self.slot_help)
+        actions.action_about.triggered.connect(self.slot_about)
 
         # Viewer signals
         self.viewer.signal_fps_updated.connect(self.print_fps)
@@ -298,6 +306,29 @@ class MainWindow(QMainWindow):
         if path != '':
             # Execute method
             self._threaded_export(method, path, _id)
+
+    """
+    Slots for pop-up dialogs
+    """
+
+    def update_viewer(self, dialog) -> None:
+        self.viewer.camera_position = dialog.camera_position
+        self.viewer.rotation_angle = dialog.rotation_angle
+        self.viewer.rotation_center = dialog.rotation_center
+        self.viewer.update()
+
+    def handle_camera(self) -> None:
+        dialog = CameraDialog(self.viewer)
+        dialog.accepted.connect(lambda: self.update_viewer(dialog))
+        dialog.show()
+
+    def handle_screenshot(self) -> None:
+        (path, selected_filter) = QFileDialog.getSaveFileName(
+            parent=self.viewer,
+            directory=f'BlastSight Screenshot ({datetime.now().strftime("%Y%m%d-%H%M%S")})',
+            filter='PNG image (*.png);;')
+
+        self.viewer.take_screenshot(path)
 
     """
     Slots for loading files

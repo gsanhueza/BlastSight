@@ -30,11 +30,24 @@ class ToolBar(QToolBar):
         self.addSeparator()
         self.addAction(self.action_collection.action_take_screenshot)
 
-    def connect_tree(self, tree) -> None:
-        self.action_collection.connect_tree(tree)
+    def auto_connect(self, tree, viewer) -> None:
+        self.connect_tree(tree)
+        self.connect_viewer(viewer)
+        tree.connect_viewer(viewer)
 
-    def connect_main_widget(self, widget) -> None:
-        self.action_collection.connect_main_widget(widget)
+    def connect_tree(self, tree) -> None:
+        actions = self.action_collection
+        actions.action_show_tree.triggered.connect(tree.show)
 
     def connect_viewer(self, viewer) -> None:
-        self.action_collection.connect_viewer(viewer)
+        actions = self.action_collection
+        actions.action_plan_view.triggered.connect(viewer.plan_view)
+        actions.action_north_view.triggered.connect(viewer.north_view)
+        actions.action_east_view.triggered.connect(viewer.east_view)
+        actions.action_fit_to_screen.triggered.connect(viewer.fit_to_screen)
+
+        actions.action_autofit_to_screen.triggered.connect(viewer.set_autofit_status)
+        actions.action_turbo_rendering.triggered.connect(viewer.set_turbo_status)
+
+        actions.action_perspective_projection.triggered.connect(viewer.perspective_projection)
+        actions.action_orthographic_projection.triggered.connect(viewer.orthographic_projection)

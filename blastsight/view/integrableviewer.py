@@ -82,6 +82,8 @@ class IntegrableViewer(QOpenGLWidget):
         # Signals for viewer (self)
         self.signal_mode_updated.connect(lambda m: print(f'MODE: {m}'))
         self.signal_file_modified.connect(self.recreate)
+        self.signal_load_success.connect(self.update_turbo)
+        self.signal_load_success.connect(self.update_autofit)
 
         # Controllers
         self.current_mode = None
@@ -174,8 +176,9 @@ class IntegrableViewer(QOpenGLWidget):
         self.update_autofit()
 
     def update_turbo(self) -> None:
-        for d in self.get_all_drawables():
-            d.is_boostable = self.get_turbo_status()
+        if self.get_turbo_status():
+            for d in self.get_all_drawables():
+                d.is_boostable = self.get_turbo_status()
 
     def update_autofit(self) -> None:
         if self.get_autofit_status():
@@ -490,18 +493,18 @@ class IntegrableViewer(QOpenGLWidget):
         self.render(pixmap, QPoint(), QRegion(self.rect()))
         return pixmap
 
-    def take_screenshot(self, save_path=None) -> None:
-        if save_path:
+    def take_screenshot(self, save_path: str) -> None:
+        if bool(save_path):
             self.get_pixmap().save(save_path)
 
-    def screen_to_ndc(self, _x, _y, _z) -> np.ndarray:
+    def screen_to_ndc(self, x: float, y: float, z: float) -> np.ndarray:
         # Click at bottom-left of screen => (-1.0, -1.0, z)
         # Click at top-right of screen => (1.0, 1.0, z)
         # But we can't really know where's z, so we just return 1.0
-        x = (2.0 * _x / self.width()) - 1.0
-        y = 1.0 - (2.0 * _y / self.height())
-        z = 1.0
-        return np.array([x, y, z])
+        return np.array([
+            (2.0 * x / self.width()) - 1.0,
+            1.0 - (2.0 * y / self.height()),
+            1.0])
 
     def unproject(self, _x, _y, _z, model, view, proj) -> np.ndarray:
         # Adapted from http://antongerdelan.net/opengl/raycasting.html

@@ -49,11 +49,17 @@ class TreeWidget(QTreeWidget):
         self.setWindowTitle('Element list')
         self.headerItem().setText(0, 'Elements')
 
-        self.viewer = viewer
         self.is_export_enabled = False
 
-    def connect_viewer(self, viewer) -> None:
+        # Viewer
         self.viewer = viewer
+
+    def connect_viewer(self, viewer=None) -> None:
+        if bool(viewer):
+            self.viewer = viewer
+        if not bool(self.viewer):
+            return
+
         self.viewer.signal_file_modified.connect(self.auto_refill)
         self.viewer.signal_mesh_clicked.connect(self.handle_mesh_clicked)
         self.signal_colors_triggered.connect(self.handle_color)
@@ -64,7 +70,7 @@ class TreeWidget(QTreeWidget):
 
     def handle_color(self, _id: int) -> None:
         element = self.viewer.get_drawable(_id)
-        dialog = ColorDialog(self.viewer, element)
+        dialog = ColorDialog(element)
         dialog.accepted.connect(lambda: self.update_color(dialog, element))
         dialog.show()
 
@@ -74,7 +80,7 @@ class TreeWidget(QTreeWidget):
 
     def handle_properties(self, _id: int) -> None:
         element = self.viewer.get_drawable(_id)
-        dialog = PropertiesDialog(self.viewer, element)
+        dialog = PropertiesDialog(element)
         dialog.accepted.connect(lambda: self.update_properties(dialog, element))
         dialog.show()
 
@@ -110,8 +116,14 @@ class TreeWidget(QTreeWidget):
     def auto_refill(self) -> None:
         self.clear()
 
-        for drawable in self.viewer.get_all_drawables():
-            self.addTopLevelItem(TreeWidgetItem(self, drawable))
+        for drawable in self.available_drawables():
+            self.addTopLevelItem(self.generate_item(drawable))
+
+    def available_drawables(self) -> list:
+        return self.viewer.get_all_drawables()
+
+    def generate_item(self, drawable) -> TreeWidgetItem:
+        return TreeWidgetItem(self, drawable)
 
     def context_menu(self, event) -> None:
         # Pop-up the context menu on current position, if an item is there
