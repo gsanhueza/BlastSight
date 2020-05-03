@@ -290,3 +290,19 @@ class Model:
             'point_b': closest_B,
             'distance': distance,
         }
+
+    @staticmethod
+    def detect_mesh_intersection(ray: np.ndarray, origin: np.ndarray, meshes: list) -> list:
+        attributes_list = []
+
+        for mesh in meshes:
+            intersections = mesh.intersect_with_ray(origin, ray)
+            closest_point = utils.closest_point_to(origin, intersections)
+            if closest_point is not None:
+                attributes = {**mesh.attributes,
+                              'intersections': intersections,
+                              'closest_point': closest_point,
+                              }
+                attributes_list.append(attributes)
+
+        return attributes_list

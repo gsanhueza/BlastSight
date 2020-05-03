@@ -198,7 +198,7 @@ class IntegrableViewer(QOpenGLWidget):
     """
     Generator methods
     """
-    def generate_drawable(self, generator):
+    def generate_drawable(self, generator: callable) -> GLDrawable or None:
         try:
             drawable = generator()
             self.signal_load_success.emit(drawable.id)
@@ -210,19 +210,19 @@ class IntegrableViewer(QOpenGLWidget):
 
             return None
 
-    def generate_mesh(self, generator, *args, **kwargs) -> MeshGL:
+    def generate_mesh(self, generator: callable, *args, **kwargs) -> MeshGL:
         return self.generate_drawable(lambda: MeshGL(generator(*args, **kwargs), *args, **kwargs))
 
-    def generate_blocks(self, generator, *args, **kwargs) -> BlockGL:
+    def generate_blocks(self, generator: callable, *args, **kwargs) -> BlockGL:
         return self.generate_drawable(lambda: BlockGL(generator(*args, **kwargs), *args, **kwargs))
 
-    def generate_points(self, generator, *args, **kwargs) -> PointGL:
+    def generate_points(self, generator: callable, *args, **kwargs) -> PointGL:
         return self.generate_drawable(lambda: PointGL(generator(*args, **kwargs), *args, **kwargs))
 
-    def generate_lines(self, generator, *args, **kwargs) -> LineGL:
+    def generate_lines(self, generator: callable, *args, **kwargs) -> LineGL:
         return self.generate_drawable(lambda: LineGL(generator(*args, **kwargs), *args, **kwargs))
 
-    def generate_tubes(self, generator, *args, **kwargs) -> TubeGL:
+    def generate_tubes(self, generator: callable, *args, **kwargs) -> TubeGL:
         return self.generate_drawable(lambda: TubeGL(generator(*args, **kwargs), *args, **kwargs))
 
     """
@@ -236,7 +236,7 @@ class IntegrableViewer(QOpenGLWidget):
 
         return drawable
 
-    def register_folder(self, path: str, generator, *args, **kwargs) -> list:
+    def register_folder(self, path: str, generator: callable, *args, **kwargs) -> list:
         path_list = self.model.get_paths_from_directory(path)
 
         # We'll block viewer.register_drawable's signal_file_modified until last item has been loaded.
@@ -307,26 +307,26 @@ class IntegrableViewer(QOpenGLWidget):
     """
     Export methods
     """
-    def _export_element(self, exporter, path: str, _id: int) -> None:
+    def _export_element(self, exporter: callable, path: str, _id: int) -> None:
         try:
             exporter(path, _id)
             self.signal_export_success.emit(_id)
         except Exception:
             self.signal_export_failure.emit()
 
-    def export_mesh(self, path, _id) -> None:
+    def export_mesh(self, path: str, _id: int) -> None:
         self._export_element(self.model.export_mesh, path, _id)
 
-    def export_blocks(self, path, _id) -> None:
+    def export_blocks(self, path: str, _id: int) -> None:
         self._export_element(self.model.export_blocks, path, _id)
 
-    def export_points(self, path, _id) -> None:
+    def export_points(self, path: str, _id: int) -> None:
         self._export_element(self.model.export_points, path, _id)
 
-    def export_lines(self, path, _id) -> None:
+    def export_lines(self, path: str, _id: int) -> None:
         self._export_element(self.model.export_lines, path, _id)
 
-    def export_tubes(self, path, _id) -> None:
+    def export_tubes(self, path: str, _id: int) -> None:
         self._export_element(self.model.export_tubes, path, _id)
 
     """
@@ -609,29 +609,17 @@ class IntegrableViewer(QOpenGLWidget):
 
     def measure_from_rays(self, origin_list: list, ray_list: list) -> None:
         meshes = [m.element for m in self.drawable_collection.filter(MeshGL) if m.is_visible]
-        results = self.model.measure_from_rays(origin_list, ray_list, meshes)
 
+        results = self.model.measure_from_rays(origin_list, ray_list, meshes)
         self.signal_mesh_distances.emit(results)
 
     def detect_mesh_intersection(self, x: float, y: float, z: float) -> None:
         ray = self.ray_from_click(x, y, z)
         origin = self.origin_from_click(x, y, z)
-        elements = [m.element for m in self.drawable_collection.filter(MeshGL) if m.is_visible]
+        meshes = [m.element for m in self.drawable_collection.filter(MeshGL) if m.is_visible]
 
-        attributes_list = []
-
-        for mesh in elements:
-            intersections = mesh.intersect_with_ray(origin, ray)
-            closest_point = utils.closest_point_to(origin, intersections)
-            if closest_point is not None:
-                attributes = {**mesh.attributes,
-                              'intersections': intersections,
-                              'closest_point': closest_point,
-                              }
-                attributes_list.append(attributes)
-
-        # Emit signal with clicked mesh
-        self.signal_mesh_clicked.emit(attributes_list)
+        results = self.model.detect_mesh_intersection(ray, origin, meshes)
+        self.signal_mesh_clicked.emit(results)
 
     """
     Controller
