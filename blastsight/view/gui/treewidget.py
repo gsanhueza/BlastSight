@@ -37,7 +37,7 @@ class TreeWidget(QTreeWidget):
     signal_export_lines = Signal(int)
     signal_export_tubes = Signal(int)
 
-    def __init__(self, parent=None, viewer=None):
+    def __init__(self, viewer=None, parent=None):
         super().__init__(parent)
         self.setContextMenuPolicy(Qt.CustomContextMenu)
         self.setWindowFlags(Qt.WindowStaysOnTopHint)
@@ -50,8 +50,6 @@ class TreeWidget(QTreeWidget):
         self.headerItem().setText(0, 'Elements')
 
         self.is_export_enabled = False
-
-        # Viewer
         self.viewer = viewer
 
     def connect_viewer(self, viewer=None) -> None:
