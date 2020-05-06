@@ -8,13 +8,13 @@
 import pathlib
 
 from datetime import datetime
+from qtpy.QtCore import QDir
 from qtpy.QtCore import Qt
 from qtpy.QtCore import QFileInfo
 from qtpy.QtCore import QSettings
 from qtpy.QtCore import QThreadPool
 from qtpy.QtWidgets import QFileDialog
 from qtpy.QtWidgets import QMainWindow
-from qtpy.QtWidgets import QMenu
 
 from .cameradialog import CameraDialog
 from .helpdialog import HelpDialog
@@ -298,9 +298,11 @@ class MainWindow(QMainWindow):
         self.last_dir = path
 
     def _dialog_export_element(self, _id: int, filters: str, method: classmethod) -> None:
+        proposed_path = QDir(self.last_dir).filePath(self.viewer.get_drawable(_id).element.name)
+
         (path, selected_filter) = QFileDialog.getSaveFileName(
             parent=self,
-            directory=self.viewer.get_drawable(_id).element.name,
+            directory=proposed_path,
             filter=filters)
 
         if path != '':
