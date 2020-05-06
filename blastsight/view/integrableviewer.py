@@ -527,9 +527,8 @@ class IntegrableViewer(QOpenGLWidget):
         ray = ray_world.normalized()
         return np.array([ray.x(), ray.y(), ray.z()])
 
-    @staticmethod
-    def get_origin(model: QMatrix4x4, view: QMatrix4x4) -> np.ndarray:
-        origin = (view * model).inverted()[0].column(3).toVector3D()
+    def get_origin(self) -> np.ndarray:
+        origin = (self.camera * self.world).inverted()[0].column(3).toVector3D()
         return np.array([origin.x(), origin.y(), origin.z()])
 
     def ray_from_click(self, x: float, y: float, z: float) -> np.ndarray:
@@ -544,7 +543,7 @@ class IntegrableViewer(QOpenGLWidget):
     def origin_from_click(self, x: float, y: float, z: float) -> np.ndarray:
         # Perspective projection is straightforward
         if self.projection_mode == 'perspective':
-            return self.get_origin(self.world, self.camera)
+            return self.get_origin()
 
         # Orthographic projection needs a bit more of vector arithmetic.
         # A click in the center of the screen gives us the perfect ray,
@@ -563,21 +562,23 @@ class IntegrableViewer(QOpenGLWidget):
 
         # Hack to get the origin when the click is not exactly at center of screen.
         self.camera.translate(*-offset)
-        origin = self.get_origin(self.world, self.camera)
+        origin = self.get_origin()
         self.camera.translate(*offset)
 
         return origin
 
-    def slice_meshes(self, origin: np.ndarray, plane_normal: np.ndarray) -> None:
-        # Slicing all *visible* meshes
-        meshes = [m.element for m in self.drawable_collection.filter(MeshGL) if m.is_visible]
+    def slice_meshes(self, origin: np.ndarray, plane_normal: np.ndarray, include_hidden: bool = False) -> None:
+        # By default, slice only visible meshes
+        meshes = [m.element for m in self.drawable_collection.filter(MeshGL)
+                  if m.is_visible or include_hidden]
 
         results = self.model.slice_meshes(origin, plane_normal, meshes)
         self.signal_mesh_sliced.emit(results)
 
-    def slice_blocks(self, origin: np.ndarray, plane_normal: np.ndarray) -> None:
-        # Slicing all blocks
-        blocks = [m.element for m in self.drawable_collection.filter(BlockGL)]
+    def slice_blocks(self, origin: np.ndarray, plane_normal: np.ndarray, include_hidden: bool = True) -> None:
+        # By default, slice visible and hidden blocks
+        blocks = [m.element for m in self.drawable_collection.filter(BlockGL)
+                  if m.is_visible or include_hidden]
 
         results = self.model.slice_blocks(origin, plane_normal, blocks)
         self.signal_blocks_sliced.emit(results)
@@ -586,11 +587,7 @@ class IntegrableViewer(QOpenGLWidget):
         self.slice_meshes(origin, plane_normal)
         self.slice_blocks(origin, plane_normal)
 
-    def slice_from_rays(self, origin_list: list, ray_list: list) -> None:
-        # A plane is created from `origin` and `ray_list`.
-        # In perspective projection, the origin is the same.
-        origin = origin_list[0]
-
+    def get_normal(self, origin_list, ray_list: list) -> np.ndarray:
         if self.projection_mode == 'perspective':
             # Perspective: Same origins, different rays
             plane_normal = np.cross(*ray_list)
@@ -599,10 +596,33 @@ class IntegrableViewer(QOpenGLWidget):
             origin_diff = np.diff(origin_list, axis=0)[0]
             plane_normal = np.cross(ray_list[0], origin_diff)
 
-        plane_normal /= np.linalg.norm(plane_normal)
+        return plane_normal / np.linalg.norm(plane_normal)
+
+    @staticmethod
+    def angles_from_normal(normal: list) -> list:
+        # Returns a list of angles that allows the normal to look directly at the camera
+        # Adapted from https://stackoverflow.com/a/33790309
+        new_angles = [-np.arcsin(-normal[1]),
+                      -np.arctan2(normal[0], -normal[2]),
+                      0]
+
+        return list(map(np.rad2deg, new_angles))
+
+    def set_camera_from_normal(self, normal: list) -> None:
+        self.rotation_angle = self.angles_from_normal(normal)
+        self.update()
+
+    def slice_from_rays(self, origin_list: list, ray_list: list) -> None:
+        # A plane is created from `origin` and `ray_list`.
+        # In perspective projection, the origin is the same.
+        origin = self.get_origin()
+        normal = self.get_normal(origin_list, ray_list)
 
         # Slice drawables
-        self.slice_drawables(origin, plane_normal)
+        self.slice_drawables(origin, normal)
+
+        # Auto-rotate camera to meet cross-section
+        # self.set_camera_from_normal(normal)
 
         # Auto-exit the slice mode for now
         self.set_normal_mode()
