@@ -156,6 +156,50 @@ class IntegrableViewer(QOpenGLWidget):
         self.xCenterPos, self.yCenterPos, self.zCenterPos = center
 
     """
+    API for the camera (animated)
+    """
+    def get_camera_position(self) -> np.ndarray:
+        return self.camera_position
+
+    def get_rotation_center(self) -> np.ndarray:
+        return self.rotation_center
+
+    def get_rotation_angle(self) -> np.ndarray:
+        return self.rotation_angle
+
+    def set_camera_position(self, position) -> None:
+        def setter(value):
+            self.camera_position = value
+        self.animate(self.get_camera_position(), position, method=setter)
+
+    def set_rotation_center(self, center) -> None:
+        def setter(value):
+            self.rotation_center = value
+        self.animate(self.get_rotation_center(), center, method=setter)
+
+    def set_rotation_angle(self, angle) -> None:
+        def setter(value):
+            self.rotation_angle = value
+        self.animate(self.get_rotation_angle(), angle, method=setter)
+
+    """
+    Basic animations
+    """
+    def animate(self, start, end, method: callable, frames: int = 20) -> callable:
+        linspace = iter(np.linspace(start, end, frames))
+
+        def animation_per_frame():
+            try:
+                method(next(linspace))
+                self.update()
+            except StopIteration:
+                pass
+
+        timer = QTimer(self)
+        timer.timeout.connect(animation_per_frame)
+        timer.start(1.0 / frames)
+
+    """
     Turbo/Autofit
     """
     def get_turbo_status(self) -> bool:
@@ -380,19 +424,15 @@ class IntegrableViewer(QOpenGLWidget):
     """
     def camera_at(self, _id: int) -> None:
         self.fit_to_bounds(*self.get_drawable(_id).element.bounding_box)
-        self.update()
 
     def plan_view(self) -> None:
-        self.rotation_angle = [0.0, 0.0, 0.0]
-        self.update()
+        self.set_rotation_angle([0.0, 0.0, 0.0])
 
     def north_view(self) -> None:
-        self.rotation_angle = [270.0, 0.0, 270.0]
-        self.update()
+        self.set_rotation_angle([-90.0, 0.0, -90.0])
 
     def east_view(self) -> None:
-        self.rotation_angle = [270.0, 0.0, 0.0]
-        self.update()
+        self.set_rotation_angle([-90.0, 0.0, 0.0])
 
     def fit_to_bounds(self, min_bound: np.ndarray, max_bound: np.ndarray) -> None:
         center = (min_bound + max_bound) / 2
@@ -430,7 +470,6 @@ class IntegrableViewer(QOpenGLWidget):
             max_all = np.max((max_all, max_bound), axis=0)
 
         self.fit_to_bounds(min_all, max_all)
-        self.update()
 
     """
     Internal methods
@@ -599,35 +638,16 @@ class IntegrableViewer(QOpenGLWidget):
         return plane_normal / np.linalg.norm(plane_normal)
 
     @staticmethod
-    def angles_from_normal(normal: np.ndarray) -> np.ndarray:
+    def angles_from_vector(normal: np.ndarray) -> np.ndarray:
         # Returns a list of angles that allows the normal to look directly at the camera
         # Adapted from https://stackoverflow.com/a/33790309
         return np.rad2deg([-np.arcsin(-normal[1]),
                            -np.arctan2(normal[0], -normal[2]),
                            0])
 
-    def animate(self, start, end, updater_method: callable, frames: int = 40) -> callable:
-        linspace = iter(np.linspace(start, end, frames))
-
-        def animation():
-            try:
-                updater_method(next(linspace))
-                self.update()
-            except StopIteration:
-                pass
-
-        timer = QTimer(self)
-        timer.timeout.connect(animation)
-        timer.start(1.0 / frames)
-
-    def set_camera_from_normal(self, normal: np.ndarray) -> None:
-        start = self.rotation_angle
-        end = self.angles_from_normal(normal)
-
-        def updater(value):
-            self.rotation_angle = value
-
-        self.animate(start, end, updater)
+    def set_camera_from_vector(self, normal: np.ndarray) -> None:
+        # Auto-moves the camera using the normal as direction
+        self.set_rotation_angle(self.angles_from_vector(normal))
 
     def slice_from_rays(self, origin_list: list, ray_list: list) -> None:
         # A plane is created from `origin` and `ray_list`.
@@ -639,7 +659,7 @@ class IntegrableViewer(QOpenGLWidget):
         self.slice_drawables(origin, normal)
 
         # Auto-rotate camera to meet cross-section
-        self.set_camera_from_normal(normal)
+        self.set_camera_from_vector(normal)
 
         # Auto-exit the slice mode for now
         self.set_normal_mode()
