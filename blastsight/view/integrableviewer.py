@@ -437,22 +437,24 @@ class IntegrableViewer(QOpenGLWidget):
     def fit_to_bounds(self, min_bound: np.ndarray, max_bound: np.ndarray) -> None:
         center = (min_bound + max_bound) / 2
         self.rotation_center = center
-        self.camera_position = center
 
         # Put the camera in a position that allow us to see between the boundaries.
-        # In perspective projection, we need a clever trigonometric calculation.
         md = np.max(np.diff([min_bound, max_bound], axis=0))
         aspect = self.width() / self.height()
         fov_rad = self.fov * np.pi / 180.0
-        dist = (md / np.tan(fov_rad / 2) + md) / 2.0
-        camera_shift = dist * max(1.0, 1.0 / aspect)
+
+        # In perspective projection, we need a clever trigonometric calculation.
+        if self.projection_mode == 'perspective':
+            dist = (md / np.tan(fov_rad / 2) + md) / 2.0
+            z_shift = dist * max(1.0, 1.0 / aspect)
 
         # But in orthographic projection, it's more direct.
-        if self.projection_mode == 'orthographic':
+        else:
             dist = md / 2
-            camera_shift = dist * max(1.0, aspect)
+            z_shift = dist * max(1.0, aspect)
 
-        self.zCameraPos += 1.1 * camera_shift
+        camera_shift = center + np.array([0.0, 0.0, 1.1 * z_shift])
+        self.set_camera_position(camera_shift)
         self.update()
 
     def fit_to_screen(self) -> None:
