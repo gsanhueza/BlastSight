@@ -108,6 +108,7 @@ class MainWindow(QMainWindow):
         self.menu_View.addAction(actions.action_fit_to_screen)
         self.menu_View.addSeparator()
         self.menu_View.addAction(actions.action_autofit_to_screen)
+        self.menu_View.addAction(actions.action_animated_viewer)
         self.menu_View.addAction(actions.action_turbo_rendering)
         self.menu_View.addSeparator()
         self.menu_View.addAction(actions.action_perspective_projection)

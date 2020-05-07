@@ -47,6 +47,7 @@ class ToolBar(QToolBar):
         actions.action_fit_to_screen.triggered.connect(viewer.fit_to_screen)
 
         actions.action_autofit_to_screen.triggered.connect(viewer.set_autofit_status)
+        actions.action_animated_viewer.triggered.connect(viewer.set_animated_status)
         actions.action_turbo_rendering.triggered.connect(viewer.set_turbo_status)
 
         actions.action_perspective_projection.triggered.connect(viewer.perspective_projection)

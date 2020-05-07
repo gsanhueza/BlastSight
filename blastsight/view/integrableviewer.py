@@ -111,6 +111,7 @@ class IntegrableViewer(QOpenGLWidget):
         # Extra information
         self._turbo_rendering = False
         self._autofit_to_screen = False
+        self._animated = False
 
         self.fov = 45.0
         self.smoothness = 2.0  # Bigger => smoother (but slower) rotations
@@ -190,8 +191,7 @@ class IntegrableViewer(QOpenGLWidget):
     Basic animations
     """
     def animate(self, start, end, method: callable, frames: int = 20) -> callable:
-        # Minimum of frames is 2 ([start, end])
-        linspace = iter(np.linspace(start, end, frames))
+        linspace = iter(np.linspace(start, end, frames) if self.get_animated_status() else [end])
 
         def animation_per_frame():
             try:
@@ -205,13 +205,16 @@ class IntegrableViewer(QOpenGLWidget):
         timer.start(1.0 / frames)
 
     """
-    Turbo/Autofit
+    Turbo/Autofit/Animation
     """
     def get_turbo_status(self) -> bool:
         return self._turbo_rendering
 
     def get_autofit_status(self) -> bool:
         return self._autofit_to_screen
+
+    def get_animated_status(self) -> bool:
+        return self._animated
 
     def set_turbo_status(self, status: bool) -> None:
         if status:
@@ -223,6 +226,9 @@ class IntegrableViewer(QOpenGLWidget):
     def set_autofit_status(self, status: bool) -> None:
         self._autofit_to_screen = status
         self.update_autofit()
+
+    def set_animated_status(self, status: bool) -> None:
+        self._animated = status
 
     def update_turbo(self) -> None:
         if self.get_turbo_status():

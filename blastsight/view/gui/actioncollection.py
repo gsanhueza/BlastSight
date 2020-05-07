@@ -111,24 +111,34 @@ class ActionCollection:
         self.action_about.setIcon(IconCollection.get('about.svg'))
         self.action_about.setShortcut('?')
 
+        self.action_autofit_to_screen = QAction('&Auto-fit to screen', parent)
+        self.action_autofit_to_screen.setIcon(IconCollection.get('globe.svg'))
+        self.action_autofit_to_screen.setShortcut('Ctrl+Shift+F')
+        self.action_autofit_to_screen.setCheckable(True)
+
         self.action_turbo_rendering = QAction('Tur&bo rendering', parent)
         self.action_turbo_rendering.setIcon(IconCollection.get('sports_mode.svg'))
         self.action_turbo_rendering.setShortcut('Ctrl+Shift+R')
         self.action_turbo_rendering.setCheckable(True)
 
+        self.action_animated_viewer = QAction('A&nimated movements', parent)
+        self.action_animated_viewer.setIcon(IconCollection.get('film_reel.svg'))
+        self.action_animated_viewer.setShortcut('Ctrl+Shift+N')
+        self.action_animated_viewer.setCheckable(True)
+
         self.action_normal_mode = QAction('Return to &normal', parent)
         self.action_normal_mode.setIcon(IconCollection.get('rotate_camera.svg'))
         self.action_normal_mode.setShortcut('Ctrl+N')
 
-        self.action_slice_mode = QAction('&Slice meshes/blocks', parent)
+        self.action_slice_mode = QAction('Mesh/block &slicing', parent)
         self.action_slice_mode.setIcon(IconCollection.get('flash_on.svg'))
         self.action_slice_mode.setShortcut('Ctrl+S')
 
-        self.action_measurement_mode = QAction('&Measure mesh distances', parent)
+        self.action_measurement_mode = QAction('Mesh &measurements', parent)
         self.action_measurement_mode.setIcon(IconCollection.get('ruler.svg'))
         self.action_measurement_mode.setShortcut('Ctrl+M')
 
-        self.action_detection_mode = QAction('&Detect meshes', parent)
+        self.action_detection_mode = QAction('Mesh &detection', parent)
         self.action_detection_mode.setIcon(IconCollection.get('cursor.svg'))
         self.action_detection_mode.setShortcut('Ctrl+D')
 
@@ -151,11 +161,6 @@ class ActionCollection:
         self.action_fit_to_screen = QAction('&Fit to screen', parent)
         self.action_fit_to_screen.setIcon(IconCollection.get('collect.svg'))
         self.action_fit_to_screen.setShortcut('Ctrl+F')
-
-        self.action_autofit_to_screen = QAction('&Auto-fit to screen', parent)
-        self.action_autofit_to_screen.setIcon(IconCollection.get('globe.svg'))
-        self.action_autofit_to_screen.setShortcut('Ctrl+Shift+F')
-        self.action_autofit_to_screen.setCheckable(True)
 
         self.action_perspective_projection = QAction('P&erspective projection', parent)
         self.action_perspective_projection.setIcon(IconCollection.get('ruler.svg'))
