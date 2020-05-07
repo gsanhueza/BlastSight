@@ -10,9 +10,10 @@ import traceback
 
 from OpenGL.GL import *
 
-from qtpy.QtCore import QPoint
-from qtpy.QtCore import Signal
 from qtpy.QtCore import QFileInfo
+from qtpy.QtCore import QPoint
+from qtpy.QtCore import QTimer
+from qtpy.QtCore import Signal
 from qtpy.QtGui import QMatrix4x4
 from qtpy.QtGui import QPixmap
 from qtpy.QtGui import QRegion
@@ -39,7 +40,6 @@ from ..controller.normalmode import NormalMode
 from ..controller.slicemode import SliceMode
 from ..controller.measurementmode import MeasurementMode
 
-from ..model import utils
 from ..model.model import Model
 
 
@@ -599,30 +599,47 @@ class IntegrableViewer(QOpenGLWidget):
         return plane_normal / np.linalg.norm(plane_normal)
 
     @staticmethod
-    def angles_from_normal(normal: list) -> list:
+    def angles_from_normal(normal: np.ndarray) -> np.ndarray:
         # Returns a list of angles that allows the normal to look directly at the camera
         # Adapted from https://stackoverflow.com/a/33790309
-        new_angles = [-np.arcsin(-normal[1]),
-                      -np.arctan2(normal[0], -normal[2]),
-                      0]
+        return np.rad2deg([-np.arcsin(-normal[1]),
+                           -np.arctan2(normal[0], -normal[2]),
+                           0])
 
-        return list(map(np.rad2deg, new_angles))
+    def animate(self, start, end, updater_method: callable, frames: int = 40) -> callable:
+        linspace = iter(np.linspace(start, end, frames))
 
-    def set_camera_from_normal(self, normal: list) -> None:
-        self.rotation_angle = self.angles_from_normal(normal)
-        self.update()
+        def animation():
+            try:
+                updater_method(next(linspace))
+                self.update()
+            except StopIteration:
+                pass
+
+        timer = QTimer(self)
+        timer.timeout.connect(animation)
+        timer.start(1.0 / frames)
+
+    def set_camera_from_normal(self, normal: np.ndarray) -> None:
+        start = self.rotation_angle
+        end = self.angles_from_normal(normal)
+
+        def updater(value):
+            self.rotation_angle = value
+
+        self.animate(start, end, updater)
 
     def slice_from_rays(self, origin_list: list, ray_list: list) -> None:
         # A plane is created from `origin` and `ray_list`.
         # In perspective projection, the origin is the same.
-        origin = self.get_origin()
+        origin = origin_list[0]
         normal = self.get_normal(origin_list, ray_list)
 
         # Slice drawables
         self.slice_drawables(origin, normal)
 
         # Auto-rotate camera to meet cross-section
-        # self.set_camera_from_normal(normal)
+        self.set_camera_from_normal(normal)
 
         # Auto-exit the slice mode for now
         self.set_normal_mode()
