@@ -81,6 +81,10 @@ class MainWindow(QMainWindow):
         if not actions.action_autofit_to_screen.isChecked():
             actions.action_autofit_to_screen.trigger()
 
+        # Set animated as True when starting the app
+        if not actions.action_animated_viewer.isChecked():
+            actions.action_animated_viewer.trigger()
+
         # self.title = self.windowTitle()
         # self.viewer.signal_fps_updated.connect(lambda x: self.setWindowTitle(f'{self.title} (FPS: {x:.1f})'))
 

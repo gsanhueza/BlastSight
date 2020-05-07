@@ -16,7 +16,9 @@ from qtpy.QtCore import QTimer
 from qtpy.QtCore import Signal
 from qtpy.QtGui import QMatrix4x4
 from qtpy.QtGui import QPixmap
+from qtpy.QtGui import QQuaternion
 from qtpy.QtGui import QRegion
+from qtpy.QtGui import QVector3D
 from qtpy.QtGui import QVector4D
 from qtpy.QtWidgets import QOpenGLWidget
 
@@ -182,30 +184,14 @@ class IntegrableViewer(QOpenGLWidget):
         # Fix any difference > 180° so the camera doesn't over-rotate
         origin = self.get_rotation_angle()
         origin[origin - target > 180] -= 360
+        origin[origin - target < -180] += 360
 
         def setter(value):
             self.rotation_angle = value
         self.animate(origin, target, method=setter)
 
     """
-    Basic animations
-    """
-    def animate(self, start, end, method: callable, frames: int = 20) -> callable:
-        linspace = iter(np.linspace(start, end, frames) if self.get_animated_status() else [end])
-
-        def animation_per_frame():
-            try:
-                method(next(linspace))
-                self.update()
-            except StopIteration:
-                pass
-
-        timer = QTimer(self)
-        timer.timeout.connect(animation_per_frame)
-        timer.start(1.0 / frames)
-
-    """
-    Turbo/Autofit/Animation
+    Turbo/Auto-fit/Animation
     """
     def get_turbo_status(self) -> bool:
         return self._turbo_rendering
@@ -238,6 +224,20 @@ class IntegrableViewer(QOpenGLWidget):
     def update_autofit(self) -> None:
         if self.get_autofit_status():
             self.fit_to_screen()
+
+    def animate(self, start, end, method: callable, frames: int = 20) -> callable:
+        linspace = iter(np.linspace(start, end, frames) if self.get_animated_status() else [end])
+
+        def animation_per_frame():
+            try:
+                method(next(linspace))
+                self.update()
+            except StopIteration:
+                pass
+
+        timer = QTimer(self)
+        timer.timeout.connect(animation_per_frame)
+        timer.start(1.0 / frames)
 
     """
     Projections
@@ -651,28 +651,28 @@ class IntegrableViewer(QOpenGLWidget):
         return plane_normal / np.linalg.norm(plane_normal)
 
     @staticmethod
-    def angles_from_vector(normal: np.ndarray) -> np.ndarray:
+    def angles_from_vector(normal: np.ndarray, up: np.ndarray) -> np.ndarray:
         # Returns a list of angles that allows the normal to look directly at the camera
-        # Adapted from https://stackoverflow.com/a/33790309
-        return np.rad2deg([-np.arcsin(-normal[1]),
-                           -np.arctan2(normal[0], -normal[2]),
-                           0])
+        return np.array(QQuaternion.fromDirection(QVector3D(*normal),
+                                                  QVector3D(*up)).getEulerAngles())
 
-    def set_camera_from_vector(self, normal: np.ndarray) -> None:
+    def set_camera_from_vectors(self, normal: np.ndarray, up: np.ndarray) -> None:
         # Auto-moves the camera using the normal as direction
-        self.set_rotation_angle(self.angles_from_vector(normal))
+        self.set_rotation_angle(self.angles_from_vector(normal, up))
 
     def slice_from_rays(self, origin_list: list, ray_list: list) -> None:
         # A plane is created from `origin` and `ray_list`.
         # In perspective projection, the origin is the same.
         origin = origin_list[0]
         normal = self.get_normal(origin_list, ray_list)
+        up = np.cross(ray_list[0], normal)
+        up /= np.linalg.norm(up)
 
         # Slice drawables
         self.slice_drawables(origin, normal)
 
         # Auto-rotate camera to meet cross-section
-        self.set_camera_from_vector(normal)
+        self.set_camera_from_vectors(normal, up)
 
         # Auto-exit the slice mode for now
         self.set_normal_mode()
