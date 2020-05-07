@@ -167,25 +167,30 @@ class IntegrableViewer(QOpenGLWidget):
     def get_rotation_angle(self) -> np.ndarray:
         return self.rotation_angle
 
-    def set_camera_position(self, position) -> None:
+    def set_camera_position(self, target) -> None:
         def setter(value):
             self.camera_position = value
-        self.animate(self.get_camera_position(), position, method=setter)
+        self.animate(self.get_camera_position(), target, method=setter)
 
-    def set_rotation_center(self, center) -> None:
+    def set_rotation_center(self, target) -> None:
         def setter(value):
             self.rotation_center = value
-        self.animate(self.get_rotation_center(), center, method=setter)
+        self.animate(self.get_rotation_center(), target, method=setter)
 
-    def set_rotation_angle(self, angle) -> None:
+    def set_rotation_angle(self, target) -> None:
+        # Fix any difference > 180° so the camera doesn't over-rotate
+        origin = self.get_rotation_angle()
+        origin[origin - target > 180] -= 360
+
         def setter(value):
             self.rotation_angle = value
-        self.animate(self.get_rotation_angle(), angle, method=setter)
+        self.animate(origin, target, method=setter)
 
     """
     Basic animations
     """
     def animate(self, start, end, method: callable, frames: int = 20) -> callable:
+        # Minimum of frames is 2 ([start, end])
         linspace = iter(np.linspace(start, end, frames))
 
         def animation_per_frame():
