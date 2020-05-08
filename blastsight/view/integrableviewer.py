@@ -176,14 +176,18 @@ class IntegrableViewer(QOpenGLWidget):
         return self.rotation_angle
 
     def set_camera_position(self, target) -> None:
+        origin = self.get_camera_position()
+
         def setter(value):
             self.camera_position = value
-        self.animate(self.get_camera_position(), target, method=setter)
+        self.animate(origin, target, method=setter) if self.get_animated_status() else setter(target)
 
     def set_rotation_center(self, target) -> None:
+        origin = self.get_rotation_center()
+
         def setter(value):
             self.rotation_center = value
-        self.animate(self.get_rotation_center(), target, method=setter)
+        self.animate(origin, target, method=setter) if self.get_animated_status() else setter(target)
 
     def set_rotation_angle(self, target) -> None:
         # Fix any difference > 180° so the camera doesn't over-rotate
@@ -193,7 +197,7 @@ class IntegrableViewer(QOpenGLWidget):
 
         def setter(value):
             self.rotation_angle = value
-        self.animate(origin, target, method=setter)
+        self.animate(origin, target, method=setter) if self.get_animated_status() else setter(target)
 
     """
     Turbo/Auto-fit/Animation
@@ -221,16 +225,15 @@ class IntegrableViewer(QOpenGLWidget):
         self._animated = status
 
     def update_turbo(self) -> None:
-        if self.get_turbo_status():
-            for d in self.get_all_drawables():
-                d.is_boostable = self.get_turbo_status()
+        for d in self.get_all_drawables():
+            d.is_boostable = self.get_turbo_status()
 
     def update_autofit(self) -> None:
         if self.get_autofit_status():
             self.fit_to_screen()
 
     def animate(self, start, end, method: callable, frames: int = 20) -> callable:
-        linspace = iter(np.linspace(start, end, frames) if self.get_animated_status() else [end])
+        linspace = iter(np.linspace(start, end, frames))
 
         def animation_per_frame():
             try:
