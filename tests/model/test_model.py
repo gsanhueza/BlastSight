@@ -30,12 +30,12 @@ class TestModel:
 
         assert mesh_1.id != mesh_2.id
 
-    def test_add_mesh_by_path(self):
+    def test_load_mesh(self):
         model = Model()
         path = f'{TEST_FILES_FOLDER_PATH}/caseron.dxf'
 
-        mesh_1 = model.mesh_by_path(path=path)
-        mesh_2 = model.mesh_by_path(path=path)
+        mesh_1 = model.load_mesh(path=path)
+        mesh_2 = model.load_mesh(path=path)
 
         assert mesh_1.id != mesh_2.id
         assert mesh_1.name == 'caseron'
@@ -44,7 +44,7 @@ class TestModel:
     def test_wrong_mesh(self):
         model = Model()
         with pytest.raises(Exception):
-            model.mesh_by_path(f'{TEST_FILES_FOLDER_PATH}/nonexistent.off')
+            model.load_mesh(f'{TEST_FILES_FOLDER_PATH}/nonexistent.off')
 
     def test_get_mesh(self):
         model = Model()
@@ -85,19 +85,19 @@ class TestModel:
 
         assert bm_1.id != bm_2.id
 
-    def test_add_blocks_by_path(self):
+    def test_load_blocks(self):
         model = Model()
         path = f'{TEST_FILES_FOLDER_PATH}/mini.csv'
 
-        bm_1 = model.blocks_by_path(path=path)
-        bm_2 = model.blocks_by_path(path=path)
+        bm_1 = model.load_blocks(path=path)
+        bm_2 = model.load_blocks(path=path)
 
         assert bm_1.id != bm_2.id
 
     def test_wrong_blocks(self):
         model = Model()
         with pytest.raises(Exception):
-            model.blocks_by_path(f'{TEST_FILES_FOLDER_PATH}/nonexistent.csv')
+            model.load_blocks(f'{TEST_FILES_FOLDER_PATH}/nonexistent.csv')
 
     def test_get_blocks(self):
         model = Model()
@@ -138,12 +138,12 @@ class TestModel:
 
         assert lines_1.id != lines_2.id
 
-    def test_add_lines_by_path(self):
+    def test_load_lines(self):
         model = Model()
         path = f'{TEST_FILES_FOLDER_PATH}/lines.csv'
 
-        bm_1 = model.lines_by_path(path=path)
-        bm_2 = model.lines_by_path(path=path)
+        bm_1 = model.load_lines(path=path)
+        bm_2 = model.load_lines(path=path)
 
         assert bm_1.id != bm_2.id
 
@@ -229,19 +229,19 @@ class TestModel:
 
         assert bm_1.id != bm_2.id
 
-    def test_add_points_by_path(self):
+    def test_load_points(self):
         model = Model()
         path = f'{TEST_FILES_FOLDER_PATH}/mini.csv'
 
-        bm_1 = model.points_by_path(path=path)
-        bm_2 = model.points_by_path(path=path)
+        bm_1 = model.load_points(path=path)
+        bm_2 = model.load_points(path=path)
 
         assert bm_1.id != bm_2.id
 
     def test_wrong_points(self):
         model = Model()
         with pytest.raises(Exception):
-            model.points_by_path(f'{TEST_FILES_FOLDER_PATH}/nonexistent.csv')
+            model.load_points(f'{TEST_FILES_FOLDER_PATH}/nonexistent.csv')
 
     def test_get_points(self):
         model = Model()
@@ -271,17 +271,17 @@ class TestModel:
     # Multiple
     def test_add_multiple(self):
         model = Model()
-        elem_1 = model.mesh_by_path(path=f'{TEST_FILES_FOLDER_PATH}/caseron.off')
-        elem_2 = model.mesh_by_path(path=f'{TEST_FILES_FOLDER_PATH}/caseron.dxf')
-        elem_3 = model.blocks_by_path(path=f'{TEST_FILES_FOLDER_PATH}/mini.csv')
+        elem_1 = model.load_mesh(path=f'{TEST_FILES_FOLDER_PATH}/caseron.off')
+        elem_2 = model.load_mesh(path=f'{TEST_FILES_FOLDER_PATH}/caseron.dxf')
+        elem_3 = model.load_blocks(path=f'{TEST_FILES_FOLDER_PATH}/mini.csv')
 
         assert elem_1.id != elem_2.id != elem_3.id
 
     def test_get_multiple(self):
         model = Model()
-        elem_1 = model.mesh_by_path(path=f'{TEST_FILES_FOLDER_PATH}/caseron.off')
-        elem_2 = model.mesh_by_path(path=f'{TEST_FILES_FOLDER_PATH}/caseron.dxf')
-        elem_3 = model.blocks_by_path(path=f'{TEST_FILES_FOLDER_PATH}/mini.csv')
+        elem_1 = model.load_mesh(path=f'{TEST_FILES_FOLDER_PATH}/caseron.off')
+        elem_2 = model.load_mesh(path=f'{TEST_FILES_FOLDER_PATH}/caseron.dxf')
+        elem_3 = model.load_blocks(path=f'{TEST_FILES_FOLDER_PATH}/mini.csv')
 
         assert type(elem_1) == type(elem_2)
         assert type(elem_2) != type(elem_3)
@@ -297,22 +297,22 @@ class TestModel:
         model = Model()
 
         assert model.last_id == -1
-        model.mesh_by_path(path=f'{TEST_FILES_FOLDER_PATH}/caseron.off')
+        model.load_mesh(path=f'{TEST_FILES_FOLDER_PATH}/caseron.off')
         assert model.last_id == 0
-        model.mesh_by_path(path=f'{TEST_FILES_FOLDER_PATH}/caseron.dxf')
+        model.load_mesh(path=f'{TEST_FILES_FOLDER_PATH}/caseron.dxf')
         assert model.last_id == 1
-        model.blocks_by_path(path=f'{TEST_FILES_FOLDER_PATH}/mini.csv')
+        model.load_blocks(path=f'{TEST_FILES_FOLDER_PATH}/mini.csv')
         assert model.last_id == 2
 
         assert model.element_collection.size() == 3
 
     def test_export(self):
         model = Model()
-        mesh = model.mesh_by_path(path=f'{TEST_FILES_FOLDER_PATH}/caseron.off')
-        blocks = model.blocks_by_path(path=f'{TEST_FILES_FOLDER_PATH}/mini.csv')
-        points = model.points_by_path(path=f'{TEST_FILES_FOLDER_PATH}/mini.csv')
-        lines = model.lines_by_path(path=f'{TEST_FILES_FOLDER_PATH}/lines.csv')
-        tubes = model.tubes_by_path(path=f'{TEST_FILES_FOLDER_PATH}/lines.csv')
+        mesh = model.load_mesh(path=f'{TEST_FILES_FOLDER_PATH}/caseron.off')
+        blocks = model.load_blocks(path=f'{TEST_FILES_FOLDER_PATH}/mini.csv')
+        points = model.load_points(path=f'{TEST_FILES_FOLDER_PATH}/mini.csv')
+        lines = model.load_lines(path=f'{TEST_FILES_FOLDER_PATH}/lines.csv')
+        tubes = model.load_tubes(path=f'{TEST_FILES_FOLDER_PATH}/lines.csv')
 
         model.export_mesh(f'{TEST_FILES_FOLDER_PATH}/caseron_model_export.h5m', mesh.id)
         model.export_blocks(f'{TEST_FILES_FOLDER_PATH}/mini_model_export_blocks.h5p', blocks.id)

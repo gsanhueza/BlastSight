@@ -111,7 +111,7 @@ class TestIntegrableViewer:
     def test_add_mesh(self):
         viewer = IntegrableViewer()
         viewer.mesh(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], indices=[[0, 1, 2]])
-        viewer.mesh_by_path(f'{TEST_FILES_FOLDER_PATH}/caseron.dxf')
+        viewer.load_mesh(f'{TEST_FILES_FOLDER_PATH}/caseron.dxf')
 
         assert viewer.drawable_collection.size() == 2
         assert isinstance(viewer.get_drawable(0), MeshGL)
@@ -124,14 +124,14 @@ class TestIntegrableViewer:
         assert added is None
         assert viewer.drawable_collection.size() == 0
 
-        added = viewer.mesh_by_path('')
+        added = viewer.load_mesh('')
         assert added is None
         assert viewer.drawable_collection.size() == 0
 
     def test_add_block_model(self):
         viewer = IntegrableViewer()
         viewer.blocks(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], values=[0, 1, 2])
-        viewer.blocks_by_path(f'{TEST_FILES_FOLDER_PATH}/mini.csv')
+        viewer.load_blocks(f'{TEST_FILES_FOLDER_PATH}/mini.csv')
 
         assert viewer.drawable_collection.size() == 2
         assert isinstance(viewer.get_drawable(0), BlockGL)
@@ -144,14 +144,14 @@ class TestIntegrableViewer:
         assert added is None
         assert viewer.drawable_collection.size() == 0
 
-        added = viewer.blocks_by_path('')
+        added = viewer.load_blocks('')
         assert added is None
         assert viewer.drawable_collection.size() == 0
 
     def test_add_points(self):
         viewer = IntegrableViewer()
         viewer.points(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], values=[0, 1, 2])
-        viewer.points_by_path(f'{TEST_FILES_FOLDER_PATH}/mini.csv')
+        viewer.load_points(f'{TEST_FILES_FOLDER_PATH}/mini.csv')
 
         assert viewer.drawable_collection.size() == 2
         assert isinstance(viewer.get_drawable(0), PointGL)
@@ -164,7 +164,7 @@ class TestIntegrableViewer:
         assert added is None
         assert viewer.drawable_collection.size() == 0
 
-        added = viewer.points_by_path('')
+        added = viewer.load_points('')
         assert added is None
         assert viewer.drawable_collection.size() == 0
 
@@ -269,8 +269,8 @@ class TestIntegrableViewer:
     def test_export(self):
         viewer = IntegrableViewer()
 
-        mesh = viewer.mesh_by_path(path=f'{TEST_FILES_FOLDER_PATH}/caseron.off')
-        blocks = viewer.blocks_by_path(path=f'{TEST_FILES_FOLDER_PATH}/mini.csv')
+        mesh = viewer.load_mesh(path=f'{TEST_FILES_FOLDER_PATH}/caseron.off')
+        blocks = viewer.load_blocks(path=f'{TEST_FILES_FOLDER_PATH}/mini.csv')
 
         viewer.export_mesh(f'{TEST_FILES_FOLDER_PATH}/caseron_model_export.h5m', mesh.id)
         viewer.export_blocks(f'{TEST_FILES_FOLDER_PATH}/mini_model_export_blocks.h5p', blocks.id)
@@ -294,9 +294,9 @@ class TestIntegrableViewer:
     def test_clear(self):
         viewer = IntegrableViewer()
 
-        viewer.mesh_by_path(path=f'{TEST_FILES_FOLDER_PATH}/caseron.off')
-        viewer.blocks_by_path(path=f'{TEST_FILES_FOLDER_PATH}/mini.csv')
-        viewer.points_by_path(path=f'{TEST_FILES_FOLDER_PATH}/mini.csv')
+        viewer.load_mesh(path=f'{TEST_FILES_FOLDER_PATH}/caseron.off')
+        viewer.load_blocks(path=f'{TEST_FILES_FOLDER_PATH}/mini.csv')
+        viewer.load_points(path=f'{TEST_FILES_FOLDER_PATH}/mini.csv')
 
         assert viewer.drawable_collection.size() == 3
         viewer.clear()
@@ -389,20 +389,22 @@ class TestIntegrableViewer:
 
     def test_load_folder(self):
         viewer = IntegrableViewer()
-        meshes = viewer.meshes_by_folder_path(f'{TEST_FILES_FOLDER_PATH}')
+        successes = []
+        failures = []
 
-        failure = viewer.blocks_by_folder_path(f'{TEST_FILES_FOLDER_PATH}/../blastsight')
-        assert len(failure) == 0
-        failure = viewer.points_by_folder_path(f'{TEST_FILES_FOLDER_PATH}/../blastsight')
-        assert len(failure) == 0
-        failure = viewer.lines_by_folder_path(f'{TEST_FILES_FOLDER_PATH}/../blastsight')
-        assert len(failure) == 0
-        failure = viewer.tubes_by_folder_path(f'{TEST_FILES_FOLDER_PATH}/../blastsight')
-        assert len(failure) == 0
+        successes += viewer.load_mesh_folder(f'{TEST_FILES_FOLDER_PATH}')
+        assert len(successes) > 0
+        failures += viewer.load_blocks_folder(f'{TEST_FILES_FOLDER_PATH}/../blastsight')
+        assert len(failures) == 0
+        failures += viewer.load_points_folder(f'{TEST_FILES_FOLDER_PATH}/../blastsight')
+        assert len(failures) == 0
+        failures += viewer.load_lines_folder(f'{TEST_FILES_FOLDER_PATH}/../blastsight')
+        assert len(failures) == 0
+        failures += viewer.load_tubes_folder(f'{TEST_FILES_FOLDER_PATH}/../blastsight')
+        assert len(failures) == 0
 
-        assert viewer.drawable_collection.size() == len(meshes) > 0
-
-        assert viewer.drawable_collection.size() == len(failure) + len(meshes)
+        assert viewer.drawable_collection.size() == len(successes) > 0
+        assert viewer.drawable_collection.size() == len(failures) + len(successes)
 
     def test_screen_to_ndc(self):
         viewer = IntegrableViewer()

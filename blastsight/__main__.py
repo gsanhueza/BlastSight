@@ -19,7 +19,7 @@ def application(paths: list) -> None:
     w.show()
 
     for path in paths:
-        w.viewer.mesh_by_path(path)
+        w.viewer.load_mesh(path)
 
     sys.exit(qt_app.exec_())
 
@@ -34,7 +34,7 @@ def container(paths: list) -> None:
     w.show()
 
     for path in paths:
-        w.viewer.mesh_by_path(path)
+        w.viewer.load_mesh(path)
 
     sys.exit(qt_app.exec_())
 
@@ -44,7 +44,7 @@ def viewer(paths: list) -> None:
     v = Viewer()
 
     for path in paths:
-        v.mesh_by_path(path)
+        v.load_mesh(path)
 
     v.show()
 

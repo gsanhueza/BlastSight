@@ -337,19 +337,19 @@ class IntegrableViewer(QOpenGLWidget):
         return self.register_drawable(self.factory.load_tubes(path, *args, **kwargs))
 
     def load_mesh_folder(self, path: str, *args, **kwargs) -> list:
-        return self.register_folder(path, self.mesh, *args, **kwargs)
+        return self.register_folder(path, self.load_mesh, *args, **kwargs)
 
     def load_blocks_folder(self, path: str, *args, **kwargs) -> list:
-        return self.register_folder(path, self.blocks, *args, **kwargs)
+        return self.register_folder(path, self.load_blocks, *args, **kwargs)
 
     def load_points_folder(self, path: str, *args, **kwargs) -> list:
-        return self.register_folder(path, self.points, *args, **kwargs)
+        return self.register_folder(path, self.load_points, *args, **kwargs)
 
     def load_lines_folder(self, path: str, *args, **kwargs) -> list:
-        return self.register_folder(path, self.lines, *args, **kwargs)
+        return self.register_folder(path, self.load_lines, *args, **kwargs)
 
     def load_tubes_folder(self, path: str, *args, **kwargs) -> list:
-        return self.register_folder(path, self.tubes, *args, **kwargs)
+        return self.register_folder(path, self.load_tubes, *args, **kwargs)
 
     """
     Load methods by path (DEPRECATED)

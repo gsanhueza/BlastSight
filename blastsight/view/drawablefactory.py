@@ -61,16 +61,16 @@ class DrawableFactory:
     Drawables by path
     """
     def load_mesh(self, path: str, *args, **kwargs) -> MeshGL:
-        return self.generate_drawable(MeshGL, self.engine.mesh_by_path, path, *args, **kwargs)
+        return self.generate_drawable(MeshGL, self.engine.load_mesh, path, *args, **kwargs)
 
     def load_blocks(self, path: str, *args, **kwargs) -> BlockGL:
-        return self.generate_drawable(BlockGL, self.engine.blocks_by_path, path, *args, **kwargs)
+        return self.generate_drawable(BlockGL, self.engine.load_blocks, path, *args, **kwargs)
 
     def load_points(self, path: str, *args, **kwargs) -> PointGL:
-        return self.generate_drawable(PointGL, self.engine.points_by_path, path, *args, **kwargs)
+        return self.generate_drawable(PointGL, self.engine.load_points, path, *args, **kwargs)
 
     def load_lines(self, path: str, *args, **kwargs) -> LineGL:
-        return self.generate_drawable(LineGL, self.engine.lines_by_path, path, *args, **kwargs)
+        return self.generate_drawable(LineGL, self.engine.load_lines, path, *args, **kwargs)
 
     def load_tubes(self, path: str, *args, **kwargs) -> TubeGL:
-        return self.generate_drawable(TubeGL, self.engine.tubes_by_path, path, *args, **kwargs)
+        return self.generate_drawable(TubeGL, self.engine.load_tubes, path, *args, **kwargs)

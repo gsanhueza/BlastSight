@@ -355,34 +355,34 @@ class MainWindow(QMainWindow):
     Slots for loading files
     """
     def dialog_load_mesh(self) -> None:
-        self._dialog_load_element(method=self.viewer.mesh_by_path, hint='mesh')
+        self._dialog_load_element(method=self.viewer.load_mesh, hint='mesh')
 
     def dialog_load_blocks(self) -> None:
-        self._dialog_load_element(method=self.viewer.blocks_by_path, hint='block')
+        self._dialog_load_element(method=self.viewer.load_blocks, hint='block')
 
     def dialog_load_points(self) -> None:
-        self._dialog_load_element(method=self.viewer.points_by_path, hint='point')
+        self._dialog_load_element(method=self.viewer.load_points, hint='point')
 
     def dialog_load_lines(self) -> None:
-        self._dialog_load_element(method=self.viewer.lines_by_path, hint='line')
+        self._dialog_load_element(method=self.viewer.load_lines, hint='line')
 
     def dialog_load_tubes(self) -> None:
-        self._dialog_load_element(method=self.viewer.tubes_by_path, hint='tube')
+        self._dialog_load_element(method=self.viewer.load_tubes, hint='tube')
 
     def dialog_load_mesh_folder(self) -> None:
-        self._dialog_load_folder(method=self.viewer.meshes_by_folder_path, hint='mesh')
+        self._dialog_load_folder(method=self.viewer.load_mesh_folder, hint='mesh')
 
     def dialog_load_blocks_folder(self) -> None:
-        self._dialog_load_folder(method=self.viewer.blocks_by_folder_path, hint='block')
+        self._dialog_load_folder(method=self.viewer.load_blocks_folder, hint='block')
 
     def dialog_load_points_folder(self) -> None:
-        self._dialog_load_folder(method=self.viewer.points_by_folder_path, hint='point')
+        self._dialog_load_folder(method=self.viewer.load_points_folder, hint='point')
 
     def dialog_load_lines_folder(self) -> None:
-        self._dialog_load_folder(method=self.viewer.lines_by_folder_path, hint='line')
+        self._dialog_load_folder(method=self.viewer.load_lines_folder, hint='line')
 
     def dialog_load_tubes_folder(self) -> None:
-        self._dialog_load_folder(method=self.viewer.tubes_by_folder_path, hint='tube')
+        self._dialog_load_folder(method=self.viewer.load_tubes_folder, hint='tube')
 
     """
     Slots for exporting files
