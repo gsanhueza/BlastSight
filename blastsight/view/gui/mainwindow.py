@@ -236,7 +236,7 @@ class MainWindow(QMainWindow):
         self.viewer.slice_blocks(origin, normal)
 
         # Auto-rotate camera to meet cross-section
-        self.viewer.set_camera_from_vectors(normal, up)
+        # self.viewer.set_camera_from_vectors(normal, up)
 
         # Auto-exit slice mode
         self.viewer.set_normal_mode()
@@ -256,7 +256,7 @@ class MainWindow(QMainWindow):
                 self.viewer.lines(vertices=vert_slice,
                                   color=mesh.color,
                                   name=f'MESHSLICE_{i}_{mesh.name}',
-                                  extension=mesh.extension,
+                                  extension='csv',
                                   loop=True)
 
     def slot_blocks_sliced(self, slice_dict: dict) -> None:
@@ -276,11 +276,9 @@ class MainWindow(QMainWindow):
                                vmin=block.vmin,
                                vmax=block.vmax,
                                colormap=block.colormap,
-                               name=f'BLOCKSLICE_{block.name}',
-                               extension=block.extension,
                                block_size=block.block_size,
-                               alpha=1.0,
-                               )
+                               name=f'BLOCKSLICE_{block.name}',
+                               extension='csv')
 
     """
     Common functionality for loading/exporting
