@@ -69,7 +69,7 @@ class IntegrableViewer(QOpenGLWidget):
         self.model = Model()
 
         # Factory
-        self.drawable_factory = DrawableFactory(self.model)
+        self.factory = DrawableFactory(self.model)
 
         # Drawable elements
         self.axis_collection = GLAxisCollection(self)
@@ -77,8 +77,8 @@ class IntegrableViewer(QOpenGLWidget):
         self.drawable_collection = GLDrawableCollection(self)
 
         # Axis/Background
-        self.register_drawable(self.drawable_factory.axis(id='AXIS'), self.axis_collection)
-        self.register_drawable(self.drawable_factory.background(id='BG'), self.background_collection)
+        self.register_drawable(self.factory.axis(id='AXIS'), self.axis_collection)
+        self.register_drawable(self.factory.background(id='BG'), self.background_collection)
 
         # Signals for viewer (self)
         self.signal_mode_updated.connect(lambda m: print(f'MODE: {m}'))
@@ -304,37 +304,37 @@ class IntegrableViewer(QOpenGLWidget):
     Load methods by arguments
     """
     def mesh(self, *args, **kwargs) -> MeshGL:
-        return self.register_drawable(self.drawable_factory.mesh(*args, **kwargs))
+        return self.register_drawable(self.factory.mesh(*args, **kwargs))
 
     def blocks(self, *args, **kwargs) -> BlockGL:
-        return self.register_drawable(self.drawable_factory.blocks(*args, **kwargs))
+        return self.register_drawable(self.factory.blocks(*args, **kwargs))
 
     def points(self, *args, **kwargs) -> PointGL:
-        return self.register_drawable(self.drawable_factory.points(*args, **kwargs))
+        return self.register_drawable(self.factory.points(*args, **kwargs))
 
     def lines(self, *args, **kwargs) -> LineGL:
-        return self.register_drawable(self.drawable_factory.lines(*args, **kwargs))
+        return self.register_drawable(self.factory.lines(*args, **kwargs))
 
     def tubes(self, *args, **kwargs) -> TubeGL:
-        return self.register_drawable(self.drawable_factory.tubes(*args, **kwargs))
+        return self.register_drawable(self.factory.tubes(*args, **kwargs))
 
     """
     Load methods by path
     """
     def load_mesh(self, path: str, *args, **kwargs) -> MeshGL:
-        return self.register_drawable(self.drawable_factory.load_mesh(path, *args, **kwargs))
+        return self.register_drawable(self.factory.load_mesh(path, *args, **kwargs))
 
     def load_blocks(self, path: str, *args, **kwargs) -> BlockGL:
-        return self.register_drawable(self.drawable_factory.load_blocks(path, *args, **kwargs))
+        return self.register_drawable(self.factory.load_blocks(path, *args, **kwargs))
 
     def load_points(self, path: str, *args, **kwargs) -> PointGL:
-        return self.register_drawable(self.drawable_factory.load_points(path, *args, **kwargs))
+        return self.register_drawable(self.factory.load_points(path, *args, **kwargs))
 
     def load_lines(self, path: str, *args, **kwargs) -> LineGL:
-        return self.register_drawable(self.drawable_factory.load_lines(path, *args, **kwargs))
+        return self.register_drawable(self.factory.load_lines(path, *args, **kwargs))
 
     def load_tubes(self, path: str, *args, **kwargs) -> TubeGL:
-        return self.register_drawable(self.drawable_factory.load_tubes(path, *args, **kwargs))
+        return self.register_drawable(self.factory.load_tubes(path, *args, **kwargs))
 
     def load_mesh_folder(self, path: str, *args, **kwargs) -> list:
         return self.register_folder(path, self.mesh, *args, **kwargs)

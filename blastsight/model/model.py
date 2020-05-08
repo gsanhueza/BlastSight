@@ -15,6 +15,8 @@ from qtpy.QtCore import QFileInfo
 from qtpy.QtCore import QMutex
 from qtpy.QtCore import QMutexLocker
 
+from .elementfactory import ElementFactory
+
 from .elements.element import Element
 from .elements.elementcollection import ElementCollection
 from .elements.blockelement import BlockElement
@@ -39,6 +41,7 @@ class Model:
         self._mutex = QMutex()
         self.parser_collection = ParserCollection()
         self.element_collection = ElementCollection()
+        self.factory = ElementFactory()
 
         self.add_parser('dxf', DXFParser())
         self.add_parser('off', OFFParser())
@@ -73,29 +76,6 @@ class Model:
         return sorted(path_list)
 
     """
-    Generator methods
-    """
-    @staticmethod
-    def generate_mesh(*args, **kwargs) -> MeshElement:
-        return MeshElement(hint='mesh', *args, **kwargs)
-
-    @staticmethod
-    def generate_blocks(*args, **kwargs) -> BlockElement:
-        return BlockElement(hint='block', *args, **kwargs)
-
-    @staticmethod
-    def generate_points(*args, **kwargs) -> PointElement:
-        return PointElement(hint='point', *args, **kwargs)
-
-    @staticmethod
-    def generate_lines(*args, **kwargs) -> LineElement:
-        return LineElement(hint='line', *args, **kwargs)
-
-    @staticmethod
-    def generate_tubes(*args, **kwargs) -> TubeElement:
-        return TubeElement(hint='tube', *args, **kwargs)
-
-    """
     Register methods
     """
     def register_element(self, element):
@@ -127,37 +107,37 @@ class Model:
         return NullElement(hint='null', *args, **kwargs)
 
     def mesh(self, *args, **kwargs) -> MeshElement:
-        return self.register_element(self.generate_mesh(*args, **kwargs))
+        return self.register_element(self.factory.mesh(*args, **kwargs))
 
     def blocks(self, *args, **kwargs) -> BlockElement:
-        return self.register_element(self.generate_blocks(*args, **kwargs))
+        return self.register_element(self.factory.blocks(*args, **kwargs))
 
     def points(self, *args, **kwargs) -> PointElement:
-        return self.register_element(self.generate_points(*args, **kwargs))
+        return self.register_element(self.factory.points(*args, **kwargs))
 
     def lines(self, *args, **kwargs) -> LineElement:
-        return self.register_element(self.generate_lines(*args, **kwargs))
+        return self.register_element(self.factory.lines(*args, **kwargs))
 
     def tubes(self, *args, **kwargs) -> TubeElement:
-        return self.register_element(self.generate_tubes(*args, **kwargs))
+        return self.register_element(self.factory.tubes(*args, **kwargs))
 
     """
     Load methods by path
     """
     def load_mesh(self, path: str, *args, **kwargs) -> MeshElement:
-        return self.register_element_by_path(path, self.generate_mesh, *args, **kwargs)
+        return self.register_element_by_path(path, self.factory.mesh, *args, **kwargs)
 
     def load_blocks(self, path: str, *args, **kwargs) -> BlockElement:
-        return self.register_element_by_path(path, self.generate_blocks, *args, **kwargs)
+        return self.register_element_by_path(path, self.factory.blocks, *args, **kwargs)
 
     def load_points(self, path: str, *args, **kwargs) -> PointElement:
-        return self.register_element_by_path(path, self.generate_points, *args, **kwargs)
+        return self.register_element_by_path(path, self.factory.points, *args, **kwargs)
 
     def load_lines(self, path: str, *args, **kwargs) -> LineElement:
-        return self.register_element_by_path(path, self.generate_lines, *args, **kwargs)
+        return self.register_element_by_path(path, self.factory.lines, *args, **kwargs)
 
     def load_tubes(self, path: str, *args, **kwargs) -> TubeElement:
-        return self.register_element_by_path(path, self.generate_tubes, *args, **kwargs)
+        return self.register_element_by_path(path, self.factory.tubes, *args, **kwargs)
 
     """
     Load methods by path (DEPRECATED)
