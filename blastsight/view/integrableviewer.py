@@ -238,6 +238,7 @@ class IntegrableViewer(QOpenGLWidget):
             self.fit_to_screen()
 
     def animate(self, start, end, method: callable, frames: int = 20) -> callable:
+        timer = QTimer(self)
         linspace = iter(np.linspace(start, end, frames))
 
         def animation_per_frame():
@@ -245,9 +246,8 @@ class IntegrableViewer(QOpenGLWidget):
                 method(next(linspace))
                 self.update()
             except StopIteration:
-                pass
+                timer.stop()
 
-        timer = QTimer(self)
         timer.timeout.connect(animation_per_frame)
         timer.start(1.0 / frames)
 
