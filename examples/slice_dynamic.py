@@ -15,9 +15,14 @@ blocks_path = '../test_files/rainbow.csv'
 
 mesh = v.mesh_by_path(mesh_path,
                       color=[0.0, 0.8, 0.6],
-                      alpha=0.6)
+                      alpha=0.2)
 blocks = v.blocks_by_path(blocks_path)
 points = v.points_by_path(blocks_path)
+
+original_size = blocks.block_size
+shrunk_size = original_size / 2
+
+blocks.block_size = shrunk_size
 
 
 """
@@ -27,6 +32,15 @@ We offer the signals instead of automatically adding the slices,
 so you can decide what to do with them before committing them
 to the viewer.
 """
+
+def slice_elements(description: dict):
+    origin = description.get('origin')
+    normal = description.get('normal')
+
+    v.slice_meshes(origin, normal)
+    v.slice_blocks(origin, normal)
+
+    v.update_all()
 
 
 def slot_mesh_sliced(slice_dict: dict):
@@ -52,6 +66,7 @@ def slot_blocks_sliced(slice_dict: dict):
         indices = sliced_blocks.get('indices')
         origin_id = sliced_blocks.get('origin_id')
         block = v.get_drawable(origin_id)
+        block.block_size = original_size
 
         v.blocks(vertices=block.vertices[indices],
                  values=block.values[indices],
@@ -61,13 +76,11 @@ def slot_blocks_sliced(slice_dict: dict):
                  colormap=block.colormap,
                  name=f'BLOCKSLICE_{block.name}',
                  extension=block.extension,
-                 block_size=block.block_size,
+                 block_size=original_size,
                  alpha=1.0,
                  )
 
-    # Auto-close viewer
-    v.close()
-
+        block.block_size = shrunk_size
 
 """
 Slice mode means that you'll click two points in the screen,
@@ -75,19 +88,10 @@ so BlastSight will automatically generate a plane that
 will pass through every visible mesh and block.
 """
 v.set_slice_mode()
+v.signal_slice_description.connect(slice_elements)
 v.signal_mesh_sliced.connect(slot_mesh_sliced)
 v.signal_blocks_sliced.connect(slot_blocks_sliced)
 
 v.fit_to_screen()
 v.show()
 
-"""
-When you click twice, the window will close and re-open
-with a more evident result of your slice.
-"""
-v.setWindowTitle(title)
-mesh.alpha = 0.2
-blocks.hide()
-
-v.update_all()
-v.show()

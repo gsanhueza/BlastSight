@@ -172,7 +172,7 @@ class MainWindow(QMainWindow):
         self.viewer.signal_mode_updated.connect(self.slot_mode_updated)
         self.viewer.signal_mesh_clicked.connect(self.slot_mesh_clicked)
         self.viewer.signal_mesh_distances.connect(self.slot_mesh_distances)
-        self.viewer.signal_elements_sliced.connect(self.slot_elements_sliced)
+        self.viewer.signal_slice_description.connect(self.slot_slice_description)
         self.viewer.signal_mesh_sliced.connect(self.slot_mesh_sliced)
         self.viewer.signal_blocks_sliced.connect(self.slot_blocks_sliced)
 
@@ -226,9 +226,14 @@ class MainWindow(QMainWindow):
         id_list = [attr.get('id', -1) for attr in mesh_attributes]
         self.statusBar.showMessage(f'Detected meshes: {id_list}')
 
-    def slot_elements_sliced(self, slice_dict: dict) -> None:
-        normal = slice_dict.get('normal')
-        up = slice_dict.get('up')
+    def slot_slice_description(self, description: dict) -> None:
+        origin = description.get('origin')
+        normal = description.get('normal')
+        up = description.get('up')
+
+        # Slice elements
+        self.viewer.slice_meshes(origin, normal)
+        self.viewer.slice_blocks(origin, normal)
 
         # Auto-rotate camera to meet cross-section
         self.viewer.set_camera_from_vectors(normal, up)
