@@ -8,7 +8,7 @@
 import pathlib
 
 from qtpy.QtWidgets import QDialog
-from blastsight.view.gui.tools import uic
+from ..tools import uic
 
 
 class HelpDialog(QDialog):

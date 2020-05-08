@@ -7,12 +7,12 @@
 
 import traceback
 
-from ...drawables.gldrawable import GLDrawable
-from ...drawables.meshgl import MeshGL
-from ...drawables.blockgl import BlockGL
-from ...drawables.pointgl import PointGL
-from ...drawables.linegl import LineGL
-from ...drawables.tubegl import TubeGL
+from .drawables.gldrawable import GLDrawable
+from .drawables.meshgl import MeshGL
+from .drawables.blockgl import BlockGL
+from .drawables.pointgl import PointGL
+from .drawables.linegl import LineGL
+from .drawables.tubegl import TubeGL
 
 
 class DrawableFactory:

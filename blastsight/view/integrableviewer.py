@@ -34,8 +34,7 @@ from .drawables.meshgl import MeshGL
 from .drawables.pointgl import PointGL
 from .drawables.tubegl import TubeGL
 
-from .gui.tools.drawablefactory import DrawableFactory
-
+from .drawablefactory import DrawableFactory
 from .fpscounter import FPSCounter
 
 from ..controller.detectionmode import DetectionMode

@@ -22,7 +22,7 @@ from .dialogs.aboutdialog import AboutDialog
 from .iconcollection import IconCollection
 
 from .tools import uic
-from .tools.threadworker import ThreadWorker
+from ..threadworker import ThreadWorker
 
 
 class MainWindow(QMainWindow):
