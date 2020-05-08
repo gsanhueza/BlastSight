@@ -156,14 +156,17 @@ class IntegrableViewer(QOpenGLWidget):
     @camera_position.setter
     def camera_position(self, pos: list) -> None:
         self.xCameraPos, self.yCameraPos, self.zCameraPos = pos
+        self.update()
 
     @rotation_angle.setter
     def rotation_angle(self, rot: list) -> None:
         self.xCenterRot, self.yCenterRot, self.zCenterRot = rot
+        self.update()
 
     @rotation_center.setter
     def rotation_center(self, center: list) -> None:
         self.xCenterPos, self.yCenterPos, self.zCenterPos = center
+        self.update()
 
     """
     API for the camera (animated)

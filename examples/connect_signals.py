@@ -9,7 +9,7 @@ In this demo, we'll show how you can use the signals of the viewer.
 v = Viewer()
 title = v.windowTitle()
 v.setWindowTitle(f'{title} - Double click in a mesh.')
-v.mesh_by_path('../test_files/caseron.off')
+v.load_mesh('../test_files/caseron.off')
 
 
 def update_info(x: list):

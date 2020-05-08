@@ -13,11 +13,11 @@ v.setWindowTitle(f'{title} - Click two points in the screen.')
 mesh_path = '../test_files/caseron.off'
 blocks_path = '../test_files/rainbow.csv'
 
-mesh = v.mesh_by_path(mesh_path,
-                      color=[0.0, 0.8, 0.6],
-                      alpha=0.2)
-blocks = v.blocks_by_path(blocks_path)
-points = v.points_by_path(blocks_path)
+mesh = v.load_mesh(mesh_path,
+                   color=[0.0, 0.8, 0.6],
+                   alpha=0.2)
+blocks = v.load_blocks(blocks_path)
+points = v.load_points(blocks_path)
 
 original_size = blocks.block_size
 shrunk_size = original_size / 2

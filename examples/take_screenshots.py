@@ -8,7 +8,7 @@ In this demo, we'll show how you can easily take screenshots of the viewer.
 
 v = Viewer()
 
-v.mesh_by_path('../test_files/caseron.off')
+v.load_mesh('../test_files/caseron.off')
 v.fit_to_screen()
 v.resize(800, 800)
 

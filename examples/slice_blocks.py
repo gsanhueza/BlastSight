@@ -15,7 +15,7 @@ First, we'll load a block file.
 Then, we'll slice the blocks by a plane.
 We need the plane's normal and any point that belongs to that plane.
 """
-blocks = v.blocks_by_path(path).element
+blocks = v.load_blocks(path)
 description = v.model.slice_blocks(block_list=[blocks],
                                    origin=blocks.center,
                                    plane_normal=[0.5, 1.0, 1.0])

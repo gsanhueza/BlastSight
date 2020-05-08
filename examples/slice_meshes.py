@@ -15,9 +15,9 @@ First, we'll load a mesh file.
 Then, we'll slice the mesh by a plane.
 We need the plane's normal and any point that belongs to that plane.
 """
-mesh = v.mesh_by_path('../test_files/caseron.off',
-                      color=[0.0, 0.0, 1.0],
-                      alpha=0.3).element
+mesh = v.load_mesh('../test_files/caseron.off',
+                   color=[0.0, 0.0, 1.0],
+                   alpha=0.3).element
 
 description = v.model.slice_meshes(meshes=[mesh],
                                    origin=mesh.centroid,
