@@ -8,10 +8,6 @@ from blastsight.model.elements.nullelement import NullElement
 
 
 class TestAxisGL:
-    def test_empty_axis(self):
-        drawable = AxisGL()
-        assert type(drawable.element) is NullElement
-
     def test_dir(self):
         assert len(dir(AxisGL())) > 0
 

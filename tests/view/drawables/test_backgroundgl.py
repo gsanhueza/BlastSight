@@ -8,10 +8,6 @@ from blastsight.model.elements.nullelement import NullElement
 
 
 class TestBackgroundGL:
-    def test_empty_bg(self):
-        drawable = BackgroundGL()
-        assert type(drawable.element) is NullElement
-
     def test_dir(self):
         assert len(dir(BackgroundGL(NullElement()))) > 0
 

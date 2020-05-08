@@ -19,6 +19,7 @@ from .elements.blockelement import BlockElement
 from .elements.pointelement import PointElement
 from .elements.lineelement import LineElement
 from .elements.meshelement import MeshElement
+from .elements.nullelement import NullElement
 from .elements.tubeelement import TubeElement
 
 from .parsers.parser import Parser
@@ -119,6 +120,10 @@ class Model:
     """
     Load methods by arguments
     """
+    @staticmethod
+    def null(*args, **kwargs) -> NullElement:
+        return NullElement(hint='null', *args, **kwargs)
+
     def mesh(self, *args, **kwargs) -> MeshElement:
         return self.register_element(self.generate_mesh(*args, **kwargs))
 

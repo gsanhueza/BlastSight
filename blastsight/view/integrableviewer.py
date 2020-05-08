@@ -77,13 +77,9 @@ class IntegrableViewer(QOpenGLWidget):
         self.background_collection = GLBackgroundCollection(self)
         self.drawable_collection = GLDrawableCollection(self)
 
-        self.axis = AxisGL(id='AXIS')
-        self.axis.add_observer(self)
-        self.axis_collection.add(self.axis)
-
-        self.bg = BackgroundGL(id='BG')
-        self.bg.add_observer(self)
-        self.background_collection.add(self.bg)
+        # Axis/Background
+        self.register_drawable(self.drawable_factory.axis(id='AXIS'), self.axis_collection)
+        self.register_drawable(self.drawable_factory.background(id='BG'), self.background_collection)
 
         # Signals for viewer (self)
         self.signal_mode_updated.connect(lambda m: print(f'MODE: {m}'))
@@ -133,6 +129,14 @@ class IntegrableViewer(QOpenGLWidget):
     @property
     def last_drawable(self) -> GLDrawable:
         return self.get_drawable(self.last_id)
+
+    @property
+    def axis(self) -> GLDrawable:
+        return self.axis_collection.get('AXIS')
+
+    @property
+    def bg(self) -> GLDrawable:
+        return self.background_collection.get('BG')
 
     @property
     def off_center(self) -> np.ndarray:
@@ -259,17 +263,21 @@ class IntegrableViewer(QOpenGLWidget):
     """
     Registration methods
     """
-    def register_drawable(self, drawable):
-        if drawable is not None:
-            # Register in collection
-            drawable.add_observer(self)
-            self.drawable_collection.add(drawable)
-
-            # Emit success signals
-            self.signal_file_modified.emit()
-            self.signal_load_success.emit(drawable.id)
-        else:
+    def register_drawable(self, drawable, collection=None):
+        if drawable is None:
             self.signal_load_failure.emit()
+            return None
+
+        if collection is None:
+            collection = self.drawable_collection
+
+        # Register in collection
+        drawable.add_observer(self)
+        collection.add(drawable)
+
+        # Emit success signals
+        self.signal_file_modified.emit()
+        self.signal_load_success.emit(drawable.id)
 
         return drawable
 

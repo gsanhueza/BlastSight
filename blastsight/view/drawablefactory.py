@@ -8,6 +8,8 @@
 import traceback
 
 from .drawables.gldrawable import GLDrawable
+from .drawables.axisgl import AxisGL
+from .drawables.backgroundgl import BackgroundGL
 from .drawables.meshgl import MeshGL
 from .drawables.blockgl import BlockGL
 from .drawables.pointgl import PointGL
@@ -31,6 +33,15 @@ class DrawableFactory:
             traceback.print_exc()
             return None
 
+    """
+    Drawables by arguments
+    """
+    def axis(self, *args, **kwargs) -> AxisGL:
+        return self.generate_drawable(AxisGL, self.engine.null, *args, **kwargs)
+
+    def background(self, *args, **kwargs) -> BackgroundGL:
+        return self.generate_drawable(BackgroundGL, self.engine.null, *args, **kwargs)
+
     def mesh(self, *args, **kwargs) -> MeshGL:
         return self.generate_drawable(MeshGL, self.engine.mesh, *args, **kwargs)
 
@@ -46,6 +57,9 @@ class DrawableFactory:
     def tubes(self, *args, **kwargs) -> TubeGL:
         return self.generate_drawable(TubeGL, self.engine.tubes, *args, **kwargs)
 
+    """
+    Drawables by path
+    """
     def load_mesh(self, path: str, *args, **kwargs) -> MeshGL:
         return self.generate_drawable(MeshGL, self.engine.mesh_by_path, path, *args, **kwargs)
 
