@@ -1,0 +1,62 @@
+#!/usr/bin/env python
+
+#  Copyright (c) 2019-2020 Gabriel Sanhueza.
+#
+#  Distributed under the MIT License.
+#  See LICENSE for more info.
+
+import traceback
+
+from ...drawables.gldrawable import GLDrawable
+from ...drawables.meshgl import MeshGL
+from ...drawables.blockgl import BlockGL
+from ...drawables.pointgl import PointGL
+from ...drawables.linegl import LineGL
+from ...drawables.tubegl import TubeGL
+
+
+class DrawableFactory:
+    def __init__(self, engine):
+        super().__init__()
+        self.engine = engine
+
+    @staticmethod
+    def generate_drawable(d_class: type, generator: callable, *args, **kwargs) -> GLDrawable or None:
+        try:
+            element = generator(*args, **kwargs)
+            drawable = d_class(element, *args, **kwargs)
+            
+            return drawable
+        except Exception:
+            traceback.print_exc()
+            return None
+
+    def mesh(self, *args, **kwargs) -> MeshGL:
+        return self.generate_drawable(MeshGL, self.engine.mesh, *args, **kwargs)
+
+    def blocks(self, *args, **kwargs) -> BlockGL:
+        return self.generate_drawable(BlockGL, self.engine.blocks, *args, **kwargs)
+
+    def points(self, *args, **kwargs) -> PointGL:
+        return self.generate_drawable(PointGL, self.engine.points, *args, **kwargs)
+
+    def lines(self, *args, **kwargs) -> LineGL:
+        return self.generate_drawable(LineGL, self.engine.lines, *args, **kwargs)
+
+    def tubes(self, *args, **kwargs) -> TubeGL:
+        return self.generate_drawable(TubeGL, self.engine.tubes, *args, **kwargs)
+
+    def load_mesh(self, path: str, *args, **kwargs) -> MeshGL:
+        return self.generate_drawable(MeshGL, self.engine.mesh_by_path, path, *args, **kwargs)
+
+    def load_blocks(self, path: str, *args, **kwargs) -> BlockGL:
+        return self.generate_drawable(BlockGL, self.engine.blocks_by_path, path, *args, **kwargs)
+
+    def load_points(self, path: str, *args, **kwargs) -> PointGL:
+        return self.generate_drawable(PointGL, self.engine.points_by_path, path, *args, **kwargs)
+
+    def load_lines(self, path: str, *args, **kwargs) -> LineGL:
+        return self.generate_drawable(LineGL, self.engine.lines_by_path, path, *args, **kwargs)
+
+    def load_tubes(self, path: str, *args, **kwargs) -> TubeGL:
+        return self.generate_drawable(TubeGL, self.engine.tubes_by_path, path, *args, **kwargs)

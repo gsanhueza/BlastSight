@@ -6,7 +6,6 @@
 #  See LICENSE for more info.
 
 import numpy as np
-import traceback
 
 from OpenGL.GL import *
 
@@ -34,6 +33,8 @@ from .drawables.linegl import LineGL
 from .drawables.meshgl import MeshGL
 from .drawables.pointgl import PointGL
 from .drawables.tubegl import TubeGL
+
+from .gui.tools.drawablefactory import DrawableFactory
 
 from .fpscounter import FPSCounter
 
@@ -68,6 +69,9 @@ class IntegrableViewer(QOpenGLWidget):
 
         # Model
         self.model = Model()
+
+        # Factory
+        self.drawable_factory = DrawableFactory(self.model)
 
         # Drawable elements
         self.axis_collection = GLAxisCollection(self)
@@ -251,43 +255,19 @@ class IntegrableViewer(QOpenGLWidget):
         self.update()
 
     """
-    Generator methods
-    """
-    def generate_drawable(self, generator: callable) -> GLDrawable or None:
-        try:
-            drawable = generator()
-            self.signal_load_success.emit(drawable.id)
-
-            return drawable
-        except Exception:
-            self.signal_load_failure.emit()
-            traceback.print_exc()
-
-            return None
-
-    def generate_mesh(self, generator: callable, *args, **kwargs) -> MeshGL:
-        return self.generate_drawable(lambda: MeshGL(generator(*args, **kwargs), *args, **kwargs))
-
-    def generate_blocks(self, generator: callable, *args, **kwargs) -> BlockGL:
-        return self.generate_drawable(lambda: BlockGL(generator(*args, **kwargs), *args, **kwargs))
-
-    def generate_points(self, generator: callable, *args, **kwargs) -> PointGL:
-        return self.generate_drawable(lambda: PointGL(generator(*args, **kwargs), *args, **kwargs))
-
-    def generate_lines(self, generator: callable, *args, **kwargs) -> LineGL:
-        return self.generate_drawable(lambda: LineGL(generator(*args, **kwargs), *args, **kwargs))
-
-    def generate_tubes(self, generator: callable, *args, **kwargs) -> TubeGL:
-        return self.generate_drawable(lambda: TubeGL(generator(*args, **kwargs), *args, **kwargs))
-
-    """
-    Register methods
+    Registration methods
     """
     def register_drawable(self, drawable):
         if drawable is not None:
+            # Register in collection
             drawable.add_observer(self)
             self.drawable_collection.add(drawable)
+
+            # Emit success signals
             self.signal_file_modified.emit()
+            self.signal_load_success.emit(drawable.id)
+        else:
+            self.signal_load_failure.emit()
 
         return drawable
 
@@ -312,37 +292,37 @@ class IntegrableViewer(QOpenGLWidget):
     Load methods by arguments
     """
     def mesh(self, *args, **kwargs) -> MeshGL:
-        return self.register_drawable(self.generate_mesh(self.model.mesh, *args, **kwargs))
+        return self.register_drawable(self.drawable_factory.mesh(*args, **kwargs))
 
     def blocks(self, *args, **kwargs) -> BlockGL:
-        return self.register_drawable(self.generate_blocks(self.model.blocks, *args, **kwargs))
+        return self.register_drawable(self.drawable_factory.blocks(*args, **kwargs))
 
     def points(self, *args, **kwargs) -> PointGL:
-        return self.register_drawable(self.generate_points(self.model.points, *args, **kwargs))
+        return self.register_drawable(self.drawable_factory.points(*args, **kwargs))
 
     def lines(self, *args, **kwargs) -> LineGL:
-        return self.register_drawable(self.generate_lines(self.model.lines, *args, **kwargs))
+        return self.register_drawable(self.drawable_factory.lines(*args, **kwargs))
 
     def tubes(self, *args, **kwargs) -> TubeGL:
-        return self.register_drawable(self.generate_tubes(self.model.tubes, *args, **kwargs))
+        return self.register_drawable(self.drawable_factory.tubes(*args, **kwargs))
 
     """
     Load methods by path
     """
     def mesh_by_path(self, path: str, *args, **kwargs) -> MeshGL:
-        return self.register_drawable(self.generate_mesh(self.model.mesh_by_path, path, *args, **kwargs))
+        return self.register_drawable(self.drawable_factory.load_mesh(path, *args, **kwargs))
 
     def blocks_by_path(self, path: str, *args, **kwargs) -> BlockGL:
-        return self.register_drawable(self.generate_blocks(self.model.blocks_by_path, path, *args, **kwargs))
+        return self.register_drawable(self.drawable_factory.load_blocks(path, *args, **kwargs))
 
     def points_by_path(self, path: str, *args, **kwargs) -> PointGL:
-        return self.register_drawable(self.generate_points(self.model.points_by_path, path, *args, **kwargs))
+        return self.register_drawable(self.drawable_factory.load_points(path, *args, **kwargs))
 
     def lines_by_path(self, path: str, *args, **kwargs) -> LineGL:
-        return self.register_drawable(self.generate_lines(self.model.lines_by_path, path, *args, **kwargs))
+        return self.register_drawable(self.drawable_factory.load_lines(path, *args, **kwargs))
 
     def tubes_by_path(self, path: str, *args, **kwargs) -> TubeGL:
-        return self.register_drawable(self.generate_tubes(self.model.tubes_by_path, path, *args, **kwargs))
+        return self.register_drawable(self.drawable_factory.load_tubes(path, *args, **kwargs))
 
     def meshes_by_folder_path(self, path: str, *args, **kwargs) -> list:
         return self.register_folder(path, self.mesh_by_path, *args, **kwargs)
@@ -440,10 +420,10 @@ class IntegrableViewer(QOpenGLWidget):
         self.set_rotation_angle([0.0, 0.0, 0.0])
 
     def north_view(self) -> None:
-        self.set_rotation_angle([-90.0, 0.0, -90.0])
+        self.set_rotation_angle([270.0, 0.0, 270.0])
 
     def east_view(self) -> None:
-        self.set_rotation_angle([-90.0, 0.0, 0.0])
+        self.set_rotation_angle([270.0, 0.0, 0.0])
 
     def fit_to_bounds(self, min_bound: np.ndarray, max_bound: np.ndarray) -> None:
         center = (min_bound + max_bound) / 2
