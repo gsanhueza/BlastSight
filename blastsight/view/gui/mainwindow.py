@@ -16,13 +16,13 @@ from qtpy.QtCore import QThreadPool
 from qtpy.QtWidgets import QFileDialog
 from qtpy.QtWidgets import QMainWindow
 
-from .cameradialog import CameraDialog
-from .helpdialog import HelpDialog
-from .aboutdialog import AboutDialog
-from .threadworker import ThreadWorker
+from .dialogs.cameradialog import CameraDialog
+from .dialogs.helpdialog import HelpDialog
+from .dialogs.aboutdialog import AboutDialog
 from .iconcollection import IconCollection
 
 from .tools import uic
+from .tools.threadworker import ThreadWorker
 
 
 class MainWindow(QMainWindow):

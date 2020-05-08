@@ -18,8 +18,8 @@ from qtpy.QtWidgets import QTreeWidgetItemIterator
 from .treewidgetitem import TreeWidgetItem
 from .actioncollection import ActionCollection
 
-from .colordialog import ColorDialog
-from .propertiesdialog import PropertiesDialog
+from .dialogs.colordialog import ColorDialog
+from .dialogs.propertiesdialog import PropertiesDialog
 
 from ..drawables.meshgl import MeshGL
 from ..drawables.blockgl import BlockGL

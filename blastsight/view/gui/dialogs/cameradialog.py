@@ -9,13 +9,13 @@ import pathlib
 
 from qtpy.QtCore import Qt
 from qtpy.QtWidgets import QDialog
-from .tools import uic
+from blastsight.view.gui.tools import uic
 
 
 class CameraDialog(QDialog):
     def __init__(self, viewer=None):
         QDialog.__init__(self, viewer)
-        uic.loadUi(f'{pathlib.Path(__file__).parent}/UI/cameradialog.ui', self)
+        uic.loadUi(f'{pathlib.Path(__file__).parent.parent}/UI/cameradialog.ui', self)
 
         # Avoids the QObject::startTimer warning (maybe)
         self.setAttribute(Qt.WA_DeleteOnClose)
