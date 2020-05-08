@@ -283,10 +283,10 @@ class MainWindow(QMainWindow):
     """
     Common functionality for loading/exporting
     """
-    def _threaded_load(self, method: classmethod, path: str, *args, **kwargs) -> None:
+    def _threaded_load(self, method: classmethod, *args, **kwargs) -> None:
         self.statusBar.showMessage('Loading...')
 
-        worker = ThreadWorker(method, path, *args, **kwargs)
+        worker = ThreadWorker(method, *args, **kwargs)
         QThreadPool.globalInstance().start(worker)
 
     def _threaded_export(self, method: classmethod, path: str, _id: int) -> None:
@@ -295,25 +295,24 @@ class MainWindow(QMainWindow):
         worker = ThreadWorker(method, path, _id)
         QThreadPool.globalInstance().start(worker)
 
-    def _dialog_load_element(self, method: classmethod, hint: str, *args, **kwargs) -> None:
+    def _dialog_load_element(self, loader: classmethod, hint: str, *args, **kwargs) -> None:
         (paths, selected_filter) = QFileDialog.getOpenFileNames(
             parent=self,
             directory=self.last_dir,
             filter=self.filters_dict.get(hint))
 
-        path_list = [p for p in paths if p != '']
-        for path in sorted(path_list):
-            self._threaded_load(method, path, *args, **kwargs)
+        for path in sorted([p for p in paths if p != '']):
+            self._threaded_load(loader, path, *args, **kwargs)
             self.last_dir = QFileInfo(path).absoluteDir().absolutePath()
 
-    def _dialog_load_folder(self, method: classmethod, hint: str, *args, **kwargs) -> None:
+    def _dialog_load_folder(self, loader: classmethod, *args, **kwargs) -> None:
         path = QFileDialog.getExistingDirectory(
             parent=self,
             directory=self.last_dir,
             options=QFileDialog.ShowDirsOnly)
 
         # Execute method
-        self._threaded_load(method, path, *args, **kwargs)
+        self._threaded_load(loader, path, *args, **kwargs)
         self.last_dir = path
 
     def _dialog_export_element(self, _id: int, filters: str, method: classmethod) -> None:
@@ -355,34 +354,34 @@ class MainWindow(QMainWindow):
     Slots for loading files
     """
     def dialog_load_mesh(self) -> None:
-        self._dialog_load_element(method=self.viewer.load_mesh, hint='mesh')
+        self._dialog_load_element(loader=self.viewer.load_mesh, hint='mesh')
 
     def dialog_load_blocks(self) -> None:
-        self._dialog_load_element(method=self.viewer.load_blocks, hint='block')
+        self._dialog_load_element(loader=self.viewer.load_blocks, hint='block')
 
     def dialog_load_points(self) -> None:
-        self._dialog_load_element(method=self.viewer.load_points, hint='point')
+        self._dialog_load_element(loader=self.viewer.load_points, hint='point')
 
     def dialog_load_lines(self) -> None:
-        self._dialog_load_element(method=self.viewer.load_lines, hint='line')
+        self._dialog_load_element(loader=self.viewer.load_lines, hint='line')
 
     def dialog_load_tubes(self) -> None:
-        self._dialog_load_element(method=self.viewer.load_tubes, hint='tube')
+        self._dialog_load_element(loader=self.viewer.load_tubes, hint='tube')
 
     def dialog_load_mesh_folder(self) -> None:
-        self._dialog_load_folder(method=self.viewer.load_mesh_folder, hint='mesh')
+        self._dialog_load_folder(loader=self.viewer.load_mesh_folder)
 
     def dialog_load_blocks_folder(self) -> None:
-        self._dialog_load_folder(method=self.viewer.load_blocks_folder, hint='block')
+        self._dialog_load_folder(loader=self.viewer.load_blocks_folder)
 
     def dialog_load_points_folder(self) -> None:
-        self._dialog_load_folder(method=self.viewer.load_points_folder, hint='point')
+        self._dialog_load_folder(loader=self.viewer.load_points_folder)
 
     def dialog_load_lines_folder(self) -> None:
-        self._dialog_load_folder(method=self.viewer.load_lines_folder, hint='line')
+        self._dialog_load_folder(loader=self.viewer.load_lines_folder)
 
     def dialog_load_tubes_folder(self) -> None:
-        self._dialog_load_folder(method=self.viewer.load_tubes_folder, hint='tube')
+        self._dialog_load_folder(loader=self.viewer.load_tubes_folder)
 
     """
     Slots for exporting files

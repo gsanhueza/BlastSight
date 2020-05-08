@@ -283,23 +283,6 @@ class IntegrableViewer(QOpenGLWidget):
 
         return drawable
 
-    def register_folder(self, path: str, generator: callable, *args, **kwargs) -> list:
-        path_list = self.model.get_paths_from_directory(path)
-
-        # We'll block viewer.register_drawable's signal_file_modified until last item has been loaded.
-        self.blockSignals(True)
-        loaded = [d for d in [generator(path, *args, **kwargs) for path in path_list] if d is not None]
-        self.blockSignals(False)
-
-        # We'll manually emit the signals we didn't emit before.
-        if len(loaded) > 0:
-            self.signal_file_modified.emit()
-            self.signal_load_success.emit(self.last_id)
-        else:
-            self.signal_load_failure.emit()
-
-        return loaded
-
     """
     Load methods by arguments
     """
@@ -337,61 +320,85 @@ class IntegrableViewer(QOpenGLWidget):
         return self.register_drawable(self.factory.load_tubes(path, *args, **kwargs))
 
     def load_mesh_folder(self, path: str, *args, **kwargs) -> list:
-        return self.register_folder(path, self.load_mesh, *args, **kwargs)
+        return self.load_folder(path, self.load_mesh, *args, **kwargs)
 
     def load_blocks_folder(self, path: str, *args, **kwargs) -> list:
-        return self.register_folder(path, self.load_blocks, *args, **kwargs)
+        return self.load_folder(path, self.load_blocks, *args, **kwargs)
 
     def load_points_folder(self, path: str, *args, **kwargs) -> list:
-        return self.register_folder(path, self.load_points, *args, **kwargs)
+        return self.load_folder(path, self.load_points, *args, **kwargs)
 
     def load_lines_folder(self, path: str, *args, **kwargs) -> list:
-        return self.register_folder(path, self.load_lines, *args, **kwargs)
+        return self.load_folder(path, self.load_lines, *args, **kwargs)
 
     def load_tubes_folder(self, path: str, *args, **kwargs) -> list:
-        return self.register_folder(path, self.load_tubes, *args, **kwargs)
+        return self.load_folder(path, self.load_tubes, *args, **kwargs)
+
+    """
+    Generalized loaders
+    """
+    def load_folder(self, path: str, loader: callable, *args, **kwargs) -> list:
+        return self.load_multiple(self.model.get_paths_from_directory(path), loader, *args, **kwargs)
+
+    def load_multiple(self, path_list: list, loader: callable, *args, **kwargs) -> list:
+        self.blockSignals(True)
+        loaded = [d for d in [loader(path, *args, **kwargs) for path in path_list] if bool(d)]
+        self.blockSignals(False)
+
+        # Emit signals depending on results
+        if len(loaded) > 0:
+            self.signal_file_modified.emit()
+            self.signal_load_success.emit(self.last_id)
+        else:
+            self.signal_load_failure.emit()
+
+        return loaded
 
     """
     Load methods by path (DEPRECATED)
     """
+    @staticmethod
+    def _deprecated_message(log: callable, old: str, new: str) -> None:
+        log(f'{old} is deprecated. Use {new} instead.', DeprecationWarning, 2)
+
     def mesh_by_path(self, path: str, *args, **kwargs) -> MeshGL:
-        warnings.warn('mesh_by_path() is deprecated. Use load_mesh() instead.', DeprecationWarning, 2)
+        self._deprecated_message(warnings.warn, 'mesh_by_path()', 'load_mesh()')
         return self.load_mesh(path, *args, **kwargs)
 
     def blocks_by_path(self, path: str, *args, **kwargs) -> BlockGL:
-        warnings.warn('blocks_by_path() is deprecated. Use load_blocks() instead.', DeprecationWarning, 2)
+        self._deprecated_message(warnings.warn, 'blocks_by_path()', 'load_blocks()')
         return self.load_blocks(path, *args, **kwargs)
 
     def points_by_path(self, path: str, *args, **kwargs) -> PointGL:
-        warnings.warn('points_by_path() is deprecated. Use load_points() instead.', DeprecationWarning, 2)
+        self._deprecated_message(warnings.warn, 'points_by_path()', 'load_points()')
         return self.load_points(path, *args, **kwargs)
 
     def lines_by_path(self, path: str, *args, **kwargs) -> LineGL:
-        warnings.warn('lines_by_path() is deprecated. Use load_lines() instead.', DeprecationWarning, 2)
+        self._deprecated_message(warnings.warn, 'lines_by_path()', 'load_lines()')
         return self.load_lines(path, *args, **kwargs)
 
     def tubes_by_path(self, path: str, *args, **kwargs) -> TubeGL:
-        warnings.warn('tubes_by_path() is deprecated. Use load_tubes() instead.', DeprecationWarning, 2)
+        self._deprecated_message(warnings.warn, 'tubes_by_path()', 'load_tubes()')
         return self.load_tubes(path, *args, **kwargs)
 
     def meshes_by_folder_path(self, path: str, *args, **kwargs) -> list:
-        warnings.warn('meshes_by_folder_path() is deprecated. Use load_mesh_folder() instead.', DeprecationWarning, 2)
+        self._deprecated_message(warnings.warn, 'meshes_by_folder_path()', 'load_mesh_folder()')
         return self.load_mesh_folder(path, *args, **kwargs)
 
     def blocks_by_folder_path(self, path: str, *args, **kwargs) -> list:
-        warnings.warn('blocks_by_folder_path() is deprecated. Use load_blocks_folder() instead.', DeprecationWarning, 2)
+        self._deprecated_folder(warnings.warn, 'blocks_by_folder_path()', 'load_blocks_folder()')
         return self.load_blocks_folder(path, *args, **kwargs)
 
     def points_by_folder_path(self, path: str, *args, **kwargs) -> list:
-        warnings.warn('points_by_folder_path() is deprecated. Use load_points_folder() instead.', DeprecationWarning, 2)
+        self._deprecated_folder(warnings.warn, 'points_by_folder_path()', 'load_points_folder()')
         return self.load_points_folder(path, *args, **kwargs)
 
     def lines_by_folder_path(self, path: str, *args, **kwargs) -> list:
-        warnings.warn('lines_by_folder_path() is deprecated. Use load_lines_folder() instead.', DeprecationWarning, 2)
+        self._deprecated_folder(warnings.warn, 'lines_by_folder_path()', 'load_lines_folder()')
         return self.load_lines_folder(path, *args, **kwargs)
 
     def tubes_by_folder_path(self, path: str, *args, **kwargs) -> list:
-        warnings.warn('tubes_by_folder_path() is deprecated. Use load_tubes_folder() instead.', DeprecationWarning, 2)
+        self._deprecated_folder(warnings.warn, 'tubes_by_folder_path()', 'load_tubes_folder()')
         return self.load_tubes_folder(path, *args, **kwargs)
 
     """
@@ -773,8 +780,7 @@ class IntegrableViewer(QOpenGLWidget):
     def dropEvent(self, event, *args, **kwargs) -> None:
         for url in event.mimeData().urls():
             path = url.toLocalFile()
-
             if QFileInfo(path).isDir():
-                self.load_mesh_folder(path)
+                self.load_folder(path, self.load_mesh)
             else:
                 self.load_mesh(path)
