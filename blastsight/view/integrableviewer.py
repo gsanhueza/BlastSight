@@ -55,6 +55,7 @@ class IntegrableViewer(QOpenGLWidget):
 
     signal_mesh_clicked = Signal(object)
     signal_mesh_distances = Signal(object)
+    signal_elements_sliced = Signal(object)
     signal_mesh_sliced = Signal(object)
     signal_blocks_sliced = Signal(object)
 
@@ -111,8 +112,8 @@ class IntegrableViewer(QOpenGLWidget):
         self.camera_position = [0.0, 0.0, 200.0]
 
         # Extra information
-        self._turbo_rendering = False
-        self._autofit_to_screen = False
+        self._turbo = False
+        self._autofit = False
         self._animated = False
 
         self.fov = 45.0
@@ -194,10 +195,10 @@ class IntegrableViewer(QOpenGLWidget):
     Turbo/Auto-fit/Animation
     """
     def get_turbo_status(self) -> bool:
-        return self._turbo_rendering
+        return self._turbo
 
     def get_autofit_status(self) -> bool:
-        return self._autofit_to_screen
+        return self._autofit
 
     def get_animated_status(self) -> bool:
         return self._animated
@@ -205,12 +206,11 @@ class IntegrableViewer(QOpenGLWidget):
     def set_turbo_status(self, status: bool) -> None:
         if status:
             print('WARNING: Turbo-rendering might leave you without memory!')
-
-        self._turbo_rendering = status
+        self._turbo = status
         self.update_turbo()
 
     def set_autofit_status(self, status: bool) -> None:
-        self._autofit_to_screen = status
+        self._autofit = status
         self.update_autofit()
 
     def set_animated_status(self, status: bool) -> None:
@@ -635,9 +635,15 @@ class IntegrableViewer(QOpenGLWidget):
         results = self.model.slice_blocks(origin, plane_normal, blocks)
         self.signal_blocks_sliced.emit(results)
 
-    def slice_drawables(self, origin: np.ndarray, plane_normal: np.ndarray) -> None:
-        self.slice_meshes(origin, plane_normal)
-        self.slice_blocks(origin, plane_normal)
+    def slice_drawables(self, origin: np.ndarray, normal: np.ndarray, up: np.ndarray) -> None:
+        self.slice_meshes(origin, normal)
+        self.slice_blocks(origin, normal)
+
+        self.signal_elements_sliced.emit({
+            'origin': origin,
+            'normal': normal,
+            'up': up,
+        })
 
     def get_normal(self, origin_list, ray_list: list) -> np.ndarray:
         if self.projection_mode == 'perspective':
@@ -669,13 +675,7 @@ class IntegrableViewer(QOpenGLWidget):
         up /= np.linalg.norm(up)
 
         # Slice drawables
-        self.slice_drawables(origin, normal)
-
-        # Auto-rotate camera to meet cross-section
-        self.set_camera_from_vectors(normal, up)
-
-        # Auto-exit the slice mode for now
-        self.set_normal_mode()
+        self.slice_drawables(origin, normal, up)
 
     def measure_from_rays(self, origin_list: list, ray_list: list) -> None:
         meshes = [m.element for m in self.drawable_collection.filter(MeshGL) if m.is_visible]
