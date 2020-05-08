@@ -6,6 +6,7 @@
 #  See LICENSE for more info.
 
 import numpy as np
+import warnings
 
 from OpenGL.GL import *
 
@@ -26,8 +27,6 @@ from .collections.glbackgroundcollection import GLBackgroundCollection
 from .collections.gldrawablecollection import GLDrawableCollection
 
 from .drawables.gldrawable import GLDrawable
-from .drawables.axisgl import AxisGL
-from .drawables.backgroundgl import BackgroundGL
 from .drawables.blockgl import BlockGL
 from .drawables.linegl import LineGL
 from .drawables.meshgl import MeshGL
@@ -319,35 +318,78 @@ class IntegrableViewer(QOpenGLWidget):
     """
     Load methods by path
     """
-    def mesh_by_path(self, path: str, *args, **kwargs) -> MeshGL:
+    def load_mesh(self, path: str, *args, **kwargs) -> MeshGL:
         return self.register_drawable(self.drawable_factory.load_mesh(path, *args, **kwargs))
 
-    def blocks_by_path(self, path: str, *args, **kwargs) -> BlockGL:
+    def load_blocks(self, path: str, *args, **kwargs) -> BlockGL:
         return self.register_drawable(self.drawable_factory.load_blocks(path, *args, **kwargs))
 
-    def points_by_path(self, path: str, *args, **kwargs) -> PointGL:
+    def load_points(self, path: str, *args, **kwargs) -> PointGL:
         return self.register_drawable(self.drawable_factory.load_points(path, *args, **kwargs))
 
-    def lines_by_path(self, path: str, *args, **kwargs) -> LineGL:
+    def load_lines(self, path: str, *args, **kwargs) -> LineGL:
         return self.register_drawable(self.drawable_factory.load_lines(path, *args, **kwargs))
 
-    def tubes_by_path(self, path: str, *args, **kwargs) -> TubeGL:
+    def load_tubes(self, path: str, *args, **kwargs) -> TubeGL:
         return self.register_drawable(self.drawable_factory.load_tubes(path, *args, **kwargs))
 
+    def load_mesh_folder(self, path: str, *args, **kwargs) -> list:
+        return self.register_folder(path, self.mesh, *args, **kwargs)
+
+    def load_blocks_folder(self, path: str, *args, **kwargs) -> list:
+        return self.register_folder(path, self.blocks, *args, **kwargs)
+
+    def load_points_folder(self, path: str, *args, **kwargs) -> list:
+        return self.register_folder(path, self.points, *args, **kwargs)
+
+    def load_lines_folder(self, path: str, *args, **kwargs) -> list:
+        return self.register_folder(path, self.lines, *args, **kwargs)
+
+    def load_tubes_folder(self, path: str, *args, **kwargs) -> list:
+        return self.register_folder(path, self.tubes, *args, **kwargs)
+
+    """
+    Load methods by path (DEPRECATED)
+    """
+    def mesh_by_path(self, path: str, *args, **kwargs) -> MeshGL:
+        warnings.warn('mesh_by_path() is deprecated. Use load_mesh() instead.', DeprecationWarning, 2)
+        return self.load_mesh(path, *args, **kwargs)
+
+    def blocks_by_path(self, path: str, *args, **kwargs) -> BlockGL:
+        warnings.warn('blocks_by_path() is deprecated. Use load_blocks() instead.', DeprecationWarning, 2)
+        return self.load_blocks(path, *args, **kwargs)
+
+    def points_by_path(self, path: str, *args, **kwargs) -> PointGL:
+        warnings.warn('points_by_path() is deprecated. Use load_points() instead.', DeprecationWarning, 2)
+        return self.load_points(path, *args, **kwargs)
+
+    def lines_by_path(self, path: str, *args, **kwargs) -> LineGL:
+        warnings.warn('lines_by_path() is deprecated. Use load_lines() instead.', DeprecationWarning, 2)
+        return self.load_lines(path, *args, **kwargs)
+
+    def tubes_by_path(self, path: str, *args, **kwargs) -> TubeGL:
+        warnings.warn('tubes_by_path() is deprecated. Use load_tubes() instead.', DeprecationWarning, 2)
+        return self.load_tubes(path, *args, **kwargs)
+
     def meshes_by_folder_path(self, path: str, *args, **kwargs) -> list:
-        return self.register_folder(path, self.mesh_by_path, *args, **kwargs)
+        warnings.warn('meshes_by_folder_path() is deprecated. Use load_mesh_folder() instead.', DeprecationWarning, 2)
+        return self.load_mesh_folder(path, *args, **kwargs)
 
     def blocks_by_folder_path(self, path: str, *args, **kwargs) -> list:
-        return self.register_folder(path, self.blocks_by_path, *args, **kwargs)
+        warnings.warn('blocks_by_folder_path() is deprecated. Use load_blocks_folder() instead.', DeprecationWarning, 2)
+        return self.load_blocks_folder(path, *args, **kwargs)
 
     def points_by_folder_path(self, path: str, *args, **kwargs) -> list:
-        return self.register_folder(path, self.points_by_path, *args, **kwargs)
+        warnings.warn('points_by_folder_path() is deprecated. Use load_points_folder() instead.', DeprecationWarning, 2)
+        return self.load_points_folder(path, *args, **kwargs)
 
     def lines_by_folder_path(self, path: str, *args, **kwargs) -> list:
-        return self.register_folder(path, self.lines_by_path, *args, **kwargs)
+        warnings.warn('lines_by_folder_path() is deprecated. Use load_lines_folder() instead.', DeprecationWarning, 2)
+        return self.load_lines_folder(path, *args, **kwargs)
 
     def tubes_by_folder_path(self, path: str, *args, **kwargs) -> list:
-        return self.register_folder(path, self.tubes_by_path, *args, **kwargs)
+        warnings.warn('tubes_by_folder_path() is deprecated. Use load_tubes_folder() instead.', DeprecationWarning, 2)
+        return self.load_tubes_folder(path, *args, **kwargs)
 
     """
     Export methods
@@ -730,6 +772,6 @@ class IntegrableViewer(QOpenGLWidget):
             path = url.toLocalFile()
 
             if QFileInfo(path).isDir():
-                self.meshes_by_folder_path(path)
+                self.load_mesh_folder(path)
             else:
-                self.mesh_by_path(path)
+                self.load_mesh(path)
