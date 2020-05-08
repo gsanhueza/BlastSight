@@ -76,25 +76,9 @@ class IntegrableViewer(QOpenGLWidget):
         self.background_collection = GLBackgroundCollection(self)
         self.drawable_collection = GLDrawableCollection(self)
 
-        # Axis/Background
-        self.register_drawable(self.factory.axis(id='AXIS'), self.axis_collection)
-        self.register_drawable(self.factory.background(id='BG'), self.background_collection)
-
-        # Signals for viewer (self)
-        self.signal_mode_updated.connect(lambda m: print(f'MODE: {m}'))
-        self.signal_file_modified.connect(self.recreate)
-        self.signal_load_success.connect(self.update_turbo)
-        self.signal_load_success.connect(self.update_autofit)
-
         # Controllers
         self.current_mode = None
         self.controllers = {}
-
-        self.add_controller(NormalMode, 'normal')
-        self.add_controller(DetectionMode, 'detection')
-        self.add_controller(SliceMode, 'slice')
-        self.add_controller(MeasurementMode, 'measurement')
-        self.set_normal_mode()
 
         # Camera/World/Projection
         self.camera = QMatrix4x4()
@@ -117,6 +101,30 @@ class IntegrableViewer(QOpenGLWidget):
         self.fov = 45.0
         self.smoothness = 2.0  # Bigger => smoother (but slower) rotations
         self.projection_mode = 'perspective'  # 'perspective'/'orthographic'
+
+        # Initialize viewer
+        self.initialize()
+
+    def initialize(self) -> None:
+        # Axis/Background
+        self.register_drawable(self.factory.axis(id='AXIS'), self.axis_collection)
+        self.register_drawable(self.factory.background(id='BG'), self.background_collection)
+
+        # Signals
+        self.signal_mode_updated.connect(lambda m: print(f'MODE: {m}'))
+        self.signal_file_modified.connect(self.recreate)
+        self.signal_load_success.connect(self.update_turbo)
+        self.signal_load_success.connect(self.update_autofit)
+
+        # Controllers
+        self.add_controller(NormalMode, 'normal')
+        self.add_controller(DetectionMode, 'detection')
+        self.add_controller(SliceMode, 'slice')
+        self.add_controller(MeasurementMode, 'measurement')
+        self.set_normal_mode()
+
+        # FPSCounter
+        self.fps_counter.add_callback(self.signal_fps_updated.emit)
 
     """
     Properties
@@ -569,14 +577,15 @@ class IntegrableViewer(QOpenGLWidget):
         self.axis_collection.draw(self.proj, self.camera, self.world)
 
         # Tick FPS counter
-        self.fps_counter.tick(callback=self.signal_fps_updated.emit)
+        self.fps_counter.tick()
 
     def resizeGL(self, w: float, h: float) -> None:
+        aspect = w / h
+
         if self.projection_mode == 'perspective':
-            self.proj.perspective(self.fov, (w / h), 1.0, 100000.0)
+            self.proj.perspective(self.fov, aspect, 1.0, 100000.0)
         elif self.projection_mode == 'orthographic':
             z = self.off_center[2]
-            aspect = w / h
             self.proj.ortho(-z, z, -z / aspect, z / aspect, 0.0, 100000.0)
 
     """
