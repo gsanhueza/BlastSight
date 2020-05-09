@@ -205,6 +205,7 @@ class MainWindow(QMainWindow):
     Status bar updates
     """
     def slot_element_load_success(self, _id: int) -> None:
+        self.viewer.update_turbo()
         self.statusBar.showMessage(f'Load successful (id: {_id}).')
 
     def slot_element_load_failure(self) -> None:
@@ -312,8 +313,9 @@ class MainWindow(QMainWindow):
             options=QFileDialog.ShowDirsOnly)
 
         # Execute method
-        self._threaded_load(loader, path, *args, **kwargs)
-        self.last_dir = path
+        if bool(path):
+            self._threaded_load(loader, path, *args, **kwargs)
+            self.last_dir = path
 
     def _dialog_export_element(self, _id: int, filters: str, method: classmethod) -> None:
         proposed_path = QDir(self.last_dir).filePath(self.viewer.get_drawable(_id).element.name)

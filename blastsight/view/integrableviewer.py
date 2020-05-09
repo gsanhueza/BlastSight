@@ -113,8 +113,7 @@ class IntegrableViewer(QOpenGLWidget):
         # Signals
         self.signal_mode_updated.connect(lambda m: print(f'MODE: {m}'))
         self.signal_file_modified.connect(self.recreate)
-        self.signal_load_success.connect(self.update_turbo)
-        self.signal_load_success.connect(self.update_autofit)
+        self.signal_file_modified.connect(self.update_autofit)
 
         # Controllers
         self.add_controller(NormalMode, 'normal')
@@ -225,8 +224,6 @@ class IntegrableViewer(QOpenGLWidget):
         return self._animated
 
     def set_turbo_status(self, status: bool) -> None:
-        if status:
-            print('WARNING: Turbo-rendering might leave you without memory!')
         self._turbo = status
         self.update_turbo()
 

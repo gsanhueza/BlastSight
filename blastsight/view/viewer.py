@@ -66,6 +66,7 @@ class Viewer(IntegrableViewer):
             Qt.Key_5: self.orthographic_projection,
             Qt.Key_Space: self.fit_to_screen,
             Qt.Key_Delete: lambda: self.delete(self.last_id),
+            Qt.Key_T: lambda: self.set_turbo_status(not self.get_turbo_status()),
             Qt.Key_W: lambda: rotate([-10.0, 0.0, 0.0]),
             Qt.Key_S: lambda: rotate([10.0, 0.0, 0.0]),
             Qt.Key_A: lambda: rotate([0.0, -10.0, 0.0]),
