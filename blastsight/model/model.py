@@ -102,9 +102,9 @@ class Model:
     """
     Load methods by arguments
     """
-    @staticmethod
-    def null(*args, **kwargs) -> NullElement:
-        return NullElement(hint='null', *args, **kwargs)
+    def null(self, *args, **kwargs) -> NullElement:
+        # A NullElement won't be registered
+        return self.factory.null(*args, **kwargs)
 
     def mesh(self, *args, **kwargs) -> MeshElement:
         return self.register_element(self.factory.mesh(*args, **kwargs))

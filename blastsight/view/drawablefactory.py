@@ -27,7 +27,7 @@ class DrawableFactory:
         try:
             element = generator(*args, **kwargs)
             drawable = d_class(element, *args, **kwargs)
-            
+
             return drawable
         except Exception:
             traceback.print_exc()
