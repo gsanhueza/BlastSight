@@ -554,9 +554,11 @@ class IntegrableViewer(QOpenGLWidget):
         self.world.translate(*self.rotation_center)
 
         # Allow rotation of the world
+        # Auto-rotations from cross-sections need this rotation order, because my implementation uses
+        # QQuaternion.getEulerAngles() (but in truth they're Tait-Bryan angles with ZXY convention)
+        self.world.rotate(self.zCenterRot, 0.0, 0.0, 1.0)
         self.world.rotate(self.xCenterRot, 1.0, 0.0, 0.0)
         self.world.rotate(self.yCenterRot, 0.0, 1.0, 0.0)
-        self.world.rotate(self.zCenterRot, 0.0, 0.0, 1.0)
 
         # Restore world
         self.world.translate(*-self.rotation_center)
@@ -697,8 +699,9 @@ class IntegrableViewer(QOpenGLWidget):
     @staticmethod
     def angles_from_vector(normal: np.ndarray, up: np.ndarray) -> np.ndarray:
         # Returns a list of angles that allows the normal to look directly at the camera
-        return np.array(QQuaternion.fromDirection(QVector3D(*normal),
-                                                  QVector3D(*up)).getEulerAngles())
+        # The negative sign is because my implementation rotates the world instead of the camera
+        return -np.array(QQuaternion.fromDirection(QVector3D(*normal),
+                                                   QVector3D(*up)).getEulerAngles())
 
     def set_camera_from_vectors(self, normal: np.ndarray, up: np.ndarray) -> None:
         # Auto-moves the camera using the normal as direction
