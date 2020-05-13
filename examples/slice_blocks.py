@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import numpy
+import numpy as np
 from blastsight.view.viewer import Viewer
 
 """
@@ -16,20 +16,26 @@ Then, we'll slice the blocks by a plane.
 We need the plane's normal and any point that belongs to that plane.
 """
 blocks = v.load_blocks(path)
-description = v.model.slice_blocks(block_list=[blocks],
-                                   origin=blocks.center,
-                                   plane_normal=[0.5, 1.0, 1.0])
+origin = blocks.center
+normal = np.array([0.5, 1.0, 1.0])
 
-indices = description.get('slices')[0].get('indices')
+slices = v.slice_blocks(origin, normal)
 
 """
 Then, we'll show the detected blocks.
 """
-v.blocks(vertices=blocks.vertices[indices],
-         values=blocks.values[indices],
-         vmin=blocks.vmin,
-         vmax=blocks.vmax,
-         block_size=blocks.block_size)
+for block_slice in slices:
+    # The slices list has only one item because we only have one block element
+    element_id = block_slice.get('element_id')
+    element = v.get_drawable(element_id)  # element == blocks in this example
+
+    indices = block_slice.get('indices')
+
+    v.blocks(vertices=element.vertices[indices],
+             values=element.values[indices],
+             vmin=element.vmin,
+             vmax=element.vmax,
+             block_size=element.block_size)
 
 """
 We'll shrink the original blocks so the difference will be more evident.
