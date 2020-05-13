@@ -6,7 +6,6 @@
 #  See LICENSE for more info.
 
 import numpy as np
-import transforms3d.taitbryan as taitbryan
 import warnings
 
 from OpenGL.GL import *
@@ -22,6 +21,7 @@ from qtpy.QtGui import QRegion
 from qtpy.QtGui import QVector3D
 from qtpy.QtGui import QVector4D
 from qtpy.QtWidgets import QOpenGLWidget
+from scipy.spatial.transform import Rotation
 
 from .collections.glaxiscollection import GLAxisCollection
 from .collections.glbackgroundcollection import GLBackgroundCollection
@@ -267,7 +267,7 @@ class IntegrableViewer(QOpenGLWidget):
                 timer.stop()
 
         timer.timeout.connect(animation_per_frame)
-        timer.start(1.0 / frames)
+        timer.start(1.0 / 60.0)
 
     """
     Projections
@@ -692,33 +692,17 @@ class IntegrableViewer(QOpenGLWidget):
         return normal / np.linalg.norm(normal)
 
     @staticmethod
-    def zxy_angles_from_vectors(normal: np.ndarray, up: np.ndarray) -> np.ndarray:
+    def angles_from_vectors(normal: np.ndarray, up: np.ndarray) -> np.ndarray:
         # Returns a list of angles that allows the normal to look directly at the camera
-        # The negative sign is because my implementation rotates the world instead of the camera
+        # Extrinsic: xyz / Intrinsic: XYZ (Tait-Bryan angles)
+        # In self.paintGL, we're currently using the XYZ intrinsic rotation order.
 
-        # QQuaternion.getEulerAngles() returns Tait-Bryan angles with ZXY convention,
-        # assuming intrinsic rotations, so if we want to use this method, our rotation order must be ZXY.
-        return -np.array(QQuaternion.fromDirection(QVector3D(*normal), QVector3D(*up)).getEulerAngles())
-
-    @staticmethod
-    def xyz_angles_from_vectors(normal: np.ndarray, up: np.ndarray) -> np.ndarray:
-        # Returns a list of angles that allows the normal to look directly at the camera
-        # The negative sign is because my implementation rotates the world instead of the camera
-
-        # transforms3d.taitbryan.axangle2euler returns Tait-Bryan angles with ZYX convention,
-        # assuming extrinsic rotations. But we're using intrinsic rotations, so we use this property:
-        # Extrinsic rotations in ZYX == Intrinsic rotations in XYZ (our current rotation order)
-        # https://www.cs.utexas.edu/~theshark/courses/cs354/lectures/cs354-14.pdf, slide 14
-        # https://en.wikipedia.org/wiki/Davenport_chained_rotations#Conversion_to_extrinsic_rotations
-        axis, angle = QQuaternion.fromDirection(QVector3D(*normal), QVector3D(*up)).getAxisAndAngle()
-        euler = taitbryan.axangle2euler([axis.z(), axis.y(), axis.x()], -np.deg2rad(angle))
-        return np.rad2deg(euler)
+        rotmat = QQuaternion.fromDirection(QVector3D(*normal), QVector3D(*up)).toRotationMatrix().data()
+        return Rotation.from_matrix(np.array(rotmat).reshape((3, 3))).as_euler('XYZ', degrees=True)
 
     def set_camera_from_vectors(self, normal: np.ndarray, up: np.ndarray) -> None:
         # Auto-moves the camera using the normal as direction
-        # Depending on the rotation order in paintGL, we'll want to use either
-        # self.xyz_angles_from_vectors or self.zxy_angles_from_vectors
-        self.set_rotation_angle(self.xyz_angles_from_vectors(normal, up))
+        self.set_rotation_angle(self.angles_from_vectors(normal, up))
 
     def cross_section(self, origin_list: list, ray_list: list) -> None:
         # A plane is created from `origin` and `ray_list`.
