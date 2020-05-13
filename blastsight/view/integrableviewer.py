@@ -145,6 +145,9 @@ class IntegrableViewer(QOpenGLWidget):
     def off_center(self) -> np.ndarray:
         return self.camera_position - self.rotation_center
 
+    """
+    Camera movements/rotations
+    """
     @property
     def camera_position(self) -> np.ndarray:
         return np.array([self.xCameraPos, self.yCameraPos, self.zCameraPos])
@@ -171,6 +174,18 @@ class IntegrableViewer(QOpenGLWidget):
     def rotation_center(self, center: list) -> None:
         self.xCenterPos, self.yCenterPos, self.zCenterPos = center
         self.update()
+
+    """
+    API for partial camera movements/rotations
+    """
+    def translate(self, x: float, y: float, z: float) -> None:
+        self.camera_position += np.array([x, y, z])
+
+    def translate_center(self, x: float, y: float, z: float) -> None:
+        self.rotation_center += np.array([x, y, z])
+
+    def rotate(self, alpha: float, beta: float, gamma: float) -> None:
+        self.rotation_angle += np.array([alpha, beta, gamma]) % 360
 
     """
     API for the camera (animated)

@@ -37,28 +37,4 @@ class Mode:
         off_center = viewer.off_center[2]
         shift = -sign * movement_rate * max(-sign, off_center) / smoothness
 
-        self.set_z_movement(viewer, viewer.zCameraPos + shift)
-
-    @staticmethod
-    def set_x_rotation(viewer, angle: float) -> None:
-        viewer.xCenterRot = angle % 360
-
-    @staticmethod
-    def set_y_rotation(viewer, angle: float) -> None:
-        viewer.yCenterRot = angle % 360
-
-    @staticmethod
-    def set_z_rotation(viewer, angle: float) -> None:
-        viewer.zCenterRot = angle % 360
-
-    @staticmethod
-    def set_x_movement(viewer, position: float) -> None:
-        viewer.xCameraPos = position
-
-    @staticmethod
-    def set_y_movement(viewer, position: float) -> None:
-        viewer.yCameraPos = position
-
-    @staticmethod
-    def set_z_movement(viewer, position: float) -> None:
-        viewer.zCameraPos = position
+        viewer.translate(x=0, y=0, z=shift)

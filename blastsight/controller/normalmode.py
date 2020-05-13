@@ -32,16 +32,16 @@ class NormalMode(Mode):
 
         viewer.world.setToIdentity()
         if event.buttons() == Qt.LeftButton:
-            self.set_x_rotation(viewer, viewer.xCenterRot + dy / smoothness)
-            self.set_z_rotation(viewer, viewer.zCenterRot + dx / smoothness)
+            viewer.rotate(alpha=dy / smoothness, beta=0, gamma=dx / smoothness)
+
         elif event.buttons() == Qt.RightButton:
-            self.set_x_rotation(viewer, viewer.xCenterRot + dy / smoothness)
-            self.set_y_rotation(viewer, viewer.yCenterRot + dx / smoothness)
+            viewer.rotate(alpha=dy / smoothness, beta=dx / smoothness, gamma=0)
+
         elif event.buttons() == Qt.MiddleButton:
             off_center = viewer.off_center[2]
             distance_x = off_center / viewer.width()
             distance_y = off_center / viewer.height()
-            self.set_x_movement(viewer, viewer.xCameraPos - (distance_x * dx))
-            self.set_y_movement(viewer, viewer.yCameraPos + (distance_y * dy))
+
+            viewer.translate(x=-distance_x * dx, y=distance_y * dy, z=0)
 
         self.lastPos = QPoint(event.pos())
