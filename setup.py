@@ -30,6 +30,7 @@ setuptools.setup(
         'tables',
         'meshcut',
         'colour',
+        'transforms3d',
     ],
     tests_require=[
         'pytest',

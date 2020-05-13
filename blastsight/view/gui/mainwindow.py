@@ -239,7 +239,7 @@ class MainWindow(QMainWindow):
         self.add_block_slices(block_slices)
 
         # Auto-rotate camera to meet cross-section
-        # self.viewer.set_camera_from_vectors(normal, up)
+        self.viewer.set_camera_from_vectors(normal, up)
 
         # Auto-exit slice mode
         self.viewer.set_normal_mode()
