@@ -30,6 +30,6 @@ class SliceMode(Mode):
         self.origins.append(viewer.origin_from_click(x, y, z))
 
         if len(self.rays) == 2:
-            viewer.slice_from_rays(self.origins, self.rays)
+            viewer.cross_section(self.origins, self.rays)
             self.origins.clear()
             self.rays.clear()

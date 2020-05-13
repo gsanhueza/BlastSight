@@ -173,8 +173,6 @@ class MainWindow(QMainWindow):
         self.viewer.signal_mesh_clicked.connect(self.slot_mesh_clicked)
         self.viewer.signal_mesh_distances.connect(self.slot_mesh_distances)
         self.viewer.signal_slice_description.connect(self.slot_slice_description)
-        self.viewer.signal_mesh_sliced.connect(self.slot_mesh_sliced)
-        self.viewer.signal_blocks_sliced.connect(self.slot_blocks_sliced)
 
         self.viewer.signal_load_success.connect(self.slot_element_load_success)
         self.viewer.signal_load_failure.connect(self.slot_element_load_failure)
@@ -233,8 +231,12 @@ class MainWindow(QMainWindow):
         up = description.get('up')
 
         # Slice elements
-        self.viewer.slice_meshes(origin, normal)
-        self.viewer.slice_blocks(origin, normal)
+        mesh_slices = self.viewer.slice_meshes(origin, normal)
+        block_slices = self.viewer.slice_blocks(origin, normal)
+
+        # Add to elements
+        self.add_mesh_slices(mesh_slices)
+        self.add_block_slices(block_slices)
 
         # Auto-rotate camera to meet cross-section
         # self.viewer.set_camera_from_vectors(normal, up)
@@ -242,13 +244,11 @@ class MainWindow(QMainWindow):
         # Auto-exit slice mode
         self.viewer.set_normal_mode()
 
-    def slot_mesh_sliced(self, slice_dict: dict) -> None:
-        slice_list = slice_dict.get('slices', [])
-
+    def add_mesh_slices(self, slice_list: list) -> None:
         for sliced_meshes in slice_list:
             slices = sliced_meshes.get('vertices')
-            origin_id = sliced_meshes.get('origin_id')
-            mesh = self.viewer.get_drawable(origin_id)
+            mesh_id = sliced_meshes.get('mesh_id')
+            mesh = self.viewer.get_drawable(mesh_id)
 
             if 'SLICE' in str(mesh.name):
                 continue
@@ -260,13 +260,11 @@ class MainWindow(QMainWindow):
                                   extension='csv',
                                   loop=True)
 
-    def slot_blocks_sliced(self, slice_dict: dict) -> None:
-        slice_list = slice_dict.get('slices', [])
-
+    def add_block_slices(self, slice_list: list) -> None:
         for sliced_blocks in slice_list:
             indices = sliced_blocks.get('indices')
-            origin_id = sliced_blocks.get('origin_id')
-            block = self.viewer.get_drawable(origin_id)
+            block_id = sliced_blocks.get('block_id')
+            block = self.viewer.get_drawable(block_id)
 
             if 'SLICE' in str(block.name):
                 continue

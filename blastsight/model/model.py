@@ -204,52 +204,37 @@ class Model:
     Adapter for viewer's utilities (slice/distance)
     """
     @staticmethod
-    def slice_meshes(origin: np.ndarray, plane_normal: np.ndarray, meshes: list) -> dict:
+    def slice_meshes(origin: np.ndarray, plane_normal: np.ndarray, meshes: list) -> list:
         """
-        Returns a dict with the following structure:
+        Returns a list of dicts, where each dict is the mesh ID and its sliced vertices
+        """
+        result = []
 
-        {
-            'plane_origin': list(float),
-            'plane_normal': list(float)',
-            'slices': [{
-                'origin_id': int,
-                'vertices': list(list(float))
-            }]
-        }
-        """
-        return {
-            'plane_origin': origin,
-            'plane_normal': plane_normal,
-            'slices': [
-                {
-                    'origin_id': mesh.id,
-                    'vertices': mesh.slice_with_plane(origin, plane_normal)
-                } for mesh in meshes]
-        }
+        for mesh in meshes:
+            vertices = mesh.slice_with_plane(origin, plane_normal)
+            if len(vertices) > 0:
+                result.append({'mesh_id': mesh.id,
+                               'vertices': vertices,
+                               })
+
+        return result
 
     @staticmethod
-    def slice_blocks(origin: np.ndarray, plane_normal: np.ndarray, block_list: list) -> dict:
+    def slice_blocks(origin: np.ndarray, plane_normal: np.ndarray, block_list: list) -> list:
         """
-        Returns a dict with the following structure:
+        Returns a list of dicts, where each dict is the block ID and its sliced indices
+        """
+        result = []
 
-        {
-            'plane_origin': list(float),
-            'plane_normal': list(float)',
-            'slices': [{
-                'origin_id': int,
-                'indices': list(int)
-            }]
-        }
-        """
-        return {
-            'plane_origin': origin,
-            'plane_normal': plane_normal,
-            'slices': [
-                {
-                    'origin_id': block.id,
-                    'indices': block.slice_with_plane(origin, plane_normal)
-                } for block in block_list]
-        }
+        for block in block_list:
+            indices = block.slice_with_plane(origin, plane_normal)
+            if len(indices) > 0:
+                result.append({
+                    'block_id': block.id,
+                    'indices': indices,
+                })
+
+        return result
 
     @staticmethod
     def measure_from_rays(origin_list: list, ray_list: list, meshes: list) -> dict:

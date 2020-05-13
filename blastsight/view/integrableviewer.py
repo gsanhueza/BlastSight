@@ -55,8 +55,6 @@ class IntegrableViewer(QOpenGLWidget):
     signal_mesh_clicked = Signal(object)
     signal_mesh_distances = Signal(object)
     signal_slice_description = Signal(object)
-    signal_mesh_sliced = Signal(object)
-    signal_blocks_sliced = Signal(object)
 
     signal_mode_updated = Signal(str)
     signal_fps_updated = Signal(float)
@@ -111,7 +109,6 @@ class IntegrableViewer(QOpenGLWidget):
         self.register_drawable(self.factory.background(id='BG'), self.background_collection)
 
         # Signals
-        self.signal_mode_updated.connect(lambda m: print(f'MODE: {m}'))
         self.signal_file_modified.connect(self.recreate)
         self.signal_file_modified.connect(self.update_autofit)
 
@@ -669,22 +666,6 @@ class IntegrableViewer(QOpenGLWidget):
 
         return origin
 
-    def slice_meshes(self, origin: np.ndarray, normal: np.ndarray, include_hidden: bool = False) -> None:
-        # By default, slice only visible meshes
-        meshes = [m.element for m in self.drawable_collection.filter(MeshGL)
-                  if m.is_visible or include_hidden]
-
-        results = self.model.slice_meshes(origin, normal, meshes)
-        self.signal_mesh_sliced.emit(results)
-
-    def slice_blocks(self, origin: np.ndarray, normal: np.ndarray, include_hidden: bool = True) -> None:
-        # By default, slice visible and hidden blocks
-        blocks = [m.element for m in self.drawable_collection.filter(BlockGL)
-                  if m.is_visible or include_hidden]
-
-        results = self.model.slice_blocks(origin, normal, blocks)
-        self.signal_blocks_sliced.emit(results)
-
     def get_normal(self, origin_list, ray_list: list) -> np.ndarray:
         if self.projection_mode == 'perspective':
             # Perspective: Same origins, different rays
@@ -707,7 +688,7 @@ class IntegrableViewer(QOpenGLWidget):
         # Auto-moves the camera using the normal as direction
         self.set_rotation_angle(self.angles_from_vector(normal, up))
 
-    def slice_from_rays(self, origin_list: list, ray_list: list) -> None:
+    def cross_section(self, origin_list: list, ray_list: list) -> None:
         # A plane is created from `origin` and `ray_list`.
         # In perspective projection, the origin is the same.
         origin = origin_list[0]
@@ -721,6 +702,20 @@ class IntegrableViewer(QOpenGLWidget):
             'normal': normal,
             'up': up,
         })
+
+    def slice_meshes(self, origin: np.ndarray, normal: np.ndarray, include_hidden: bool = False) -> list:
+        # By default, slice only visible meshes
+        meshes = [m.element for m in self.drawable_collection.filter(MeshGL)
+                  if m.is_visible or include_hidden]
+
+        return self.model.slice_meshes(origin, normal, meshes)
+
+    def slice_blocks(self, origin: np.ndarray, normal: np.ndarray, include_hidden: bool = True) -> list:
+        # By default, slice visible and hidden blocks
+        blocks = [m.element for m in self.drawable_collection.filter(BlockGL)
+                  if m.is_visible or include_hidden]
+
+        return self.model.slice_blocks(origin, normal, blocks)
 
     def measure_from_rays(self, origin_list: list, ray_list: list) -> None:
         meshes = [m.element for m in self.drawable_collection.filter(MeshGL) if m.is_visible]
