@@ -334,9 +334,9 @@ class MainWindow(QMainWindow):
         dialog = CameraDialog(self.viewer)
 
         def update_viewer() -> None:
-            self.viewer.set_camera_position(dialog.camera_position)
-            self.viewer.set_rotation_angle(dialog.rotation_angle)
-            self.viewer.set_rotation_center(dialog.rotation_center)
+            self.viewer.set_camera_position(dialog.get_camera_position())
+            self.viewer.set_rotation_angle(dialog.get_rotation_angle())
+            self.viewer.set_rotation_center(dialog.get_rotation_center())
             self.viewer.update()
 
         dialog.accepted.connect(update_viewer)

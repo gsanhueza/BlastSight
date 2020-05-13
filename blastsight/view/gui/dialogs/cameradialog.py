@@ -21,42 +21,39 @@ class CameraDialog(QDialog):
         # Avoids the QObject::startTimer warning (maybe)
         self.setAttribute(Qt.WA_DeleteOnClose)
 
-        self.camera_position = viewer.camera_position
-        self.rotation_angle = viewer.rotation_angle
-        self.rotation_center = viewer.rotation_center
+        self.connect_viewer(viewer)
 
-    @property
-    def camera_position(self) -> list:
+    def connect_viewer(self, viewer) -> None:
+        self.set_camera_position(viewer.get_camera_position())
+        self.set_rotation_angle(viewer.get_rotation_angle())
+        self.set_rotation_center(viewer.get_rotation_center())
+
+    def get_camera_position(self) -> list:
         return [self.doubleSpinBox_x.value(),
                 self.doubleSpinBox_y.value(),
                 self.doubleSpinBox_z.value()]
 
-    @property
-    def rotation_angle(self) -> list:
+    def get_rotation_angle(self) -> list:
         return [self.doubleSpinBox_rot_x.value(),
                 self.doubleSpinBox_rot_y.value(),
                 self.doubleSpinBox_rot_z.value()]
 
-    @property
-    def rotation_center(self) -> list:
+    def get_rotation_center(self) -> list:
         return [self.doubleSpinBox_center_x.value(),
                 self.doubleSpinBox_center_y.value(),
                 self.doubleSpinBox_center_z.value()]
 
-    @camera_position.setter
-    def camera_position(self, position: list) -> None:
+    def set_camera_position(self, position: list) -> None:
         self.doubleSpinBox_x.setValue(position[0])
         self.doubleSpinBox_y.setValue(position[1])
         self.doubleSpinBox_z.setValue(position[2])
 
-    @rotation_angle.setter
-    def rotation_angle(self, angle: list) -> None:
+    def set_rotation_angle(self, angle: list) -> None:
         self.doubleSpinBox_rot_x.setValue(angle[0])
         self.doubleSpinBox_rot_y.setValue(angle[1])
         self.doubleSpinBox_rot_z.setValue(angle[2])
 
-    @rotation_center.setter
-    def rotation_center(self, center: list) -> None:
+    def set_rotation_center(self, center: list) -> None:
         self.doubleSpinBox_center_x.setValue(center[0])
         self.doubleSpinBox_center_y.setValue(center[1])
         self.doubleSpinBox_center_z.setValue(center[2])
