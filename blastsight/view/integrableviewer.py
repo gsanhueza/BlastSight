@@ -60,6 +60,10 @@ class IntegrableViewer(QOpenGLWidget):
     signal_mode_updated = Signal(str)
     signal_fps_updated = Signal(float)
 
+    signal_camera_rotated = Signal(object)
+    signal_camera_translated = Signal(object)
+    signal_center_translated = Signal(object)
+
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setAcceptDrops(True)
@@ -112,6 +116,9 @@ class IntegrableViewer(QOpenGLWidget):
         # Signals
         self.signal_file_modified.connect(self.recreate)
         self.signal_file_modified.connect(self.update_autofit)
+        self.signal_camera_rotated.connect(self.update)
+        self.signal_camera_translated.connect(self.update)
+        self.signal_center_translated.connect(self.update)
 
         # Controllers
         self.add_controller(NormalMode, 'normal')
@@ -164,17 +171,17 @@ class IntegrableViewer(QOpenGLWidget):
     @camera_position.setter
     def camera_position(self, pos: list) -> None:
         self.xCameraPos, self.yCameraPos, self.zCameraPos = pos
-        self.update()
+        self.signal_camera_translated.emit(pos)
 
     @rotation_angle.setter
     def rotation_angle(self, rot: list) -> None:
         self.xCenterRot, self.yCenterRot, self.zCenterRot = rot
-        self.update()
+        self.signal_camera_rotated.emit(rot)
 
     @rotation_center.setter
     def rotation_center(self, center: list) -> None:
         self.xCenterPos, self.yCenterPos, self.zCenterPos = center
-        self.update()
+        self.signal_center_translated.emit(center)
 
     """
     API for partial camera movements/rotations
@@ -186,7 +193,8 @@ class IntegrableViewer(QOpenGLWidget):
         self.rotation_center += np.array([x, y, z])
 
     def rotate(self, alpha: float, beta: float, gamma: float) -> None:
-        self.rotation_angle += np.array([alpha, beta, gamma]) % 360
+        self.rotation_angle += np.array([alpha, beta, gamma])
+        self.rotation_angle %= 360
 
     """
     API for the camera (animated)

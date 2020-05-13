@@ -27,7 +27,7 @@ class CameraDialog(QDialog):
         self.setAttribute(Qt.WA_DeleteOnClose)
         self._connect_internal_signals()
 
-    def _connect_internal_signals(self):
+    def _connect_internal_signals(self) -> None:
         self.doubleSpinBox_x.valueChanged.connect(self.signal_camera_translated.emit)
         self.doubleSpinBox_y.valueChanged.connect(self.signal_camera_translated.emit)
         self.doubleSpinBox_z.valueChanged.connect(self.signal_camera_translated.emit)
@@ -39,6 +39,26 @@ class CameraDialog(QDialog):
         self.doubleSpinBox_center_x.valueChanged.connect(self.signal_center_translated.emit)
         self.doubleSpinBox_center_y.valueChanged.connect(self.signal_center_translated.emit)
         self.doubleSpinBox_center_z.valueChanged.connect(self.signal_center_translated.emit)
+
+    def connect_viewer(self, viewer) -> None:
+        # Connect viewer's signals to automatically update self
+        viewer.signal_camera_rotated.connect(self.set_rotation_angle)
+        viewer.signal_camera_translated.connect(self.set_camera_position)
+        viewer.signal_center_translated.connect(self.set_rotation_center)
+
+        # Connect signals to automatically update the viewer
+        def angle_setter():
+            viewer.rotation_angle = self.get_rotation_angle()
+
+        def camera_setter():
+            viewer.camera_position = self.get_camera_position()
+
+        def center_setter():
+            viewer.rotation_center = self.get_rotation_center()
+
+        self.signal_camera_rotated.connect(angle_setter)
+        self.signal_camera_translated.connect(camera_setter)
+        self.signal_center_translated.connect(center_setter)
 
     def get_camera_position(self) -> list:
         return [self.doubleSpinBox_x.value(),
@@ -56,16 +76,22 @@ class CameraDialog(QDialog):
                 self.doubleSpinBox_center_z.value()]
 
     def set_camera_position(self, position: list) -> None:
+        self.blockSignals(True)
         self.doubleSpinBox_x.setValue(position[0])
         self.doubleSpinBox_y.setValue(position[1])
         self.doubleSpinBox_z.setValue(position[2])
+        self.blockSignals(False)
 
     def set_rotation_angle(self, angle: list) -> None:
+        self.blockSignals(True)
         self.doubleSpinBox_rot_x.setValue(angle[0])
         self.doubleSpinBox_rot_y.setValue(angle[1])
         self.doubleSpinBox_rot_z.setValue(angle[2])
+        self.blockSignals(False)
 
     def set_rotation_center(self, center: list) -> None:
+        self.blockSignals(True)
         self.doubleSpinBox_center_x.setValue(center[0])
         self.doubleSpinBox_center_y.setValue(center[1])
         self.doubleSpinBox_center_z.setValue(center[2])
+        self.blockSignals(False)
