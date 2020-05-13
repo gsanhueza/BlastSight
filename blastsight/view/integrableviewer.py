@@ -106,8 +106,8 @@ class IntegrableViewer(QOpenGLWidget):
 
     def initialize(self) -> None:
         # Axis/Background
-        self.register_drawable(self.factory.axis(id='AXIS'), self.axis_collection)
-        self.register_drawable(self.factory.background(id='BG'), self.background_collection)
+        self.register_drawable(self.factory.axis(), self.axis_collection)
+        self.register_drawable(self.factory.background(), self.background_collection)
 
         # Signals
         self.signal_file_modified.connect(self.recreate)
@@ -136,11 +136,11 @@ class IntegrableViewer(QOpenGLWidget):
 
     @property
     def axis(self) -> GLDrawable:
-        return self.axis_collection.get('AXIS')
+        return self.axis_collection.get_last()
 
     @property
-    def bg(self) -> GLDrawable:
-        return self.background_collection.get('BG')
+    def background(self) -> GLDrawable:
+        return self.background_collection.get_last()
 
     @property
     def off_center(self) -> np.ndarray:

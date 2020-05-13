@@ -16,10 +16,10 @@ class BackgroundProgram(ShaderProgram):
     def setup(self) -> None:
         super().setup()
         self.add_uniform_loc('top_color')
-        self.add_uniform_loc('bot_color')
+        self.add_uniform_loc('bottom_color')
 
     def inner_draw(self, drawables: list) -> None:
         for drawable in drawables:
             self.update_uniform('top_color', *drawable.top_color)
-            self.update_uniform('bot_color', *drawable.bot_color)
+            self.update_uniform('bottom_color', *drawable.bottom_color)
             drawable.draw()

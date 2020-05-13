@@ -27,6 +27,9 @@ class GLCollection:
     def get(self, _id: int) -> GLDrawable:
         return self._collection.get(_id)
 
+    def get_last(self) -> GLDrawable:
+        return self.get(self.last_id)
+
     def get_all_ids(self) -> list:
         return list(self._collection.keys())
 
