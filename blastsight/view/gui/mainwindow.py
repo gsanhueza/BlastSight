@@ -16,6 +16,7 @@ from qtpy.QtCore import QThreadPool
 from qtpy.QtWidgets import QFileDialog
 from qtpy.QtWidgets import QMainWindow
 
+from .camerawidget import CameraWidget
 from .dialogs.cameradialog import CameraDialog
 from .dialogs.helpdialog import HelpDialog
 from .dialogs.aboutdialog import AboutDialog
@@ -331,15 +332,26 @@ class MainWindow(QMainWindow):
     Slots for pop-up dialogs
     """
     def handle_camera(self) -> None:
+        camera = CameraWidget()
+        camera.connect_viewer(self.viewer)
+
+        # Fill the widget with viewer attributes
+        camera.set_camera_position(self.viewer.get_camera_position())
+        camera.set_rotation_angle(self.viewer.get_rotation_angle())
+        camera.set_rotation_center(self.viewer.get_rotation_center())
+
+        camera.show()
+
+    def handle_camera_dialog(self) -> None:
         dialog = CameraDialog(self)
 
         # Connect with dialog with viewer
         dialog.connect_viewer(self.viewer)
 
         # Fill the dialog with viewer attributes
-        dialog.set_camera_position(self.viewer.get_camera_position())
-        dialog.set_rotation_angle(self.viewer.get_rotation_angle())
-        dialog.set_rotation_center(self.viewer.get_rotation_center())
+        dialog.camera.set_camera_position(self.viewer.get_camera_position())
+        dialog.camera.set_rotation_angle(self.viewer.get_rotation_angle())
+        dialog.camera.set_rotation_center(self.viewer.get_rotation_center())
 
         dialog.show()
 
