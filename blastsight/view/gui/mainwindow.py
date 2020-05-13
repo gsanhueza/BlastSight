@@ -17,7 +17,6 @@ from qtpy.QtWidgets import QFileDialog
 from qtpy.QtWidgets import QMainWindow
 
 from .camerawidget import CameraWidget
-from .dialogs.cameradialog import CameraDialog
 from .dialogs.helpdialog import HelpDialog
 from .dialogs.aboutdialog import AboutDialog
 from .iconcollection import IconCollection
@@ -70,8 +69,6 @@ class MainWindow(QMainWindow):
 
         # Extra actions
         actions = self.toolbar.action_collection
-        self.toolbar.insertAction(actions.action_plan_view,
-                                  actions.action_camera_properties)
         self.toolbar.addAction(actions.action_quit)
         self.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
 
@@ -333,27 +330,10 @@ class MainWindow(QMainWindow):
     """
     def handle_camera(self) -> None:
         camera = CameraWidget()
+        camera.setWindowIcon(self.windowIcon())
         camera.connect_viewer(self.viewer)
 
-        # Fill the widget with viewer attributes
-        camera.set_camera_position(self.viewer.get_camera_position())
-        camera.set_rotation_angle(self.viewer.get_rotation_angle())
-        camera.set_rotation_center(self.viewer.get_rotation_center())
-
         camera.show()
-
-    def handle_camera_dialog(self) -> None:
-        dialog = CameraDialog(self)
-
-        # Connect with dialog with viewer
-        dialog.connect_viewer(self.viewer)
-
-        # Fill the dialog with viewer attributes
-        dialog.camera.set_camera_position(self.viewer.get_camera_position())
-        dialog.camera.set_rotation_angle(self.viewer.get_rotation_angle())
-        dialog.camera.set_rotation_center(self.viewer.get_rotation_center())
-
-        dialog.show()
 
     def handle_screenshot(self) -> None:
         (path, selected_filter) = QFileDialog.getSaveFileName(

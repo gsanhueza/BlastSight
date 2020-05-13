@@ -14,11 +14,10 @@ from qtpy.QtWidgets import *
 class PropertiesDialog(QDialog):
     def __init__(self, element, parent=None):
         QDialog.__init__(self, parent)
-
-        # Avoids the QObject::startTimer warning (maybe)
         self.resize(450, 500)
-        self.setAttribute(Qt.WA_DeleteOnClose)
+
         self.setWindowTitle(f'Set properties ({element.name}.{element.extension})')
+        self.setWindowFlags(Qt.WindowStaysOnTopHint)
 
         # Left side of the dialog
         self.label_x = QLabel('Coordinate X (Easting)', self)

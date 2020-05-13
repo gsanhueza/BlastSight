@@ -5,13 +5,9 @@
 #  Distributed under the MIT License.
 #  See LICENSE for more info.
 
-import pathlib
-
 from qtpy.QtCore import Qt
 from qtpy.QtCore import Signal
-from qtpy.QtWidgets import QWidget
-
-from blastsight.view.gui.tools import uic
+from qtpy.QtWidgets import *
 
 
 class CameraWidget(QWidget):
@@ -21,11 +17,61 @@ class CameraWidget(QWidget):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        uic.loadUi(f'{pathlib.Path(__file__).parent}/UI/camerawidget.ui', self)
+        self.setWindowTitle('Camera Properties')
+        self.setWindowFlags(Qt.WindowStaysOnTopHint)
 
-        # Avoids the QObject::startTimer warning (maybe)
-        self.setAttribute(Qt.WA_DeleteOnClose)
+        self.label_position = QLabel('Camera position (X, Y, Z)', self)
+        self.label_center = QLabel('Rotation angle (X°, Y°, Z°)', self)
+        self.label_rotation = QLabel('Rotation center (X, Y, Z)', self)
+
+        self.doubleSpinBox_x = self._generate_spinbox()
+        self.doubleSpinBox_y = self._generate_spinbox()
+        self.doubleSpinBox_z = self._generate_spinbox()
+
+        self.doubleSpinBox_center_x = self._generate_spinbox()
+        self.doubleSpinBox_center_y = self._generate_spinbox()
+        self.doubleSpinBox_center_z = self._generate_spinbox()
+
+        self.doubleSpinBox_rot_x = self._generate_spinbox(0, 360)
+        self.doubleSpinBox_rot_y = self._generate_spinbox(0, 360)
+        self.doubleSpinBox_rot_z = self._generate_spinbox(0, 360)
+
+        # Layouts
+        self.horizontal_position = QHBoxLayout()
+        self.horizontal_center = QHBoxLayout()
+        self.horizontal_rotation = QHBoxLayout()
+
+        self.horizontal_position.addWidget(self.doubleSpinBox_x)
+        self.horizontal_position.addWidget(self.doubleSpinBox_y)
+        self.horizontal_position.addWidget(self.doubleSpinBox_z)
+
+        self.horizontal_center.addWidget(self.doubleSpinBox_center_x)
+        self.horizontal_center.addWidget(self.doubleSpinBox_center_y)
+        self.horizontal_center.addWidget(self.doubleSpinBox_center_z)
+
+        self.horizontal_rotation.addWidget(self.doubleSpinBox_rot_x)
+        self.horizontal_rotation.addWidget(self.doubleSpinBox_rot_y)
+        self.horizontal_rotation.addWidget(self.doubleSpinBox_rot_z)
+
+        # Main layout
+        self.layout = QVBoxLayout(self)
+        self.layout.addWidget(self.label_position)
+        self.layout.addLayout(self.horizontal_position)
+
+        self.layout.addWidget(self.label_center)
+        self.layout.addLayout(self.horizontal_center)
+
+        self.layout.addWidget(self.label_rotation)
+        self.layout.addLayout(self.horizontal_rotation)
+
         self._connect_internal_signals()
+
+    def _generate_spinbox(self, lower: float = -9999999.9, upper: float = +9999999.9) -> QAbstractSpinBox:
+        spinbox = QDoubleSpinBox(self)
+        spinbox.setMinimum(lower)
+        spinbox.setMaximum(upper)
+
+        return spinbox
 
     def _connect_internal_signals(self) -> None:
         self.doubleSpinBox_x.valueChanged.connect(self.signal_camera_translated.emit)
@@ -59,6 +105,11 @@ class CameraWidget(QWidget):
         self.signal_camera_rotated.connect(angle_setter)
         self.signal_camera_translated.connect(camera_setter)
         self.signal_center_translated.connect(center_setter)
+
+        # Fill the widget with viewer attributes
+        self.set_camera_position(viewer.get_camera_position())
+        self.set_rotation_angle(viewer.get_rotation_angle())
+        self.set_rotation_center(viewer.get_rotation_center())
 
     def get_camera_position(self) -> list:
         return [self.doubleSpinBox_x.value(),

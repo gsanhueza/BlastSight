@@ -11,6 +11,7 @@ from qtpy.QtWidgets import QFileDialog
 from qtpy.QtWidgets import QVBoxLayout
 from qtpy.QtWidgets import QWidget
 
+from .camerawidget import CameraWidget
 from .toolbar import ToolBar
 from .treewidget import TreeWidget
 from .iconcollection import IconCollection
@@ -23,8 +24,9 @@ class Container(QWidget):
         self.setAcceptDrops(True)
 
         self.toolbar = ToolBar(self)
-        self.tree = TreeWidget()
         self.viewer = IntegrableViewer(self)
+        self.camera = CameraWidget()
+        self.tree = TreeWidget()
 
         self.layout = QVBoxLayout(self)
         self.layout.addWidget(self.viewer)
@@ -35,13 +37,8 @@ class Container(QWidget):
         self.setWindowIcon(IconCollection.get('blastsight.png'))
         self.resize(600, 500)
 
-        # Tree
-        self.tree.setWindowTitle('Drawables')
-
         # Actions
-        self.toolbar.connect_tree(self.tree)
-        self.toolbar.connect_viewer(self.viewer)
-        self.tree.connect_viewer(self.viewer)
+        self.toolbar.auto_connect(self.tree, self.viewer, self.camera)
 
         actions = self.toolbar.action_collection
         actions.action_take_screenshot.triggered.connect(self.handle_screenshot)
