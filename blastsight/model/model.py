@@ -204,33 +204,33 @@ class Model:
     Adapter for viewer's utilities (slice/distance)
     """
     @staticmethod
-    def slice_meshes(origin: np.ndarray, plane_normal: np.ndarray, meshes: list) -> list:
+    def slice_meshes(origin: np.ndarray, normal: np.ndarray, meshes: list) -> list:
         """
         Returns a list of dicts, where each dict is the mesh ID and its sliced vertices
         """
         result = []
 
         for mesh in meshes:
-            vertices = mesh.slice_with_plane(origin, plane_normal)
+            vertices = mesh.slice_with_plane(origin, normal)
             if len(vertices) > 0:
-                result.append({'mesh_id': mesh.id,
+                result.append({'element_id': mesh.id,
                                'vertices': vertices,
                                })
 
         return result
 
     @staticmethod
-    def slice_blocks(origin: np.ndarray, plane_normal: np.ndarray, block_list: list) -> list:
+    def slice_blocks(origin: np.ndarray, normal: np.ndarray, block_list: list) -> list:
         """
         Returns a list of dicts, where each dict is the block ID and its sliced indices
         """
         result = []
 
         for block in block_list:
-            indices = block.slice_with_plane(origin, plane_normal)
+            indices = block.slice_with_plane(origin, normal)
             if len(indices) > 0:
                 result.append({
-                    'block_id': block.id,
+                    'element_id': block.id,
                     'indices': indices,
                 })
 

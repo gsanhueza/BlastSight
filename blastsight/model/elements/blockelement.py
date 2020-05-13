@@ -88,9 +88,7 @@ class BlockElement(DFElement):
     """
     Utilities
     """
-    def slice_with_plane(self,
-                         plane_origin: np.ndarray,
-                         plane_normal: np.ndarray) -> np.ndarray:
+    def slice_with_plane(self, origin: np.ndarray, normal: np.ndarray) -> np.ndarray:
         """
         *** Plane Equation: ax + by + cz + d = 0 ***
 
@@ -123,16 +121,16 @@ class BlockElement(DFElement):
         The projection idea comes from
         https://gdbooks.gitbooks.io/3dcollisions/content/Chapter2/static_aabb_plane.html
         """
-        plane_normal /= np.linalg.norm(plane_normal)
+        normal /= np.linalg.norm(normal)
         half_block = np.array(self.block_size) / 2
         vertices = self.vertices
 
-        plane_d = -np.dot(plane_normal, plane_origin)
-        threshold = np.dot(np.abs(plane_normal), half_block)
+        plane_d = -np.dot(normal, origin)
+        threshold = np.dot(np.abs(normal), half_block)
 
         # In this context, np.inner(a, b) returns the same as (a * b).sum(axis=1), but it's faster.
         # Luckily, we don't run out of memory like in vectorized_triangles_intersection.
-        mask = np.abs(np.inner(plane_normal, vertices) + plane_d) <= threshold
+        mask = np.abs(np.inner(normal, vertices) + plane_d) <= threshold
 
         # If mask = [True, False, True], then mask.nonzero()[-1] = [0, 2]
         return mask.nonzero()[-1]

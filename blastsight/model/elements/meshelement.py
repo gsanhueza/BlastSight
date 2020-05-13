@@ -110,10 +110,10 @@ class MeshElement(Element):
 
         return abs(volume)
 
-    def slice_with_plane(self, plane_origin: np.ndarray, plane_normal: np.ndarray) -> list:
+    def slice_with_plane(self, origin: np.ndarray, normal: np.ndarray) -> list:
         # This returns a list with the slices (in case we have a concave mesh)
         try:
-            return meshcut.cross_section(self.vertices, self.indices, np.array(plane_origin), np.array(plane_normal))
+            return meshcut.cross_section(self.vertices, self.indices, np.array(origin), np.array(normal))
         except AssertionError:
             # Meshcut doesn't want to slice
             print(f'WARNING: Mesh {self.name} (id = {self.id}) cannot be sliced, fix your mesh!')
