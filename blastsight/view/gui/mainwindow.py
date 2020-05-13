@@ -247,7 +247,7 @@ class MainWindow(QMainWindow):
     def add_mesh_slices(self, slice_list: list) -> None:
         for sliced_meshes in slice_list:
             slices = sliced_meshes.get('vertices')
-            mesh_id = sliced_meshes.get('mesh_id')
+            mesh_id = sliced_meshes.get('element_id')
             mesh = self.viewer.get_drawable(mesh_id)
 
             if 'SLICE' in str(mesh.name):
@@ -263,7 +263,7 @@ class MainWindow(QMainWindow):
     def add_block_slices(self, slice_list: list) -> None:
         for sliced_blocks in slice_list:
             indices = sliced_blocks.get('indices')
-            block_id = sliced_blocks.get('block_id')
+            block_id = sliced_blocks.get('element_id')
             block = self.viewer.get_drawable(block_id)
 
             if 'SLICE' in str(block.name):
