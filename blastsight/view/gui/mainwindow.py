@@ -331,15 +331,30 @@ class MainWindow(QMainWindow):
     Slots for pop-up dialogs
     """
     def handle_camera(self) -> None:
-        dialog = CameraDialog(self.viewer)
+        dialog = CameraDialog(self)
 
-        def update_viewer() -> None:
-            self.viewer.set_camera_position(dialog.get_camera_position())
-            self.viewer.set_rotation_angle(dialog.get_rotation_angle())
-            self.viewer.set_rotation_center(dialog.get_rotation_center())
-            self.viewer.update()
+        # Get last viewer attributes
+        viewer_position = self.viewer.get_camera_position()
+        viewer_angle = self.viewer.get_rotation_angle()
+        viewer_center = self.viewer.get_rotation_center()
 
-        dialog.accepted.connect(update_viewer)
+        # Fill the dialog with these attributes
+        dialog.set_camera_position(viewer_position)
+        dialog.set_rotation_angle(viewer_angle)
+        dialog.set_rotation_center(viewer_center)
+
+        # Connect dialog's signals to automatically update the viewer
+        dialog.signal_camera_rotated.connect(self.viewer.set_rotation_angle)
+        dialog.signal_camera_translated.connect(self.viewer.set_camera_position)
+        dialog.signal_center_translated.connect(self.viewer.set_rotation_center)
+
+        # Restore former view if not accepted
+        def reject():
+            self.viewer.set_camera_position(viewer_position)
+            self.viewer.set_rotation_angle(viewer_angle)
+            self.viewer.set_rotation_center(viewer_center)
+
+        dialog.rejected.connect(reject)
         dialog.show()
 
     def handle_screenshot(self) -> None:
