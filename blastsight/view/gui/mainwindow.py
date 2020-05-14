@@ -15,6 +15,7 @@ from qtpy.QtCore import QSettings
 from qtpy.QtCore import QThreadPool
 from qtpy.QtWidgets import QFileDialog
 from qtpy.QtWidgets import QMainWindow
+from qtpy.QtWidgets import QProgressBar
 
 from .camerawidget import CameraWidget
 from .dialogs.helpdialog import HelpDialog
@@ -66,6 +67,13 @@ class MainWindow(QMainWindow):
                     'DXF Files (*.csv);;'
                     'All Files (*.*)',
         }
+
+        # Progress bar (hidden by default)
+        self.progress_bar = QProgressBar(self.statusBar)
+        self.progress_bar.setValue(0)
+        self.progress_bar.setMaximumWidth(self.width() / 5)
+        self.progress_bar.hide()
+        self.statusBar.addPermanentWidget(self.progress_bar)
 
         # Extra actions
         actions = self.toolbar.action_collection
@@ -133,7 +141,7 @@ class MainWindow(QMainWindow):
     def connect_actions(self) -> None:
         actions = self.toolbar.action_collection
 
-        # Toolbar/Tree
+        # Toolbar/Tree/Camera
         self.toolbar.connect_viewer(self.viewer)
         self.toolbar.connect_tree(self.dockWidget_tree)
         self.toolbar.connect_camera(self.dockWidget_camera)
@@ -181,6 +189,10 @@ class MainWindow(QMainWindow):
         self.viewer.signal_load_failure.connect(self.slot_element_load_failure)
         self.viewer.signal_export_success.connect(self.slot_element_export_success)
         self.viewer.signal_export_failure.connect(self.slot_element_export_failure)
+
+        self.viewer.signal_process_updated.connect(self.progress_bar.setValue)
+        self.viewer.signal_process_started.connect(self.progress_bar.show)
+        self.viewer.signal_process_finished.connect(self.progress_bar.hide)
 
         # TreeWidget actions
         self.treeWidget.signal_export_mesh.connect(self.dialog_export_mesh)

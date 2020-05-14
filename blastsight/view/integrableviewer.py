@@ -57,6 +57,10 @@ class IntegrableViewer(QOpenGLWidget):
     signal_mesh_distances = Signal(object)
     signal_slice_description = Signal(object)
 
+    signal_process_updated = Signal(int)
+    signal_process_started = Signal()
+    signal_process_finished = Signal()
+
     signal_mode_updated = Signal(str)
     signal_fps_updated = Signal(float)
 
@@ -367,9 +371,20 @@ class IntegrableViewer(QOpenGLWidget):
         return self.load_multiple(self.model.get_paths_from_directory(path), loader, *args, **kwargs)
 
     def load_multiple(self, path_list: list, loader: callable, *args, **kwargs) -> list:
-        self.blockSignals(True)
-        loaded = [d for d in [loader(path, *args, **kwargs) for path in path_list] if bool(d)]
-        self.blockSignals(False)
+        loaded = []
+
+        self.signal_process_started.emit()
+
+        for i, path in enumerate(path_list, 1):
+            # Block only loaded signals
+            self.blockSignals(True)
+            drawable = loader(path, *args, **kwargs)
+            self.blockSignals(False)
+
+            if drawable is not None:
+                loaded.append(drawable)
+
+            self.signal_process_updated.emit(int(100 * i / len(path_list)))
 
         # Emit signals depending on results
         if len(loaded) > 0:
@@ -377,6 +392,8 @@ class IntegrableViewer(QOpenGLWidget):
             self.signal_load_success.emit(self.last_id)
         else:
             self.signal_load_failure.emit()
+
+        self.signal_process_finished.emit()
 
         return loaded
 
