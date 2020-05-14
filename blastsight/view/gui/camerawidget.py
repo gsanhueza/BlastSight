@@ -5,7 +5,7 @@
 #  Distributed under the MIT License.
 #  See LICENSE for more info.
 
-from qtpy.QtCore import Qt
+from qtpy.QtCore import Qt, QSize
 from qtpy.QtCore import Signal
 from qtpy.QtWidgets import *
 
@@ -36,35 +36,48 @@ class CameraWidget(QWidget):
         self.doubleSpinBox_rot_y = self._generate_spinbox(0, 360)
         self.doubleSpinBox_rot_z = self._generate_spinbox(0, 360)
 
+        self.line_separator_1 = QFrame(self)
+        self.line_separator_1.setFrameShape(QFrame.HLine)
+        self.line_separator_1.setFrameShadow(QFrame.Sunken)
+
+        self.line_separator_2 = QFrame(self)
+        self.line_separator_2.setFrameShape(QFrame.HLine)
+        self.line_separator_2.setFrameShadow(QFrame.Sunken)
+
+        self.vertical_spacer = QSpacerItem(10, 10, QSizePolicy.Minimum, QSizePolicy.Expanding)
+
         # Layouts
+        self.layout = QVBoxLayout(self)
         self.horizontal_position = QHBoxLayout()
         self.horizontal_center = QHBoxLayout()
         self.horizontal_rotation = QHBoxLayout()
 
-        self.horizontal_position.addWidget(self.doubleSpinBox_x)
-        self.horizontal_position.addWidget(self.doubleSpinBox_y)
-        self.horizontal_position.addWidget(self.doubleSpinBox_z)
+        self.add_to_layout(self.layout, [self.label_position,
+                                         self.doubleSpinBox_x,
+                                         self.doubleSpinBox_y,
+                                         self.doubleSpinBox_z,
+                                         self.line_separator_1,
 
-        self.horizontal_center.addWidget(self.doubleSpinBox_center_x)
-        self.horizontal_center.addWidget(self.doubleSpinBox_center_y)
-        self.horizontal_center.addWidget(self.doubleSpinBox_center_z)
+                                         self.label_center,
+                                         self.doubleSpinBox_center_x,
+                                         self.doubleSpinBox_center_y,
+                                         self.doubleSpinBox_center_z,
+                                         self.line_separator_2,
 
-        self.horizontal_rotation.addWidget(self.doubleSpinBox_rot_x)
-        self.horizontal_rotation.addWidget(self.doubleSpinBox_rot_y)
-        self.horizontal_rotation.addWidget(self.doubleSpinBox_rot_z)
+                                         self.label_rotation,
+                                         self.doubleSpinBox_rot_x,
+                                         self.doubleSpinBox_rot_y,
+                                         self.doubleSpinBox_rot_z,
+                                         ])
 
-        # Main layout
-        self.layout = QVBoxLayout(self)
-        self.layout.addWidget(self.label_position)
-        self.layout.addLayout(self.horizontal_position)
-
-        self.layout.addWidget(self.label_center)
-        self.layout.addLayout(self.horizontal_center)
-
-        self.layout.addWidget(self.label_rotation)
-        self.layout.addLayout(self.horizontal_rotation)
+        self.layout.addSpacerItem(self.vertical_spacer)
 
         self._connect_internal_signals()
+
+    @staticmethod
+    def add_to_layout(layout, widgets: list) -> None:
+        for widget in widgets:
+            layout.addWidget(widget)
 
     def _generate_spinbox(self, lower: float = -9999999.9, upper: float = +9999999.9) -> QAbstractSpinBox:
         spinbox = QDoubleSpinBox(self)

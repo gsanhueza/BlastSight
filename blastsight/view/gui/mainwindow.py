@@ -29,7 +29,7 @@ class MainWindow(QMainWindow):
     def __init__(self, parent=None):
         QMainWindow.__init__(self, parent)
         uic.loadUi(f'{pathlib.Path(__file__).parent}/UI/mainwindow.ui', self)
-        self.resize(1000, 500)
+        self.resize(1000, 620)
 
         self.setWindowTitle('BlastSight')
         self.setWindowIcon(IconCollection.get('blastsight.png'))
@@ -83,6 +83,9 @@ class MainWindow(QMainWindow):
         if not actions.action_animated_viewer.isChecked():
             actions.action_animated_viewer.trigger()
 
+        # Set camera widget as hidden
+        self.dockWidget_camera.hide()
+
         # self.title = self.windowTitle()
         # self.viewer.signal_fps_updated.connect(lambda x: self.setWindowTitle(f'{self.title} (FPS: {x:.1f})'))
 
@@ -131,8 +134,10 @@ class MainWindow(QMainWindow):
         actions = self.toolbar.action_collection
 
         # Toolbar/Tree
-        self.toolbar.connect_tree(self.dockWidget)
         self.toolbar.connect_viewer(self.viewer)
+        self.toolbar.connect_tree(self.dockWidget_tree)
+        self.toolbar.connect_camera(self.dockWidget_camera)
+        self.cameraWidget.connect_viewer(self.viewer)
         self.treeWidget.connect_viewer(self.viewer)
         self.treeWidget.enable_exportability(True)
 
@@ -152,7 +157,7 @@ class MainWindow(QMainWindow):
         actions.action_quit.triggered.connect(self.close)
 
         # View
-        actions.action_camera_properties.triggered.connect(self.handle_camera)
+        # actions.action_camera_properties.triggered.connect(self.handle_camera)
         actions.action_take_screenshot.triggered.connect(self.handle_screenshot)
 
         # Tools

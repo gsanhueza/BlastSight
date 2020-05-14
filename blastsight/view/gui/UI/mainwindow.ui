@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>MainWindow</class>
+ <class>mainwindow</class>
  <widget class="QMainWindow" name="mainwindow">
   <property name="geometry">
    <rect>
@@ -66,14 +66,14 @@
    </attribute>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
-  <widget class="QDockWidget" name="dockWidget">
+  <widget class="QDockWidget" name="dockWidget_tree">
    <property name="windowTitle">
     <string>Element tree</string>
    </property>
    <attribute name="dockWidgetArea">
     <number>1</number>
    </attribute>
-   <widget class="QWidget" name="dockWidgetContents">
+   <widget class="QWidget" name="dockWidgetContents_tree">
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
       <widget class="TreeWidget" name="treeWidget">
@@ -83,6 +83,21 @@
         </property>
        </column>
       </widget>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <widget class="QDockWidget" name="dockWidget_camera">
+   <property name="windowTitle">
+    <string>Camera</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>2</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents_camera">
+    <layout class="QVBoxLayout" name="verticalLayout_2">
+     <item>
+      <widget class="CameraWidget" name="cameraWidget" native="true"/>
      </item>
     </layout>
    </widget>
@@ -104,6 +119,12 @@
    <class>ToolBar</class>
    <extends>QToolBar</extends>
    <header>blastsight/view/gui/toolbar.h</header>
+  </customwidget>
+  <customwidget>
+   <class>CameraWidget</class>
+   <extends>QWidget</extends>
+   <header>blastsight/view/gui/camerawidget.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>
