@@ -23,25 +23,37 @@ class Container(QWidget):
         QWidget.__init__(self, parent)
         self.setAcceptDrops(True)
 
+        # Container
+        self.setWindowTitle('BlastSight (Container)')
+        self.resize(600, 500)
+
+        # Widgets
         self.toolbar = ToolBar(self)
         self.viewer = IntegrableViewer(self)
         self.camera = CameraWidget()
         self.tree = TreeWidget()
 
+        # Layout
         self.layout = QVBoxLayout(self)
         self.layout.addWidget(self.viewer)
         self.layout.addWidget(self.toolbar)
-
-        # Container
-        self.setWindowTitle('BlastSight (Container)')
-        self.setWindowIcon(IconCollection.get('blastsight.png'))
-        self.resize(600, 500)
 
         # Actions
         self.toolbar.auto_connect(self.tree, self.viewer, self.camera)
 
         actions = self.toolbar.action_collection
         actions.action_take_screenshot.triggered.connect(self.handle_screenshot)
+
+        # Icons
+        try:
+            self.set_widgets_icon(parent.windowIcon())
+        except AttributeError:
+            self.set_widgets_icon(IconCollection.get('blastsight.png'))
+
+    def set_widgets_icon(self, icon) -> None:
+        self.setWindowIcon(icon)
+        self.camera.setWindowIcon(icon)
+        self.tree.setWindowIcon(icon)
 
     def handle_screenshot(self) -> None:
         (path, selected_filter) = QFileDialog.getSaveFileName(
