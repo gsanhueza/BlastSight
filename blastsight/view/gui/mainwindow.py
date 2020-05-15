@@ -17,7 +17,6 @@ from qtpy.QtWidgets import QFileDialog
 from qtpy.QtWidgets import QMainWindow
 from qtpy.QtWidgets import QProgressBar
 
-from .camerawidget import CameraWidget
 from .dialogs.helpdialog import HelpDialog
 from .dialogs.aboutdialog import AboutDialog
 from .iconcollection import IconCollection
@@ -165,8 +164,7 @@ class MainWindow(QMainWindow):
         actions.action_quit.triggered.connect(self.close)
 
         # View
-        # actions.action_camera_properties.triggered.connect(self.handle_camera)
-        actions.action_take_screenshot.triggered.connect(self.handle_screenshot)
+        actions.action_take_screenshot.triggered.connect(self.slot_screenshot)
 
         # Tools
         actions.action_detection_mode.triggered.connect(self.slot_detection_mode)
@@ -190,9 +188,9 @@ class MainWindow(QMainWindow):
         self.viewer.signal_export_success.connect(self.slot_element_export_success)
         self.viewer.signal_export_failure.connect(self.slot_element_export_failure)
 
-        self.viewer.signal_process_updated.connect(self.progress_bar.setValue)
-        self.viewer.signal_process_started.connect(self.progress_bar.show)
-        self.viewer.signal_process_finished.connect(self.progress_bar.hide)
+        self.viewer.signal_process_updated.connect(self.slot_process_updated)
+        self.viewer.signal_process_started.connect(self.slot_process_started)
+        self.viewer.signal_process_finished.connect(self.slot_process_finished)
 
         # TreeWidget actions
         self.treeWidget.signal_export_mesh.connect(self.dialog_export_mesh)
@@ -240,6 +238,9 @@ class MainWindow(QMainWindow):
         id_list = [attr.get('id', -1) for attr in mesh_attributes]
         self.statusBar.showMessage(f'Detected meshes: {id_list}')
 
+    """
+    Slots for cross-sections
+    """
     def slot_slice_description(self, description: dict) -> None:
         origin = description.get('origin')
         normal = description.get('normal')
@@ -340,16 +341,22 @@ class MainWindow(QMainWindow):
             self._thread_runner(method, path, _id)
 
     """
-    Slots for pop-up dialogs
+    Slots for progress updates
     """
-    def handle_camera(self) -> None:
-        camera = CameraWidget()
-        camera.setWindowIcon(self.windowIcon())
-        camera.connect_viewer(self.viewer)
+    def slot_process_updated(self, value: int) -> None:
+        self.progress_bar.setValue(value)
 
-        camera.show()
+    def slot_process_started(self) -> None:
+        self.progress_bar.setValue(0)
+        self.progress_bar.show()
 
-    def handle_screenshot(self) -> None:
+    def slot_process_finished(self,) -> None:
+        self.progress_bar.hide()
+
+    """
+    Slot for screenshots
+    """
+    def slot_screenshot(self) -> None:
         (path, selected_filter) = QFileDialog.getSaveFileName(
             parent=self.viewer,
             directory=f'BlastSight Screenshot ({datetime.now().strftime("%Y%m%d-%H%M%S")})',
