@@ -297,16 +297,9 @@ class MainWindow(QMainWindow):
     """
     Common functionality for loading/exporting
     """
-    def _threaded_load(self, method: classmethod, *args, **kwargs) -> None:
-        self.statusBar.showMessage('Loading...')
-
+    @staticmethod
+    def _thread_runner(method: callable, *args, **kwargs) -> None:
         worker = ThreadWorker(method, *args, **kwargs)
-        QThreadPool.globalInstance().start(worker)
-
-    def _threaded_export(self, method: classmethod, path: str, _id: int) -> None:
-        self.statusBar.showMessage('Exporting...')
-
-        worker = ThreadWorker(method, path, _id)
         QThreadPool.globalInstance().start(worker)
 
     def _dialog_load_element(self, loader: classmethod, hint: str, *args, **kwargs) -> None:
@@ -315,9 +308,11 @@ class MainWindow(QMainWindow):
             directory=self.last_dir,
             filter=self.filters_dict.get(hint))
 
-        for path in sorted([p for p in paths if p != '']):
-            self._threaded_load(loader, path, *args, **kwargs)
-            self.last_dir = QFileInfo(path).absoluteDir().absolutePath()
+        path_list = sorted([p for p in paths if p != ''])
+        if len(path_list) > 0:
+            self.statusBar.showMessage(f'Loading {len(path_list)} element(s)...')
+            self._thread_runner(self.viewer.load_multiple, path_list, loader, *args, **kwargs)
+            self.last_dir = QFileInfo(path_list[-1]).absoluteDir().absolutePath()
 
     def _dialog_load_folder(self, loader: classmethod, *args, **kwargs) -> None:
         path = QFileDialog.getExistingDirectory(
@@ -327,7 +322,8 @@ class MainWindow(QMainWindow):
 
         # Execute method
         if bool(path):
-            self._threaded_load(loader, path, *args, **kwargs)
+            self.statusBar.showMessage('Loading folder...')
+            self._thread_runner(loader, path, *args, **kwargs)
             self.last_dir = path
 
     def _dialog_export_element(self, _id: int, filters: str, method: classmethod) -> None:
@@ -338,9 +334,10 @@ class MainWindow(QMainWindow):
             directory=proposed_path,
             filter=filters)
 
-        if path != '':
-            # Execute method
-            self._threaded_export(method, path, _id)
+        # Execute method
+        if bool(path):
+            self.statusBar.showMessage('Exporting...')
+            self._thread_runner(method, path, _id)
 
     """
     Slots for pop-up dialogs
