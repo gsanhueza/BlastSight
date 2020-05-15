@@ -18,8 +18,8 @@ def application(paths: list) -> None:
     w = MainWindow()
     w.show()
 
-    for path in paths:
-        w.viewer.load_mesh(path)
+    # Auto-load files when called from CLI or using "Open with..." from OS
+    w.viewer.load_multiple(paths, w.viewer.load_mesh)
 
     sys.exit(qt_app.exec_())
 
@@ -33,8 +33,8 @@ def container(paths: list) -> None:
     w = Container()
     w.show()
 
-    for path in paths:
-        w.viewer.load_mesh(path)
+    # Auto-load files when called from CLI
+    w.viewer.load_multiple(paths, w.viewer.load_mesh)
 
     sys.exit(qt_app.exec_())
 
@@ -43,8 +43,8 @@ def viewer(paths: list) -> None:
     from blastsight.view.viewer import Viewer
     v = Viewer()
 
-    for path in paths:
-        v.load_mesh(path)
+    # Auto-load files when called from CLI
+    v.load_multiple(paths, v.load_mesh)
 
     v.show()
 

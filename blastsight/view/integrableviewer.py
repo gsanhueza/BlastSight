@@ -371,9 +371,12 @@ class IntegrableViewer(QOpenGLWidget):
         return self.load_multiple(self.model.get_paths_from_directory(path), loader, *args, **kwargs)
 
     def load_multiple(self, path_list: list, loader: callable, *args, **kwargs) -> list:
-        loaded = []
+        # Do not process if loading an empty path list
+        if len(path_list) == 0:
+            return []
 
         self.signal_process_started.emit()
+        loaded = []
 
         for i, path in enumerate(path_list, 1):
             # Block only loaded signals
