@@ -43,19 +43,19 @@ class TestBackgroundGL:
         for expect, result in zip(top, drawable.top_color):
             assert expect == result
 
-        for expect, result in zip(bot, drawable.bot_color):
+        for expect, result in zip(bot, drawable.bottom_color):
             assert expect == result
 
         top = [0.2, 0.4, 0.6]
         bot = [0.6, 0.4, 0.2]
 
         drawable.top_color = top
-        drawable.bot_color = bot
+        drawable.bottom_color = bot
 
         for expect, result in zip(top, drawable.top_color):
             assert expect == result
 
-        for expect, result in zip(bot, drawable.bot_color):
+        for expect, result in zip(bot, drawable.bottom_color):
             assert expect == result
 
     def test_program(self):

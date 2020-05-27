@@ -29,7 +29,7 @@ class TestIntegrableViewer:
         assert viewer.drawable_collection
 
         assert viewer.axis
-        assert viewer.bg
+        assert viewer.background
 
         assert len(viewer.controllers) > 0
 
