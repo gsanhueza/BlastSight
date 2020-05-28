@@ -21,8 +21,8 @@ class CameraWidget(QWidget):
         self.setWindowFlags(Qt.WindowStaysOnTopHint)
 
         self.label_position = QLabel('Camera position (X, Y, Z)', self)
-        self.label_center = QLabel('Rotation angle (X°, Y°, Z°)', self)
-        self.label_rotation = QLabel('Rotation center (X, Y, Z)', self)
+        self.label_center = QLabel('Rotation center (X, Y, Z)', self)
+        self.label_rotation = QLabel('Rotation angle (X°, Y°, Z°)', self)
 
         self.doubleSpinBox_x = self._generate_spinbox()
         self.doubleSpinBox_y = self._generate_spinbox()
@@ -32,9 +32,9 @@ class CameraWidget(QWidget):
         self.doubleSpinBox_center_y = self._generate_spinbox()
         self.doubleSpinBox_center_z = self._generate_spinbox()
 
-        self.doubleSpinBox_rot_x = self._generate_spinbox(0, 360)
-        self.doubleSpinBox_rot_y = self._generate_spinbox(0, 360)
-        self.doubleSpinBox_rot_z = self._generate_spinbox(0, 360)
+        self.doubleSpinBox_rot_x = self._generate_spinbox(-360, 360)
+        self.doubleSpinBox_rot_y = self._generate_spinbox(-360, 360)
+        self.doubleSpinBox_rot_z = self._generate_spinbox(-360, 360)
 
         self.line_separator_1 = QFrame(self)
         self.line_separator_1.setFrameShape(QFrame.HLine)
