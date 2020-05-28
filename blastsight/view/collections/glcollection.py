@@ -58,6 +58,9 @@ class GLCollection:
             'mesh_wireframe': lambda x: x.is_wireframed,
             'mesh_highlight': lambda x: x.is_highlighted,
             'mesh_turbo': lambda x: x.is_turbo_ready,
+            # TODO Detect only a particular set of meshes
+            'mesh_cross': lambda x: True,
+            # 'cross_section': lambda x: x.is_cross_sectioned,
             'block_legacy': lambda x: x.is_legacy,
             'block_standard': lambda x: not x.is_legacy,
         }
