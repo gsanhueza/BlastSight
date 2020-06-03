@@ -42,15 +42,27 @@ class GLCollection:
         drawable = self._collection.pop(_id)
         drawable.cleanup()
 
-    def filter(self, drawable_type: type) -> list:
-        # The copy avoids RuntimeError: OrderedDict mutated during iteration
-        return [x for x in self._collection.copy().values() if type(x) is drawable_type]
-
     def clear(self) -> None:
         self._collection.clear()
 
     def size(self) -> int:
         return len(self._collection)
+
+    def filter(self, drawable_type: type) -> list:
+        # The copy avoids RuntimeError: OrderedDict mutated during iteration
+        return [x for x in self._collection.copy().values() if type(x) is drawable_type]
+
+    def retrieve(self, drawable_type: type, required: str = 'all') -> callable:
+        runner = {
+            'all': lambda x: True,
+            'mesh_standard': lambda x: not (x.is_turbo_ready or x.is_wireframed),
+            'mesh_turbo': lambda x: x.is_turbo_ready,
+            'mesh_wireframe': lambda x: x.is_wireframed,
+            'block_legacy': lambda x: x.is_legacy,
+            'block_standard': lambda x: not x.is_legacy,
+        }
+
+        return list(filter(runner.get(required), self.filter(drawable_type)))
 
     @property
     def last_id(self) -> int:

@@ -26,26 +26,15 @@ from ..glprograms.turbomeshprogram import TurboMeshProgram
 class GLDrawableCollection(GLCollection):
     def __init__(self, viewer=None):
         super().__init__(viewer)
-        # Lines
-        self.associate(LineProgram(viewer), lambda: self.filter(LineGL))
-
-        # Tubes
-        self.associate(TubeProgram(viewer), lambda: self.filter(TubeGL))
-
-        # Points
-        self.associate(PointProgram(viewer), lambda: self.filter(PointGL))
+        self.associate(LineProgram(viewer), lambda: self.retrieve(LineGL))
+        self.associate(TubeProgram(viewer), lambda: self.retrieve(TubeGL))
+        self.associate(PointProgram(viewer), lambda: self.retrieve(PointGL))
 
         # Blocks
-        self.associate(BlockLegacyProgram(viewer), lambda: [
-            x for x in self.filter(BlockGL) if x.is_legacy])
-
-        self.associate(BlockProgram(viewer), lambda: [
-            x for x in self.filter(BlockGL) if not x.is_legacy])
+        self.associate(BlockLegacyProgram(viewer), lambda: self.retrieve(BlockGL, 'block_legacy'))
+        self.associate(BlockProgram(viewer), lambda: self.retrieve(BlockGL, 'block_standard'))
 
         # Meshes
-        self.associate(TurboMeshProgram(viewer), lambda: [
-            x for x in self.filter(MeshGL) if x.is_turbo_ready])
-        self.associate(MeshProgram(viewer), lambda: [
-            x for x in self.filter(MeshGL) if not x.is_turbo_ready and not x.is_wireframed])
-        self.associate(WireProgram(viewer), lambda: [
-            x for x in self.filter(MeshGL) if x.is_wireframed])
+        self.associate(TurboMeshProgram(viewer), lambda: self.retrieve(MeshGL, 'mesh_turbo'))
+        self.associate(MeshProgram(viewer), lambda: self.retrieve(MeshGL, 'mesh_standard'))
+        self.associate(WireProgram(viewer), lambda: self.retrieve(MeshGL, 'mesh_wireframe'))

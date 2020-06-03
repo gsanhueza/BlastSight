@@ -14,4 +14,4 @@ from ..glprograms.axisprogram import AxisProgram
 class GLAxisCollection(GLCollection):
     def __init__(self, viewer=None):
         super().__init__(viewer)
-        self.associate(AxisProgram(viewer), lambda: self.filter(AxisGL))
+        self.associate(AxisProgram(viewer), lambda: self.retrieve(AxisGL))
