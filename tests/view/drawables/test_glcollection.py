@@ -1,12 +1,8 @@
 #!/usr/bin/env python
 
-from qtpy.QtGui import QMatrix4x4
-
 from blastsight.model.elements.element import Element
 from blastsight.view.drawables.gldrawable import GLDrawable
 from blastsight.view.collections.glcollection import GLCollection
-from blastsight.view.collections.gldrawablecollection import GLDrawableCollection
-from blastsight.view.glprograms.shaderprogram import ShaderProgram
 from blastsight.view.integrableviewer import IntegrableViewer
 
 
@@ -59,7 +55,11 @@ class TestGLCollection:
         assert collection.size() == 0
 
     def test_drawable_collection(self):
-        collection = GLDrawableCollection()
+        # FIXME Why is this test here? Shouldn't it be in another file?
+        viewer = IntegrableViewer()
+        collection = viewer.drawable_collection
+
+        collection.initialize()
 
         element_1 = Element(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], alpha=1.0)
         element_2 = Element(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], alpha=0.5)
@@ -71,12 +71,12 @@ class TestGLCollection:
         collection.add(drawable_2)
 
         assert collection.needs_update
-        collection.draw(*3 * [QMatrix4x4()])
+        collection.draw()
         assert not collection.needs_update
-        collection.draw(*3 * [QMatrix4x4()])
+        collection.draw()
         assert not collection.needs_update
 
         collection.recreate()
         assert collection.needs_update
-        collection.draw(*3 * [QMatrix4x4()])
+        collection.draw()
         assert not collection.needs_update

@@ -619,11 +619,16 @@ class IntegrableViewer(QOpenGLWidget):
         # Project (Perspective/Orthographic)
         self.resizeGL(self.width(), self.height())
 
+        # Update matrices
+        self.drawable_collection.update_uniform('proj_matrix', self.proj)
+        self.drawable_collection.update_uniform('model_view_matrix', self.camera * self.world)
+        self.axis_collection.update_uniform('model_view_matrix', self.camera * self.world)
+
         # Draw every GLDrawable (meshes, blocks, points, etc)
         glEnable(GL_BLEND)
-        self.background_collection.draw(self.proj, self.camera, self.world)
-        self.drawable_collection.draw(self.proj, self.camera, self.world)
-        self.axis_collection.draw(self.proj, self.camera, self.world)
+        self.background_collection.draw()
+        self.drawable_collection.draw()
+        self.axis_collection.draw()
 
         # Tick FPS counter
         self.fps_counter.tick()
