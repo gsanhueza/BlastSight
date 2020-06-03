@@ -135,6 +135,7 @@ class MainWindow(QMainWindow):
 
         self.menu_Tools.addAction(actions.action_slice_meshes)
         self.menu_Tools.addAction(actions.action_slice_blocks)
+        self.menu_Tools.addAction(actions.action_cross_section)
         self.menu_Tools.addAction(actions.action_detection_mode)
         self.menu_Tools.addAction(actions.action_measurement_mode)
         self.menu_Tools.addSeparator()
@@ -175,6 +176,7 @@ class MainWindow(QMainWindow):
         # Tools
         actions.action_slice_meshes.triggered.connect(self.slot_slice_meshes)
         actions.action_slice_blocks.triggered.connect(self.slot_slice_blocks)
+        actions.action_cross_section.triggered.connect(self.slot_cross_section)
         actions.action_detection_mode.triggered.connect(self.slot_detection_mode)
         actions.action_measurement_mode.triggered.connect(self.slot_measurement_mode)
         actions.action_normal_mode.triggered.connect(self.slot_normal_mode)
@@ -279,6 +281,16 @@ class MainWindow(QMainWindow):
         def executer(origin, normal) -> None:
             slices = self.viewer.slice_blocks(origin, normal)
             self.add_block_slices(slices)
+
+        def handler(description: dict) -> None:
+            self.handle_slices(description, executer)
+
+        self.viewer.set_slice_mode()
+        self.viewer.signal_slice_description.connect(handler)
+
+    def slot_cross_section(self) -> None:
+        def executer(origin, normal) -> None:
+            self.viewer.cross_section(origin, normal)
 
         def handler(description: dict) -> None:
             self.handle_slices(description, executer)

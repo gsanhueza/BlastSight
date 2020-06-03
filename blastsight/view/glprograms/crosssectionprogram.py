@@ -31,8 +31,14 @@ class CrossSectionProgram(ShaderProgram):
         self.shader_program.link()
 
     def inner_draw(self, drawables: list) -> None:
-        self.update_uniform('plane_origin', *self.plane_origin)
-        self.update_uniform('plane_normal', *self.plane_normal)
+        # FIXME We shouldn't need to directly ask the viewer for the vectors,
+        #  as we already have them as class attributes
+        try:
+            self.update_uniform('plane_origin', *self.viewer.plane_origin)
+            self.update_uniform('plane_normal', *self.viewer.plane_normal)
+        except Exception:
+            print('viewer does not have info yet')
+            return
 
         for drawable in drawables:
             drawable.draw()
