@@ -26,7 +26,7 @@ class ToolBar(QToolBar):
         self.addAction(self.action_collection.action_east_view)
         self.addAction(self.action_collection.action_fit_to_screen)
         self.addSeparator()
-        self.addAction(self.action_collection.action_autofit_to_screen)
+        self.addAction(self.action_collection.action_autofit)
         self.addAction(self.action_collection.action_turbo_rendering)
         self.addSeparator()
         self.addAction(self.action_collection.action_take_screenshot)
@@ -53,8 +53,8 @@ class ToolBar(QToolBar):
         actions.action_east_view.triggered.connect(viewer.east_view)
         actions.action_fit_to_screen.triggered.connect(viewer.fit_to_screen)
 
-        actions.action_autofit_to_screen.triggered.connect(viewer.set_autofit_status)
-        actions.action_animated_viewer.triggered.connect(viewer.set_animated_status)
+        actions.action_animate.triggered.connect(viewer.set_animated_status)
+        actions.action_autofit.triggered.connect(viewer.set_autofit_status)
         actions.action_turbo_rendering.triggered.connect(viewer.set_turbo_status)
 
         actions.action_perspective_projection.triggered.connect(viewer.perspective_projection)

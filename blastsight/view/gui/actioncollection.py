@@ -111,20 +111,25 @@ class ActionCollection:
         self.action_about.setIcon(IconCollection.get('about.svg'))
         self.action_about.setShortcut('?')
 
-        self.action_autofit_to_screen = QAction('&Auto-fit to screen', parent)
-        self.action_autofit_to_screen.setIcon(IconCollection.get('globe.svg'))
-        self.action_autofit_to_screen.setShortcut('Ctrl+Shift+F')
-        self.action_autofit_to_screen.setCheckable(True)
+        self.action_animate = QAction('A&nimate movements', parent)
+        self.action_animate.setIcon(IconCollection.get('film_reel.svg'))
+        self.action_animate.setShortcut('Shift+N')
+        self.action_animate.setCheckable(True)
 
-        self.action_turbo_rendering = QAction('Tur&bo rendering', parent)
+        self.action_autofit = QAction('&Auto-fit to screen', parent)
+        self.action_autofit.setIcon(IconCollection.get('globe.svg'))
+        self.action_autofit.setShortcut('Shift+F')
+        self.action_autofit.setCheckable(True)
+
+        self.action_autorotate = QAction('Auto-&rotate on slice', parent)
+        self.action_autorotate.setIcon(IconCollection.get('process.svg'))
+        self.action_autorotate.setShortcut('Shift+R')
+        self.action_autorotate.setCheckable(True)
+
+        self.action_turbo_rendering = QAction('&Turbo rendering', parent)
         self.action_turbo_rendering.setIcon(IconCollection.get('sports_mode.svg'))
-        self.action_turbo_rendering.setShortcut('Ctrl+Shift+R')
+        self.action_turbo_rendering.setShortcut('Shift+T')
         self.action_turbo_rendering.setCheckable(True)
-
-        self.action_animated_viewer = QAction('A&nimated movements', parent)
-        self.action_animated_viewer.setIcon(IconCollection.get('film_reel.svg'))
-        self.action_animated_viewer.setShortcut('Ctrl+Shift+N')
-        self.action_animated_viewer.setCheckable(True)
 
         self.action_normal_mode = QAction('Return to &normal', parent)
         self.action_normal_mode.setIcon(IconCollection.get('rotate_camera.svg'))
@@ -172,4 +177,4 @@ class ActionCollection:
 
         self.action_take_screenshot = QAction('&Take screenshot', parent)
         self.action_take_screenshot.setIcon(IconCollection.get('webcam.svg'))
-        self.action_take_screenshot.setShortcut('Ctrl+Shift+S')
+        self.action_take_screenshot.setShortcut('Shift+S')

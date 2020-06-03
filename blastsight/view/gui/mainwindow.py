@@ -83,12 +83,16 @@ class MainWindow(QMainWindow):
         self.connect_actions()
 
         # Set auto-fit as True when starting the app
-        if not actions.action_autofit_to_screen.isChecked():
-            actions.action_autofit_to_screen.trigger()
+        if not actions.action_autofit.isChecked():
+            actions.action_autofit.trigger()
+
+        # Set auto-rotate as True when starting the app
+        if not actions.action_autorotate.isChecked():
+            actions.action_autorotate.trigger()
 
         # Set animated as True when starting the app
-        if not actions.action_animated_viewer.isChecked():
-            actions.action_animated_viewer.trigger()
+        if not actions.action_animate.isChecked():
+            actions.action_animate.trigger()
 
         # Set camera widget as hidden
         self.dockWidget_camera.hide()
@@ -119,8 +123,9 @@ class MainWindow(QMainWindow):
         self.menu_View.addAction(actions.action_east_view)
         self.menu_View.addAction(actions.action_fit_to_screen)
         self.menu_View.addSeparator()
-        self.menu_View.addAction(actions.action_autofit_to_screen)
-        self.menu_View.addAction(actions.action_animated_viewer)
+        self.menu_View.addAction(actions.action_autofit)
+        self.menu_View.addAction(actions.action_animate)
+        self.menu_View.addAction(actions.action_autorotate)
         self.menu_View.addAction(actions.action_turbo_rendering)
         self.menu_View.addSeparator()
         self.menu_View.addAction(actions.action_perspective_projection)
@@ -255,7 +260,9 @@ class MainWindow(QMainWindow):
         self.add_block_slices(block_slices)
 
         # Auto-rotate camera to meet cross-section
-        self.viewer.set_camera_from_vectors(normal, up)
+        actions = self.toolbar.action_collection
+        if actions.action_autorotate.isChecked():
+            self.viewer.set_camera_from_vectors(normal, up)
 
         # Auto-exit slice mode
         self.viewer.set_normal_mode()
