@@ -247,15 +247,14 @@ class MainWindow(QMainWindow):
     """
     Slots for cross-sections
     """
-    def handle_slices(self, description: dict, slicer: callable, appender: callable) -> None:
+    def handle_slices(self, description: dict, executer: callable) -> None:
         # Retrieve description vectors
         origin = description.get('origin')
         normal = description.get('normal')
         up = description.get('up')
 
-        # Slice and add elements (using each callable from the parameters)
-        slices = slicer(origin, normal)
-        appender(slices)
+        # Execute the callable over the elements
+        executer(origin, normal)
 
         # Auto-rotate camera to meet cross-section
         actions = self.toolbar.action_collection
@@ -267,19 +266,23 @@ class MainWindow(QMainWindow):
         self.viewer.signal_slice_description.disconnect()
 
     def slot_slice_meshes(self) -> None:
+        def executer(origin, normal) -> None:
+            slices = self.viewer.slice_meshes(origin, normal)
+            self.add_mesh_slices(slices)
+
         def handler(description: dict) -> None:
-            self.handle_slices(description=description,
-                               slicer=self.viewer.slice_meshes,
-                               appender=self.add_mesh_slices)
+            self.handle_slices(description, executer)
 
         self.viewer.set_slice_mode()
         self.viewer.signal_slice_description.connect(handler)
 
     def slot_slice_blocks(self) -> None:
+        def executer(origin, normal) -> None:
+            slices = self.viewer.slice_blocks(origin, normal)
+            self.add_block_slices(slices)
+
         def handler(description: dict) -> None:
-            self.handle_slices(description=description,
-                               slicer=self.viewer.slice_blocks,
-                               appender=self.add_block_slices)
+            self.handle_slices(description, executer)
 
         self.viewer.set_slice_mode()
         self.viewer.signal_slice_description.connect(handler)
