@@ -6,25 +6,24 @@
 #  See LICENSE for more info.
 
 from collections import OrderedDict
-from .glprogramcollection import GLProgramCollection
+from ..glprograms.shaderprogram import ShaderProgram
 from ..drawables.gldrawable import GLDrawable
 
 
 class GLCollection:
     def __init__(self, viewer=None):
         self._viewer = viewer
-        self._programs = GLProgramCollection()
+        self._programs = OrderedDict()
         self._collection = OrderedDict()
-        self.needs_update = True
-
-        self.uniform_data = {}
+        self._uniform_data = {}
+        self._needs_update = True
 
     """
     Drawable collection handlers
     """
     def add(self, drawable: GLDrawable) -> None:
         self._collection[drawable.id] = drawable
-        self.needs_update = True
+        self._needs_update = True
 
     def get(self, _id: int) -> GLDrawable:
         return self._collection.get(_id)
@@ -75,53 +74,59 @@ class GLCollection:
     # FIXME We could have a collection handler, so every method from here and below
     #  could be in the GLCollectionHandler, instead of in a collection
     def initialize(self) -> None:
-        for program in self._programs.get_programs():
+        for program in self.get_programs():
             program.initialize()
 
-    def associate(self, program, association) -> None:
-        """
-        :param program: AxisProgram, for example
-        :param association: lambda
-        :return: None
-        """
-        self._programs.associate(program, association)
+    def associate(self, program: ShaderProgram, retriever: callable) -> None:
+        self._programs[program.get_base_name()] = {
+            'program': program,
+            'retriever': retriever,
+        }
 
     def recreate(self) -> None:
-        self.needs_update = True
-        for program in self._programs.get_programs():
+        self._needs_update = True
+        for program in self.get_programs():
             program.recreate()
+
+    def get_programs(self) -> list:
+        return [x.get('program') for x in self._programs.values()]
+
+    def get_retrievers(self) -> list:
+        return [x.get('retriever') for x in self._programs.values()]
 
     def update_drawables(self) -> None:
         # Update shader program so that it knows what to draw
-        if self.needs_update:
-            for program, drawable_retriever in self._programs.get_pairs():
-                program.set_drawables([d for d in drawable_retriever() if d.is_visible])
-            self.needs_update = False
+        if self._needs_update:
+            for association in self._programs.values():
+                program = association.get('program')
+                retriever = association.get('retriever')
+                program.set_drawables([d for d in retriever() if d.is_visible])
+            self._needs_update = False
 
     def update_uniform(self, key: str, value) -> None:
-        self.uniform_data[key] = value
+        self._uniform_data[key] = value
 
     def update_uniforms(self) -> None:
         # Update matrices so that it knows where it's looking
         def bind_update(prog):
             prog.bind()
-            for k, v in self.uniform_data.items():
+            for k, v in self._uniform_data.items():
                 prog.update_uniform(k, v)
 
         # Apply to each program
-        list(map(bind_update, self._programs.get_programs()))
+        list(map(bind_update, self.get_programs()))
 
     """
     Drawing methods
     """
     def draw_opaques(self) -> None:
-        for program in self._programs.get_programs():
+        for program in self.get_programs():
             if len(program.opaques) > 0:
                 program.bind()
                 program.draw()
 
     def draw_transparents(self) -> None:
-        for program in self._programs.get_programs():
+        for program in self.get_programs():
             if len(program.transparents) > 0:
                 program.bind()
                 program.redraw()

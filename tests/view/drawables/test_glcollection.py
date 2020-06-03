@@ -70,13 +70,13 @@ class TestGLCollection:
         collection.add(drawable_1)
         collection.add(drawable_2)
 
-        assert collection.needs_update
+        assert collection._needs_update
         collection.draw()
-        assert not collection.needs_update
+        assert not collection._needs_update
         collection.draw()
-        assert not collection.needs_update
+        assert not collection._needs_update
 
         collection.recreate()
-        assert collection.needs_update
+        assert collection._needs_update
         collection.draw()
-        assert not collection.needs_update
+        assert not collection._needs_update

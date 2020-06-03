@@ -15,6 +15,7 @@ from ..drawables.gldrawable import GLDrawable
 class TurboMeshProgram(MeshProgram):
     def __init__(self, viewer):
         super().__init__(viewer)
+        self.base_name = 'MeshTurbo'
         self.info = {
             'opaque': {
                 'vaos': [],

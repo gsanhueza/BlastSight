@@ -25,6 +25,9 @@ class ShaderProgram:
     def drawables(self) -> list:
         return self.opaques + self.transparents
 
+    def get_base_name(self) -> str:
+        return self.base_name
+
     def initialize(self) -> None:
         # FIXME In the future, check how often we need 'self.viewer'
         #  We might be able to receive it as parameter and not use it ever again
