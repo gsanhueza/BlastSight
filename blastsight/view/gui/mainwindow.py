@@ -247,49 +247,42 @@ class MainWindow(QMainWindow):
     """
     Slots for cross-sections
     """
+    def handle_slices(self, description: dict, slicer: callable, appender: callable) -> None:
+        # Retrieve description vectors
+        origin = description.get('origin')
+        normal = description.get('normal')
+        up = description.get('up')
+
+        # Slice and add elements (using each callable from the parameters)
+        slices = slicer(origin, normal)
+        appender(slices)
+
+        # Auto-rotate camera to meet cross-section
+        actions = self.toolbar.action_collection
+        if actions.action_autorotate.isChecked():
+            self.viewer.set_camera_from_vectors(normal, up)
+
+        # Auto-exit and disconnect
+        self.viewer.set_normal_mode()
+        self.viewer.signal_slice_description.disconnect()
+
     def slot_slice_meshes(self) -> None:
-        def handle_slices(description: dict) -> None:
-            origin = description.get('origin')
-            normal = description.get('normal')
-            up = description.get('up')
-
-            # Slice elements
-            mesh_slices = self.viewer.slice_meshes(origin, normal)
-            self.add_mesh_slices(mesh_slices)
-
-            # Auto-rotate camera to meet cross-section
-            actions = self.toolbar.action_collection
-            if actions.action_autorotate.isChecked():
-                self.viewer.set_camera_from_vectors(normal, up)
-
-            # Auto-exit and disconnect
-            self.viewer.set_normal_mode()
-            self.viewer.signal_slice_description.disconnect()
+        def handler(description: dict) -> None:
+            self.handle_slices(description=description,
+                               slicer=self.viewer.slice_meshes,
+                               appender=self.add_mesh_slices)
 
         self.viewer.set_slice_mode()
-        self.viewer.signal_slice_description.connect(handle_slices)
+        self.viewer.signal_slice_description.connect(handler)
 
     def slot_slice_blocks(self) -> None:
-        def handle_slices(description: dict) -> None:
-            origin = description.get('origin')
-            normal = description.get('normal')
-            up = description.get('up')
-
-            # Slice elements
-            block_slices = self.viewer.slice_blocks(origin, normal)
-            self.add_block_slices(block_slices)
-
-            # Auto-rotate camera to meet cross-section
-            actions = self.toolbar.action_collection
-            if actions.action_autorotate.isChecked():
-                self.viewer.set_camera_from_vectors(normal, up)
-
-            # Auto-exit and disconnect
-            self.viewer.set_normal_mode()
-            self.viewer.signal_slice_description.disconnect()
+        def handler(description: dict) -> None:
+            self.handle_slices(description=description,
+                               slicer=self.viewer.slice_blocks,
+                               appender=self.add_block_slices)
 
         self.viewer.set_slice_mode()
-        self.viewer.signal_slice_description.connect(handle_slices)
+        self.viewer.signal_slice_description.connect(handler)
 
     def add_mesh_slices(self, slice_list: list) -> None:
         for sliced_meshes in slice_list:
