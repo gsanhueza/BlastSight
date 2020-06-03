@@ -25,10 +25,9 @@ class ShaderProgram:
     def drawables(self) -> list:
         return self.opaques + self.transparents
 
-    def setup(self) -> None:
-        if self.shader_program:
-            return
-
+    def initialize(self) -> None:
+        # FIXME In the future, check how often we need 'self.viewer'
+        #  We might be able to receive it as parameter and not use it ever again
         self.shader_program = QOpenGLShaderProgram(self.viewer.context())
         self.setup_shaders()
 

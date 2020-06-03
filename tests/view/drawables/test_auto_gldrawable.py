@@ -55,7 +55,7 @@ class TestAutoDrawable:
     def test_program(self):
         viewer = IntegrableViewer()
         program = ShaderProgram(viewer)
-        program.setup()
+        program.initialize()
         program.bind()
 
         drawable = GLDrawable(self.element)
@@ -73,14 +73,9 @@ class TestAutoDrawable:
         viewer = IntegrableViewer()
         program = ShaderProgram(viewer)
         assert program.shader_program is None
-        program.setup()
+        program.initialize()
         assert program.shader_program is not None
-        program_id = id(program.shader_program)
         program.bind()
-
-        program.setup()
-        assert program.shader_program is not None
-        assert program_id == id(program.shader_program)
 
         drawable = GLDrawable(self.element)
         drawable.setup_attributes()

@@ -14,7 +14,7 @@ class TestAxisGL:
     def test_draw(self):
         viewer = IntegrableViewer()
         program = AxisProgram(viewer)
-        program.setup()
+        program.initialize()
         program.bind()
 
         drawable = AxisGL(NullElement())
@@ -34,7 +34,7 @@ class TestAxisGL:
     def test_program(self):
         viewer = IntegrableViewer()
         program = AxisProgram(viewer)
-        program.setup()
+        program.initialize()
         program.bind()
 
         drawable = AxisGL(NullElement())

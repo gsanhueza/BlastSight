@@ -101,7 +101,7 @@ class TestMeshGL:
     def test_draw(self):
         viewer = IntegrableViewer()
         program = MeshProgram(viewer)
-        program.setup()
+        program.initialize()
         program.bind()
 
         drawable = MeshGL(self.element)
@@ -125,7 +125,7 @@ class TestMeshGL:
         viewer = IntegrableViewer()
         program = MeshProgram(viewer)
         element = MeshElement(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], indices=[[0, 1, 2]], alpha=0.8)
-        program.setup()
+        program.initialize()
         program.bind()
 
         drawable_normal = MeshGL(self.element)
@@ -150,7 +150,7 @@ class TestMeshGL:
         viewer = IntegrableViewer()
         program = WireProgram(viewer)
         element = MeshElement(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], indices=[[0, 1, 2]], alpha=0.8)
-        program.setup()
+        program.initialize()
         program.bind()
 
         drawable_normal = MeshGL(self.element)
@@ -172,7 +172,7 @@ class TestMeshGL:
         viewer = IntegrableViewer()
         program = TurboMeshProgram(viewer)
         element = MeshElement(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], indices=[[0, 1, 2]], alpha=0.8)
-        program.setup()
+        program.initialize()
         program.bind()
 
         drawable_normal = MeshGL(self.element, turbo=True)

@@ -80,34 +80,3 @@ class TestGLCollection:
         assert collection.needs_update
         collection.draw(*3 * [QMatrix4x4()])
         assert not collection.needs_update
-
-    def test_program_collection(self):
-        program = ShaderProgram(IntegrableViewer())
-
-        assert len(program.drawables) == 0
-        assert len(program.opaques) == 0
-        assert len(program.transparents) == 0
-
-        collection = GLCollection()
-        assert len(collection._programs.get_associations()) == 0
-        collection.associate(program, lambda: collection.filter(GLDrawable))
-        assert len(collection._programs.get_associations()) == 1
-
-        element_1 = Element(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], alpha=1.0, id=0)
-        element_2 = Element(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], alpha=0.5, id=1)
-
-        drawable_1 = GLDrawable(element_1)
-        drawable_2 = GLDrawable(element_2)
-
-        collection.add(drawable_1)
-        collection.add(drawable_2)
-
-        collection.recreate()
-
-        assert collection.needs_update
-        collection.draw(*3 * [QMatrix4x4()])
-        assert not collection.needs_update
-
-        assert len(program.drawables) == 2
-        assert len(program.opaques) == 1
-        assert len(program.transparents) == 1

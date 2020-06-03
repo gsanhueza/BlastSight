@@ -58,6 +58,10 @@ class GLCollection:
     """
     ShaderProgram collection handlers
     """
+    def initialize(self) -> None:
+        for program in self._programs.get_programs():
+            program.initialize()
+
     def associate(self, program, association) -> None:
         """
         :param program: AxisProgram, for example
@@ -82,7 +86,6 @@ class GLCollection:
         # Update matrices so that it knows where it's looking
         for program in self._programs.get_programs():
             if len(program.drawables) > 0:
-                program.setup()
                 program.bind()
                 program.update_uniform('proj_matrix', proj)
                 program.update_uniform('model_view_matrix', view * model)

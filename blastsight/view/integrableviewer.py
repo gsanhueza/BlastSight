@@ -583,6 +583,11 @@ class IntegrableViewer(QOpenGLWidget):
         glEnable(GL_DEPTH_TEST)
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
 
+        # Initialize collections
+        self.background_collection.initialize()
+        self.drawable_collection.initialize()
+        self.axis_collection.initialize()
+
     def paintGL(self) -> None:
         # Clear screen
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)

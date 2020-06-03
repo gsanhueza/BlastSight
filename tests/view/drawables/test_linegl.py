@@ -35,7 +35,7 @@ class TestLineGL:
     def test_draw(self):
         viewer = IntegrableViewer()
         program = LineProgram(viewer)
-        program.setup()
+        program.initialize()
         program.bind()
 
         drawable = LineGL(self.element)

@@ -13,8 +13,8 @@ class PointProgram(ShaderProgram):
         super().__init__(viewer)
         self.base_name = 'Point'
 
-    def setup(self) -> None:
-        super().setup()
+    def initialize(self) -> None:
+        super().initialize()
         self.add_uniform_loc('viewport')
         self.add_uniform_loc('marker')
 

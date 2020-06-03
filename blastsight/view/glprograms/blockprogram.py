@@ -13,8 +13,8 @@ class BlockProgram(ShaderProgram):
         super().__init__(viewer)
         self.base_name = 'Block'
 
-    def setup(self) -> None:
-        super().setup()
+    def initialize(self) -> None:
+        super().initialize()
         self.add_uniform_loc('block_size')
 
     def setup_shaders(self) -> None:

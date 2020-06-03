@@ -36,7 +36,7 @@ class TestBlockGL:
     def test_draw(self):
         viewer = IntegrableViewer()
         program = BlockProgram(viewer)
-        program.setup()
+        program.initialize()
         program.bind()
 
         drawable = BlockGL(self.element)
@@ -59,7 +59,7 @@ class TestBlockGL:
     def test_program(self):
         viewer = IntegrableViewer()
         program = BlockProgram(viewer)
-        program.setup()
+        program.initialize()
         program.bind()
 
         drawable = BlockGL(self.element)
@@ -71,7 +71,7 @@ class TestBlockGL:
     def test_legacy_program(self):
         viewer = IntegrableViewer()
         program = BlockLegacyProgram(viewer)
-        program.setup()
+        program.initialize()
         program.bind()
 
         drawable = BlockGL(self.element, legacy=True)
