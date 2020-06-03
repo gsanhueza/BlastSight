@@ -63,6 +63,7 @@ class ShaderProgram:
         self.uniform_locs[loc_str] = self.shader_program.uniformLocation(loc_str)
 
     def update_uniform(self, loc_str, *values) -> None:
+        self.shader_program.bind()
         self.shader_program.setUniformValue(self.uniform_locs[loc_str], *values)
 
     def set_drawables(self, drawables: list) -> None:

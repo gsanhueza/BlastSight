@@ -755,14 +755,8 @@ class IntegrableViewer(QOpenGLWidget):
         self.set_rotation_angle(self.angles_from_vectors(normal, up))
 
     def cross_section(self, origin: np.ndarray, normal: np.ndarray) -> None:
-        print(f'NOT IMPLEMENTED YET!')
-
-        # TODO Find a way to pass this info directly to CrossSectionProgram,
-        #  instead of handling it directly here
-        # Cross-section the meshes
-        self.plane_origin = origin
-        self.plane_normal = normal
-        self.recreate()
+        self.drawable_collection.update_uniform('CrossSection', 'plane_origin', *origin)
+        self.drawable_collection.update_uniform('CrossSection', 'plane_normal', *normal)
 
     def generate_slice_description(self, origin_list: list, ray_list: list) -> None:
         # A plane is created from `origin` and `ray_list`.
