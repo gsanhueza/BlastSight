@@ -149,6 +149,12 @@ class IntegrableViewer(QOpenGLWidget):
     def axis(self) -> GLDrawable:
         return self.axis_collection.get_last()
 
+    # DEPRECATED
+    @property
+    def bg(self) -> GLDrawable:
+        self._deprecated_message('bg', 'background')
+        return self.background
+
     @property
     def background(self) -> GLDrawable:
         return self.background_collection.get_last()
@@ -404,47 +410,47 @@ class IntegrableViewer(QOpenGLWidget):
     Load methods by path (DEPRECATED)
     """
     @staticmethod
-    def _deprecated_message(log: callable, old: str, new: str) -> None:
+    def _deprecated_message(old: str, new: str, log: callable = warnings.warn) -> None:
         log(f'{old} is deprecated. Use {new} instead.', DeprecationWarning, 2)
 
     def mesh_by_path(self, path: str, *args, **kwargs) -> MeshGL:
-        self._deprecated_message(warnings.warn, 'mesh_by_path()', 'load_mesh()')
+        self._deprecated_message('mesh_by_path()', 'load_mesh()')
         return self.load_mesh(path, *args, **kwargs)
 
     def blocks_by_path(self, path: str, *args, **kwargs) -> BlockGL:
-        self._deprecated_message(warnings.warn, 'blocks_by_path()', 'load_blocks()')
+        self._deprecated_message('blocks_by_path()', 'load_blocks()')
         return self.load_blocks(path, *args, **kwargs)
 
     def points_by_path(self, path: str, *args, **kwargs) -> PointGL:
-        self._deprecated_message(warnings.warn, 'points_by_path()', 'load_points()')
+        self._deprecated_message('points_by_path()', 'load_points()')
         return self.load_points(path, *args, **kwargs)
 
     def lines_by_path(self, path: str, *args, **kwargs) -> LineGL:
-        self._deprecated_message(warnings.warn, 'lines_by_path()', 'load_lines()')
+        self._deprecated_message('lines_by_path()', 'load_lines()')
         return self.load_lines(path, *args, **kwargs)
 
     def tubes_by_path(self, path: str, *args, **kwargs) -> TubeGL:
-        self._deprecated_message(warnings.warn, 'tubes_by_path()', 'load_tubes()')
+        self._deprecated_message('tubes_by_path()', 'load_tubes()')
         return self.load_tubes(path, *args, **kwargs)
 
     def meshes_by_folder_path(self, path: str, *args, **kwargs) -> list:
-        self._deprecated_message(warnings.warn, 'meshes_by_folder_path()', 'load_mesh_folder()')
+        self._deprecated_message('meshes_by_folder_path()', 'load_mesh_folder()')
         return self.load_mesh_folder(path, *args, **kwargs)
 
     def blocks_by_folder_path(self, path: str, *args, **kwargs) -> list:
-        self._deprecated_folder(warnings.warn, 'blocks_by_folder_path()', 'load_blocks_folder()')
+        self._deprecated_folder('blocks_by_folder_path()', 'load_blocks_folder()')
         return self.load_blocks_folder(path, *args, **kwargs)
 
     def points_by_folder_path(self, path: str, *args, **kwargs) -> list:
-        self._deprecated_folder(warnings.warn, 'points_by_folder_path()', 'load_points_folder()')
+        self._deprecated_folder('points_by_folder_path()', 'load_points_folder()')
         return self.load_points_folder(path, *args, **kwargs)
 
     def lines_by_folder_path(self, path: str, *args, **kwargs) -> list:
-        self._deprecated_folder(warnings.warn, 'lines_by_folder_path()', 'load_lines_folder()')
+        self._deprecated_folder('lines_by_folder_path()', 'load_lines_folder()')
         return self.load_lines_folder(path, *args, **kwargs)
 
     def tubes_by_folder_path(self, path: str, *args, **kwargs) -> list:
-        self._deprecated_folder(warnings.warn, 'tubes_by_folder_path()', 'load_tubes_folder()')
+        self._deprecated_folder('tubes_by_folder_path()', 'load_tubes_folder()')
         return self.load_tubes_folder(path, *args, **kwargs)
 
     """
