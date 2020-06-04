@@ -10,9 +10,9 @@ from .mode import Mode
 
 
 class DetectionMode(Mode):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, viewer):
+        super().__init__(viewer)
         self.name = 'Detection Mode'
 
-    def mousePressEvent(self, event: QMouseEvent, viewer) -> None:
-        viewer.detect_mesh_intersection(event.pos().x(), event.pos().y(), 1.0)
+    def mousePressEvent(self, event: QMouseEvent) -> None:
+        self.viewer.detect_mesh_intersection(event.pos().x(), event.pos().y(), 1.0)

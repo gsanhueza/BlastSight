@@ -11,25 +11,25 @@ from .mode import Mode
 
 
 class SliceMode(Mode):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, viewer):
+        super().__init__(viewer)
         self.name = 'Slice Mode'
         self.origins = []
         self.rays = []
 
-    def mousePressEvent(self, event: QMouseEvent, viewer) -> None:
+    def mousePressEvent(self, event: QMouseEvent) -> None:
         if event.buttons() == Qt.LeftButton:
-            self.detect_rays(event, viewer)
+            self.detect_rays(event)
         else:
             self.origins.clear()
             self.rays.clear()
 
-    def detect_rays(self, event: QMouseEvent, viewer) -> None:
+    def detect_rays(self, event: QMouseEvent) -> None:
         x, y, z = [event.pos().x(), event.pos().y(), 1.0]
-        self.rays.append(viewer.ray_from_click(x, y, z))
-        self.origins.append(viewer.origin_from_click(x, y, z))
+        self.rays.append(self.viewer.ray_from_click(x, y, z))
+        self.origins.append(self.viewer.origin_from_click(x, y, z))
 
         if len(self.rays) == 2:
-            viewer.generate_slice_description(self.origins, self.rays)
+            self.viewer.generate_slice_description(self.origins, self.rays)
             self.origins.clear()
             self.rays.clear()

@@ -37,6 +37,7 @@ from .drawables.tubegl import TubeGL
 from .drawablefactory import DrawableFactory
 from .fpscounter import FPSCounter
 
+from ..controller.mode import Mode
 from ..controller.detectionmode import DetectionMode
 from ..controller.normalmode import NormalMode
 from ..controller.slicemode import SliceMode
@@ -125,10 +126,10 @@ class IntegrableViewer(QOpenGLWidget):
         self.signal_center_translated.connect(self.update)
 
         # Controllers
-        self.add_controller(NormalMode, 'normal')
-        self.add_controller(DetectionMode, 'detection')
-        self.add_controller(SliceMode, 'slice')
-        self.add_controller(MeasurementMode, 'measurement')
+        self.add_controller(NormalMode(self))
+        self.add_controller(DetectionMode(self))
+        self.add_controller(SliceMode(self))
+        self.add_controller(MeasurementMode(self))
         self.set_normal_mode()
 
         # FPSCounter
@@ -794,47 +795,47 @@ class IntegrableViewer(QOpenGLWidget):
     """
     Controller
     """
-    def add_controller(self, mode, mode_name: str) -> None:
-        self.controllers[mode_name] = mode
+    def add_controller(self, controller: Mode) -> None:
+        self.controllers[controller.name] = controller
 
     def set_controller(self, mode_name: str) -> None:
-        self.current_mode = self.controllers.get(mode_name)()
+        self.current_mode = self.controllers.get(mode_name)
         self.signal_mode_updated.emit(self.current_mode.name)
         self.update()
 
     def set_normal_mode(self) -> None:
-        self.set_controller('normal')
+        self.set_controller('Normal Mode')
 
     def set_detection_mode(self) -> None:
-        self.set_controller('detection')
+        self.set_controller('Detection Mode')
 
     def set_slice_mode(self) -> None:
-        self.set_controller('slice')
+        self.set_controller('Slice Mode')
 
     def set_measurement_mode(self) -> None:
-        self.set_controller('measurement')
+        self.set_controller('Measurement Mode')
 
     """
     Events (dependent on current controller)
     """
     def mouseMoveEvent(self, event, *args, **kwargs) -> None:
-        self.current_mode.mouseMoveEvent(event, self)
+        self.current_mode.mouseMoveEvent(event)
         self.update()
 
     def mousePressEvent(self, event, *args, **kwargs) -> None:
-        self.current_mode.mousePressEvent(event, self)
+        self.current_mode.mousePressEvent(event)
         self.update()
 
     def mouseDoubleClickEvent(self, event, *args, **kwargs) -> None:
-        self.current_mode.mouseDoubleClickEvent(event, self)
+        self.current_mode.mouseDoubleClickEvent(event)
         self.update()
 
     def mouseReleaseEvent(self, event, *args, **kwargs) -> None:
-        self.current_mode.mouseReleaseEvent(event, self)
+        self.current_mode.mouseReleaseEvent(event)
         self.update()
 
     def wheelEvent(self, event, *args, **kwargs) -> None:
-        self.current_mode.wheelEvent(event, self)
+        self.current_mode.wheelEvent(event)
         self.update()
 
     def dragEnterEvent(self, event, *args, **kwargs) -> None:
