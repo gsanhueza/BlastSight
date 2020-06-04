@@ -748,7 +748,7 @@ class IntegrableViewer(QOpenGLWidget):
         # Auto-moves the camera using the normal as direction
         self.set_rotation_angle(self.angles_from_vectors(normal, up))
 
-    def cross_section(self, origin_list: list, ray_list: list) -> None:
+    def generate_slice_description(self, origin_list: list, ray_list: list) -> None:
         # A plane is created from `origin` and `ray_list`.
         # In perspective projection, the origin is the same.
         origin = origin_list[0]
