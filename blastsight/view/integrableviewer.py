@@ -754,10 +754,6 @@ class IntegrableViewer(QOpenGLWidget):
         # Auto-moves the camera using the normal as direction
         self.set_rotation_angle(self.angles_from_vectors(normal, up))
 
-    def cross_section(self, origin: np.ndarray, normal: np.ndarray) -> None:
-        self.drawable_collection.update_uniform('CrossSection', 'plane_origin', *origin)
-        self.drawable_collection.update_uniform('CrossSection', 'plane_normal', *normal)
-
     def generate_slice_description(self, origin_list: list, ray_list: list) -> None:
         # A plane is created from `origin` and `ray_list`.
         # In perspective projection, the origin is the same.
@@ -800,6 +796,14 @@ class IntegrableViewer(QOpenGLWidget):
 
         results = self.model.detect_mesh_intersection(ray, origin, meshes)
         self.signal_mesh_clicked.emit(results)
+
+    def cross_section(self, origin: np.ndarray, normal: np.ndarray) -> None:
+        self.drawable_collection.update_uniform('CrossSection', 'plane_origin', *origin)
+        self.drawable_collection.update_uniform('CrossSection', 'plane_normal', *normal)
+
+    def set_cross_section(self, status: bool) -> None:
+        for m in self.drawable_collection.filter(MeshGL):
+            m.is_cross_sectionable = status
 
     """
     Controller

@@ -135,11 +135,11 @@ class MainWindow(QMainWindow):
 
         self.menu_Tools.addAction(actions.action_slice_meshes)
         self.menu_Tools.addAction(actions.action_slice_blocks)
-        self.menu_Tools.addAction(actions.action_cross_section)
         self.menu_Tools.addAction(actions.action_detection_mode)
         self.menu_Tools.addAction(actions.action_measurement_mode)
         self.menu_Tools.addSeparator()
         self.menu_Tools.addAction(actions.action_normal_mode)
+        self.menu_Tools.addAction(actions.action_cross_section)
 
         self.menu_Help.addAction(actions.action_help)
         self.menu_Help.addAction(actions.action_about)
@@ -176,10 +176,11 @@ class MainWindow(QMainWindow):
         # Tools
         actions.action_slice_meshes.triggered.connect(self.slot_slice_meshes)
         actions.action_slice_blocks.triggered.connect(self.slot_slice_blocks)
-        actions.action_cross_section.triggered.connect(self.slot_cross_section)
         actions.action_detection_mode.triggered.connect(self.slot_detection_mode)
         actions.action_measurement_mode.triggered.connect(self.slot_measurement_mode)
+
         actions.action_normal_mode.triggered.connect(self.slot_normal_mode)
+        actions.action_cross_section.triggered.connect(self.slot_cross_section)
 
         # Help
         actions.action_help.triggered.connect(self.slot_help)
@@ -262,10 +263,6 @@ class MainWindow(QMainWindow):
         if actions.action_autorotate.isChecked():
             self.viewer.set_camera_from_vectors(normal, up)
 
-        # Auto-exit and disconnect
-        self.viewer.set_normal_mode()
-        self.viewer.signal_slice_description.disconnect()
-
     def slot_slice_meshes(self) -> None:
         def executer(origin, normal) -> None:
             slices = self.viewer.slice_meshes(origin, normal)
@@ -273,6 +270,10 @@ class MainWindow(QMainWindow):
 
         def handler(description: dict) -> None:
             self.handle_slices(description, executer)
+
+            # Disconnect
+            self.viewer.set_normal_mode()
+            self.viewer.signal_slice_description.disconnect()
 
         self.viewer.set_slice_mode()
         self.viewer.signal_slice_description.connect(handler)
@@ -285,18 +286,28 @@ class MainWindow(QMainWindow):
         def handler(description: dict) -> None:
             self.handle_slices(description, executer)
 
+            # Disconnect
+            self.viewer.set_normal_mode()
+            self.viewer.signal_slice_description.disconnect()
+
         self.viewer.set_slice_mode()
         self.viewer.signal_slice_description.connect(handler)
 
-    def slot_cross_section(self) -> None:
+    def slot_cross_section(self, status: bool) -> None:
         def executer(origin, normal) -> None:
             self.viewer.cross_section(origin, normal)
 
         def handler(description: dict) -> None:
+            self.viewer.set_cross_section(status)
             self.handle_slices(description, executer)
 
-        self.viewer.set_slice_mode()
-        self.viewer.signal_slice_description.connect(handler)
+        if status:
+            self.viewer.set_slice_mode()
+            self.viewer.signal_slice_description.connect(handler)
+        else:
+            self.viewer.set_normal_mode()
+            self.viewer.set_cross_section(status)
+            self.viewer.signal_slice_description.disconnect()
 
     def add_mesh_slices(self, slice_list: list) -> None:
         for sliced_meshes in slice_list:
