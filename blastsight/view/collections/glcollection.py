@@ -102,8 +102,12 @@ class GLCollection:
                 program.set_drawables([d for d in retriever() if d.is_visible])
             self._needs_update = False
 
-    def update_uniform(self, key: str, value) -> None:
-        self._uniform_data[key] = value
+    def update_matrix(self, matrix: str, value) -> None:
+        self._uniform_data[matrix] = value
+
+    def update_uniform(self, program_name: str, uniform: str, *values) -> None:
+        program = self._programs.get(program_name).get('program')
+        program.update_uniform(uniform, *values)
 
     def update_uniforms(self) -> None:
         # Update matrices so that it knows where it's looking

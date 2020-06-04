@@ -620,9 +620,9 @@ class IntegrableViewer(QOpenGLWidget):
         self.resizeGL(self.width(), self.height())
 
         # Update matrices
-        self.drawable_collection.update_uniform('proj_matrix', self.proj)
-        self.drawable_collection.update_uniform('model_view_matrix', self.camera * self.world)
-        self.axis_collection.update_uniform('model_view_matrix', self.camera * self.world)
+        self.drawable_collection.update_matrix('proj_matrix', self.proj)
+        self.drawable_collection.update_matrix('model_view_matrix', self.camera * self.world)
+        self.axis_collection.update_matrix('model_view_matrix', self.camera * self.world)
 
         # Draw every GLDrawable (meshes, blocks, points, etc)
         glEnable(GL_BLEND)
