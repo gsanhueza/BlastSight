@@ -29,10 +29,6 @@ class TurboMeshProgram(MeshProgram):
             },
         }
 
-    def recreate(self) -> None:
-        for visibility in self.info.keys():
-            self.info[visibility]['num_indices'] = 0
-
     def set_drawables(self, drawables: list) -> None:
         super().set_drawables(drawables)
         self.set_buffers(self.opaques, 'opaque')

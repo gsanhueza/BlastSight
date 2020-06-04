@@ -85,8 +85,6 @@ class GLCollection:
 
     def recreate(self) -> None:
         self._needs_update = True
-        for program in self.get_programs():
-            program.recreate()
 
     def get_programs(self) -> list:
         return [x.get('program') for x in self._programs.values()]
@@ -96,6 +94,7 @@ class GLCollection:
 
     def update_drawables(self) -> None:
         # Update shader program so that it knows what to draw
+        # FIXME Can we modify this method to not need self._needs_update ?
         if self._needs_update:
             for association in self._programs.values():
                 program = association.get('program')
