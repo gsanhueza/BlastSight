@@ -625,7 +625,7 @@ class IntegrableViewer(QOpenGLWidget):
 
         if self.projection_mode == 'perspective':
             self.proj.perspective(self.fov, aspect, 1.0, 100000.0)
-        elif self.projection_mode == 'orthographic':
+        else:  # if self.projection_mode == 'orthographic':
             z = self.off_center[2]
             self.proj.ortho(-z, z, -z / aspect, z / aspect, 0.0, 100000.0)
 

@@ -5,9 +5,13 @@ import pytest
 
 from blastsight.model.elements.element import Element
 from blastsight.model.model import Model
+
 from blastsight.view.drawables.meshgl import MeshGL
 from blastsight.view.drawables.blockgl import BlockGL
 from blastsight.view.drawables.pointgl import PointGL
+from blastsight.view.drawables.linegl import LineGL
+from blastsight.view.drawables.tubegl import TubeGL
+
 from blastsight.view.integrableviewer import IntegrableViewer
 
 from blastsight.controller.normalmode import NormalMode
@@ -19,6 +23,13 @@ from tests.globals import *
 
 class TestIntegrableViewer:
     element = Element(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], id=0)
+
+    @staticmethod
+    def equal_list(la, lb) -> bool:
+        for a, b in zip(la, lb):
+            if a != b:
+                return False
+        return True
 
     def test_init(self):
         viewer = IntegrableViewer()
@@ -34,16 +45,11 @@ class TestIntegrableViewer:
         assert len(viewer.controllers) > 0
 
         expected = [0.0, 0.0, 0.0]
-        for e, r in zip(expected, viewer.rotation_angle):
-            assert e == r
-        for e, r in zip(expected, viewer.rotation_center):
-            assert e == r
+        assert self.equal_list(expected, viewer.rotation_angle)
+        assert self.equal_list(expected, viewer.rotation_center)
 
         expected = [0.0, 0.0, 200.0]
-        for e, r in zip(expected, viewer.camera_position):
-            assert e == r
-        for e, r in zip(expected, viewer.off_center):
-            assert e == r
+        assert self.equal_list(expected, viewer.camera_position)
 
         assert viewer.fov == 45.0
         assert viewer.smoothness == 2.0
@@ -60,34 +66,50 @@ class TestIntegrableViewer:
 
         assert orig_model is not new_model
 
-    def test_centroid(self):
+    def test_camera_position(self):
         viewer = IntegrableViewer()
-        assert viewer.rotation_center[0] == 0.0
-        assert viewer.rotation_center[1] == 0.0
-        assert viewer.rotation_center[2] == 0.0
 
-        viewer.rotation_center = [1.0, 2.0, 3.0]
-        assert viewer.rotation_center[0] == 1.0
-        assert viewer.rotation_center[1] == 2.0
-        assert viewer.rotation_center[2] == 3.0
+        # Translate camera
+        translation = [5.0, 10.0, 15.0]
 
-    def test_camera(self):
+        assert self.equal_list([0.0, 0.0, 200.0], viewer.get_camera_position())
+        viewer.translate(*translation)
+        assert self.equal_list([5.0, 10.0, 215.0], viewer.get_camera_position())
+        viewer.translate(*translation)
+        assert self.equal_list([10.0, 20.0, 230.0], viewer.get_camera_position())
+
+        viewer.set_camera_position(translation)
+        assert self.equal_list(translation, viewer.get_camera_position())
+
+    def test_camera_rotation(self):
         viewer = IntegrableViewer()
-        for i, pos in enumerate([0.0, 0.0, 200.0]):
-            assert viewer.camera_position[i] == pos
-            assert viewer.off_center[i] == pos
 
-        for i, rot in enumerate([0.0, 0.0, 0.0]):
-            assert viewer.rotation_angle[i] == rot
+        # Rotate camera
+        rotation = [90.0, 10.0, 45.0]
 
-        viewer.camera_position = [5.0, 10.0, 15.0]
-        for i, pos in enumerate([5.0, 10.0, 15.0]):
-            assert viewer.camera_position[i] == pos
-            assert viewer.off_center[i] == pos
+        assert self.equal_list([0.0, 0.0, 0.0], viewer.get_rotation_angle())
+        viewer.rotate(*rotation)
+        assert self.equal_list([90.0, 10.0, 45.0], viewer.get_rotation_angle())
+        viewer.rotate(*rotation)
+        assert self.equal_list([180.0, 20.0, 90.0], viewer.get_rotation_angle())
 
-        viewer.rotation_angle = [90.0, 10.0, 45.0]
-        for i, rot in enumerate([90.0, 10.0, 45.0]):
-            assert viewer.rotation_angle[i] == rot
+        viewer.set_rotation_angle(rotation)
+        assert self.equal_list(rotation, viewer.get_rotation_angle())
+
+    def test_center_position(self):
+        viewer = IntegrableViewer()
+
+        # Translate center
+        center = [10.0, 20.0, 30.0]
+
+        assert self.equal_list([0.0, 0.0, 0.0], viewer.get_rotation_center())
+        viewer.translate_center(*center)
+        assert self.equal_list([10.0, 20.0, 30.0], viewer.get_rotation_center())
+        viewer.translate_center(*center)
+        assert self.equal_list([20.0, 40.0, 60.0], viewer.get_rotation_center())
+
+        viewer.set_rotation_center(center)
+        assert self.equal_list(center, viewer.get_rotation_center())
 
     def test_last_drawable(self):
         viewer = IntegrableViewer()
@@ -105,65 +127,114 @@ class TestIntegrableViewer:
 
         assert mesh
 
-    def test_add_mesh(self):
-        viewer = IntegrableViewer()
-        viewer.mesh(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], indices=[[0, 1, 2]])
-        viewer.load_mesh(f'{TEST_FILES_FOLDER_PATH}/caseron.dxf')
-
-        assert viewer.drawable_collection.size() == 2
-        assert isinstance(viewer.get_drawable(0), MeshGL)
-        assert isinstance(viewer.get_drawable(1), MeshGL)
-
-    def test_add_wrong_mesh(self):
+    def test_add_elements(self):
         viewer = IntegrableViewer()
 
-        added = viewer.mesh()
-        assert added is None
-        assert viewer.drawable_collection.size() == 0
+        # Mesh
+        mesh = viewer.mesh(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], indices=[[0, 1, 2]])
+        assert type(mesh) is MeshGL
+        assert viewer.last_id == mesh.id
+        assert viewer.last_drawable is mesh
+        assert len(viewer.get_all_drawables()) == 1
 
-        added = viewer.load_mesh('')
-        assert added is None
-        assert viewer.drawable_collection.size() == 0
+        # Blocks
+        blocks = viewer.blocks(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], values=[0, 1, 2])
+        assert type(blocks) is BlockGL
+        assert viewer.last_id == blocks.id
+        assert viewer.last_drawable is blocks
+        assert len(viewer.get_all_drawables()) == 2
 
-    def test_add_block_model(self):
-        viewer = IntegrableViewer()
-        viewer.blocks(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], values=[0, 1, 2])
-        viewer.load_blocks(f'{TEST_FILES_FOLDER_PATH}/mini.csv')
+        # Points
+        points = viewer.points(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], values=[0, 1, 2])
+        assert type(points) is PointGL
+        assert viewer.last_id == points.id
+        assert viewer.last_drawable is points
+        assert len(viewer.get_all_drawables()) == 3
 
-        assert viewer.drawable_collection.size() == 2
-        assert isinstance(viewer.get_drawable(0), BlockGL)
-        assert isinstance(viewer.get_drawable(1), BlockGL)
+        # Lines
+        lines = viewer.lines(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0])
+        assert type(lines) is LineGL
+        assert viewer.last_id == lines.id
+        assert viewer.last_drawable is lines
+        assert len(viewer.get_all_drawables()) == 4
 
-    def test_add_wrong_block_model(self):
-        viewer = IntegrableViewer()
+        # Tubes
+        tubes = viewer.tubes(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0])
+        assert type(tubes) is TubeGL
+        assert viewer.last_id == tubes.id
+        assert viewer.last_drawable is tubes
+        assert len(viewer.get_all_drawables()) == 5
 
-        added = viewer.blocks()
-        assert added is None
-        assert viewer.drawable_collection.size() == 0
-
-        added = viewer.load_blocks('')
-        assert added is None
-        assert viewer.drawable_collection.size() == 0
-
-    def test_add_points(self):
-        viewer = IntegrableViewer()
-        viewer.points(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], values=[0, 1, 2])
-        viewer.load_points(f'{TEST_FILES_FOLDER_PATH}/mini.csv')
-
-        assert viewer.drawable_collection.size() == 2
-        assert isinstance(viewer.get_drawable(0), PointGL)
-        assert isinstance(viewer.get_drawable(1), PointGL)
-
-    def test_add_wrong_points(self):
+    def test_load_elements(self):
         viewer = IntegrableViewer()
 
-        added = viewer.points()
-        assert added is None
-        assert viewer.drawable_collection.size() == 0
+        # Mesh
+        mesh = viewer.load_mesh(f'{TEST_FILES_FOLDER_PATH}/caseron.dxf')
+        assert type(mesh) is MeshGL
+        assert viewer.last_id == mesh.id
+        assert viewer.last_drawable is mesh
+        assert len(viewer.get_all_drawables()) == 1
 
-        added = viewer.load_points('')
-        assert added is None
-        assert viewer.drawable_collection.size() == 0
+        # Blocks
+        blocks = viewer.load_blocks(f'{TEST_FILES_FOLDER_PATH}/mini.csv')
+        assert type(blocks) is BlockGL
+        assert viewer.last_id == blocks.id
+        assert viewer.last_drawable is blocks
+        assert len(viewer.get_all_drawables()) == 2
+
+        # Points
+        points = viewer.load_points(f'{TEST_FILES_FOLDER_PATH}/mini.csv')
+        assert type(points) is PointGL
+        assert viewer.last_id == points.id
+        assert viewer.last_drawable is points
+        assert len(viewer.get_all_drawables()) == 3
+
+        # Lines
+        lines = viewer.load_lines(f'{TEST_FILES_FOLDER_PATH}/mini.csv')
+        assert type(lines) is LineGL
+        assert viewer.last_id == lines.id
+        assert viewer.last_drawable is lines
+        assert len(viewer.get_all_drawables()) == 4
+
+        # Tubes
+        tubes = viewer.load_tubes(f'{TEST_FILES_FOLDER_PATH}/mini.csv')
+        assert type(tubes) is TubeGL
+        assert viewer.last_id == tubes.id
+        assert viewer.last_drawable is tubes
+        assert len(viewer.get_all_drawables()) == 5
+
+    def test_load_multiple(self):
+        viewer = IntegrableViewer()
+        path = f'{TEST_FILES_FOLDER_PATH}/caseron.dxf'
+        path_list = 3 * [path]
+
+        meshes = viewer.load_multiple([], viewer.load_mesh)
+        assert len(meshes) == 0
+        assert len(viewer.get_all_ids()) == 0
+
+        meshes = viewer.load_multiple(path_list, viewer.load_mesh)
+        assert len(path_list) == len(meshes)
+        assert len(viewer.get_all_ids()) == len(path_list)
+
+        for mesh in meshes:
+            assert type(mesh) is MeshGL
+
+    def test_add_wrong_elements(self):
+        viewer = IntegrableViewer()
+
+        assert viewer.mesh() is None
+        assert viewer.blocks() is None
+        assert viewer.points() is None
+        assert viewer.lines() is None
+        assert viewer.tubes() is None
+
+        assert viewer.load_mesh('') is None
+        assert viewer.load_blocks('') is None
+        assert viewer.load_points('') is None
+        assert viewer.load_lines('') is None
+        assert viewer.load_tubes('') is None
+
+        assert len(viewer.get_all_drawables()) == 0
 
     def test_drawable_visibility(self):
         viewer = IntegrableViewer()
@@ -303,27 +374,23 @@ class TestIntegrableViewer:
         viewer = IntegrableViewer()
 
         # Default
-        assert viewer.rotation_angle[0] == 0.0
-        assert viewer.rotation_angle[1] == 0.0
-        assert viewer.rotation_angle[2] == 0.0
+        expected = [0.0, 0.0, 0.0]
+        assert self.equal_list(expected, viewer.rotation_angle)
 
         # Plan
         viewer.plan_view()
-        assert viewer.rotation_angle[0] == 0.0
-        assert viewer.rotation_angle[1] == 0.0
-        assert viewer.rotation_angle[2] == 0.0
+        expected = [0.0, 0.0, 0.0]
+        assert self.equal_list(expected, viewer.rotation_angle)
 
         # North
         viewer.north_view()
-        assert viewer.rotation_angle[0] == 270.0
-        assert viewer.rotation_angle[1] == 0.0
-        assert viewer.rotation_angle[2] == 270.0
+        expected = [270.0, 0.0, 270.0]
+        assert self.equal_list(expected, viewer.rotation_angle)
 
         # East
         viewer.east_view()
-        assert viewer.rotation_angle[0] == 270.0
-        assert viewer.rotation_angle[1] == 0.0
-        assert viewer.rotation_angle[2] == 0.0
+        expected = [270.0, 0.0, 0.0]
+        assert self.equal_list(expected, viewer.rotation_angle)
 
     def test_controller_modes(self):
         viewer = IntegrableViewer()
@@ -357,24 +424,42 @@ class TestIntegrableViewer:
         viewer.set_turbo_rendering(False)
         assert not viewer.last_drawable.is_boostable
 
+    def test_resize_gl(self):
+        viewer = IntegrableViewer()
+
+        expected = viewer.proj.data()
+        assert self.equal_list(expected, viewer.proj.data())
+
+        viewer.resizeGL(10, 10)
+        perspective = viewer.proj.data()
+        assert not self.equal_list(expected, perspective)
+
+        viewer.orthographic_projection()
+        viewer.resizeGL(10, 10)
+        orthographic = viewer.proj.data()
+
+        assert not self.equal_list(expected, orthographic)
+        assert not self.equal_list(perspective, orthographic)
+
     def test_fit_camera(self):
         viewer = IntegrableViewer()
 
-        assert viewer.off_center[2] == 200.0
+        expected = [0.0, 0.0, 200.0]
+        assert self.equal_list(expected, viewer.off_center)
         viewer.fit_to_screen()  # No drawables, no fit
-        assert viewer.off_center[2] == 200.0
+        assert self.equal_list(expected, viewer.off_center)
 
         viewer.mesh(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], indices=[[0, 1, 2]])
 
         viewer.fit_to_screen()  # One drawable, auto-fit
-        assert viewer.off_center[2] != 200.0
+        assert not self.equal_list(expected, viewer.off_center)
 
-        viewer.camera_position = [0.0, 0.0, 200.0]
+        viewer.camera_position = expected
         viewer.camera_at(viewer.last_id)
         viewer.projection_mode = 'orthographic'
 
         viewer.fit_to_bounds(*viewer.last_drawable.element.bounding_box)
-        assert viewer.off_center[2] != 200.0
+        assert not self.equal_list(expected, viewer.off_center)
 
     def test_load_folder(self):
         viewer = IntegrableViewer()
@@ -414,3 +499,125 @@ class TestIntegrableViewer:
 
         assert viewer.unproject(500, 300, 0, viewer.world, viewer.camera, viewer.proj)[0] > 0.0
         assert viewer.unproject(500, 400, 0, viewer.world, viewer.camera, viewer.proj)[1] < 0.0
+
+    def test_origin(self):
+        # This "origin" is only used when calculating ray-tracing
+        viewer = IntegrableViewer()
+        viewer.resize(800, 600)
+
+        expected = [0.0, 0.0, 0.0]
+        assert self.equal_list(expected, viewer.get_origin())
+
+        # TODO More tests for when the origin is not default
+
+    def test_ray_from_click(self):
+        viewer = IntegrableViewer()
+        viewer.resize(800, 600)
+
+        # Perspective: Ray deviates when click is not at center
+        expected = [0.0, 0.0, -1.0]
+        ray = viewer.ray_from_click(400, 300, 0)
+        assert self.equal_list(expected, ray)
+
+        ray = viewer.ray_from_click(100, 100, 0)
+        assert not self.equal_list(expected, ray)
+
+        # Orthographic: Ray always has the same direction
+        viewer.orthographic_projection()
+        ray = viewer.ray_from_click(400, 300, 0)
+        assert self.equal_list(expected, ray)
+
+        ray = viewer.ray_from_click(100, 100, 0)
+        assert self.equal_list(expected, ray)
+
+    def test_origin_from_click(self):
+        viewer = IntegrableViewer()
+        viewer.resize(800, 600)
+
+        # Perspective: The origin doesn't change, only the ray
+        expected = [0.0, 0.0, 0.0]
+        origin = viewer.origin_from_click(100, 100, 0)
+        assert self.equal_list(expected, origin)
+
+        # Orthographic: The ray doesn't change, but the origin does
+        viewer.orthographic_projection()
+        origin = viewer.origin_from_click(100, 100, 0)
+        assert not self.equal_list(expected, origin)
+
+    def test_get_normal(self):
+        viewer = IntegrableViewer()
+
+        # Auto-generates a normal from 2 rays and 2 origins
+        normal = viewer.get_normal(origin_list=[[0.0, 0.0, 0.0],
+                                                [100.0, 0.0, 0.0]],
+                                   ray_list=[[-0.5, 0.0, -0.7],
+                                             [+0.5, 0.0, -0.7]])
+
+        # Perspective: We only need the rays
+        expected = [0.0, -1.0, 0.0]
+        assert self.equal_list(expected, normal)
+
+        # Orthographic: A origin is needed to make differences between the rays
+        viewer.orthographic_projection()
+        normal = viewer.get_normal(origin_list=[[0.0, 100.0, 0.0],
+                                                [100.0, 0.0, 0.0]],
+                                   ray_list=[[-0.5, 0.0, -0.7],
+                                             [+0.5, 0.0, -0.7]])
+
+        assert not self.equal_list(expected, normal)
+
+    def test_angles_from_vectors(self):
+        viewer = IntegrableViewer()
+
+        # Make the normal face the camera
+        default = [0.0, 0.0, 0.0]
+        expected = [-90.0, 0.0, -90.0]
+
+        normal = [1.0, 0.0, 0.0]
+        up = [0.0, 0.0, 1.0]
+        angles = viewer.angles_from_vectors(normal, up)
+        assert self.equal_list(expected, angles)
+
+        assert self.equal_list(default, viewer.get_rotation_angle())
+        viewer.set_camera_from_vectors(normal, up)
+        assert self.equal_list(expected, viewer.get_rotation_angle())
+
+    def test_generate_slice_description(self):
+        def on_description(description: dict):
+            assert 'origin' in description.keys()
+            assert 'normal' in description.keys()
+            assert 'up' in description.keys()
+
+        viewer = IntegrableViewer()
+        viewer.signal_slice_description.connect(on_description)
+
+        viewer.generate_slice_description(origin_list=[[0.0, 0.0, 0.0],
+                                                       [100.0, 0.0, 0.0]],
+                                          ray_list=[[-0.5, 0.0, -0.7],
+                                                    [+0.5, 0.0, -0.7]])
+
+    def test_slice_meshes(self):
+        viewer = IntegrableViewer()
+        mesh = viewer.load_mesh(f'{TEST_FILES_FOLDER_PATH}/caseron.dxf')
+        mesh.hide()
+
+        origin = mesh.center
+        normal = [0.0, 0.0, -1.0]
+        slices = viewer.slice_meshes(origin, normal, include_hidden=False)
+        assert len(slices) == 0
+
+        slices = viewer.slice_meshes(origin, normal, include_hidden=True)
+        assert len(slices) > 0
+
+    def test_slice_blocks(self):
+        viewer = IntegrableViewer()
+        blocks = viewer.load_blocks(f'{TEST_FILES_FOLDER_PATH}/mini.csv')
+        blocks.hide()
+
+        origin = blocks.center
+        normal = [0.0, 0.6, -0.8]
+        slices = viewer.slice_blocks(origin, normal, include_hidden=False)
+        assert len(slices) == 0
+
+        slices = viewer.slice_blocks(origin, normal, include_hidden=True)
+        assert len(slices) > 0

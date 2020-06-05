@@ -10,6 +10,5 @@ omit =
     blastsight/__main__.py
     blastsight/view/gui/*.py
     blastsight/view/viewer.py
-    blastsight/view/integrableviewer.py
     blastsight/controller/*.py
 
