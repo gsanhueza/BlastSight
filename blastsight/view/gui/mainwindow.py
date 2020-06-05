@@ -222,7 +222,6 @@ class MainWindow(QMainWindow):
     Status bar updates
     """
     def slot_element_load_success(self, _id: int) -> None:
-        self.viewer.update_turbo()
         self.statusBar.showMessage(f'Load successful (id: {_id}).')
 
     def slot_element_load_failure(self) -> None:

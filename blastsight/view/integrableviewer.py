@@ -120,7 +120,6 @@ class IntegrableViewer(QOpenGLWidget):
 
         # Signals
         self.signal_file_modified.connect(self.recreate)
-        self.signal_file_modified.connect(self.update_autofit)
         self.signal_camera_rotated.connect(self.update)
         self.signal_camera_translated.connect(self.update)
         self.signal_center_translated.connect(self.update)
@@ -224,14 +223,14 @@ class IntegrableViewer(QOpenGLWidget):
 
         def setter(value):
             self.camera_position = value
-        self.animate(origin, target, method=setter) if self.get_animated_status() else setter(target)
+        self.animate(origin, target, method=setter) if self.is_animated() else setter(target)
 
     def set_rotation_center(self, target) -> None:
         origin = self.get_rotation_center()
 
         def setter(value):
             self.rotation_center = value
-        self.animate(origin, target, method=setter) if self.get_animated_status() else setter(target)
+        self.animate(origin, target, method=setter) if self.is_animated() else setter(target)
 
     def set_rotation_angle(self, target) -> None:
         # Fix any difference > 180° so the camera doesn't over-rotate
@@ -241,42 +240,29 @@ class IntegrableViewer(QOpenGLWidget):
 
         def setter(value):
             self.rotation_angle = value
-        self.animate(origin, target, method=setter) if self.get_animated_status() else setter(target)
+        self.animate(origin, target, method=setter) if self.is_animated() else setter(target)
 
     """
-    Turbo/Auto-fit/Animation
+    Animation / Turbo
     """
-    def get_turbo_status(self) -> bool:
-        return self._turbo
+    def set_turbo_rendering(self, status: bool) -> None:
+        self.blockSignals(True)
 
-    def get_autofit_status(self) -> bool:
-        return self._autofit
+        for d in self.get_all_drawables():
+            d.is_boostable = status
 
-    def get_animated_status(self) -> bool:
+        self.blockSignals(False)
+        self.recreate()
+
+    def is_animated(self) -> bool:
         return self._animated
 
-    def set_turbo_status(self, status: bool) -> None:
-        self._turbo = status
-        self.update_turbo()
-
-    def set_autofit_status(self, status: bool) -> None:
-        self._autofit = status
-        self.update_autofit()
-
-    def set_animated_status(self, status: bool) -> None:
+    def set_animated(self, status: bool) -> None:
         self._animated = status
 
-    def update_turbo(self) -> None:
-        for d in self.get_all_drawables():
-            d.is_boostable = self.get_turbo_status()
-
-    def update_autofit(self) -> None:
-        if self.get_autofit_status():
-            self.fit_to_screen()
-
-    def animate(self, start, end, method: callable, frames: int = 20) -> callable:
+    def animate(self, start, end, method: callable, steps: int = 20) -> callable:
         timer = QTimer(self)
-        linspace = iter(np.linspace(start, end, frames))
+        linspace = iter(np.linspace(start, end, steps))
 
         def animation_per_frame():
             try:

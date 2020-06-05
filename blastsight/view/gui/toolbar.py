@@ -53,9 +53,20 @@ class ToolBar(QToolBar):
         actions.action_east_view.triggered.connect(viewer.east_view)
         actions.action_fit_to_screen.triggered.connect(viewer.fit_to_screen)
 
-        actions.action_animate.triggered.connect(viewer.set_animated_status)
-        actions.action_autofit.triggered.connect(viewer.set_autofit_status)
-        actions.action_turbo_rendering.triggered.connect(viewer.set_turbo_status)
-
         actions.action_perspective_projection.triggered.connect(viewer.perspective_projection)
         actions.action_orthographic_projection.triggered.connect(viewer.orthographic_projection)
+
+        # React to viewer changes ourselves, since blastsight>=0.5.1 will not auto-do it anymore
+        def auto_fit() -> None:
+            if actions.action_autofit.isChecked():
+                viewer.fit_to_screen()
+
+        def auto_turbo() -> None:
+            viewer.set_turbo_rendering(actions.action_turbo_rendering.isChecked())
+
+        actions.action_animate.triggered.connect(viewer.set_animated)
+        actions.action_autofit.triggered.connect(auto_fit)
+        actions.action_turbo_rendering.triggered.connect(auto_turbo)
+
+        viewer.signal_file_modified.connect(auto_fit)
+        viewer.signal_load_success.connect(auto_turbo)

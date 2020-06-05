@@ -45,9 +45,6 @@ class TestIntegrableViewer:
         for e, r in zip(expected, viewer.off_center):
             assert e == r
 
-        assert not viewer.get_turbo_status()
-        assert not viewer.get_autofit_status()
-
         assert viewer.fov == 45.0
         assert viewer.smoothness == 2.0
         assert viewer.projection_mode == 'perspective'
@@ -354,10 +351,10 @@ class TestIntegrableViewer:
         viewer.mesh(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], indices=[[0, 1, 2]])
 
         assert not viewer.last_drawable.is_boostable
-        viewer.set_turbo_status(True)
+        viewer.set_turbo_rendering(True)
         assert viewer.last_drawable.is_boostable
 
-        viewer.set_turbo_status(False)
+        viewer.set_turbo_rendering(False)
         assert not viewer.last_drawable.is_boostable
 
     def test_fit_camera(self):
@@ -369,23 +366,15 @@ class TestIntegrableViewer:
 
         viewer.mesh(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], indices=[[0, 1, 2]])
 
-        assert not viewer.get_autofit_status()
-        viewer.set_autofit_status(True)
-
+        viewer.fit_to_screen()  # One drawable, auto-fit
         assert viewer.off_center[2] != 200.0
 
         viewer.camera_position = [0.0, 0.0, 200.0]
         viewer.camera_at(viewer.last_id)
-
-        assert viewer.off_center[2] != 200.0
-
-        viewer.camera_position = [0.0, 0.0, 200.0]
         viewer.projection_mode = 'orthographic'
 
         viewer.fit_to_bounds(*viewer.last_drawable.element.bounding_box)
         assert viewer.off_center[2] != 200.0
-
-        viewer.resizeGL(viewer.width(), viewer.height())
 
     def test_load_folder(self):
         viewer = IntegrableViewer()

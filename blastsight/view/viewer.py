@@ -26,7 +26,10 @@ class Viewer(IntegrableViewer):
         # This will auto-fit to screen when used from a script,
         # as it's reasonable to expect the figure to be shown
         # immediately, even if it's far from [0.0, 0.0, 0.0].
-        self.set_autofit_status(autofit)
+        if autofit:
+            self.fit_to_screen()
+
+        # Show as normal
         super().show()
 
         if detached:
