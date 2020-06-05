@@ -131,25 +131,25 @@ class ActionCollection:
         self.action_turbo_rendering.setShortcut('Shift+T')
         self.action_turbo_rendering.setCheckable(True)
 
-        self.action_normal_mode = QAction('&Normal mode', parent)
+        self.action_normal_mode = QAction('Return to &normal', parent)
         self.action_normal_mode.setIcon(IconCollection.get('rotate_camera.svg'))
         self.action_normal_mode.setShortcut('Ctrl+N')
 
-        self.action_measurement_mode = QAction('Mesh &measurements', parent)
+        self.action_measurement_mode = QAction('&Measure meshes', parent)
         self.action_measurement_mode.setIcon(IconCollection.get('ruler.svg'))
         self.action_measurement_mode.setShortcut('Ctrl+M')
 
-        self.action_detection_mode = QAction('Mesh &detection', parent)
+        self.action_detection_mode = QAction('&Detect meshes', parent)
         self.action_detection_mode.setIcon(IconCollection.get('cursor.svg'))
         self.action_detection_mode.setShortcut('Ctrl+D')
 
-        self.action_slice_meshes = QAction('&Mesh slicing', parent)
+        self.action_slice_meshes = QAction('&Slice meshes', parent)
         self.action_slice_meshes.setIcon(IconCollection.get('flash_on.svg'))
         self.action_slice_meshes.setShortcut('Ctrl+S')
 
-        self.action_slice_blocks = QAction('&Block slicing', parent)
+        self.action_slice_blocks = QAction('Slice &blocks', parent)
         self.action_slice_blocks.setIcon(IconCollection.get('flash_on.svg'))
-        self.action_slice_blocks.setShortcut('Ctrl+Shift+S')
+        self.action_slice_blocks.setShortcut('Ctrl+B')
 
         self.action_camera_properties = QAction('&Camera properties', parent)
         self.action_camera_properties.setIcon(IconCollection.get('compact_camera.svg'))
