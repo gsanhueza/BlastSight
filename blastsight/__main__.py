@@ -31,6 +31,11 @@ def container(paths: list) -> None:
     qt_app = QApplication(sys.argv)
 
     w = Container()
+
+    # Activate auto-fit
+    if not w.toolbar.action_collection.action_autofit.isChecked():
+        w.toolbar.action_collection.action_autofit.trigger()
+
     w.show()
 
     # Auto-load files when called from CLI
