@@ -20,9 +20,9 @@ class CameraWidget(QWidget):
         self.setWindowTitle('Camera Properties')
         self.setWindowFlags(Qt.WindowStaysOnTopHint)
 
-        self.label_position = QLabel('Camera position (X, Y, Z)', self)
-        self.label_center = QLabel('Rotation center (X, Y, Z)', self)
-        self.label_rotation = QLabel('Rotation angle (X°, Y°, Z°)', self)
+        self.label_position = QLabel('Camera position (location)', self)
+        self.label_center = QLabel('Rotation center (location)', self)
+        self.label_rotation = QLabel('Rotation angle (degrees)', self)
 
         self.doubleSpinBox_x = self._generate_spinbox()
         self.doubleSpinBox_y = self._generate_spinbox()
@@ -53,21 +53,21 @@ class CameraWidget(QWidget):
         self.horizontal_rotation = QHBoxLayout()
 
         self.add_to_layout(self.layout, [self.label_position,
-                                         self.doubleSpinBox_x,
-                                         self.doubleSpinBox_y,
-                                         self.doubleSpinBox_z,
+                                         self._label_spinbox('X', self.doubleSpinBox_x),
+                                         self._label_spinbox('Y', self.doubleSpinBox_y),
+                                         self._label_spinbox('Z', self.doubleSpinBox_z),
                                          self.line_separator_1,
 
                                          self.label_center,
-                                         self.doubleSpinBox_center_x,
-                                         self.doubleSpinBox_center_y,
-                                         self.doubleSpinBox_center_z,
+                                         self._label_spinbox('X', self.doubleSpinBox_center_x),
+                                         self._label_spinbox('Y', self.doubleSpinBox_center_y),
+                                         self._label_spinbox('Z', self.doubleSpinBox_center_z),
                                          self.line_separator_2,
 
                                          self.label_rotation,
-                                         self.doubleSpinBox_rot_x,
-                                         self.doubleSpinBox_rot_y,
-                                         self.doubleSpinBox_rot_z,
+                                         self._label_spinbox('X°', self.doubleSpinBox_rot_x),
+                                         self._label_spinbox('Y°', self.doubleSpinBox_rot_y),
+                                         self._label_spinbox('Z°', self.doubleSpinBox_rot_z),
                                          ])
 
         self.layout.addSpacerItem(self.vertical_spacer)
@@ -85,6 +85,18 @@ class CameraWidget(QWidget):
         spinbox.setMaximum(upper)
 
         return spinbox
+
+    def _label_spinbox(self, text: str, spinbox: QAbstractSpinBox) -> QWidget:
+        widget = QWidget(self)
+        layout = QHBoxLayout(widget)
+        layout.setContentsMargins(0, 0, 0, 0)
+
+        layout.addWidget(QLabel(text, widget))
+        layout.addWidget(spinbox)
+        layout.setStretch(0, 1)
+        layout.setStretch(1, 8)
+
+        return widget
 
     def _connect_internal_signals(self) -> None:
         self.doubleSpinBox_x.valueChanged.connect(self.signal_camera_translated.emit)
