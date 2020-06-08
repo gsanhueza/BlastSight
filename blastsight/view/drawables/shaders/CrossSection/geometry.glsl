@@ -15,11 +15,6 @@ uniform vec3 plane_normal;
 
 float EPSILON = 1e-6;
 
-bool is_between(vec3 v_a, vec3 v_b, vec3 point)
-{
-    return distance(v_a, point) <= distance(v_a, v_b);
-}
-
 void emit_vertex(vec3 pos, vec4 color)
 {
     gl_Position = proj_matrix * model_view_matrix * vec4(pos, 1.0);
@@ -29,29 +24,26 @@ void emit_vertex(vec3 pos, vec4 color)
 }
 
 // Detect which edges intersect with the plane, and emit the intersection vertices
-void emit_intersections(vec3 v_a, vec3 v_b, vec4 color)
+// Adapted from https://en.wikipedia.org/wiki/Line%E2%80%93plane_intersection
+void intersect_edge(vec3 v_a, vec3 v_b, vec4 color)
 {
-    vec3 line_direction = normalize(v_b - v_a);
+    vec3 line_direction = v_b - v_a;
 
     float diff_dot_n = dot(plane_origin - v_a, plane_normal);
     float l_dot_n = dot(line_direction, plane_normal);
 
-    if (abs(l_dot_n) < EPSILON)
+    if (abs(l_dot_n) < EPSILON && abs(diff_dot_n) < EPSILON)  // Line completely contained in plane
     {
-        if (abs(diff_dot_n) < EPSILON)  // Line completely contained in plane
-        {
-            emit_vertex(v_a, color);
-            emit_vertex(v_b, color);
-        }
-        else; // Not a single point of intersection (the ';' is deliberately put there)
+        emit_vertex(v_a, color);
+        emit_vertex(v_b, color);
     }
     else  // Single point of intersection
     {
         float t = diff_dot_n / l_dot_n;
-        vec3 intersection = v_a + t * line_direction;
 
-        if (t >= 0.0 && is_between(v_a, v_b, intersection))
+        if (0.0 <= t && t <= 1.0)
         {
+            vec3 intersection = v_a + t * line_direction;
             emit_vertex(intersection, color);
         }
     }
@@ -61,7 +53,7 @@ void main()
 {
     for (int i = 0; i < gl_in.length(); i++)
     {
-        emit_intersections(v_position[i], v_position[(i + 1) % gl_in.length()], v_color[i]);
+        intersect_edge(v_position[i], v_position[(i + 1) % gl_in.length()], v_color[i]);
     }
 
     EndPrimitive();
