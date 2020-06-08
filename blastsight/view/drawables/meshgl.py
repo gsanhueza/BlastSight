@@ -23,6 +23,10 @@ class MeshGL(GLDrawable):
     Properties
     """
     @property
+    def is_standard(self) -> bool:
+        return not (self.is_highlighted or self.is_wireframed)
+
+    @property
     def is_highlighted(self) -> bool:
         return self._highlighted
 
@@ -32,7 +36,7 @@ class MeshGL(GLDrawable):
 
     @property
     def is_turbo_ready(self) -> bool:
-        return self.is_boostable and not self.is_highlighted and not self.is_wireframed
+        return self.is_boostable and self.is_standard
 
     @is_highlighted.setter
     def is_highlighted(self, status: bool) -> None:

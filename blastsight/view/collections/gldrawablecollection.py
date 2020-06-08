@@ -15,12 +15,15 @@ from ..drawables.tubegl import TubeGL
 
 from ..glprograms.meshprogram import MeshProgram
 from ..glprograms.wireprogram import WireProgram
+from ..glprograms.highlightprogram import HighlightProgram
+from ..glprograms.turbomeshprogram import TurboMeshProgram
+
 from ..glprograms.blockprogram import BlockProgram
 from ..glprograms.blocklegacyprogram import BlockLegacyProgram
+
 from ..glprograms.lineprogram import LineProgram
 from ..glprograms.pointprogram import PointProgram
 from ..glprograms.tubeprogram import TubeProgram
-from ..glprograms.turbomeshprogram import TurboMeshProgram
 
 
 class GLDrawableCollection(GLCollection):
@@ -35,6 +38,7 @@ class GLDrawableCollection(GLCollection):
         self.associate(BlockProgram(viewer), lambda: self.retrieve(BlockGL, 'block_standard'))
 
         # Meshes
-        self.associate(TurboMeshProgram(viewer), lambda: self.retrieve(MeshGL, 'mesh_turbo'))
         self.associate(MeshProgram(viewer), lambda: self.retrieve(MeshGL, 'mesh_standard'))
         self.associate(WireProgram(viewer), lambda: self.retrieve(MeshGL, 'mesh_wireframe'))
+        self.associate(HighlightProgram(viewer), lambda: self.retrieve(MeshGL, 'mesh_highlight'))
+        self.associate(TurboMeshProgram(viewer), lambda: self.retrieve(MeshGL, 'mesh_turbo'))
