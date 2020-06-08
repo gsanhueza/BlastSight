@@ -8,6 +8,13 @@ from blastsight.model.elements.nullelement import NullElement
 
 
 class TestBackgroundGL:
+    @staticmethod
+    def equal_list(la, lb) -> bool:
+        for a, b in zip(la, lb):
+            if a != b:
+                return False
+        return True
+
     def test_dir(self):
         assert len(dir(BackgroundGL(NullElement()))) > 0
 
@@ -40,11 +47,8 @@ class TestBackgroundGL:
         top = [0.1, 0.2, 0.3]
         bot = [0.4, 0.5, 0.6]
 
-        for expect, result in zip(top, drawable.top_color):
-            assert expect == result
-
-        for expect, result in zip(bot, drawable.bottom_color):
-            assert expect == result
+        assert self.equal_list(top, drawable.top_color)
+        assert self.equal_list(bot, drawable.bottom_color)
 
         top = [0.2, 0.4, 0.6]
         bot = [0.6, 0.4, 0.2]
@@ -52,11 +56,8 @@ class TestBackgroundGL:
         drawable.top_color = top
         drawable.bottom_color = bot
 
-        for expect, result in zip(top, drawable.top_color):
-            assert expect == result
-
-        for expect, result in zip(bot, drawable.bottom_color):
-            assert expect == result
+        assert self.equal_list(top, drawable.top_color)
+        assert self.equal_list(bot, drawable.bottom_color)
 
     def test_program(self):
         viewer = IntegrableViewer()

@@ -486,16 +486,15 @@ class TestIntegrableViewer:
         ndc = viewer.screen_to_ndc(400, 150, 0)
 
         expected = [0.0, 0.5, 1.0]
-        for e, r in zip(expected, ndc):
-            assert e == r
+        assert self.equal_list(expected, ndc)
 
     def test_unproject(self):
         viewer = IntegrableViewer()
         viewer.resize(800, 600)
 
         expected = [0.0, 0.0, -1.0]
-        for e, r in zip(expected, viewer.unproject(400, 300, 0, viewer.world, viewer.camera, viewer.proj)):
-            assert e == r
+        unproject = viewer.unproject(400, 300, 0, viewer.world, viewer.camera, viewer.proj)
+        assert self.equal_list(expected, unproject)
 
         assert viewer.unproject(500, 300, 0, viewer.world, viewer.camera, viewer.proj)[0] > 0.0
         assert viewer.unproject(500, 400, 0, viewer.world, viewer.camera, viewer.proj)[1] < 0.0
@@ -602,7 +601,7 @@ class TestIntegrableViewer:
         mesh.hide()
 
         origin = mesh.center
-        normal = [0.0, 0.0, -1.0]
+        normal = [0.0, 0.6, 0.8]
         slices = viewer.slice_meshes(origin, normal, include_hidden=False)
         assert len(slices) == 0
 
