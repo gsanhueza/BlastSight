@@ -111,9 +111,39 @@ class MeshElement(Element):
         return abs(volume)
 
     def slice_with_plane(self, origin: np.ndarray, normal: np.ndarray) -> list:
-        # This returns a list with the slices (in case we have a concave mesh)
+        # Returns a list with the slices (in case we have a concave mesh)
+
+        def intersect_edges(vertices_a: np.ndarray, vertices_b: np.ndarray) -> np.ndarray:
+            # Returns a mask of all edges that *might* be sliced by the plane
+            # Adapted from https://en.wikipedia.org/wiki/Line%E2%80%93plane_intersection
+            epsilon = 1e-6
+
+            diff_dot_n = np.dot(origin - vertices_a, normal)
+            l_dot_n = np.dot(vertices_b - vertices_a, normal)
+            t = diff_dot_n / l_dot_n
+
+            # Edge is completely contained in plane
+            mask_full = abs(l_dot_n) < epsilon
+            mask_full &= abs(diff_dot_n) < epsilon
+
+            # One intersection
+            mask_point = 0.0 <= t
+            mask_point &= t <= 1.0
+
+            return mask_full | mask_point
+
+        def preprocess_triangles(triangles: np.ndarray) -> np.ndarray:
+            # Pre-processes the triangles by each of their edges
+            mask_a = intersect_edges(triangles[:, 0], triangles[:, 1])
+            mask_b = intersect_edges(triangles[:, 1], triangles[:, 2])
+            mask_c = intersect_edges(triangles[:, 2], triangles[:, 0])
+
+            return mask_a | mask_b | mask_c
+
+        mask = preprocess_triangles(self.vertices[self.indices])
+
         try:
-            return meshcut.cross_section(self.vertices, self.indices, np.array(origin), np.array(normal))
+            return meshcut.cross_section(self.vertices, self.indices[mask], np.array(origin), np.array(normal))
         except AssertionError:
             # Meshcut doesn't want to slice
             print(f'WARNING: Mesh {self.name} (id = {self.id}) cannot be sliced, fix your mesh!')
