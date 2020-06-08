@@ -62,6 +62,10 @@ class IntegrableViewer(QOpenGLWidget):
     signal_process_started = Signal()
     signal_process_finished = Signal()
 
+    signal_animation_updated = Signal(int)
+    signal_animation_started = Signal()
+    signal_animation_finished = Signal()
+
     signal_mode_updated = Signal(str)
     signal_fps_updated = Signal(float)
 
@@ -260,19 +264,34 @@ class IntegrableViewer(QOpenGLWidget):
     def set_animated(self, status: bool) -> None:
         self._animated = status
 
-    def animate(self, start, end, method: callable, steps: int = 20) -> callable:
+    def animate(self, start, end, method: callable, **kwargs) -> callable:
+        milliseconds = int(kwargs.get('milliseconds', 300))
+        steps = int(kwargs.get('steps', 20))
+
         timer = QTimer(self)
         linspace = iter(np.linspace(start, end, steps))
+        counter = []
 
-        def animation_per_frame():
+        def start_animation():
+            timer.start(milliseconds / steps)
+            self.signal_animation_started.emit()
+
+        def update_animation():
             try:
                 method(next(linspace))
                 self.update()
-            except StopIteration:
-                timer.stop()
 
-        timer.timeout.connect(animation_per_frame)
-        timer.start(1.0 / 60.0)
+                counter.append(None)
+                self.signal_animation_updated.emit(100.0 * len(counter) / steps)
+            except StopIteration:
+                end_animation()
+
+        def end_animation():
+            timer.stop()
+            self.signal_animation_finished.emit()
+
+        timer.timeout.connect(update_animation)
+        start_animation()
 
     """
     Projections
