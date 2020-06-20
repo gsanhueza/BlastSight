@@ -569,10 +569,16 @@ class IntegrableViewer(QOpenGLWidget):
         self.update()
 
     def fit_to_screen(self) -> None:
+        bounds = self.bounding_box()
+
+        if bounds is not None:
+            self.fit_to_bounds(*bounds)
+
+    def bounding_box(self) -> tuple or None:
         drawables = [d for d in self.get_all_drawables() if d.is_visible]
 
         if len(drawables) == 0:
-            return
+            return None
 
         min_all = np.inf * np.ones(3)
         max_all = -np.inf * np.ones(3)
@@ -582,7 +588,7 @@ class IntegrableViewer(QOpenGLWidget):
             min_all = np.min((min_all, min_bound), axis=0)
             max_all = np.max((max_all, max_bound), axis=0)
 
-        self.fit_to_bounds(min_all, max_all)
+        return min_all, max_all
 
     """
     Internal methods

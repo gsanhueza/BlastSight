@@ -301,12 +301,23 @@ class MainWindow(QMainWindow):
             self.viewer.set_cross_section(status)
             self.handle_slices(description, executer)
 
+            # Make all meshes semi-transparent
+            for drawable in self.viewer.get_all_drawables():
+                drawable.alpha = 0.1
+            self.viewer.update_all()
+
         if status:
             self.viewer.set_slice_mode()
             self.viewer.signal_slice_description.connect(handler)
         else:
             self.viewer.set_normal_mode()
             self.viewer.set_cross_section(status)
+
+            # Revert transparency
+            for drawable in self.viewer.get_all_drawables():
+                drawable.alpha = 1.0
+            self.viewer.update_all()
+
             self.viewer.signal_slice_description.disconnect()
 
     def add_mesh_slices(self, slice_list: list) -> None:
