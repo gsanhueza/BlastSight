@@ -510,19 +510,18 @@ class IntegrableViewer(QOpenGLWidget):
         self.drawable_collection.delete(_id)
         self.signal_file_modified.emit()
 
-    def recreate(self) -> None:
-        self.axis_collection.recreate()
-        self.background_collection.recreate()
-        self.drawable_collection.recreate()
-        self.update()
-
     def update_all(self) -> None:
+        self.makeCurrent()
         for _id in self.get_all_ids():
-            self.update_drawable(_id)
+            self.get_drawable(_id).setup_attributes()
+        self.recreate()
 
     def clear(self) -> None:
+        self.makeCurrent()
         for _id in self.get_all_ids():
-            self.delete(_id)
+            self.model.delete(_id)
+            self.drawable_collection.delete(_id)
+        self.signal_file_modified.emit()
 
     """
     Drawable retrieval
@@ -552,7 +551,7 @@ class IntegrableViewer(QOpenGLWidget):
     Camera handling
     """
     def camera_at(self, _id: int) -> None:
-        self.fit_to_bounds(*self.get_drawable(_id).element.bounding_box)
+        self.fit_to_bounds(*self.get_drawable(_id).bounding_box)
 
     def plan_view(self) -> None:
         self.set_rotation_angle([0.0, 0.0, 0.0])
@@ -602,7 +601,7 @@ class IntegrableViewer(QOpenGLWidget):
         max_all = -np.inf * np.ones(3)
 
         for drawable in drawables:
-            min_bound, max_bound = drawable.element.bounding_box
+            min_bound, max_bound = drawable.bounding_box
             min_all = np.min((min_all, min_bound), axis=0)
             max_all = np.max((max_all, max_bound), axis=0)
 
@@ -671,6 +670,12 @@ class IntegrableViewer(QOpenGLWidget):
         else:  # if self.projection_mode == 'orthographic':
             z = self.off_center[2]
             self.proj.ortho(-z, z, -z / aspect, z / aspect, 0.0, 100000.0)
+
+    def recreate(self) -> None:
+        self.axis_collection.recreate()
+        self.background_collection.recreate()
+        self.drawable_collection.recreate()
+        self.update()
 
     """
     Utilities
