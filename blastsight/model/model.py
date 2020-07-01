@@ -140,29 +140,6 @@ class Model:
         return self.register_element_by_path(path, self.factory.tubes, *args, **kwargs)
 
     """
-    Load methods by path (DEPRECATED)
-    """
-    def mesh_by_path(self, path: str, *args, **kwargs) -> MeshElement:
-        warnings.warn('mesh_by_path() is deprecated. Use load_mesh() instead.', DeprecationWarning, 2)
-        return self.load_mesh(path, *args, **kwargs)
-
-    def blocks_by_path(self, path: str, *args, **kwargs) -> BlockElement:
-        warnings.warn('blocks_by_path() is deprecated. Use load_blocks() instead.', DeprecationWarning, 2)
-        return self.load_blocks(path, *args, **kwargs)
-
-    def points_by_path(self, path: str, *args, **kwargs) -> PointElement:
-        warnings.warn('points_by_path() is deprecated. Use load_points() instead.', DeprecationWarning, 2)
-        return self.load_points(path, *args, **kwargs)
-
-    def lines_by_path(self, path: str, *args, **kwargs) -> LineElement:
-        warnings.warn('lines_by_path() is deprecated. Use load_lines() instead.', DeprecationWarning, 2)
-        return self.load_lines(path, *args, **kwargs)
-
-    def tubes_by_path(self, path: str, *args, **kwargs) -> TubeElement:
-        warnings.warn('tubes_by_path() is deprecated. Use load_tubes() instead.', DeprecationWarning, 2)
-        return self.load_tubes(path, *args, **kwargs)
-
-    """
     Element handling
     """
     def get(self, _id: int) -> Element:
