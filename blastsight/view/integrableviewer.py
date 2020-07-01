@@ -516,12 +516,6 @@ class IntegrableViewer(QOpenGLWidget):
         self.drawable_collection.recreate()
         self.update()
 
-    def get_all_ids(self) -> list:
-        return self.drawable_collection.get_all_ids()
-
-    def get_all_drawables(self) -> list:
-        return self.drawable_collection.get_all_drawables()
-
     def update_all(self) -> None:
         for _id in self.get_all_ids():
             self.update_drawable(_id)
@@ -529,6 +523,30 @@ class IntegrableViewer(QOpenGLWidget):
     def clear(self) -> None:
         for _id in self.get_all_ids():
             self.delete(_id)
+
+    """
+    Drawable retrieval
+    """
+    def get_all_ids(self) -> list:
+        return self.drawable_collection.get_all_ids()
+
+    def get_all_drawables(self) -> list:
+        return self.drawable_collection.get_all_drawables()
+
+    def get_all_meshes(self) -> list:
+        return self.drawable_collection.filter(MeshGL)
+
+    def get_all_blocks(self) -> list:
+        return self.drawable_collection.filter(BlockGL)
+
+    def get_all_points(self) -> list:
+        return self.drawable_collection.filter(PointGL)
+
+    def get_all_lines(self) -> list:
+        return self.drawable_collection.filter(LineGL)
+
+    def get_all_tubes(self) -> list:
+        return self.drawable_collection.filter(TubeGL)
 
     """
     Camera handling
@@ -777,20 +795,18 @@ class IntegrableViewer(QOpenGLWidget):
 
     def slice_meshes(self, origin: np.ndarray, normal: np.ndarray, include_hidden: bool = False) -> list:
         # By default, slice only visible meshes
-        meshes = [m.element for m in self.drawable_collection.filter(MeshGL)
-                  if m.is_visible or include_hidden]
+        meshes = list(filter(lambda m: m.is_visible or include_hidden, self.get_all_meshes()))
 
         return self.model.slice_meshes(origin, normal, meshes)
 
     def slice_blocks(self, origin: np.ndarray, normal: np.ndarray, include_hidden: bool = True) -> list:
         # By default, slice visible and hidden blocks
-        blocks = [m.element for m in self.drawable_collection.filter(BlockGL)
-                  if m.is_visible or include_hidden]
+        blocks = list(filter(lambda m: m.is_visible or include_hidden, self.get_all_blocks()))
 
         return self.model.slice_blocks(origin, normal, blocks)
 
     def measure_from_rays(self, origin_list: list, ray_list: list) -> None:
-        meshes = [m.element for m in self.drawable_collection.filter(MeshGL) if m.is_visible]
+        meshes = list(filter(lambda m: m.is_visible, self.get_all_meshes()))
 
         results = self.model.measure_from_rays(origin_list, ray_list, meshes)
         self.signal_mesh_distances.emit(results)
@@ -798,7 +814,7 @@ class IntegrableViewer(QOpenGLWidget):
     def detect_mesh_intersection(self, x: float, y: float, z: float) -> None:
         ray = self.ray_from_click(x, y, z)
         origin = self.origin_from_click(x, y, z)
-        meshes = [m.element for m in self.drawable_collection.filter(MeshGL) if m.is_visible]
+        meshes = list(filter(lambda m: m.is_visible, self.get_all_meshes()))
 
         results = self.model.detect_mesh_intersection(ray, origin, meshes)
         self.signal_mesh_clicked.emit(results)
@@ -808,7 +824,7 @@ class IntegrableViewer(QOpenGLWidget):
         self.drawable_collection.update_uniform('CrossSection', 'plane_normal', *normal)
 
     def set_cross_section(self, status: bool) -> None:
-        for m in self.drawable_collection.filter(MeshGL):
+        for m in self.get_all_meshes():
             m.is_cross_sectionable = status
 
     """
