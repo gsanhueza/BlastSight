@@ -264,12 +264,18 @@ class MainWindow(QMainWindow):
             self.viewer.set_camera_from_vectors(normal, up)
 
     def slot_slice_meshes(self) -> None:
-        def executer(origin, normal) -> None:
+        def executer_standard(origin, normal) -> None:
             slices = self.viewer.slice_meshes(origin, normal)
             self.add_mesh_slices(slices)
 
+        def executer_cross(origin, normal) -> None:
+            self.viewer.cross_section(origin, normal)
+
         def handler(description: dict) -> None:
-            self.handle_slices(description, executer)
+            if self.toolbar.action_collection.action_cross_section.isChecked():
+                self.handle_slices(description, executer_cross)
+            else:
+                self.handle_slices(description, executer_standard)
 
             # Disconnect
             self.viewer.set_normal_mode()
@@ -294,31 +300,13 @@ class MainWindow(QMainWindow):
         self.viewer.signal_slice_description.connect(handler)
 
     def slot_cross_section(self, status: bool) -> None:
-        def executer(origin, normal) -> None:
-            self.viewer.cross_section(origin, normal)
+        self.viewer.set_cross_section(status)
 
-        def handler(description: dict) -> None:
-            self.viewer.set_cross_section(status)
-            self.handle_slices(description, executer)
+        # Make all meshes either semi-transparent or fully opaque
+        for drawable in self.viewer.get_all_drawables():
+            drawable.alpha *= 0.1 if status else 10.0
 
-            # Make all meshes semi-transparent
-            for drawable in self.viewer.get_all_drawables():
-                drawable.alpha = 0.1
-            self.viewer.update_all()
-
-        if status:
-            self.viewer.set_slice_mode()
-            self.viewer.signal_slice_description.connect(handler)
-        else:
-            self.viewer.set_normal_mode()
-            self.viewer.set_cross_section(status)
-
-            # Revert transparency
-            for drawable in self.viewer.get_all_drawables():
-                drawable.alpha = 1.0
-            self.viewer.update_all()
-
-            self.viewer.signal_slice_description.disconnect()
+        self.viewer.update_all()
 
     def add_mesh_slices(self, slice_list: list) -> None:
         for sliced_meshes in slice_list:
