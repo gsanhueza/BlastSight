@@ -68,28 +68,42 @@ viewer = Viewer()
 viewer.show()
 ```
 
+## Basic API
+
+The following methods can be used to render your elements directly.
+Keep in mind that these methods receive their arguments as *kwargs*, they're not positional.
+
+```python
+# Mesh
+viewer.mesh(x: list, y: list, z: list, indices: list, color: list, alpha: float, wireframe: bool, highlight: bool)
+
+# Blocks
+viewer.blocks(x: list, y: list, z: list, block_size: list, values: list, vmin: float, vmax: float, colormap: str)
+
+# Points
+viewer.points(x: list, y: list, z: list, point_size: float, values: list, vmin: float, vmax: float, colormap: str)
+
+# Lines
+viewer.lines(x: list, y: list, z: list, color: list, loop: bool)
+
+# Tubes
+viewer.tubes(x: list, y: list, z: list, color: list, loop: bool, radius: float, resolution: int)
+```
+
+Notes:
+
+* An additional 'name' *kwargs* can be used to give each element a name.
+* For **every** element, you can replace (x, y, z) with *vertices*, which is a list
+of positions, where each position is a list of (x, y, z).
+* For **meshes**, the *indices* argument is a list of index, where index is a list of
+(i1, i2, i3).
+* For **blocks** and **points** you can replace (values, vmin, vmax) with *color*,
+which is a list of colors for each position, where each color is a list of (r, g, b),
+between 0.0 and 1.0.
+
 ## Examples
 
 BlastSight comes with a folder of examples that show what you can do with it.
 
 It's recommended to check `examples/demo.py` in https://github.com/gsanhueza/BlastSight/
 to develop an idea of how to use this software.
-
-## Packaging
-
-You need to have `setuptools` and `wheel` installed.
-
-Run the following command to create a pip-installable package:
-`python setup.py bdist_wheel`.
-
-Alternatively, run `./wheelbuild.sh`.
-
-Your package will be in `dist`.
-You can install it with `pip install dist/blastsight*`.
-
-## Testing
-
-Run the following command: `pytest --cov=blastsight`.
-
-Alternatively, run `./run_tests.sh`.
-
