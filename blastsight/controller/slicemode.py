@@ -18,6 +18,8 @@ class SliceMode(Mode):
         self.rays = []
 
     def mousePressEvent(self, event: QMouseEvent) -> None:
+        super().mousePressEvent(event)
+
         if event.buttons() == Qt.LeftButton:
             self.detect_rays(event)
         else:

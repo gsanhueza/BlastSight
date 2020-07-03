@@ -810,7 +810,6 @@ class IntegrableViewer(QOpenGLWidget):
         self.update()
 
     def mousePressEvent(self, event, *args, **kwargs) -> None:
-        self.signal_screen_clicked.emit([event.x(), event.y(), 0])
         self.current_mode.mousePressEvent(event)
         self.update()
 

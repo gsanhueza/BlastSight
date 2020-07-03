@@ -17,6 +17,7 @@ class NormalMode(Mode):
         self.lastPos = None
 
     def mousePressEvent(self, event: QMouseEvent) -> None:
+        super().mousePressEvent(event)
         self.lastPos = QPoint(event.pos())
 
     def mouseDoubleClickEvent(self, event: QMouseEvent) -> None:

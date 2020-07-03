@@ -15,7 +15,7 @@ class Mode:
         self.viewer = viewer
 
     def mousePressEvent(self, event: QMouseEvent) -> None:
-        pass
+        self.viewer.signal_screen_clicked.emit([event.x(), event.y(), 0])
 
     def mouseMoveEvent(self, event: QMouseEvent) -> None:
         pass
