@@ -646,9 +646,9 @@ class IntegrableViewer(QOpenGLWidget):
             1.0 - (2.0 * y / self.height()),
             1.0])
 
-    def unproject(self, _x, _y, _z) -> np.ndarray:
+    def unproject(self, x: float, y: float, z: float) -> np.ndarray:
         # Adapted from http://antongerdelan.net/opengl/raycasting.html
-        x, y, z = self.screen_to_ndc(_x, _y, _z)
+        # Note: x, y, z must be normalized to [-1.0, +1.0]
 
         # We'd use `QVector4D(x, y, -1.0, 1.0)`, but PySide2
         # hasn't implemented QMatrix4x4 * QVector4D yet.
@@ -674,10 +674,10 @@ class IntegrableViewer(QOpenGLWidget):
     def ray_from_click(self, x: float, y: float, z: float) -> np.ndarray:
         # Perspective projection is straightforward
         if self.projection_mode == 'perspective':
-            return self.unproject(x, y, z)
+            return self.unproject(*self.screen_to_ndc(x, y, z))
 
-        # Orthographic projection "forces" a click in the center
-        return self.unproject(self.width() / 2, self.height() / 2, z)
+        # Orthographic projection "forces" a click in the center (normalized to [-1.0, +1.0])
+        return self.unproject(0.0, 0.0, 0.0)
 
     def origin_from_click(self, x: float, y: float, z: float) -> np.ndarray:
         # Perspective projection is straightforward
