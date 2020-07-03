@@ -66,6 +66,7 @@ class IntegrableViewer(QOpenGLWidget):
     signal_animation_started = Signal()
     signal_animation_finished = Signal()
 
+    signal_screen_clicked = Signal(object)
     signal_mode_updated = Signal(str)
     signal_fps_updated = Signal(float)
 
@@ -645,7 +646,7 @@ class IntegrableViewer(QOpenGLWidget):
             1.0 - (2.0 * y / self.height()),
             1.0])
 
-    def unproject(self, _x, _y, _z, model, view, proj) -> np.ndarray:
+    def unproject(self, _x, _y, _z) -> np.ndarray:
         # Adapted from http://antongerdelan.net/opengl/raycasting.html
         x, y, z = self.screen_to_ndc(_x, _y, _z)
 
@@ -654,7 +655,7 @@ class IntegrableViewer(QOpenGLWidget):
         vector = [x, y, -1.0, 1.0]
         temp_matrix = QMatrix4x4(*[e for e in vector for _ in range(4)])
 
-        ray_eye = (proj.inverted()[0] * temp_matrix).column(0)
+        ray_eye = (self.proj.inverted()[0] * temp_matrix).column(0)
         ray_eye = QVector4D(ray_eye.x(), ray_eye.y(), -1.0, 0.0)
 
         # We'd use `ray_eye`, but PySide2
@@ -662,7 +663,7 @@ class IntegrableViewer(QOpenGLWidget):
         vector = [ray_eye.x(), ray_eye.y(), ray_eye.z(), ray_eye.w()]
         temp_matrix = QMatrix4x4(*[e for e in vector for _ in range(4)])
 
-        ray_world = ((view * model).inverted()[0] * temp_matrix).column(0).toVector3D()
+        ray_world = ((self.camera * self.world).inverted()[0] * temp_matrix).column(0).toVector3D()
         ray = ray_world.normalized()
         return np.array([ray.x(), ray.y(), ray.z()])
 
@@ -673,11 +674,10 @@ class IntegrableViewer(QOpenGLWidget):
     def ray_from_click(self, x: float, y: float, z: float) -> np.ndarray:
         # Perspective projection is straightforward
         if self.projection_mode == 'perspective':
-            return self.unproject(x, y, z, self.world, self.camera, self.proj)
+            return self.unproject(x, y, z)
 
         # Orthographic projection "forces" a click in the center
-        return self.unproject(self.width() / 2, self.height() / 2, z,
-                              self.world, self.camera, self.proj)
+        return self.unproject(self.width() / 2, self.height() / 2, z)
 
     def origin_from_click(self, x: float, y: float, z: float) -> np.ndarray:
         # Perspective projection is straightforward
@@ -810,6 +810,7 @@ class IntegrableViewer(QOpenGLWidget):
         self.update()
 
     def mousePressEvent(self, event, *args, **kwargs) -> None:
+        self.signal_screen_clicked.emit([event.x(), event.y(), 0])
         self.current_mode.mousePressEvent(event)
         self.update()
 
