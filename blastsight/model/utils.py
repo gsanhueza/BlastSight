@@ -10,6 +10,25 @@ import numpy as np
 from colour import Color
 
 
+def dot_by_row(vectors_a: np.ndarray, vectors_b: np.ndarray) -> np.ndarray:
+    # Returns the row-wise dot product of the input
+    # Ex.: dot_by_row([v1, v2, v3], [v4, v5, v6]) = [dot(v1, v4), dot(v2, v5), dot(v3, v6)]
+    return np.einsum('ij,ij->i', vectors_a, vectors_b)
+
+
+def magnitude2_by_row(vectors: np.ndarray) -> np.ndarray:
+    # Returns the squared magnitudes of each vector in the input
+    # Ex.: magnitude2([v1, v2]) = [length(v1)^2, length(v)^2],
+    # where length is the magnitude of a single vector
+    return dot_by_row(vectors, vectors)
+
+
+def magnitude_by_row(vectors: np.ndarray) -> np.ndarray:
+    # Returns the magnitudes of each vector in the input
+    # Ex.: magnitude([v1, v2]) = [length(v1), length(v2)]
+    return np.sqrt(magnitude2_by_row(vectors))
+
+
 def closest_point_to(origin: np.ndarray, points: np.ndarray) -> np.ndarray or None:
     if points.size == 0:
         return None
