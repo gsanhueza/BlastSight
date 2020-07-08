@@ -39,20 +39,8 @@ class ActionCollection:
         self.action_setup_colors = QAction('Setup c&olors', parent)
         self.action_setup_colors.setIcon(IconCollection.get('picture.svg'))
 
-        self.action_export_mesh = QAction('&Export mesh', parent)
-        self.action_export_mesh.setIcon(IconCollection.get('export.svg'))
-
-        self.action_export_blocks = QAction('Export &blocks', parent)
-        self.action_export_blocks.setIcon(IconCollection.get('export.svg'))
-
-        self.action_export_points = QAction('Export &points', parent)
-        self.action_export_points.setIcon(IconCollection.get('export.svg'))
-
-        self.action_export_lines = QAction('Export &lines', parent)
-        self.action_export_lines.setIcon(IconCollection.get('export.svg'))
-
-        self.action_export_tubes = QAction('Export &tubes', parent)
-        self.action_export_tubes.setIcon(IconCollection.get('export.svg'))
+        self.action_export_element = QAction('&Export', parent)
+        self.action_export_element.setIcon(IconCollection.get('export.svg'))
 
         # MainWindow Actions
         self.action_load_mesh = QAction('Load &mesh', parent)

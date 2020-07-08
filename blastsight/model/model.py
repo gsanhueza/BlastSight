@@ -162,21 +162,6 @@ class Model:
 
         self.get_parser(ext).save_file(path=path, data=data, properties=properties)
 
-    def export_mesh(self, path: str, _id: int) -> None:
-        self.export(path, _id)
-
-    def export_blocks(self, path: str, _id: int) -> None:
-        self.export(path, _id)
-
-    def export_points(self, path: str, _id: int) -> None:
-        self.export(path, _id)
-
-    def export_lines(self, path: str, _id: int) -> None:
-        self.export(path, _id)
-
-    def export_tubes(self, path: str, _id: int) -> None:
-        self.export(path, _id)
-
     """
     Adapter for viewer's utilities (slice/distance)
     """

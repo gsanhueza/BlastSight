@@ -410,27 +410,12 @@ class IntegrableViewer(QOpenGLWidget):
     """
     Export methods
     """
-    def _export_element(self, exporter: callable, path: str, _id: int) -> None:
+    def export_element(self, path: str, _id: int) -> None:
         try:
-            exporter(path, _id)
+            self.model.export(path, _id)
             self.signal_export_success.emit(_id)
         except Exception:
             self.signal_export_failure.emit()
-
-    def export_mesh(self, path: str, _id: int) -> None:
-        self._export_element(self.model.export_mesh, path, _id)
-
-    def export_blocks(self, path: str, _id: int) -> None:
-        self._export_element(self.model.export_blocks, path, _id)
-
-    def export_points(self, path: str, _id: int) -> None:
-        self._export_element(self.model.export_points, path, _id)
-
-    def export_lines(self, path: str, _id: int) -> None:
-        self._export_element(self.model.export_lines, path, _id)
-
-    def export_tubes(self, path: str, _id: int) -> None:
-        self._export_element(self.model.export_tubes, path, _id)
 
     """
     Drawable manipulation

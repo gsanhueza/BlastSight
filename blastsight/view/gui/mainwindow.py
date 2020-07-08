@@ -40,32 +40,51 @@ class MainWindow(QMainWindow):
         self.statusBar.showMessage('Ready')
 
         # Attributes
-        self.settings = QSettings('BlastSight', application='blastsight', parent=self)
         self.filters_dict = {
-            'mesh': 'Mesh Files (*.dxf *.off *.h5m);;'
-                    'DXF Files (*.dxf);;'
-                    'OFF Files (*.off);;'
-                    'H5M Files (*.h5m);;'
-                    'All Files (*.*)',
-            'block': 'Block Files (*.csv *.h5p *.out);;'
-                     'CSV Files (*.csv);;'
-                     'H5P Files (*.h5p);;'
-                     'GSLib Files (*.out);;'
-                     'All Files (*.*)',
-            'point': 'Point Files (*.csv *.h5p *.out);;'
-                     'CSV Files (*.csv);;'
-                     'H5P Files (*.h5p);;'
-                     'GSLib Files (*.out);;'
-                     'All Files (*.*)',
-            'line': 'Line Files (*.csv *.dxf);;'
-                    'CSV Files (*.csv);;'
-                    'DXF Files (*.csv);;'
-                    'All Files (*.*)',
-            'tube': 'Tube Files (*.csv *.dxf);;'
-                    'CSV Files (*.csv);;'
-                    'DXF Files (*.csv);;'
-                    'All Files (*.*)',
+            'mesh': {
+                'load': 'Mesh Files (*.dxf *.off *.h5m);;'
+                        'DXF Files (*.dxf);;'
+                        'OFF Files (*.off);;'
+                        'H5M Files (*.h5m);;'
+                        'All Files (*.*)',
+                'export': 'BlastSight Mesh (*.h5m);;'
+                          'OFF File (*.off);;'
+            },
+            'block': {
+                'load': 'Block Files (*.csv *.h5p *.out);;'
+                        'CSV Files (*.csv);;'
+                        'H5P Files (*.h5p);;'
+                        'GSLib Files (*.out);;'
+                        'All Files (*.*)',
+                'export': 'BlastSight Blocks (*.h5p);;'
+                          'CSV File (*.csv);;'
+            },
+            'point': {
+                'load': 'Point Files (*.csv *.h5p *.out);;'
+                        'CSV Files (*.csv);;'
+                        'H5P Files (*.h5p);;'
+                        'GSLib Files (*.out);;'
+                        'All Files (*.*)',
+                'export': 'BlastSight Points (*.h5p);;'
+                          'CSV File (*.csv);;'
+            },
+            'line': {
+                'load': 'Line Files (*.csv *.dxf);;'
+                        'CSV Files (*.csv);;'
+                        'DXF Files (*.dxf);;'
+                        'All Files (*.*)',
+                'export': 'CSV File (*.csv);;'
+            },
+            'tube': {
+                'load': 'Line Files (*.csv *.dxf);;'
+                        'CSV Files (*.csv);;'
+                        'DXF Files (*.dxf);;'
+                        'All Files (*.*)',
+                'export': 'CSV File (*.csv);;'
+            }
         }
+
+        self.settings = QSettings('BlastSight', application='blastsight', parent=self)
 
         # Progress bar (hidden by default)
         self.progress_bar = QProgressBar(self.statusBar)
@@ -202,11 +221,7 @@ class MainWindow(QMainWindow):
         self.viewer.signal_process_finished.connect(self.slot_process_finished)
 
         # TreeWidget actions
-        self.treeWidget.signal_export_mesh.connect(self.dialog_export_mesh)
-        self.treeWidget.signal_export_blocks.connect(self.dialog_export_blocks)
-        self.treeWidget.signal_export_points.connect(self.dialog_export_points)
-        self.treeWidget.signal_export_lines.connect(self.dialog_export_lines)
-        self.treeWidget.signal_export_tubes.connect(self.dialog_export_tubes)
+        self.treeWidget.signal_export_element.connect(self._dialog_export_element)
 
     @property
     def last_dir(self) -> str:
@@ -344,7 +359,7 @@ class MainWindow(QMainWindow):
                                extension='csv')
 
     """
-    Common functionality for loading/exporting
+    Common functionality for loading
     """
     @staticmethod
     def _thread_runner(method: callable, *args, **kwargs) -> None:
@@ -355,7 +370,7 @@ class MainWindow(QMainWindow):
         (paths, selected_filter) = QFileDialog.getOpenFileNames(
             parent=self,
             directory=self.last_dir,
-            filter=self.filters_dict.get(hint))
+            filter=self.filters_dict.get(hint).get('load'))
 
         path_list = sorted([p for p in paths if p != ''])
         if len(path_list) > 0:
@@ -374,19 +389,6 @@ class MainWindow(QMainWindow):
             self.statusBar.showMessage('Loading folder...')
             self._thread_runner(loader, path, *args, **kwargs)
             self.last_dir = path
-
-    def _dialog_export_element(self, _id: int, filters: str, method: classmethod) -> None:
-        proposed_path = QDir(self.last_dir).filePath(self.viewer.get_drawable(_id).element.name)
-
-        (path, selected_filter) = QFileDialog.getSaveFileName(
-            parent=self,
-            directory=proposed_path,
-            filter=filters)
-
-        # Execute method
-        if bool(path):
-            self.statusBar.showMessage('Exporting...')
-            self._thread_runner(method, path, _id)
 
     """
     Slots for progress updates
@@ -446,32 +448,24 @@ class MainWindow(QMainWindow):
         self._dialog_load_folder(loader=self.viewer.load_tubes_folder)
 
     """
-    Slots for exporting files
+    Slots for exporting elements
     """
-    def dialog_export_mesh(self, _id: int) -> None:
-        self._dialog_export_element(_id=_id,
-                                    filters='BlastSight mesh (*.h5m);;',
-                                    method=self.viewer.export_mesh)
+    def _dialog_export_element(self, _id: int) -> None:
+        element = self.viewer.get_drawable(_id).element
+        proposed_path = QDir(self.last_dir).filePath(element.name)
 
-    def dialog_export_blocks(self, _id: int) -> None:
-        self._dialog_export_element(_id=_id,
-                                    filters='BlastSight blocks (*.h5p);;',
-                                    method=self.viewer.export_blocks)
+        # TODO Check hints by element type
+        filters = 'BlastSight FIXME (*.h5m);;'
 
-    def dialog_export_points(self, _id: int) -> None:
-        self._dialog_export_element(_id=_id,
-                                    filters='BlastSight points (*.h5p);;',
-                                    method=self.viewer.export_points)
+        (path, selected_filter) = QFileDialog.getSaveFileName(
+            parent=self,
+            directory=proposed_path,
+            filter=filters)
 
-    def dialog_export_lines(self, _id: int) -> None:
-        self._dialog_export_element(_id=_id,
-                                    filters='BlastSight lines (*.csv);;',
-                                    method=self.viewer.export_lines)
-
-    def dialog_export_tubes(self, _id: int) -> None:
-        self._dialog_export_element(_id=_id,
-                                    filters='BlastSight tubes (*.csv);;',
-                                    method=self.viewer.export_tubes)
+        # Execute method
+        if bool(path):
+            self.statusBar.showMessage('Exporting...')
+            self._thread_runner(self.viewer.export_element, path, _id)
 
     """
     Slots for modifying interaction modes
