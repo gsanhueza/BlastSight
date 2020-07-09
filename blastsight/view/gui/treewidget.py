@@ -29,8 +29,6 @@ from ..drawables.tubegl import TubeGL
 
 
 class TreeWidget(QTreeWidget):
-    signal_headers_triggered = Signal(int)
-    signal_colors_triggered = Signal(int)
     signal_export_element = Signal(int)
 
     def __init__(self, viewer=None, parent=None):
@@ -56,14 +54,12 @@ class TreeWidget(QTreeWidget):
 
         self.viewer.signal_file_modified.connect(self.auto_refill)
         self.viewer.signal_mesh_clicked.connect(self.handle_mesh_clicked)
-        self.signal_colors_triggered.connect(self.handle_color)
-        self.signal_headers_triggered.connect(self.handle_properties)
 
     def handle_mesh_clicked(self, attributes: list) -> None:
         self.select_by_id_list([attr.get('id', -1) for attr in attributes])
 
-    def handle_color(self, _id: int) -> None:
-        element = self.viewer.get_drawable(_id)
+    def handle_color(self, item: TreeWidgetItem) -> None:
+        element = self.viewer.get_drawable(item.id)
         dialog = ColorDialog(element)
 
         def update_color() -> None:
@@ -73,8 +69,23 @@ class TreeWidget(QTreeWidget):
         dialog.accepted.connect(update_color)
         dialog.show()
 
-    def handle_properties(self, _id: int) -> None:
-        element = self.viewer.get_drawable(_id)
+    def handle_multiple(self, item_list: list) -> None:
+        dialog = ColorDialog()
+
+        def update_color(item: TreeWidgetItem) -> None:
+            element = self.viewer.get_drawable(item.id)
+            element.rgba = dialog.currentColor().getRgbF()
+            self.viewer.update_drawable(element.id)
+
+        def update_multiple():
+            for item in item_list:
+                update_color(item)
+
+        dialog.accepted.connect(update_multiple)
+        dialog.show()
+
+    def handle_properties(self, item: TreeWidgetItem) -> None:
+        element = self.viewer.get_drawable(item.id)
         dialog = PropertiesDialog(element)
         dialog.accepted.connect(lambda: self.update_properties(dialog, element))
         dialog.show()
@@ -141,18 +152,26 @@ class TreeWidget(QTreeWidget):
         actions.action_highlight.triggered.connect(item.toggle_highlighting)
         actions.action_wireframe.triggered.connect(item.toggle_wireframe)
 
-        actions.action_properties.triggered.connect(lambda: self.signal_headers_triggered.emit(item.id))
-        actions.action_setup_colors.triggered.connect(lambda: self.signal_colors_triggered.emit(item.id))
+        actions.action_setup_colors.triggered.connect(lambda: self.handle_color(item))
+        actions.action_properties.triggered.connect(lambda: self.handle_properties(item))
+
         actions.action_export_element.triggered.connect(lambda: self.signal_export_element.emit(item.id))
 
-    def generate_multiple_menu(self) -> QMenu:
+    def generate_multiple_menu(self, action_squeezer: callable = lambda *args: None) -> QMenu:
         menu = QMenu()
         actions = ActionCollection(self)
+
         self._connect_standalone_actions(actions)
+        actions.action_setup_multiple.triggered.connect(
+            lambda: self.handle_multiple(self.selectedItems()))
 
         menu.addAction(actions.action_show)
         menu.addAction(actions.action_hide)
         menu.addSeparator()
+
+        # Call the method that squeezes more actions before the export/delete ones
+        action_squeezer(menu, actions)
+
         menu.addAction(actions.action_delete)
 
         return menu
@@ -213,13 +232,20 @@ class TreeWidget(QTreeWidget):
             TubeGL: lambda: self.generate_standard_menu(item),
         }
 
+        def action_squeezer(menu: QMenu, actions: ActionCollection) -> None:
+            menu.addAction(actions.action_setup_multiple)
+            menu.addSeparator()
+
         # If multiple elements are selected, we'll only show a basic menu
         if len(self.selectedItems()) > 1:
-            menu = self.generate_multiple_menu()
+            if all(map(lambda it: type(it.drawable) in [MeshGL, LineGL, TubeGL], self.selectedItems())):
+                ctx_menu = self.generate_multiple_menu(action_squeezer)
+            else:
+                ctx_menu = self.generate_multiple_menu()
         else:
-            menu = menus_dict.get(type(item.drawable))()
+            ctx_menu = menus_dict.get(type(item.drawable))()
 
-        menu.exec_(global_pos)
+        ctx_menu.exec_(global_pos)
 
     def center_camera(self) -> None:
         row = min([self.indexOfTopLevelItem(x) for x in self.selectedItems()], default=0)

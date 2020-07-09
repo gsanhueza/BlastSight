@@ -10,10 +10,11 @@ from qtpy.QtWidgets import QColorDialog
 
 
 class ColorDialog(QColorDialog):
-    def __init__(self, element, parent=None):
+    def __init__(self, element=None, parent=None):
         QColorDialog.__init__(self, parent)
         self.setOption(self.ShowAlphaChannel)
         self.setOption(self.DontUseNativeDialog)
 
-        self.setWindowTitle(f'{self.windowTitle()} ({element.name}.{element.extension})')
-        self.setCurrentColor(QColor.fromRgbF(*element.rgba))
+        if bool(element):
+            self.setWindowTitle(f'{self.windowTitle()} ({element.name}.{element.extension})')
+            self.setCurrentColor(QColor.fromRgbF(*element.rgba))

@@ -39,6 +39,9 @@ class ActionCollection:
         self.action_setup_colors = QAction('Setup c&olors', parent)
         self.action_setup_colors.setIcon(IconCollection.get('picture.svg'))
 
+        self.action_setup_multiple = QAction('Setup &multiple', parent)
+        self.action_setup_multiple.setIcon(IconCollection.get('picture.svg'))
+
         self.action_export_element = QAction('&Export', parent)
         self.action_export_element.setIcon(IconCollection.get('export.svg'))
 
