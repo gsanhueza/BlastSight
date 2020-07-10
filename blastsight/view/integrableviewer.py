@@ -54,7 +54,6 @@ class IntegrableViewer(QOpenGLWidget):
     signal_export_success = Signal(int)
     signal_export_failure = Signal()
 
-    signal_mesh_clicked = Signal(object)
     signal_mesh_distances = Signal(object)
     signal_slice_description = Signal(object)
 
@@ -715,6 +714,13 @@ class IntegrableViewer(QOpenGLWidget):
         # Auto-moves the camera using the normal as direction
         self.set_rotation_angle(self.angles_from_vectors(normal, up))
 
+    def generate_click_description(self, origin: list, ray: list) -> None:
+        # Just emit the ray as a description
+        self.signal_click_description.emit({
+            'origin': origin,
+            'ray': ray,
+        })
+
     def generate_slice_description(self, origin_list: list, ray_list: list) -> None:
         # A plane is created from `origin` and `ray_list`.
         # In perspective projection, the origin is the same.
@@ -742,19 +748,23 @@ class IntegrableViewer(QOpenGLWidget):
 
         return self.model.slice_blocks(origin, normal, blocks)
 
+    def intersect_meshes(self, origin: np.ndarray, ray: np.ndarray, include_hidden: bool = False) -> list:
+        # By default, intersect only visible meshes
+        meshes = list(filter(lambda m: m.is_visible or include_hidden, self.get_all_meshes()))
+
+        return self.model.intersect_meshes(origin, ray, meshes)
+
+    def intersect_lines(self, origin: np.ndarray, ray: np.ndarray, include_hidden: bool = False) -> list:
+        # By default, intersect only visible lines
+        lines = list(filter(lambda m: m.is_visible or include_hidden, self.get_all_lines()))
+
+        return self.model.intersect_lines(origin, ray, lines)
+
     def measure_from_rays(self, origin_list: list, ray_list: list) -> None:
         meshes = list(filter(lambda m: m.is_visible, self.get_all_meshes()))
 
         results = self.model.measure_from_rays(origin_list, ray_list, meshes)
         self.signal_mesh_distances.emit(results)
-
-    def detect_mesh_intersection(self, x: float, y: float, z: float) -> None:
-        ray = self.ray_from_click(x, y, z)
-        origin = self.origin_from_click(x, y, z)
-        meshes = list(filter(lambda m: m.is_visible, self.get_all_meshes()))
-
-        results = self.model.detect_mesh_intersection(ray, origin, meshes)
-        self.signal_mesh_clicked.emit(results)
 
     def cross_section(self, origin: np.ndarray, normal: np.ndarray) -> None:
         self.drawable_collection.update_uniform('CrossSection', 'plane_origin', *origin)

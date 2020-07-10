@@ -16,4 +16,7 @@ class DetectionMode(Mode):
 
     def mousePressEvent(self, event: QMouseEvent) -> None:
         super().mousePressEvent(event)
-        self.viewer.detect_mesh_intersection(event.pos().x(), event.pos().y(), 1.0)
+        origin = self.viewer.origin_from_click(event.pos().x(), event.pos().y(), 1.0)
+        ray = self.viewer.ray_from_click(event.pos().x(), event.pos().y(), 1.0)
+
+        self.viewer.intersect_meshes(origin, ray)
