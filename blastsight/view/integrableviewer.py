@@ -6,7 +6,6 @@
 #  See LICENSE for more info.
 
 import numpy as np
-import warnings
 
 from OpenGL.GL import *
 
@@ -43,6 +42,7 @@ from ..controller.normalmode import NormalMode
 from ..controller.slicemode import SliceMode
 from ..controller.measurementmode import MeasurementMode
 
+from ..model import utils
 from ..model.model import Model
 
 
@@ -652,22 +652,25 @@ class IntegrableViewer(QOpenGLWidget):
         ray = ray_world.normalized()
         return np.array([ray.x(), ray.y(), ray.z()])
 
-    def get_origin(self) -> np.ndarray:
-        origin = (self.camera * self.world).inverted()[0].column(3).toVector3D()
-        return np.array([origin.x(), origin.y(), origin.z()])
-
     def ray_from_click(self, x: float, y: float, z: float) -> np.ndarray:
         # Perspective projection is straightforward
-        if self.projection_mode == 'perspective':
+        def perspective_ray() -> np.ndarray:
             return self.unproject(*self.screen_to_ndc(x, y, z))
 
         # Orthographic projection "forces" a click in the center (normalized to [-1.0, +1.0])
-        return self.unproject(0.0, 0.0, 0.0)
+        def orthographic_ray() -> np.ndarray:
+            return self.unproject(0.0, 0.0, 0.0)
+
+        if self.projection_mode == 'perspective':
+            return perspective_ray()
+
+        return orthographic_ray()
 
     def origin_from_click(self, x: float, y: float, z: float) -> np.ndarray:
         # Perspective projection is straightforward
-        if self.projection_mode == 'perspective':
-            return self.get_origin()
+        def perspective_origin() -> np.ndarray:
+            origin = (self.camera * self.world).inverted()[0].column(3).toVector3D()
+            return np.array([origin.x(), origin.y(), origin.z()])
 
         # Orthographic projection needs a bit more of vector arithmetic.
         # A click in the center of the screen gives us the perfect ray,
@@ -675,32 +678,42 @@ class IntegrableViewer(QOpenGLWidget):
 
         # But if we don't click in the exact center of screen,
         # we need to trick the origin calculation.
-        ndc = self.screen_to_ndc(x, y, z)
-        aspect = self.width() / self.height()
-        aspect_bias = np.array([1.0, 1.0 / aspect, 0.0])
+        def orthographic_origin() -> np.ndarray:
+            ndc = self.screen_to_ndc(x, y, z)
+            aspect = self.width() / self.height()
+            aspect_bias = np.array([1.0, 1.0 / aspect, 0.0])
 
-        # The idea is to strategically move the camera by an offset, so that
-        # clicking anywhere in the screen will give us the same result as
-        # clicking at the exact center of the screen from a shifted camera.
-        offset = self.off_center[2] * ndc * aspect_bias
+            # The idea is to strategically move the camera by an offset, so that
+            # clicking anywhere in the screen will give us the same result as
+            # clicking at the exact center of the screen from a shifted camera.
+            offset = self.off_center[2] * ndc * aspect_bias
 
-        # Hack to get the origin when the click is not exactly at center of screen.
-        self.camera.translate(*-offset)
-        origin = self.get_origin()
-        self.camera.translate(*offset)
+            # Hack to get the origin when the click is not exactly at center of screen.
+            self.camera.translate(*-offset)
+            origin = perspective_origin()
+            self.camera.translate(*offset)
 
-        return origin
+            return origin
+
+        if self.projection_mode == 'perspective':
+            return perspective_origin()
+
+        return orthographic_origin()
 
     def get_normal(self, origin_list, ray_list: list) -> np.ndarray:
-        if self.projection_mode == 'perspective':
-            # Perspective: Same origins, different rays
-            normal = np.cross(*ray_list)
-        else:
+        # Perspective: Same origins, different rays
+        def perspective_normal() -> np.ndarray:
+            return utils.normalize(np.cross(*ray_list))
+
+        def orthographic_normal() -> np.ndarray:
             # Orthographic: Same rays, different origins
             origin_diff = np.diff(origin_list, axis=0)[0]
-            normal = np.cross(ray_list[0], origin_diff)
+            return utils.normalize(np.cross(ray_list[0], origin_diff))
 
-        return normal / np.linalg.norm(normal)
+        if self.projection_mode == 'perspective':
+            return perspective_normal()
+
+        return orthographic_normal()
 
     @staticmethod
     def angles_from_vectors(normal: np.ndarray, up: np.ndarray) -> np.ndarray:
@@ -720,8 +733,7 @@ class IntegrableViewer(QOpenGLWidget):
         # In perspective projection, the origin is the same.
         origin = origin_list[0]
         normal = self.get_normal(origin_list, ray_list)
-        up = np.cross(ray_list[0], normal)
-        up /= np.linalg.norm(up)
+        up = utils.normalize(np.cross(ray_list[0], normal))
 
         # Emit description of the slice
         self.signal_slice_description.emit({

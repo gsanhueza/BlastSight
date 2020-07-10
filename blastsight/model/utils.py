@@ -29,6 +29,10 @@ def magnitude_by_row(vectors: np.ndarray) -> np.ndarray:
     return np.sqrt(magnitude2_by_row(vectors))
 
 
+def normalize(vector: np.ndarray) -> np.ndarray:
+    return vector / np.linalg.norm(vector)
+
+
 def closest_point_to(origin: np.ndarray, points: np.ndarray) -> np.ndarray or None:
     if points.size == 0:
         return None

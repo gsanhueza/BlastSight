@@ -340,14 +340,14 @@ class TestIntegrableViewer:
         mesh = viewer.load_mesh(path=f'{TEST_FILES_FOLDER_PATH}/caseron.off')
         blocks = viewer.load_blocks(path=f'{TEST_FILES_FOLDER_PATH}/mini.csv')
 
-        viewer.export_mesh(f'{TEST_FILES_FOLDER_PATH}/caseron_model_export.h5m', mesh.id)
-        viewer.export_blocks(f'{TEST_FILES_FOLDER_PATH}/mini_model_export_blocks.h5p', blocks.id)
-        viewer.export_points(f'{TEST_FILES_FOLDER_PATH}/mini_model_export_points.h5p', blocks.id)
-        viewer.export_lines(f'{TEST_FILES_FOLDER_PATH}/mini_model_export_lines.h5p', blocks.id)
-        viewer.export_tubes(f'{TEST_FILES_FOLDER_PATH}/mini_model_export_tubes.h5p', blocks.id)
+        viewer.export_element(f'{TEST_FILES_FOLDER_PATH}/caseron_model_export.h5m', mesh.id)
+        viewer.export_element(f'{TEST_FILES_FOLDER_PATH}/mini_model_export_blocks.h5p', blocks.id)
+        viewer.export_element(f'{TEST_FILES_FOLDER_PATH}/mini_model_export_points.h5p', blocks.id)
+        viewer.export_element(f'{TEST_FILES_FOLDER_PATH}/mini_model_export_lines.h5p', blocks.id)
+        viewer.export_element(f'{TEST_FILES_FOLDER_PATH}/mini_model_export_tubes.h5p', blocks.id)
 
         # Failure deliberate
-        viewer.export_mesh('a.asdf', -1)
+        viewer.export_element('a.asdf', -1)
 
         # Cleanup
         os.remove(f'{TEST_FILES_FOLDER_PATH}/caseron_model_export.h5m')
@@ -490,24 +490,13 @@ class TestIntegrableViewer:
 
     def test_unproject(self):
         viewer = IntegrableViewer()
-        viewer.resize(800, 600)
 
         expected = [0.0, 0.0, -1.0]
-        unproject = viewer.unproject(400, 300, 0, viewer.world, viewer.camera, viewer.proj)
+        unproject = viewer.unproject(0, 0, 0)
         assert self.equal_list(expected, unproject)
 
-        assert viewer.unproject(500, 300, 0, viewer.world, viewer.camera, viewer.proj)[0] > 0.0
-        assert viewer.unproject(500, 400, 0, viewer.world, viewer.camera, viewer.proj)[1] < 0.0
-
-    def test_origin(self):
-        # This "origin" is only used when calculating ray-tracing
-        viewer = IntegrableViewer()
-        viewer.resize(800, 600)
-
-        expected = [0.0, 0.0, 0.0]
-        assert self.equal_list(expected, viewer.get_origin())
-
-        # TODO More tests for when the origin is not default
+        assert viewer.unproject(0.5, 0.0, 0)[0] > 0.0
+        assert viewer.unproject(-0.5, 0.0, 0)[0] < 0.0
 
     def test_ray_from_click(self):
         viewer = IntegrableViewer()

@@ -314,11 +314,11 @@ class TestModel:
         lines = model.load_lines(path=f'{TEST_FILES_FOLDER_PATH}/lines.csv')
         tubes = model.load_tubes(path=f'{TEST_FILES_FOLDER_PATH}/lines.csv')
 
-        model.export_mesh(f'{TEST_FILES_FOLDER_PATH}/caseron_model_export.h5m', mesh.id)
-        model.export_blocks(f'{TEST_FILES_FOLDER_PATH}/mini_model_export_blocks.h5p', blocks.id)
-        model.export_points(f'{TEST_FILES_FOLDER_PATH}/mini_model_export_points.h5p', points.id)
-        model.export_lines(f'{TEST_FILES_FOLDER_PATH}/mini_model_export_lines.csv', lines.id)
-        model.export_tubes(f'{TEST_FILES_FOLDER_PATH}/mini_model_export_tubes.csv', tubes.id)
+        model.export(f'{TEST_FILES_FOLDER_PATH}/caseron_model_export.h5m', mesh.id)
+        model.export(f'{TEST_FILES_FOLDER_PATH}/mini_model_export_blocks.h5p', blocks.id)
+        model.export(f'{TEST_FILES_FOLDER_PATH}/mini_model_export_points.h5p', points.id)
+        model.export(f'{TEST_FILES_FOLDER_PATH}/mini_model_export_lines.csv', lines.id)
+        model.export(f'{TEST_FILES_FOLDER_PATH}/mini_model_export_tubes.csv', tubes.id)
 
         # Cleanup
         os.remove(f'{TEST_FILES_FOLDER_PATH}/caseron_model_export.h5m')
