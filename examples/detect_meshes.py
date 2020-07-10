@@ -33,7 +33,6 @@ For example, you may want to do something when we detect a clicked mesh.
 For that, just connect the signal to your function/method.
 Check IntegrableViewer's code to know which signals are available.
 """
-v.signal_mesh_clicked.connect(update_info)
+v.signal_elements_detected.connect(update_info)
 
-v.fit_to_screen()
 v.show()

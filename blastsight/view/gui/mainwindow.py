@@ -324,29 +324,32 @@ class MainWindow(QMainWindow):
         self.viewer.update_all()
 
     def add_mesh_slices(self, slice_list: list) -> None:
-        for sliced_meshes in slice_list:
-            slices = sliced_meshes.get('vertices')
-            mesh_id = sliced_meshes.get('element_id')
+        def add_slice(description: dict) -> None:
+            slices = description.get('vertices')
+            mesh_id = description.get('element_id')
             mesh = self.viewer.get_drawable(mesh_id)
 
-            if 'SLICE' in str(mesh.name):
-                continue
-
-            for i, vert_slice in enumerate(slices):
-                self.viewer.lines(vertices=vert_slice,
+            def add_subslice(subslice, i: int) -> None:
+                self.viewer.lines(vertices=subslice,
                                   color=mesh.color,
                                   name=f'MESHSLICE_{i}_{mesh.name}',
                                   extension='csv',
                                   loop=True)
 
+            # Execute add_subslice for all subslices of the slice
+            list(map(add_subslice, slices, range(len(slices))))
+
+        # Execute add_slice over all slice descriptions
+        list(map(add_slice, slice_list))
+
     def add_block_slices(self, slice_list: list) -> None:
-        for sliced_blocks in slice_list:
-            indices = sliced_blocks.get('indices')
-            block_id = sliced_blocks.get('element_id')
+        def add_slice(description: dict) -> None:
+            indices = description.get('indices')
+            block_id = description.get('element_id')
             block = self.viewer.get_drawable(block_id)
 
             if 'SLICE' in str(block.name):
-                continue
+                return
 
             self.viewer.blocks(vertices=block.vertices[indices],
                                values=block.values[indices],
@@ -357,6 +360,9 @@ class MainWindow(QMainWindow):
                                block_size=block.block_size,
                                name=f'BLOCKSLICE_{block.name}',
                                extension='csv')
+
+        # Execute add_slice over all slice descriptions
+        list(map(add_slice, slice_list))
 
     """
     Common functionality for loading
