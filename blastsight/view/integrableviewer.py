@@ -56,6 +56,7 @@ class IntegrableViewer(QOpenGLWidget):
 
     signal_mesh_distances = Signal(object)
     signal_slice_description = Signal(object)
+    signal_elements_detected = Signal(object)
 
     signal_process_updated = Signal(int)
     signal_process_started = Signal()
@@ -714,13 +715,6 @@ class IntegrableViewer(QOpenGLWidget):
         # Auto-moves the camera using the normal as direction
         self.set_rotation_angle(self.angles_from_vectors(normal, up))
 
-    def generate_click_description(self, origin: list, ray: list) -> None:
-        # Just emit the ray as a description
-        self.signal_click_description.emit({
-            'origin': origin,
-            'ray': ray,
-        })
-
     def generate_slice_description(self, origin_list: list, ray_list: list) -> None:
         # A plane is created from `origin` and `ray_list`.
         # In perspective projection, the origin is the same.
@@ -759,6 +753,13 @@ class IntegrableViewer(QOpenGLWidget):
         lines = list(filter(lambda m: m.is_visible or include_hidden, self.get_all_lines()))
 
         return self.model.intersect_lines(origin, ray, lines)
+
+    def intersect_elements(self, origin: np.ndarray, ray: np.ndarray, include_hidden: bool = False) -> list:
+        results = []
+        results += self.intersect_meshes(origin, ray, include_hidden)
+        results += self.intersect_lines(origin, ray, include_hidden)
+
+        self.signal_elements_detected.emit(results)
 
     def measure_from_rays(self, origin_list: list, ray_list: list) -> None:
         meshes = list(filter(lambda m: m.is_visible, self.get_all_meshes()))

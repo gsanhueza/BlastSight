@@ -53,10 +53,10 @@ class TreeWidget(QTreeWidget):
             return
 
         self.viewer.signal_file_modified.connect(self.auto_refill)
-        self.viewer.signal_mesh_clicked.connect(self.handle_mesh_clicked)
+        self.viewer.signal_elements_detected.connect(self.handle_elements_detected)
 
-    def handle_mesh_clicked(self, attributes: list) -> None:
-        self.select_by_id_list([attr.get('id', -1) for attr in attributes])
+    def handle_elements_detected(self, attributes: list) -> None:
+        self.select_by_id_list(list(map(lambda attr: attr.get('id', -1), attributes)))
 
     def handle_color(self, item: TreeWidgetItem) -> None:
         element = self.viewer.get_drawable(item.id)

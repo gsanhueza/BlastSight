@@ -130,7 +130,7 @@ class ActionCollection:
         self.action_measurement_mode.setIcon(IconCollection.get('ruler.svg'))
         self.action_measurement_mode.setShortcut('Ctrl+M')
 
-        self.action_detection_mode = QAction('&Detect meshes', parent)
+        self.action_detection_mode = QAction('&Detect meshes/lines', parent)
         self.action_detection_mode.setIcon(IconCollection.get('cursor.svg'))
         self.action_detection_mode.setShortcut('Ctrl+D')
 

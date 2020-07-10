@@ -208,7 +208,7 @@ class MainWindow(QMainWindow):
         # Viewer signals
         self.viewer.signal_fps_updated.connect(self.print_fps)
         self.viewer.signal_mode_updated.connect(self.slot_mode_updated)
-        self.viewer.signal_mesh_clicked.connect(self.slot_mesh_clicked)
+        self.viewer.signal_elements_detected.connect(self.slot_elements_detected)
         self.viewer.signal_mesh_distances.connect(self.slot_mesh_distances)
 
         self.viewer.signal_load_success.connect(self.slot_element_load_success)
@@ -257,9 +257,9 @@ class MainWindow(QMainWindow):
     def slot_mesh_distances(self, distance_dict: dict) -> None:
         self.statusBar.showMessage(f'Distance: {distance_dict.get("distance")}')
 
-    def slot_mesh_clicked(self, mesh_attributes: list) -> None:
-        id_list = [attr.get('id', -1) for attr in mesh_attributes]
-        self.statusBar.showMessage(f'Detected meshes: {id_list}')
+    def slot_elements_detected(self, attributes: list) -> None:
+        id_list = sorted(map(lambda attr: attr.get('id', -1), attributes))
+        self.statusBar.showMessage(f'Detected elements: {id_list}')
 
     """
     Slots for cross-sections
