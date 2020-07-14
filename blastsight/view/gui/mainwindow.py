@@ -329,18 +329,20 @@ class MainWindow(QMainWindow):
             mesh_id = description.get('element_id')
             mesh = self.viewer.get_drawable(mesh_id)
 
-            def add_subslice(subslice, i: int) -> None:
+            def add_subslice(subslice, num: int) -> None:
                 self.viewer.lines(vertices=subslice,
                                   color=mesh.color,
-                                  name=f'MESHSLICE_{i}_{mesh.name}',
+                                  name=f'MESHSLICE_{num}_{mesh.name}',
                                   extension='csv',
                                   loop=True)
 
             # Execute add_subslice for all subslices of the slice
-            list(map(add_subslice, slices, range(len(slices))))
+            for i, ssl in enumerate(slices):
+                add_subslice(ssl, i)
 
         # Execute add_slice over all slice descriptions
-        list(map(add_slice, slice_list))
+        for sl in slice_list:
+            add_slice(sl)
 
     def add_block_slices(self, slice_list: list) -> None:
         def add_slice(description: dict) -> None:
@@ -362,7 +364,8 @@ class MainWindow(QMainWindow):
                                extension='csv')
 
         # Execute add_slice over all slice descriptions
-        list(map(add_slice, slice_list))
+        for sl in slice_list:
+            add_slice(sl)
 
     """
     Common functionality for loading

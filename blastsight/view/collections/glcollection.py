@@ -119,7 +119,8 @@ class GLCollection:
                 prog.update_uniform(k, v)
 
         # Apply to each program
-        list(map(bind_update, self.get_programs()))
+        for program in self.get_programs():
+            bind_update(program)
 
     """
     Drawing methods
