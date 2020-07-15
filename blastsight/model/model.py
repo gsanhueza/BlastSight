@@ -238,7 +238,7 @@ class Model:
 
         # Calculate distance if possible
         try:
-            distance = np.linalg.norm(closest_B - closest_A)
+            distance = utils.magnitude(closest_B - closest_A)
         except TypeError:
             distance = None
 
@@ -262,7 +262,10 @@ class Model:
                               }
                 attributes_list.append(attributes)
 
-        return attributes_list
+        def sort_by_distance(x: dict) -> float:
+            return utils.magnitude(x.get('closest_point') - origin)
+
+        return sorted(attributes_list, key=sort_by_distance)
 
     @staticmethod
     def intersect_lines(origin: np.ndarray, ray: np.ndarray, lines: list) -> list:
