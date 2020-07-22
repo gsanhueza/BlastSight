@@ -56,6 +56,9 @@ class IntegrableViewer(QOpenGLWidget):
 
     signal_mesh_distances = Signal(object)
     signal_slice_description = Signal(object)
+
+    signal_mesh_clicked = Signal(object)
+    signal_lines_clicked = Signal(object)
     signal_elements_detected = Signal(object)
 
     signal_process_updated = Signal(int)
@@ -770,10 +773,12 @@ class IntegrableViewer(QOpenGLWidget):
         return self.model.intersect_lines(origin, ray, lines)
 
     def intersect_elements(self, origin: np.ndarray, ray: np.ndarray, include_hidden: bool = False) -> list:
-        results = []
-        results += self.intersect_meshes(origin, ray, include_hidden)
-        results += self.intersect_lines(origin, ray, include_hidden)
+        meshes = self.intersect_meshes(origin, ray, include_hidden)
+        lines = self.intersect_lines(origin, ray, include_hidden)
+        results = meshes + lines
 
+        self.signal_mesh_clicked.emit(meshes)
+        self.signal_lines_clicked.emit(lines)
         self.signal_elements_detected.emit(results)
 
     def measure_from_rays(self, origin_list: list, ray_list: list) -> None:
