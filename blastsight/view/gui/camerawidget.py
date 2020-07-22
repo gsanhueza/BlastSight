@@ -5,7 +5,7 @@
 #  Distributed under the MIT License.
 #  See LICENSE for more info.
 
-from qtpy.QtCore import Qt, QSize
+from qtpy.QtCore import Qt
 from qtpy.QtCore import Signal
 from qtpy.QtWidgets import *
 

@@ -122,6 +122,7 @@ class MainWindow(QMainWindow):
     def generate_menubar(self) -> None:
         actions = self.toolbar.action_collection
 
+        # File
         self.menu_File.addAction(actions.action_load_mesh)
         self.menu_File.addAction(actions.action_load_blocks)
         self.menu_File.addAction(actions.action_load_points)
@@ -136,22 +137,19 @@ class MainWindow(QMainWindow):
         self.menu_File.addSeparator()
         self.menu_File.addAction(actions.action_quit)
 
+        # View
         self.menu_View.addAction(actions.action_camera_properties)
         self.menu_View.addAction(actions.action_plan_view)
         self.menu_View.addAction(actions.action_north_view)
         self.menu_View.addAction(actions.action_east_view)
         self.menu_View.addAction(actions.action_fit_to_screen)
         self.menu_View.addSeparator()
-        self.menu_View.addAction(actions.action_autofit)
-        self.menu_View.addAction(actions.action_animate)
-        self.menu_View.addAction(actions.action_autorotate)
-        self.menu_View.addAction(actions.action_turbo_rendering)
-        self.menu_View.addSeparator()
         self.menu_View.addAction(actions.action_perspective_projection)
         self.menu_View.addAction(actions.action_orthographic_projection)
         self.menu_View.addSeparator()
         self.menu_View.addAction(actions.action_take_screenshot)
 
+        # Tools
         self.menu_Tools.addAction(actions.action_slice_meshes)
         self.menu_Tools.addAction(actions.action_slice_blocks)
         self.menu_Tools.addAction(actions.action_detection_mode)
@@ -160,6 +158,13 @@ class MainWindow(QMainWindow):
         self.menu_Tools.addAction(actions.action_normal_mode)
         self.menu_Tools.addAction(actions.action_cross_section)
 
+        # Settings
+        self.menu_Settings.addAction(actions.action_autofit)
+        self.menu_Settings.addAction(actions.action_animate)
+        self.menu_Settings.addAction(actions.action_autorotate)
+        self.menu_Settings.addAction(actions.action_turbo_rendering)
+
+        # Help
         self.menu_Help.addAction(actions.action_help)
         self.menu_Help.addAction(actions.action_about)
 
