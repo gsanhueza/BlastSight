@@ -138,7 +138,7 @@ class MainWindow(QMainWindow):
         self.menu_File.addAction(actions.action_quit)
 
         # View
-        self.menu_View.addAction(actions.action_camera_properties)
+        self.menu_View.addAction(actions.action_viewer_properties)
         self.menu_View.addAction(actions.action_plan_view)
         self.menu_View.addAction(actions.action_north_view)
         self.menu_View.addAction(actions.action_east_view)

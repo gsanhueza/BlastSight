@@ -19,7 +19,7 @@ class ToolBar(QToolBar):
 
     def add_actions(self) -> None:
         self.addAction(self.action_collection.action_show_tree)
-        self.addAction(self.action_collection.action_camera_properties)
+        self.addAction(self.action_collection.action_viewer_properties)
         self.addSeparator()
         self.addAction(self.action_collection.action_plan_view)
         self.addAction(self.action_collection.action_north_view)
@@ -44,7 +44,7 @@ class ToolBar(QToolBar):
 
     def connect_camera(self, camera):
         actions = self.action_collection
-        actions.action_camera_properties.triggered.connect(camera.show)
+        actions.action_viewer_properties.triggered.connect(camera.show)
 
     def connect_viewer(self, viewer) -> None:
         actions = self.action_collection
