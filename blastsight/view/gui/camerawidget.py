@@ -22,11 +22,6 @@ class CameraWidget(QWidget):
         self.setWindowTitle('Viewer Properties')
         self.setWindowFlags(Qt.WindowStaysOnTopHint)
 
-        self.label_position = QLabel('Camera position (location)', self)
-        self.label_center = QLabel('Rotation center (location)', self)
-        self.label_rotation = QLabel('Rotation angle (degrees)', self)
-        self.label_background = QLabel('Background color', self)
-
         self.position_x = self._generate_spinbox()
         self.position_y = self._generate_spinbox()
         self.position_z = self._generate_spinbox()
@@ -59,25 +54,25 @@ class CameraWidget(QWidget):
             layout.setStretch(1, 8)
 
         self.add_to_layout(self.layout, [
-            self.label_position,
+            QLabel('Camera position (location)'),
             self._generate_horizontal(QLabel('X'), self.position_x, adapter=adapter),
             self._generate_horizontal(QLabel('Y'), self.position_y, adapter=adapter),
             self._generate_horizontal(QLabel('Z'), self.position_z, adapter=adapter),
             self._generate_separator(),
 
-            self.label_center,
+            QLabel('Rotation center (location)'),
             self._generate_horizontal(QLabel('X'), self.center_x, adapter=adapter),
             self._generate_horizontal(QLabel('Y'), self.center_y, adapter=adapter),
             self._generate_horizontal(QLabel('Z'), self.center_z, adapter=adapter),
             self._generate_separator(),
 
-            self.label_rotation,
+            QLabel('Rotation angle (degrees)'),
             self._generate_horizontal(QLabel('X°'), self.rotation_x, adapter=adapter),
             self._generate_horizontal(QLabel('Y°'), self.rotation_y, adapter=adapter),
             self._generate_horizontal(QLabel('Z°'), self.rotation_z, adapter=adapter),
             self._generate_separator(),
 
-            self.label_background,
+            QLabel('Background color'),
             self._generate_horizontal(self.button_top, self.button_bottom),
             self._generate_separator(),
 
