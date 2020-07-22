@@ -95,7 +95,7 @@
   </widget>
   <widget class="QDockWidget" name="dockWidget_camera">
    <property name="windowTitle">
-    <string>Camera</string>
+    <string>Viewer properties</string>
    </property>
    <attribute name="dockWidgetArea">
     <number>2</number>

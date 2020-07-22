@@ -9,8 +9,10 @@ import json
 
 from qtpy.QtCore import Qt
 from qtpy.QtCore import Signal
+from qtpy.QtGui import QColor
 from qtpy.QtGui import QKeyEvent
 from qtpy.QtWidgets import QAbstractItemView
+from qtpy.QtWidgets import QColorDialog
 from qtpy.QtWidgets import QMenu
 from qtpy.QtWidgets import QTreeWidget
 from qtpy.QtWidgets import QTreeWidgetItemIterator
@@ -18,7 +20,6 @@ from qtpy.QtWidgets import QTreeWidgetItemIterator
 from .treewidgetitem import TreeWidgetItem
 from .actioncollection import ActionCollection
 
-from .dialogs.colordialog import ColorDialog
 from .dialogs.propertiesdialog import PropertiesDialog
 
 from ..drawables.meshgl import MeshGL
@@ -59,8 +60,13 @@ class TreeWidget(QTreeWidget):
         self.select_by_id_list(list(map(lambda attr: attr.get('id', -1), attributes)))
 
     def handle_color(self, item: TreeWidgetItem) -> None:
+        dialog = QColorDialog()
+        dialog.setOption(QColorDialog.ShowAlphaChannel)
+        dialog.setOption(QColorDialog.DontUseNativeDialog)
+
         element = self.viewer.get_drawable(item.id)
-        dialog = ColorDialog(element)
+        dialog.setWindowTitle(f'{dialog.windowTitle()} ({element.name}.{element.extension})')
+        dialog.setCurrentColor(QColor.fromRgbF(*element.rgba))
 
         def update_color() -> None:
             element.rgba = dialog.currentColor().getRgbF()
@@ -70,7 +76,7 @@ class TreeWidget(QTreeWidget):
         dialog.show()
 
     def handle_multiple(self, item_list: list) -> None:
-        dialog = ColorDialog()
+        dialog = QColorDialog()
 
         def update_color(item: TreeWidgetItem) -> None:
             element = self.viewer.get_drawable(item.id)

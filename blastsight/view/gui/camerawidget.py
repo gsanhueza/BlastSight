@@ -7,7 +7,9 @@
 
 from qtpy.QtCore import Qt
 from qtpy.QtCore import Signal
+from qtpy.QtGui import QColor
 from qtpy.QtWidgets import *
+from colour import Color
 
 
 class CameraWidget(QWidget):
@@ -17,13 +19,13 @@ class CameraWidget(QWidget):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setWindowTitle('Camera Properties')
+        self.setWindowTitle('Viewer Properties')
         self.setWindowFlags(Qt.WindowStaysOnTopHint)
 
         self.label_position = QLabel('Camera position (location)', self)
         self.label_center = QLabel('Rotation center (location)', self)
         self.label_rotation = QLabel('Rotation angle (degrees)', self)
-        # self.label_background = QLabel('Background color (Top/Bottom)', self)
+        self.label_background = QLabel('Background color', self)
 
         self.position_x = self._generate_spinbox()
         self.position_y = self._generate_spinbox()
@@ -37,8 +39,8 @@ class CameraWidget(QWidget):
         self.rotation_y = self._generate_spinbox(-360, 360)
         self.rotation_z = self._generate_spinbox(-360, 360)
 
-        # self.button_top = QPushButton('Top')
-        # self.button_bottom = QPushButton('Bottom')
+        self.button_top = QPushButton('Top')
+        self.button_bottom = QPushButton('Bottom')
 
         self.current_mode = QLabel(self)
         self.current_projection = QLabel(self)
@@ -75,9 +77,9 @@ class CameraWidget(QWidget):
             self._generate_horizontal(QLabel('Z°'), self.rotation_z, adapter=adapter),
             self._generate_separator(),
 
-            # self.label_background,
-            # self._generate_horizontal(self.button_top, self.button_bottom)
-            # self._generate_separator(),
+            self.label_background,
+            self._generate_horizontal(self.button_top, self.button_bottom),
+            self._generate_separator(),
 
             self._generate_horizontal(QLabel('Mode'), self.current_mode),
             self._generate_horizontal(QLabel('Projection'), self.current_projection),
@@ -163,6 +165,48 @@ class CameraWidget(QWidget):
         self.set_rotation_center(viewer.get_rotation_center())
         self.set_current_mode(viewer.current_mode.name)
         self.set_current_projection(viewer.projection_mode)
+
+        # Handle background colors
+        def handle_color(color: list, updater: callable = lambda *args: None) -> None:
+            dialog = QColorDialog()
+            dialog.setCurrentColor(QColor.fromRgbF(*color))
+
+            dialog.accepted.connect(lambda *args: updater(dialog))
+            dialog.show()
+
+        def handle_background_top() -> None:
+            def updater(dialog) -> None:
+                color = dialog.currentColor().getRgbF()
+                self.button_top.setStyleSheet(self._get_button_stylesheet(color))
+
+                viewer.background.top_color = color
+                viewer.update()
+
+            # Execute handler
+            handle_color(viewer.background.top_color, updater)
+
+        def handle_background_bottom() -> None:
+            def updater(dialog) -> None:
+                color = dialog.currentColor().getRgbF()
+                self.button_bottom.setStyleSheet(self._get_button_stylesheet(color))
+
+                viewer.background.bottom_color = color
+                viewer.update()
+
+            # Execute handler
+            handle_color(viewer.background.bottom_color, updater)
+
+        # Set-up initial colors
+        self.button_top.setStyleSheet(self._get_button_stylesheet(viewer.background.top_color))
+        self.button_bottom.setStyleSheet(self._get_button_stylesheet(viewer.background.bottom_color))
+
+        # Connect button handlers
+        self.button_top.clicked.connect(handle_background_top)
+        self.button_bottom.clicked.connect(handle_background_bottom)
+
+    @staticmethod
+    def _get_button_stylesheet(color: list) -> str:
+        return f'background-color: {Color(rgb=color[:3]).get_web()}; border: none;'
 
     def get_camera_position(self) -> list:
         return [self.position_x.value(),
