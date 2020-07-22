@@ -67,8 +67,9 @@ class IntegrableViewer(QOpenGLWidget):
     signal_animation_finished = Signal()
 
     signal_screen_clicked = Signal(object)
-    signal_mode_updated = Signal(str)
     signal_fps_updated = Signal(float)
+    signal_mode_updated = Signal(str)
+    signal_projection_updated = Signal(str)
 
     signal_camera_rotated = Signal(object)
     signal_camera_translated = Signal(object)
@@ -113,7 +114,7 @@ class IntegrableViewer(QOpenGLWidget):
 
         self.fov = 45.0
         self.smoothness = 2.0  # Bigger => smoother (but slower) rotations
-        self.projection_mode = 'perspective'  # 'perspective'/'orthographic'
+        self.projection_mode = 'Perspective'  # 'Perspective'/'Prthographic'
 
         # Initialize viewer
         self.initialize()
@@ -292,11 +293,13 @@ class IntegrableViewer(QOpenGLWidget):
     Projections
     """
     def perspective_projection(self) -> None:
-        self.projection_mode = 'perspective'
+        self.projection_mode = 'Perspective'
+        self.signal_projection_updated.emit(self.projection_mode)
         self.update()
 
     def orthographic_projection(self) -> None:
-        self.projection_mode = 'orthographic'
+        self.projection_mode = 'Orthographic'
+        self.signal_projection_updated.emit(self.projection_mode)
         self.update()
 
     """
@@ -505,7 +508,7 @@ class IntegrableViewer(QOpenGLWidget):
         fov_rad = self.fov * np.pi / 180.0
 
         # In perspective projection, we need a clever trigonometric calculation.
-        if self.projection_mode == 'perspective':
+        if self.projection_mode == 'Perspective':
             dist = (md / np.tan(fov_rad / 2) + md) / 2.0
             z_shift = dist * max(1.0, 1.0 / aspect)
 
@@ -598,9 +601,9 @@ class IntegrableViewer(QOpenGLWidget):
     def resizeGL(self, w: float, h: float) -> None:
         aspect = w / h
 
-        if self.projection_mode == 'perspective':
+        if self.projection_mode == 'Perspective':
             self.proj.perspective(self.fov, aspect, 1.0, 100000.0)
-        else:  # if self.projection_mode == 'orthographic':
+        else:  # if self.projection_mode == 'Orthographic':
             z = self.off_center[2]
             self.proj.ortho(-z, z, -z / aspect, z / aspect, 0.0, 100000.0)
 
@@ -661,7 +664,7 @@ class IntegrableViewer(QOpenGLWidget):
         def orthographic_ray() -> np.ndarray:
             return self.unproject(0.0, 0.0, 0.0)
 
-        if self.projection_mode == 'perspective':
+        if self.projection_mode == 'Perspective':
             return perspective_ray()
 
         return orthographic_ray()
@@ -695,7 +698,7 @@ class IntegrableViewer(QOpenGLWidget):
 
             return origin
 
-        if self.projection_mode == 'perspective':
+        if self.projection_mode == 'Perspective':
             return perspective_origin()
 
         return orthographic_origin()
@@ -710,7 +713,7 @@ class IntegrableViewer(QOpenGLWidget):
             origin_diff = np.diff(origin_list, axis=0)[0]
             return utils.normalize(np.cross(ray_list[0], origin_diff))
 
-        if self.projection_mode == 'perspective':
+        if self.projection_mode == 'Perspective':
             return perspective_normal()
 
         return orthographic_normal()
@@ -799,16 +802,16 @@ class IntegrableViewer(QOpenGLWidget):
         self.update()
 
     def set_normal_mode(self) -> None:
-        self.set_controller('Normal Mode')
+        self.set_controller('Normal')
 
     def set_detection_mode(self) -> None:
-        self.set_controller('Detection Mode')
+        self.set_controller('Detection')
 
     def set_slice_mode(self) -> None:
-        self.set_controller('Slice Mode')
+        self.set_controller('Slice')
 
     def set_measurement_mode(self) -> None:
-        self.set_controller('Measurement Mode')
+        self.set_controller('Measurement')
 
     """
     Events (dependent on current controller)

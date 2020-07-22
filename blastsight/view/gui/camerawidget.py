@@ -23,26 +23,25 @@ class CameraWidget(QWidget):
         self.label_position = QLabel('Camera position (location)', self)
         self.label_center = QLabel('Rotation center (location)', self)
         self.label_rotation = QLabel('Rotation angle (degrees)', self)
+        # self.label_background = QLabel('Background color (Top/Bottom)', self)
 
-        self.doubleSpinBox_x = self._generate_spinbox()
-        self.doubleSpinBox_y = self._generate_spinbox()
-        self.doubleSpinBox_z = self._generate_spinbox()
+        self.position_x = self._generate_spinbox()
+        self.position_y = self._generate_spinbox()
+        self.position_z = self._generate_spinbox()
 
-        self.doubleSpinBox_center_x = self._generate_spinbox()
-        self.doubleSpinBox_center_y = self._generate_spinbox()
-        self.doubleSpinBox_center_z = self._generate_spinbox()
+        self.center_x = self._generate_spinbox()
+        self.center_y = self._generate_spinbox()
+        self.center_z = self._generate_spinbox()
 
-        self.doubleSpinBox_rot_x = self._generate_spinbox(-360, 360)
-        self.doubleSpinBox_rot_y = self._generate_spinbox(-360, 360)
-        self.doubleSpinBox_rot_z = self._generate_spinbox(-360, 360)
+        self.rotation_x = self._generate_spinbox(-360, 360)
+        self.rotation_y = self._generate_spinbox(-360, 360)
+        self.rotation_z = self._generate_spinbox(-360, 360)
 
-        self.line_separator_1 = QFrame(self)
-        self.line_separator_1.setFrameShape(QFrame.HLine)
-        self.line_separator_1.setFrameShadow(QFrame.Sunken)
+        # self.button_top = QPushButton('Top')
+        # self.button_bottom = QPushButton('Bottom')
 
-        self.line_separator_2 = QFrame(self)
-        self.line_separator_2.setFrameShape(QFrame.HLine)
-        self.line_separator_2.setFrameShadow(QFrame.Sunken)
+        self.current_mode = QLabel(self)
+        self.current_projection = QLabel(self)
 
         self.vertical_spacer = QSpacerItem(10, 10, QSizePolicy.Minimum, QSizePolicy.Expanding)
 
@@ -52,23 +51,37 @@ class CameraWidget(QWidget):
         self.horizontal_center = QHBoxLayout()
         self.horizontal_rotation = QHBoxLayout()
 
-        self.add_to_layout(self.layout, [self.label_position,
-                                         self._label_spinbox('X', self.doubleSpinBox_x),
-                                         self._label_spinbox('Y', self.doubleSpinBox_y),
-                                         self._label_spinbox('Z', self.doubleSpinBox_z),
-                                         self.line_separator_1,
+        # Adapter for horizontal generation
+        def adapter(layout):
+            layout.setStretch(0, 1)
+            layout.setStretch(1, 8)
 
-                                         self.label_center,
-                                         self._label_spinbox('X', self.doubleSpinBox_center_x),
-                                         self._label_spinbox('Y', self.doubleSpinBox_center_y),
-                                         self._label_spinbox('Z', self.doubleSpinBox_center_z),
-                                         self.line_separator_2,
+        self.add_to_layout(self.layout, [
+            self.label_position,
+            self._generate_horizontal(QLabel('X'), self.position_x, adapter=adapter),
+            self._generate_horizontal(QLabel('Y'), self.position_y, adapter=adapter),
+            self._generate_horizontal(QLabel('Z'), self.position_z, adapter=adapter),
+            self._generate_separator(),
 
-                                         self.label_rotation,
-                                         self._label_spinbox('X°', self.doubleSpinBox_rot_x),
-                                         self._label_spinbox('Y°', self.doubleSpinBox_rot_y),
-                                         self._label_spinbox('Z°', self.doubleSpinBox_rot_z),
-                                         ])
+            self.label_center,
+            self._generate_horizontal(QLabel('X'), self.center_x, adapter=adapter),
+            self._generate_horizontal(QLabel('Y'), self.center_y, adapter=adapter),
+            self._generate_horizontal(QLabel('Z'), self.center_z, adapter=adapter),
+            self._generate_separator(),
+
+            self.label_rotation,
+            self._generate_horizontal(QLabel('X°'), self.rotation_x, adapter=adapter),
+            self._generate_horizontal(QLabel('Y°'), self.rotation_y, adapter=adapter),
+            self._generate_horizontal(QLabel('Z°'), self.rotation_z, adapter=adapter),
+            self._generate_separator(),
+
+            # self.label_background,
+            # self._generate_horizontal(self.button_top, self.button_bottom)
+            # self._generate_separator(),
+
+            self._generate_horizontal(QLabel('Mode'), self.current_mode),
+            self._generate_horizontal(QLabel('Projection'), self.current_projection),
+        ])
 
         self.layout.addSpacerItem(self.vertical_spacer)
 
@@ -79,43 +92,56 @@ class CameraWidget(QWidget):
         for widget in widgets:
             layout.addWidget(widget)
 
-    def _generate_spinbox(self, lower: float = -9999999.9, upper: float = +9999999.9) -> QAbstractSpinBox:
+    def _generate_spinbox(self, lower: float = -10e6, upper: float = 10e6) -> QAbstractSpinBox:
         spinbox = QDoubleSpinBox(self)
         spinbox.setMinimum(lower)
         spinbox.setMaximum(upper)
 
         return spinbox
 
-    def _label_spinbox(self, text: str, spinbox: QAbstractSpinBox) -> QWidget:
-        widget = QWidget(self)
-        layout = QHBoxLayout(widget)
+    def _generate_separator(self) -> QFrame:
+        line_separator = QFrame(self)
+        line_separator.setFrameShape(QFrame.HLine)
+        line_separator.setFrameShadow(QFrame.Sunken)
+
+        return line_separator
+
+    def _generate_horizontal(self, *widgets, **kwargs) -> QWidget:
+        container = QWidget(self)
+        layout = QHBoxLayout(container)
         layout.setContentsMargins(0, 0, 0, 0)
 
-        layout.addWidget(QLabel(text, widget))
-        layout.addWidget(spinbox)
-        layout.setStretch(0, 1)
-        layout.setStretch(1, 8)
+        for widget in widgets:
+            # widget.set_parent(container)
+            layout.addWidget(widget)
 
-        return widget
+        # Execute layout adapter
+        adapter = kwargs.get('adapter', lambda *args: None)
+        adapter(layout)
+
+        return container
 
     def _connect_internal_signals(self) -> None:
-        self.doubleSpinBox_x.valueChanged.connect(self.signal_camera_translated.emit)
-        self.doubleSpinBox_y.valueChanged.connect(self.signal_camera_translated.emit)
-        self.doubleSpinBox_z.valueChanged.connect(self.signal_camera_translated.emit)
+        self.position_x.valueChanged.connect(self.signal_camera_translated.emit)
+        self.position_y.valueChanged.connect(self.signal_camera_translated.emit)
+        self.position_z.valueChanged.connect(self.signal_camera_translated.emit)
 
-        self.doubleSpinBox_rot_x.valueChanged.connect(self.signal_camera_rotated.emit)
-        self.doubleSpinBox_rot_y.valueChanged.connect(self.signal_camera_rotated.emit)
-        self.doubleSpinBox_rot_z.valueChanged.connect(self.signal_camera_rotated.emit)
+        self.rotation_x.valueChanged.connect(self.signal_camera_rotated.emit)
+        self.rotation_y.valueChanged.connect(self.signal_camera_rotated.emit)
+        self.rotation_z.valueChanged.connect(self.signal_camera_rotated.emit)
 
-        self.doubleSpinBox_center_x.valueChanged.connect(self.signal_center_translated.emit)
-        self.doubleSpinBox_center_y.valueChanged.connect(self.signal_center_translated.emit)
-        self.doubleSpinBox_center_z.valueChanged.connect(self.signal_center_translated.emit)
+        self.center_x.valueChanged.connect(self.signal_center_translated.emit)
+        self.center_y.valueChanged.connect(self.signal_center_translated.emit)
+        self.center_z.valueChanged.connect(self.signal_center_translated.emit)
 
     def connect_viewer(self, viewer) -> None:
         # Connect viewer's signals to automatically update self
         viewer.signal_camera_rotated.connect(self.set_rotation_angle)
         viewer.signal_camera_translated.connect(self.set_camera_position)
         viewer.signal_center_translated.connect(self.set_rotation_center)
+
+        viewer.signal_mode_updated.connect(self.set_current_mode)
+        viewer.signal_projection_updated.connect(self.set_current_projection)
 
         # Connect signals to automatically update the viewer
         def angle_setter():
@@ -135,39 +161,47 @@ class CameraWidget(QWidget):
         self.set_camera_position(viewer.get_camera_position())
         self.set_rotation_angle(viewer.get_rotation_angle())
         self.set_rotation_center(viewer.get_rotation_center())
+        self.set_current_mode(viewer.current_mode.name)
+        self.set_current_projection(viewer.projection_mode)
 
     def get_camera_position(self) -> list:
-        return [self.doubleSpinBox_x.value(),
-                self.doubleSpinBox_y.value(),
-                self.doubleSpinBox_z.value()]
+        return [self.position_x.value(),
+                self.position_y.value(),
+                self.position_z.value()]
 
     def get_rotation_angle(self) -> list:
-        return [self.doubleSpinBox_rot_x.value(),
-                self.doubleSpinBox_rot_y.value(),
-                self.doubleSpinBox_rot_z.value()]
+        return [self.rotation_x.value(),
+                self.rotation_y.value(),
+                self.rotation_z.value()]
 
     def get_rotation_center(self) -> list:
-        return [self.doubleSpinBox_center_x.value(),
-                self.doubleSpinBox_center_y.value(),
-                self.doubleSpinBox_center_z.value()]
+        return [self.center_x.value(),
+                self.center_y.value(),
+                self.center_z.value()]
 
     def set_camera_position(self, position: list) -> None:
         self.blockSignals(True)
-        self.doubleSpinBox_x.setValue(position[0])
-        self.doubleSpinBox_y.setValue(position[1])
-        self.doubleSpinBox_z.setValue(position[2])
+        self.position_x.setValue(position[0])
+        self.position_y.setValue(position[1])
+        self.position_z.setValue(position[2])
         self.blockSignals(False)
 
     def set_rotation_angle(self, angle: list) -> None:
         self.blockSignals(True)
-        self.doubleSpinBox_rot_x.setValue(angle[0])
-        self.doubleSpinBox_rot_y.setValue(angle[1])
-        self.doubleSpinBox_rot_z.setValue(angle[2])
+        self.rotation_x.setValue(angle[0])
+        self.rotation_y.setValue(angle[1])
+        self.rotation_z.setValue(angle[2])
         self.blockSignals(False)
 
     def set_rotation_center(self, center: list) -> None:
         self.blockSignals(True)
-        self.doubleSpinBox_center_x.setValue(center[0])
-        self.doubleSpinBox_center_y.setValue(center[1])
-        self.doubleSpinBox_center_z.setValue(center[2])
+        self.center_x.setValue(center[0])
+        self.center_y.setValue(center[1])
+        self.center_z.setValue(center[2])
         self.blockSignals(False)
+
+    def set_current_mode(self, mode: str) -> None:
+        self.current_mode.setText(mode)
+
+    def set_current_projection(self, projection: str) -> None:
+        self.current_projection.setText(projection)

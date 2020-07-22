@@ -13,7 +13,7 @@ from .mode import Mode
 class MeasurementMode(Mode):
     def __init__(self, viewer):
         super().__init__(viewer)
-        self.name = 'Measurement Mode'
+        self.name = 'Measurement'
         self.origins = []
         self.rays = []
 

@@ -13,7 +13,7 @@ from .mode import Mode
 class SliceMode(Mode):
     def __init__(self, viewer):
         super().__init__(viewer)
-        self.name = 'Slice Mode'
+        self.name = 'Slice'
         self.origins = []
         self.rays = []
 

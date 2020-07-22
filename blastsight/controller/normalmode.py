@@ -13,7 +13,7 @@ from .mode import Mode
 class NormalMode(Mode):
     def __init__(self, viewer):
         super().__init__(viewer)
-        self.name = 'Normal Mode'
+        self.name = 'Normal'
         self.lastPos = None
 
     def mousePressEvent(self, event: QMouseEvent) -> None:

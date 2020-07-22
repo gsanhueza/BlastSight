@@ -11,7 +11,7 @@ from qtpy.QtGui import QMouseEvent, QWheelEvent
 
 class Mode:
     def __init__(self, viewer):
-        self.name = 'Base mode'
+        self.name = 'Base'
         self.viewer = viewer
 
     def mousePressEvent(self, event: QMouseEvent) -> None:

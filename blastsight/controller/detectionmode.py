@@ -12,7 +12,7 @@ from .mode import Mode
 class DetectionMode(Mode):
     def __init__(self, viewer):
         super().__init__(viewer)
-        self.name = 'Detection Mode'
+        self.name = 'Detection'
 
     def mousePressEvent(self, event: QMouseEvent) -> None:
         super().mousePressEvent(event)
