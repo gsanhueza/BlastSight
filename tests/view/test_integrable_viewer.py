@@ -53,7 +53,7 @@ class TestIntegrableViewer:
 
         assert viewer.fov == 45.0
         assert viewer.smoothness == 2.0
-        assert viewer.projection_mode == 'perspective'
+        assert viewer.projection_mode == 'Perspective'
 
         assert viewer.last_id == -1
         assert viewer.last_drawable is None
@@ -407,11 +407,11 @@ class TestIntegrableViewer:
 
     def test_projections(self):
         viewer = IntegrableViewer()
-        assert viewer.projection_mode == 'perspective'
+        assert viewer.projection_mode == 'Perspective'
         viewer.orthographic_projection()
-        assert viewer.projection_mode == 'orthographic'
+        assert viewer.projection_mode == 'Orthographic'
         viewer.perspective_projection()
-        assert viewer.projection_mode == 'perspective'
+        assert viewer.projection_mode == 'Perspective'
 
     def test_turbo_rendering(self):
         viewer = IntegrableViewer()
