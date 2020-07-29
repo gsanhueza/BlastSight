@@ -53,7 +53,7 @@ class CameraWidget(QWidget):
             layout.setStretch(0, 1)
             layout.setStretch(1, 8)
 
-        self.add_to_layout(self.layout, [
+        self._add_to_layout(self.layout, [
             QLabel('Camera position (location)'),
             self._generate_horizontal(QLabel('X'), self.position_x, adapter=adapter),
             self._generate_horizontal(QLabel('Y'), self.position_y, adapter=adapter),
@@ -85,7 +85,7 @@ class CameraWidget(QWidget):
         self._connect_internal_signals()
 
     @staticmethod
-    def add_to_layout(layout, widgets: list) -> None:
+    def _add_to_layout(layout, widgets: list) -> None:
         for widget in widgets:
             layout.addWidget(widget)
 
@@ -130,6 +130,10 @@ class CameraWidget(QWidget):
         self.center_x.valueChanged.connect(self.signal_center_translated.emit)
         self.center_y.valueChanged.connect(self.signal_center_translated.emit)
         self.center_z.valueChanged.connect(self.signal_center_translated.emit)
+
+    @staticmethod
+    def _get_button_stylesheet(color: list) -> str:
+        return f'background-color: {Color(rgb=color[:3]).get_web()}; border: none;'
 
     def connect_viewer(self, viewer) -> None:
         # Connect viewer's signals to automatically update self
@@ -198,10 +202,6 @@ class CameraWidget(QWidget):
         # Connect button handlers
         self.button_top.clicked.connect(handle_background_top)
         self.button_bottom.clicked.connect(handle_background_bottom)
-
-    @staticmethod
-    def _get_button_stylesheet(color: list) -> str:
-        return f'background-color: {Color(rgb=color[:3]).get_web()}; border: none;'
 
     def get_camera_position(self) -> list:
         return [self.position_x.value(),
