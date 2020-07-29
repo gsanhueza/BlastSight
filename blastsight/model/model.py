@@ -125,19 +125,19 @@ class Model:
     Load methods by path
     """
     def load_mesh(self, path: str, *args, **kwargs) -> MeshElement:
-        return self.register_element_by_path(path, self.factory.mesh, *args, **kwargs)
+        return self.register_element_by_path(path, self.factory.mesh, hint='mesh', *args, **kwargs)
 
     def load_blocks(self, path: str, *args, **kwargs) -> BlockElement:
-        return self.register_element_by_path(path, self.factory.blocks, *args, **kwargs)
+        return self.register_element_by_path(path, self.factory.blocks, hint='blocks', *args, **kwargs)
 
     def load_points(self, path: str, *args, **kwargs) -> PointElement:
-        return self.register_element_by_path(path, self.factory.points, *args, **kwargs)
+        return self.register_element_by_path(path, self.factory.points, hint='points', *args, **kwargs)
 
     def load_lines(self, path: str, *args, **kwargs) -> LineElement:
-        return self.register_element_by_path(path, self.factory.lines, *args, **kwargs)
+        return self.register_element_by_path(path, self.factory.lines, hint='lines', *args, **kwargs)
 
     def load_tubes(self, path: str, *args, **kwargs) -> TubeElement:
-        return self.register_element_by_path(path, self.factory.tubes, *args, **kwargs)
+        return self.register_element_by_path(path, self.factory.tubes, hint='tubes', *args, **kwargs)
 
     """
     Element handling

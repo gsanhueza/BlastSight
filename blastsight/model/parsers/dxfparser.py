@@ -20,28 +20,36 @@ class DXFParser(Parser):
 
         dxf = dxfgrabber.readfile(path)
 
-        hints = {'mesh': [dxfgrabber.dxfentities.Face],
-                 'line': [dxfgrabber.dxfentities.Polyline, dxfgrabber.dxfentities.LWPolyline],
-                 'tube': [dxfgrabber.dxfentities.Polyline, dxfgrabber.dxfentities.LWPolyline],
-                 }
-        hint = kwargs.get('hint', 'mesh')
-
         # Model data
         data = ParserData()
-
-        # Detect vertices and indices
-        entities = [e for e in dxf.entities if type(e) in hints.get(hint)]
         points = []
 
-        for entity in entities:
-            points.extend(entity.points[:3])
+        def fill_as_mesh():
+            entities = [e for e in dxf.entities if type(e) in [dxfgrabber.dxfentities.Face]]
 
-        if hint == 'mesh':
+            for entity in entities:
+                points.extend(entity.points[:3])
+
+            # Detect vertices and indices
             vertices, indices = np.unique(np.array(points), axis=0, return_inverse=True)
             data.vertices = vertices
             data.indices = indices.reshape((-1, 3))
-        else:
+
+        def fill_as_polyline():
+            # Detect vertices and indices
+            entities = [e for e in dxf.entities if type(e) in [dxfgrabber.dxfentities.Polyline,
+                                                               dxfgrabber.dxfentities.LWPolyline]]
+
+            for entity in entities:
+                points.extend(entity.points)
+            # Detect vertices only
             data.vertices = np.array(points)
+
+        # Fill depending on the given hint
+        if kwargs.get('hint', 'mesh') == 'mesh':
+            fill_as_mesh()
+        else:
+            fill_as_polyline()
 
         # Metadata
         data.properties = {
@@ -50,3 +58,7 @@ class DXFParser(Parser):
         }
 
         return data
+
+    @staticmethod
+    def save_file(path: str, *args, **kwargs) -> None:
+        raise NotImplementedError

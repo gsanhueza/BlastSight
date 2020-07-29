@@ -16,24 +16,24 @@ from .elements.tubeelement import TubeElement
 class ElementFactory:
     @staticmethod
     def null(*args, **kwargs) -> NullElement:
-        return NullElement(hint='null', *args, **kwargs)
+        return NullElement(*args, **kwargs)
 
     @staticmethod
     def mesh(*args, **kwargs) -> MeshElement:
-        return MeshElement(hint='mesh', *args, **kwargs)
+        return MeshElement(*args, **kwargs)
 
     @staticmethod
     def blocks(*args, **kwargs) -> BlockElement:
-        return BlockElement(hint='block', *args, **kwargs)
+        return BlockElement(*args, **kwargs)
 
     @staticmethod
     def points(*args, **kwargs) -> PointElement:
-        return PointElement(hint='point', *args, **kwargs)
+        return PointElement(*args, **kwargs)
 
     @staticmethod
     def lines(*args, **kwargs) -> LineElement:
-        return LineElement(hint='line', *args, **kwargs)
+        return LineElement(*args, **kwargs)
 
     @staticmethod
     def tubes(*args, **kwargs) -> TubeElement:
-        return TubeElement(hint='tube', *args, **kwargs)
+        return TubeElement(*args, **kwargs)
