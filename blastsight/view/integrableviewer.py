@@ -730,8 +730,16 @@ class IntegrableViewer(QOpenGLWidget):
         rotmat = QQuaternion.fromDirection(QVector3D(*normal), QVector3D(*up)).toRotationMatrix().data()
         return Rotation.from_matrix(np.array(rotmat).reshape((3, 3))).as_euler('XYZ', degrees=True)
 
-    def set_camera_from_vectors(self, normal: np.ndarray, up: np.ndarray) -> None:
+    def set_camera_from_vectors(self, normal: np.ndarray, up: np.ndarray, as_axis: bool = True) -> None:
         # Auto-moves the camera using the normal as direction
+
+        if as_axis:
+            # We will alter the 'up' vector, projecting it onto each of the axes.
+            # The longest projection will be used instead of the 'up' vector.
+            candidates = np.identity(3)
+            lengths = np.abs(utils.dot_by_row(candidates, np.tile(up, (3, 1))))
+            up = utils.normalize(candidates[np.argmax(lengths)])
+
         self.set_rotation_angle(self.angles_from_vectors(normal, up))
 
     def generate_slice_description(self, origin_list: list, ray_list: list) -> None:
