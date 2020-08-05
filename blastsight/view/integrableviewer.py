@@ -733,12 +733,20 @@ class IntegrableViewer(QOpenGLWidget):
     def set_camera_from_vectors(self, normal: np.ndarray, up: np.ndarray, as_axis: bool = True) -> None:
         # Auto-moves the camera using the normal as direction
 
-        if as_axis:
+        def best_projection() -> np.ndarray:
             # We will alter the 'up' vector, projecting it onto each of the axes.
             # The longest projection will be used instead of the 'up' vector.
             candidates = np.identity(3)
             lengths = np.abs(utils.dot_by_row(candidates, np.tile(up, (3, 1))))
-            up = utils.normalize(candidates[np.argmax(lengths)])
+            return utils.normalize(candidates[np.argmax(lengths)])
+
+        if as_axis:
+            # For now, we'll use the best Z projection
+            # If the dot-product fails (highly improbable), we'll use the Y projection.
+            if np.dot([0.0, 0.0, 1.0], up) > 1e-6:
+                up = np.array([0.0, 0.0, 1.0])
+            else:
+                up = np.array([0.0, 1.0, 0.0])
 
         self.set_rotation_angle(self.angles_from_vectors(normal, up))
 
