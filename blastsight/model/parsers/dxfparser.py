@@ -25,7 +25,7 @@ class DXFParser(Parser):
         points = []
 
         def fill_as_mesh():
-            entities = [e for e in dxf.entities if type(e) in [dxfgrabber.dxfentities.Face]]
+            entities = list(filter(lambda e: type(e) in [dxfgrabber.dxfentities.Face], dxf.entities))
 
             for entity in entities:
                 points.extend(entity.points[:3])
@@ -37,10 +37,11 @@ class DXFParser(Parser):
 
         def fill_as_polyline():
             # Detect vertices and indices
-            entities = [e for e in dxf.entities if type(e) in [dxfgrabber.dxfentities.Polyline,
-                                                               dxfgrabber.dxfentities.LWPolyline]]
+            entities = list(filter(lambda e: type(e) in [dxfgrabber.dxfentities.Polyline,
+                                                         dxfgrabber.dxfentities.LWPolyline], dxf.entities))
 
-            for entity in entities:
+            polyline3d = list(filter(lambda e: e.mode == 'polyline3d', entities))
+            for entity in polyline3d:
                 points.extend(entity.points)
             # Detect vertices only
             data.vertices = np.array(points)
