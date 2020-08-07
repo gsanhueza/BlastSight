@@ -457,9 +457,8 @@ class IntegrableViewer(QOpenGLWidget):
 
     def clear(self) -> None:
         self.makeCurrent()
-        for _id in self.get_all_ids():
-            self.model.delete(_id)
-            self.drawable_collection.delete(_id)
+        self.model.clear()
+        self.drawable_collection.clear()
         self.signal_file_modified.emit()
 
     """

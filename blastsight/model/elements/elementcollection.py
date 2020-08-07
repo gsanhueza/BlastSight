@@ -32,3 +32,9 @@ class ElementCollection:
 
     def delete(self, _id: int) -> None:
         del self._collection[_id]
+        if self.size() == 0:
+            self._current_id = -1
+
+    def clear(self) -> None:
+        self._collection.clear()
+        self._current_id = -1

@@ -152,6 +152,9 @@ class Model:
     def delete(self, _id: int) -> None:
         self.element_collection.delete(_id)
 
+    def clear(self) -> None:
+        self.element_collection.clear()
+
     """
     Element exporting
     """
