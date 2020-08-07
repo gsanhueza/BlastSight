@@ -117,13 +117,6 @@ class TestElement:
         assert 'color' in element.properties.keys()
         assert 'alpha' in element.properties.keys()
 
-        # We replace data, but we add properties
-        element.properties = {'d': 4, 'e': 5}
-        assert 'd' in element.properties.keys()
-        assert 'e' in element.properties.keys()
-        assert 'color' in element.properties.keys()
-        assert 'alpha' in element.properties.keys()
-
         # We check attributes as properties + metadata
         for prop in element.properties.keys():
             assert prop in element.attributes.keys()

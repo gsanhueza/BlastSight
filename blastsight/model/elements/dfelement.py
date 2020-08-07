@@ -13,7 +13,7 @@ from ...model import utils
 
 
 class DFElement(Element):
-    __slots__ = ['_mapper', '_datasets']
+    __slots__ = ['_mapper', 'datasets']
 
     def __init__(self, *args, **kwargs):
         """
@@ -46,17 +46,17 @@ class DFElement(Element):
 
         The 'data' dictionary has at least 4 keys, but it can be more than 4.
         It will be implemented as a Pandas DataFrame.
-        They don't need to be named 'x, y, z, values' (see self.mapper).
+        They don't need to be named 'x, y, z, values' (see self._mapper).
 
         The 'datasets' dictionary was created because some properties
         might get too big to fit in an HDF5 attribute.
         It's expected to be used by children of this class.
         """
         # Base data
-        self._data: pd.DataFrame = pd.DataFrame()
-        self._datasets: dict = {}
-        self._properties: dict = {}
-        self._metadata: dict = {'id': -1}
+        self.data: pd.DataFrame = pd.DataFrame()
+        self.datasets: dict = {}
+        self.properties: dict = {}
+        self.metadata: dict = {'id': -1}
 
         self._mapper: dict = {k: k for k in ['x', 'y', 'z', 'values']}
         super()._initialize(*args, **kwargs)
@@ -82,7 +82,7 @@ class DFElement(Element):
         self.values = np.array(kwargs.get('values', np.empty(self.x.size)))
 
     def _fill_as_data(self, *args, **kwargs) -> None:
-        self.data = kwargs.get('data')
+        self.data = pd.DataFrame(kwargs.get('data'))
 
     def _fill_properties(self, *args, **kwargs) -> None:
         self.headers = kwargs.get('headers', list(self.data.keys())[:4])
@@ -94,58 +94,39 @@ class DFElement(Element):
         self.vmax = kwargs.get('vmax', self.values.max())
 
     """
-    Main accessors (Override)
-    """
-    @property
-    def data(self) -> pd.DataFrame:
-        return self._data
-
-    @data.setter
-    def data(self, _data: dict) -> None:
-        self._data = pd.DataFrame(_data)
-
-    @property
-    def mapper(self) -> dict:
-        return self._mapper
-
-    @property
-    def datasets(self) -> dict:
-        return self._datasets
-
-    """
     Data
     """
     @property
     def x(self) -> np.ndarray:
-        return self.data[self.mapper.get('x')].to_numpy()
+        return self.data[self._mapper.get('x')].to_numpy()
 
     @property
     def y(self) -> np.ndarray:
-        return self.data[self.mapper.get('y')].to_numpy()
+        return self.data[self._mapper.get('y')].to_numpy()
 
     @property
     def z(self) -> np.ndarray:
-        return self.data[self.mapper.get('z')].to_numpy()
+        return self.data[self._mapper.get('z')].to_numpy()
 
     @property
     def values(self) -> np.ndarray:
-        return self.data[self.mapper.get('values')].to_numpy()
+        return self.data[self._mapper.get('values')].to_numpy()
 
     @x.setter
     def x(self, _x: list) -> None:
-        self.data[self.mapper.get('x')] = np.array(_x)
+        self.data[self._mapper.get('x')] = np.array(_x)
 
     @y.setter
     def y(self, _y: list) -> None:
-        self.data[self.mapper.get('y')] = np.array(_y)
+        self.data[self._mapper.get('y')] = np.array(_y)
 
     @z.setter
     def z(self, _z: list) -> None:
-        self.data[self.mapper.get('z')] = np.array(_z)
+        self.data[self._mapper.get('z')] = np.array(_z)
 
     @values.setter
     def values(self, _values) -> None:
-        self.data[self.mapper.get('values')] = np.array(_values)
+        self.data[self._mapper.get('values')] = np.array(_values)
 
     """
     Properties
@@ -178,7 +159,7 @@ class DFElement(Element):
 
     @property
     def headers(self) -> list:
-        return list(self.mapper.values())
+        return list(self._mapper.values())
 
     @colormap.setter
     def colormap(self, _colormap: str) -> None:
@@ -201,4 +182,4 @@ class DFElement(Element):
 
     @headers.setter
     def headers(self, _headers: list) -> None:
-        self.mapper['x'], self.mapper['y'], self.mapper['z'], self.mapper['values'] = _headers
+        self._mapper['x'], self._mapper['y'], self._mapper['z'], self._mapper['values'] = _headers

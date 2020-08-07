@@ -9,7 +9,7 @@ import numpy as np
 
 
 class Element:
-    __slots__ = ['_data', '_properties', '_metadata']
+    __slots__ = ['data', 'properties', 'metadata']
 
     def __init__(self, *args, **kwargs):
         """
@@ -34,9 +34,9 @@ class Element:
         }
         """
         # Base data
-        self._data: dict = {}
-        self._properties: dict = {}
-        self._metadata: dict = {}
+        self.data: dict = {}
+        self.properties: dict = {}
+        self.metadata: dict = {}
 
         self._initialize(*args, **kwargs)
 
@@ -92,35 +92,20 @@ class Element:
             raise ValueError(msg)
 
     """
-    Main accessors
+    Dynamic properties (custom properties set by the user)
     """
-    @property
-    def data(self) -> dict:
-        return self._data
+    def __dir__(self) -> list:
+        # We need both our methods/attributes, and the keys of the _properties dict
+        return list(set(super().__dir__() + list(self.properties.keys())))
 
-    @property
-    def properties(self) -> dict:
-        return self._properties
-
-    @property
-    def metadata(self) -> dict:
-        return self._metadata
-
-    @property
-    def attributes(self) -> dict:
-        return {**self.properties, **self.metadata}
-
-    @data.setter
-    def data(self, _data: dict) -> None:
-        self._data = _data
-
-    @properties.setter
-    def properties(self, _properties: dict) -> None:
-        for k, v in _properties.items():
-            self._properties[k] = v
+    def __getattribute__(self, attr: str):
+        # Try to set get from _properties first, then try it from ourselves
+        if attr in super().__getattribute__('properties').keys():
+            return super().__getattribute__('properties')[attr]
+        return super().__getattribute__(attr)
 
     """
-    Data
+    Data accessors
     """
     @property
     def x(self) -> np.ndarray:
@@ -155,15 +140,23 @@ class Element:
         self.x, self.y, self.z = np.array(vertex_list).T
 
     """
+    Properties accessors
+    """
+    def set_property(self, key: str, value: any) -> None:
+        self.properties[key] = value
+
+    def get_property(self, key: str) -> any:
+        return self.properties[key]
+
+    def delete_property(self, key: str) -> None:
+        self.properties.pop(key)
+
+    """
     Properties
     """
     @property
-    def customizable_properties(self) -> list:
-        return ['color', 'alpha']
-
-    @property
-    def exportable_properties(self) -> list:
-        return ['color', 'alpha']
+    def attributes(self) -> dict:
+        return {**self.properties, **self.metadata}
 
     @property
     def color(self) -> np.array:

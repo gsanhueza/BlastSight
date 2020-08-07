@@ -31,7 +31,7 @@ class GLDrawable:
         # Hack to expose GLDrawable's attributes AND self.element's attributes
         # as if they were GLDrawable's attributes.
         # https://stackoverflow.com/q/15507848
-        return sorted(set(dir(type(self)) + list(self.__dict__.keys()) + dir(self.element)))
+        return list(set(super().__dir__() + dir(self.element)))
 
     def __getattribute__(self, attr: str):
         # Hack to get our attributes.
