@@ -8,29 +8,36 @@
 import h5py
 import numpy as np
 from qtpy.QtCore import QFileInfo
-from .parserdata import ParserData
 from .parser import Parser
 
 
 class H5MParser(Parser):
     @staticmethod
-    def load_file(path: str, *args, **kwargs) -> ParserData:
-        hf = h5py.File(path, 'r')
-        vertices = hf['vertices'][()]
-        indices = hf['indices'][()]
-        properties = dict(hf.attrs)
-        hf.close()
+    def load_file(path: str, *args, **kwargs) -> dict:
+        with h5py.File(path, 'r') as hf:
+            vertices = hf['vertices'][()]
+            indices = hf['indices'][()]
+
+            # Properties
+            properties = dict(hf.attrs)
+
+        # Data
+        data = {
+            'vertices': vertices,
+            'indices': indices,
+        }
 
         # Metadata
-        properties['name'] = QFileInfo(path).completeBaseName()
-        properties['extension'] = QFileInfo(path).suffix()
+        metadata = {
+            'name': QFileInfo(path).completeBaseName(),
+            'extension': QFileInfo(path).suffix(),
+        }
 
-        data = ParserData()
-        data.vertices = vertices
-        data.indices = indices
-        data.properties = properties
-
-        return data
+        return {
+            'data': data,
+            'properties': properties,
+            'metadata': metadata,
+        }
 
     @staticmethod
     def save_file(*args, **kwargs) -> None:
@@ -56,11 +63,9 @@ class H5MParser(Parser):
 
         properties = kwargs.get('properties', {})
 
-        hf = h5py.File(path, 'w')
-        hf.create_dataset('vertices', data=vertices, dtype='float32')
-        hf.create_dataset('indices', data=indices, dtype='uint32')
+        with h5py.File(path, 'w') as hf:
+            hf.create_dataset('vertices', data=vertices, dtype='float32')
+            hf.create_dataset('indices', data=indices, dtype='uint32')
 
-        for k, v in properties.items():
-            hf.attrs[k] = v
-
-        hf.close()
+            for k, v in properties.items():
+                hf.attrs[k] = v

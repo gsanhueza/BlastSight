@@ -20,8 +20,8 @@ class TestModel:
         model = Model()
         path = f'{TEST_FILES_FOLDER_PATH}/caseron.off'
         info = OFFParser.load_file(path)
-        vertices = info.vertices
-        indices = info.indices
+        vertices = info.get('data').get('vertices')
+        indices = info.get('data').get('indices')
 
         x, y, z = zip(*vertices)
 
@@ -50,8 +50,8 @@ class TestModel:
         model = Model()
         path = f'{TEST_FILES_FOLDER_PATH}/caseron.off'
         info = OFFParser.load_file(path)
-        vertices = info.vertices
-        indices = info.indices
+        vertices = info.get('data').get('vertices')
+        indices = info.get('data').get('indices')
 
         mesh = model.mesh(vertices=vertices, indices=indices)
         mesh_get = model.get(mesh.id)
@@ -64,8 +64,8 @@ class TestModel:
         model = Model()
         path = f'{TEST_FILES_FOLDER_PATH}/caseron.off'
         info = OFFParser.load_file(path)
-        vertices = info.vertices
-        indices = info.indices
+        vertices = info.get('data').get('vertices')
+        indices = info.get('data').get('indices')
 
         mesh = model.mesh(vertices=vertices, indices=indices)
         _id = mesh.id
@@ -78,7 +78,7 @@ class TestModel:
         model = Model()
         path = f'{TEST_FILES_FOLDER_PATH}/mini.csv'
         info = CSVParser.load_file(path)
-        data = info.data
+        data = info.get('data')
 
         bm_1 = model.blocks(data=data)
         bm_2 = model.blocks(data=data)
@@ -103,7 +103,7 @@ class TestModel:
         model = Model()
         path = f'{TEST_FILES_FOLDER_PATH}/mini.csv'
         info = CSVParser.load_file(path)
-        data = info.data
+        data = info.get('data')
 
         bm = model.blocks(data=data)
         bm_get = model.get(bm.id)
@@ -116,7 +116,7 @@ class TestModel:
         model = Model()
         path = f'{TEST_FILES_FOLDER_PATH}/mini.csv'
         info = CSVParser.load_file(path)
-        data = info.data
+        data = info.get('data')
 
         bm = model.blocks(data=data)
         _id = bm.id
@@ -222,7 +222,7 @@ class TestModel:
         model = Model()
         path = f'{TEST_FILES_FOLDER_PATH}/mini.csv'
         info = CSVParser.load_file(path)
-        data = info.data
+        data = info.get('data')
 
         bm_1 = model.points(data=data)
         bm_2 = model.points(data=data)
@@ -247,7 +247,7 @@ class TestModel:
         model = Model()
         path = f'{TEST_FILES_FOLDER_PATH}/mini.csv'
         info = CSVParser.load_file(path)
-        data = info.data
+        data = info.get('data')
 
         bm = model.points(data=data)
         bm_get = model.get(bm.id)
@@ -260,7 +260,7 @@ class TestModel:
         model = Model()
         path = f'{TEST_FILES_FOLDER_PATH}/mini.csv'
         info = CSVParser.load_file(path)
-        data = info.data
+        data = info.get('data')
 
         bm = model.points(data=data)
         _id = bm.id

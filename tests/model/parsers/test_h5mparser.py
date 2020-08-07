@@ -9,27 +9,29 @@ from tests.globals import *
 class TestH5MParser:
     def test_load_file(self):
         info = Parser.load_file(path=f'{TEST_FILES_FOLDER_PATH}/caseron.h5m')
-        vertices = info.vertices
-        indices = info.indices
-        properties = info.properties
+        vertices = info.get('data').get('vertices')
+        indices = info.get('data').get('indices')
+        metadata = info.get('metadata')
+
         assert len(vertices) == 12
         assert len(indices) == 20
-        assert properties.get('name', '') == 'caseron'
-        assert properties.get('extension', '') == 'h5m'
+        assert metadata.get('name') == 'caseron'
+        assert metadata.get('extension') == 'h5m'
 
     def test_save_file(self):
         info = Parser.load_file(path=f'{TEST_FILES_FOLDER_PATH}/caseron.h5m')
-        vertices = info.vertices
-        indices = info.indices
+        vertices = info.get('data').get('vertices')
+        indices = info.get('data').get('indices')
 
         properties = {'color': [1.0, 0.6, 0.2], 'alpha': 0.5}
 
         Parser.save_file(path=f'{TEST_FILES_FOLDER_PATH}/caseron_save.h5m',
                          vertices=vertices, indices=indices, properties=properties)
         info_s = Parser.load_file(path=f'{TEST_FILES_FOLDER_PATH}/caseron_save.h5m')
-        vertices_s = info_s.vertices
-        indices_s = info_s.indices
-        properties_s = info_s.properties
+        vertices_s = info_s.get('data').get('vertices')
+        indices_s = info_s.get('data').get('indices')
+        properties_s = info_s.get('properties')
+        metadata_s = info_s.get('metadata')
 
         for v, v_s in zip(vertices, vertices_s):
             for e, e_s in zip(v, v_s):
@@ -39,8 +41,9 @@ class TestH5MParser:
             for e, e_s in zip(i, i_s):
                 assert abs(e - e_s) < 1e-12
 
-        assert properties_s.get('name', '') == 'caseron_save'
-        assert properties_s.get('extension', '') == 'h5m'
+        assert metadata_s.get('name', '') == 'caseron_save'
+        assert metadata_s.get('extension', '') == 'h5m'
+
         assert len(properties_s.get('color', [])) == 3
         assert properties_s.get('color', [])[0] == 1.0
         assert properties_s.get('color', [])[1] == 0.6

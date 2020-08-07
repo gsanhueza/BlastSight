@@ -7,29 +7,33 @@
 
 import pandas as pd
 from qtpy.QtCore import QFileInfo
-from .parserdata import ParserData
 from .parser import Parser
 
 
 class H5PParser(Parser):
     @staticmethod
-    def load_file(path: str, *args, **kwargs) -> ParserData:
-        store = pd.HDFStore(path, 'r')
-        try:
-            properties = store.get_storer('data').attrs.metadata
-        except AttributeError:
-            properties = {}
+    def load_file(path: str, *args, **kwargs) -> dict:
+        with pd.HDFStore(path, 'r') as store:
+            # Data
+            data = store.get('data')
+
+            # Properties
+            try:
+                properties = store.get_storer('data').attrs.metadata
+            except AttributeError:
+                properties = {}
 
         # Metadata
-        properties['name'] = QFileInfo(path).completeBaseName()
-        properties['extension'] = QFileInfo(path).suffix()
+        metadata = {
+            'name': QFileInfo(path).completeBaseName(),
+            'extension': QFileInfo(path).suffix(),
+        }
 
-        data = ParserData()
-        data.data = store['data']
-        data.properties = properties
-
-        store.close()
-        return data
+        return {
+            'data': data,
+            'properties': properties,
+            'metadata': metadata,
+        }
 
     @staticmethod
     def save_file(*args, **kwargs) -> None:
@@ -41,7 +45,6 @@ class H5PParser(Parser):
         data = kwargs.get('data', [])
         properties = kwargs.get('properties', {})
 
-        store = pd.HDFStore(path, 'w')
-        store.put('data', data)
-        store.get_storer('data').attrs.metadata = properties
-        store.close()
+        with pd.HDFStore(path, 'w') as store:
+            store.put('data', data)
+            store.get_storer('data').attrs.metadata = properties

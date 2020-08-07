@@ -7,34 +7,39 @@
 
 import pandas as pd
 from qtpy.QtCore import QFileInfo
-from .parserdata import ParserData
 from .parser import Parser
 
 
 class CSVParser(Parser):
     @staticmethod
-    def load_file(path: str, *args, **kwargs) -> ParserData:
+    def load_file(path: str, *args, **kwargs) -> dict:
         assert path.lower().endswith('csv')
 
+        # Data
+        with open(path, 'r') as f:
+            data = pd.read_csv(f)
+
+        # Properties
+        properties = {}
+
         # Metadata
-        properties = {
+        metadata = {
             'name': QFileInfo(path).completeBaseName(),
             'extension': QFileInfo(path).suffix()
         }
 
-        with open(path, 'r') as f:
-            data = ParserData()
-            data.data = pd.read_csv(f)
-            data.properties = properties
-
-            return data
+        return {
+            'data': data,
+            'properties': properties,
+            'metadata': metadata,
+        }
 
     @staticmethod
     def save_file(*args, **kwargs) -> None:
         path = kwargs.get('path')
 
         if path is None:
-            raise KeyError('Path missing.')
+            raise IOError('Path missing.')
 
         data = pd.DataFrame(kwargs.get('data', {}))
         data.to_csv(path, index=False)

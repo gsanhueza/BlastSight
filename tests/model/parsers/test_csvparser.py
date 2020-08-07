@@ -9,7 +9,7 @@ from tests.globals import *
 class TestCSVParser:
     def test_load_simple_file(self):
         info = Parser.load_file(f'{TEST_FILES_FOLDER_PATH}/mini.csv')
-        data = info.data
+        data = info.get('data')
         assert data is not None
         assert data['x'] is not None
         assert data['y'] is not None
@@ -33,7 +33,7 @@ class TestCSVParser:
 
     def test_load_complex_file(self):
         info = Parser.load_file(f'{TEST_FILES_FOLDER_PATH}/complex.csv')
-        data = info.data
+        data = info.get('data')
         assert data is not None
         assert data['x'] is not None
         assert data['y'] is not None
@@ -53,11 +53,11 @@ class TestCSVParser:
 
     def test_save_file(self):
         info = Parser.load_file(path=f'{TEST_FILES_FOLDER_PATH}/mini.csv')
-        data = info.data
+        data = info.get('data')
         Parser.save_file(path=f'{TEST_FILES_FOLDER_PATH}/mini_save.csv', data=data)
 
         info_s = Parser.load_file(path=f'{TEST_FILES_FOLDER_PATH}/mini_save.csv')
-        data_s = info_s.data
+        data_s = info_s.get('data')
 
         for k, k_s in zip(data.keys(), data_s.keys()):
             assert k == k_s

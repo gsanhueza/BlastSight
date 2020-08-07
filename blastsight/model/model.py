@@ -89,12 +89,16 @@ class Model:
     def register_element_by_path(self, path: str, generator, *args, **kwargs):
         ext = path.split('.')[-1]
         info = self.get_parser(ext).load_file(path, *args, **kwargs)
-        data = info.data
-        properties = info.properties
+        data = info.get('data', {})
+        properties = info.get('properties', {})
+        metadata = info.get('metadata', {})
 
         # Prioritize kwargs over file properties (useful in CLI)
         kwargs['data'] = kwargs.get('data', data)
         for k, v in properties.items():
+            kwargs[k] = kwargs.get(k, v)
+
+        for k, v in metadata.items():
             kwargs[k] = kwargs.get(k, v)
 
         return self.register_element(generator(*args, **kwargs))

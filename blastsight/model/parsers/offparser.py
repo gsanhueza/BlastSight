@@ -9,13 +9,12 @@ import numpy as np
 import pandas as pd
 
 from qtpy.QtCore import QFileInfo
-from .parserdata import ParserData
 from .parser import Parser
 
 
 class OFFParser(Parser):
     @staticmethod
-    def load_file(path: str, *args, **kwargs) -> ParserData:
+    def load_file(path: str, *args, **kwargs) -> dict:
         assert path.lower().endswith('off')
 
         with open(path, 'r') as fp:
@@ -27,18 +26,26 @@ class OFFParser(Parser):
             indices = pd.read_csv(path, skiprows=1 + n_vertices, nrows=n_faces, delimiter=' ',
                                   usecols=range(1, 4)).to_numpy(dtype=int)
 
-            # Metadata
-            properties = {
-                'name': QFileInfo(path).completeBaseName(),
-                'extension': QFileInfo(path).suffix()
-            }
+        # Data
+        data = {
+            'vertices': vertices,
+            'indices': indices,
+        }
 
-            data = ParserData()
-            data.vertices = vertices
-            data.indices = indices
-            data.properties = properties
+        # Properties
+        properties = {}
 
-            return data
+        # Metadata
+        metadata = {
+            'name': QFileInfo(path).completeBaseName(),
+            'extension': QFileInfo(path).suffix()
+        }
+
+        return {
+            'data': data,
+            'properties': properties,
+            'metadata': metadata,
+        }
 
     @staticmethod
     def save_file(path: str, *args, **kwargs) -> None:

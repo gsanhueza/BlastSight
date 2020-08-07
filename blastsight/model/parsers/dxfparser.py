@@ -9,19 +9,18 @@ import dxfgrabber
 import numpy as np
 
 from qtpy.QtCore import QFileInfo
-from .parserdata import ParserData
 from .parser import Parser
 
 
 class DXFParser(Parser):
     @staticmethod
-    def load_file(path: str, *args, **kwargs) -> ParserData:
+    def load_file(path: str, *args, **kwargs) -> dict:
         assert path.lower().endswith('dxf')
 
         dxf = dxfgrabber.readfile(path)
 
         # Model data
-        data = ParserData()
+        data = {}
         points = []
 
         def fill_as_mesh():
@@ -32,8 +31,8 @@ class DXFParser(Parser):
 
             # Detect vertices and indices
             vertices, indices = np.unique(np.array(points), axis=0, return_inverse=True)
-            data.vertices = vertices
-            data.indices = indices.reshape((-1, 3))
+            data['vertices'] = vertices
+            data['indices'] = indices.reshape((-1, 3))
 
         def fill_as_polyline():
             # Detect vertices and indices
@@ -43,8 +42,9 @@ class DXFParser(Parser):
             polyline3d = list(filter(lambda e: e.mode == 'polyline3d', entities))
             for entity in polyline3d:
                 points.extend(entity.points)
+
             # Detect vertices only
-            data.vertices = np.array(points)
+            data['vertices'] = np.array(points)
 
         # Fill depending on the given hint
         if kwargs.get('hint', 'mesh') == 'mesh':
@@ -52,13 +52,20 @@ class DXFParser(Parser):
         else:
             fill_as_polyline()
 
+        # Properties
+        properties = {}
+
         # Metadata
-        data.properties = {
+        metadata = {
             'name': QFileInfo(path).completeBaseName(),
             'extension': QFileInfo(path).suffix()
         }
 
-        return data
+        return {
+            'data': data,
+            'properties': properties,
+            'metadata': metadata,
+        }
 
     @staticmethod
     def save_file(path: str, *args, **kwargs) -> None:

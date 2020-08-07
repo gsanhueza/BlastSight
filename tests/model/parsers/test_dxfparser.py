@@ -8,8 +8,8 @@ from tests.globals import *
 class TestDXFParser:
     def test_load_file(self):
         info = Parser.load_file(f'{TEST_FILES_FOLDER_PATH}/caseron.dxf')
-        vertices = info.vertices
-        indices = info.indices
+        vertices = info.get('data').get('vertices')
+        indices = info.get('data').get('indices')
         assert len(vertices) == 12
         assert len(indices) == 20
 

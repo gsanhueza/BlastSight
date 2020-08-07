@@ -5,12 +5,10 @@
 #  Distributed under the MIT License.
 #  See LICENSE for more info.
 
-from .parserdata import ParserData
-
 
 class Parser:
     @staticmethod
-    def load_file(path: str, *args, **kwargs) -> ParserData:
+    def load_file(path: str, *args, **kwargs) -> dict:
         raise NotImplementedError
 
     @staticmethod
