@@ -33,14 +33,13 @@ class GLDrawable:
         # https://stackoverflow.com/q/15507848
         return list(set(super().__dir__() + dir(self.element)))
 
-    def __getattribute__(self, attr: str):
+    def __getattribute__(self, attr: str) -> any:
         # Hack to get our attributes.
         # If not found, search self.element's attributes.
         # https://stackoverflow.com/a/2405617
-        try:
+        if hasattr(type(self), attr) or attr in super().__getattribute__('__dict__'):
             return super().__getattribute__(attr)
-        except AttributeError:
-            return self.element.__getattribute__(attr)
+        return super().__getattribute__('element').__getattribute__(attr)
 
     def __setattr__(self, key, value) -> None:
         # Hack to set our attributes.
