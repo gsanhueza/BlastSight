@@ -206,16 +206,6 @@ class TestPointElement:
         assert element.point_size[1] == 10.0
         assert element.avg_size == 10.0
 
-    def test_customizable_properties(self):
-        element = PointElement(vertices=[[0, 1, 2]], values=[8])
-        for prop in ['alpha', 'colormap', 'vmin', 'vmax', 'marker', 'avg_size']:
-            assert prop in element.customizable_properties
-
-    def test_exportable_properties(self):
-        element = PointElement(vertices=[[0, 1, 2]])
-        for prop in ['alpha', 'colormap', 'headers', 'marker', 'avg_size']:
-            assert prop in element.exportable_properties
-
     def test_markers(self):
         element = PointElement(vertices=[[0, 1, 2]], values=[8])
         assert element.marker == 'square'

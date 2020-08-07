@@ -23,7 +23,7 @@ class PointGL(GLDrawable):
         _SIZE = 3
 
         # Generate VAO and VBOs (see GLDrawable)
-        self.create_vao_vbos(4)
+        self.generate_buffers(4)
 
         # Data
         vertices = self.element.vertices.astype(np.float32)
@@ -36,10 +36,10 @@ class PointGL(GLDrawable):
         glBindVertexArray(self.vao)
 
         # Fill buffers (see GLDrawable)
-        self.fill_buffer(_POSITION, 3, vertices, GLfloat, GL_FLOAT, self.vbos[_POSITION])
-        self.fill_buffer(_COLOR, 3, colors, GLfloat, GL_FLOAT, self.vbos[_COLOR])
-        self.fill_buffer(_ALPHA, 1, alpha, GLfloat, GL_FLOAT, self.vbos[_ALPHA])
-        self.fill_buffer(_SIZE, 1, sizes, GLfloat, GL_FLOAT, self.vbos[_SIZE])
+        self.fill_buffer(_POSITION, 3, vertices, GLfloat, GL_FLOAT, self._vbos[_POSITION])
+        self.fill_buffer(_COLOR, 3, colors, GLfloat, GL_FLOAT, self._vbos[_COLOR])
+        self.fill_buffer(_ALPHA, 1, alpha, GLfloat, GL_FLOAT, self._vbos[_ALPHA])
+        self.fill_buffer(_SIZE, 1, sizes, GLfloat, GL_FLOAT, self._vbos[_SIZE])
 
         # The attribute advances once per divisor instances of the set(s) of vertices being rendered
         # And guess what, we have just 1 instance, exactly what we wanted!

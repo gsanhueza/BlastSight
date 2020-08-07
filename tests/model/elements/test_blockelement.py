@@ -224,16 +224,6 @@ class TestBlockElement:
         assert element.block_size[1] == 2.0
         assert element.block_size[2] == 3.0
 
-    def test_customizable_properties(self):
-        element = BlockElement(vertices=[[0, 1, 2]], values=[8], block_size=[2.0, 4.0, 7.0])
-        for prop in ['alpha', 'colormap', 'vmin', 'vmax', 'block_size']:
-            assert prop in element.customizable_properties
-
-    def test_exportable_properties(self):
-        element = BlockElement(vertices=[[0, 1, 2]])
-        for prop in ['alpha', 'colormap', 'headers', 'block_size']:
-            assert prop in element.exportable_properties
-
     def test_bounding_box(self):
         element = BlockElement(vertices=[[0, 0, 0]], values=[0])
 

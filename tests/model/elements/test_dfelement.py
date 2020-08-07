@@ -188,16 +188,6 @@ class TestDFElement:
             else:
                 assert header in element.headers
 
-    def test_customizable_properties(self):
-        element = DFElement(vertices=[[0, 1, 2]])
-        for prop in ['alpha', 'color']:
-            assert prop in element.customizable_properties
-
-    def test_exportable_properties(self):
-        element = DFElement(vertices=[[0, 1, 2]])
-        for prop in ['alpha', 'color']:
-            assert prop in element.exportable_properties
-
     def test_getattr_setattr(self):
         element = DFElement(vertices=[[0, 1, 2]])
         assert element.alpha == 1.0

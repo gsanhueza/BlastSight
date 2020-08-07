@@ -36,7 +36,7 @@ class BackgroundGL(GLDrawable):
         self.notify()
 
     def __dir__(self) -> list:
-        return sorted(set(dir(type(self)) + list(self.__dict__.keys())))
+        return super().__dir__()
 
     def draw(self) -> None:
         glDisable(GL_DEPTH_TEST)

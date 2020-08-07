@@ -70,10 +70,10 @@ class TestAutoDrawable:
 
     def test_cleanup(self):
         drawable = GLDrawable(self.element)
-        assert len(drawable.vaos) == 0
+        assert len(drawable._vaos) == 0
         drawable.initialize()
         drawable.cleanup()
-        assert len(drawable.vaos) == 0
+        assert len(drawable._vaos) == 0
 
     def test_draw(self):
         viewer = IntegrableViewer()

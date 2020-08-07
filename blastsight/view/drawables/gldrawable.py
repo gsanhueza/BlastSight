@@ -13,9 +13,9 @@ class GLDrawable:
         # assert element
         super().__setattr__('element', element)  # self.element = element
 
-        self.vaos = []
-        self.vbos = []
-        self.observers = []
+        self._vaos = []
+        self._vbos = []
+        self._observers = []
 
         self._initialized = kwargs.pop('initialized', False)
         self._visible = kwargs.pop('visible', True)
@@ -54,7 +54,7 @@ class GLDrawable:
     def vao(self) -> int:
         # We already know that we have only one VAO.
         # But cleanup is easier if we have the VAO in a list.
-        return self.vaos[-1]
+        return self._vaos[-1]
 
     def initialize(self) -> None:
         if not self.is_initialized:
@@ -64,10 +64,10 @@ class GLDrawable:
     def setup_attributes(self) -> None:
         pass
 
-    def create_vao_vbos(self, vbo_count: int) -> None:
-        if len(self.vaos) == 0:
-            self.vaos = [glGenVertexArrays(1)]
-            self.vbos = glGenBuffers(vbo_count)
+    def generate_buffers(self, vbo_count: int) -> None:
+        if len(self._vaos) == 0:
+            self._vaos = [glGenVertexArrays(1)]
+            self._vbos = glGenBuffers(vbo_count)
 
     @staticmethod
     def fill_buffer(pointer, basesize, array, glsize, gltype, vbo):
@@ -81,8 +81,8 @@ class GLDrawable:
 
     def cleanup(self) -> None:
         if self.is_initialized:
-            glDeleteBuffers(len(self.vbos), self.vbos)
-            glDeleteVertexArrays(len(self.vaos), self.vaos)
+            glDeleteBuffers(len(self._vbos), self._vbos)
+            glDeleteVertexArrays(len(self._vaos), self._vaos)
 
     """
     Properties
@@ -117,10 +117,10 @@ class GLDrawable:
     Quick GLDrawable API
     """
     def add_observer(self, observer) -> None:
-        self.observers.append(observer)
+        self._observers.append(observer)
 
     def notify(self) -> None:
-        for observer in self.observers:
+        for observer in self._observers:
             observer.recreate()
 
     def show(self) -> None:

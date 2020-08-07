@@ -89,7 +89,7 @@ class MeshGL(GLDrawable):
         _COLOR = 1
 
         # Generate VAO and VBOs (see GLDrawable)
-        self.create_vao_vbos(3)
+        self.generate_buffers(3)
 
         # Data
         vertices = self.element.vertices.astype(np.float32)
@@ -101,10 +101,10 @@ class MeshGL(GLDrawable):
         glBindVertexArray(self.vao)
 
         # Fill buffers (see GLDrawable)
-        self.fill_buffer(_POSITION, 3, vertices, GLfloat, GL_FLOAT, self.vbos[_POSITION])
-        self.fill_buffer(_COLOR, 4, colors, GLfloat, GL_FLOAT, self.vbos[_COLOR])
+        self.fill_buffer(_POSITION, 3, vertices, GLfloat, GL_FLOAT, self._vbos[_POSITION])
+        self.fill_buffer(_COLOR, 4, colors, GLfloat, GL_FLOAT, self._vbos[_COLOR])
 
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, self.vbos[-1])
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, self._vbos[-1])
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices, GL_STATIC_DRAW)
 
         # The attribute advances once per divisor instances of the set(s) of vertices being rendered

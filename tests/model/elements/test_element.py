@@ -139,11 +139,6 @@ class TestElement:
         assert element.color[2] == element.rgba[2] == 0.8
         assert element.alpha == element.rgba[3] == 0.7
 
-    def test_customizable_properties(self):
-        element = Element(vertices=[[0, 1, 2]])
-        for prop in ['alpha', 'color']:
-            assert prop in element.customizable_properties
-
     def test_center_centroid(self):
         element = Element(vertices=[[0, 1, 2], [3, 4, 5], [3, 4, 5]])
         assert element.center[0] == 1.5

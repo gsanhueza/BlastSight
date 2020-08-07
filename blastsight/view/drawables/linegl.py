@@ -21,7 +21,7 @@ class LineGL(GLDrawable):
         _COLOR = 1
 
         # Generate VAO and VBOs (see GLDrawable)
-        self.create_vao_vbos(2)
+        self.generate_buffers(2)
 
         # Data
         vertices = self.element.vertices.astype(np.float32)
@@ -33,8 +33,8 @@ class LineGL(GLDrawable):
         glBindVertexArray(self.vao)
 
         # Fill buffers (see GLDrawable)
-        self.fill_buffer(_POSITION, 3, vertices, GLfloat, GL_FLOAT, self.vbos[_POSITION])
-        self.fill_buffer(_COLOR, 4, colors, GLfloat, GL_FLOAT, self.vbos[_COLOR])
+        self.fill_buffer(_POSITION, 3, vertices, GLfloat, GL_FLOAT, self._vbos[_POSITION])
+        self.fill_buffer(_COLOR, 4, colors, GLfloat, GL_FLOAT, self._vbos[_COLOR])
 
         glVertexAttribDivisor(_COLOR, 1)
 

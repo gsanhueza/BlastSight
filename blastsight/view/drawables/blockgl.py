@@ -37,7 +37,7 @@ class BlockGL(GLDrawable):
         _TEMPLATE = 3
 
         # Generate VAO and VBOs (see GLDrawable)
-        self.create_vao_vbos(4)
+        self.generate_buffers(4)
 
         # Data
         vertices = np.array(self.element.vertices, np.float32)
@@ -50,10 +50,10 @@ class BlockGL(GLDrawable):
         glBindVertexArray(self.vao)
 
         # Fill buffers (see GLDrawable)
-        self.fill_buffer(_POSITION, 3, vertices, GLfloat, GL_FLOAT, self.vbos[_POSITION])
-        self.fill_buffer(_COLOR, 3, colors, GLfloat, GL_FLOAT, self.vbos[_COLOR])
-        self.fill_buffer(_ALPHA, 1, alpha, GLfloat, GL_FLOAT, self.vbos[_ALPHA])
-        self.fill_buffer(_TEMPLATE, 3, template, GLfloat, GL_FLOAT, self.vbos[_TEMPLATE])
+        self.fill_buffer(_POSITION, 3, vertices, GLfloat, GL_FLOAT, self._vbos[_POSITION])
+        self.fill_buffer(_COLOR, 3, colors, GLfloat, GL_FLOAT, self._vbos[_COLOR])
+        self.fill_buffer(_ALPHA, 1, alpha, GLfloat, GL_FLOAT, self._vbos[_ALPHA])
+        self.fill_buffer(_TEMPLATE, 3, template, GLfloat, GL_FLOAT, self._vbos[_TEMPLATE])
 
         # The attribute advances once per divisor instances of the set(s) of vertices being rendered.
         if self.is_legacy:

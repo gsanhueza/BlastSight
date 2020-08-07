@@ -156,13 +156,11 @@ class Model:
     Element exporting
     """
     def export(self, path: str, _id: int) -> None:
-        element = self.get(_id)
         ext = path.split('.')[-1]
+        element = self.get(_id)
 
         data = element.data
-        properties = {}
-        for k in element.exportable_properties:
-            properties[k] = getattr(element, k)
+        properties = element.properties
 
         self.get_parser(ext).save_file(path=path, data=data, properties=properties)
 
