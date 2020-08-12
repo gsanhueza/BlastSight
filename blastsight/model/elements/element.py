@@ -105,6 +105,18 @@ class Element:
         return super().__getattribute__(attr)
 
     """
+    Properties accessors
+    """
+    def set_property(self, key: str, value: any) -> None:
+        self.properties[key] = value
+
+    def get_property(self, key: str) -> any:
+        return self.properties[key]
+
+    def delete_property(self, key: str) -> None:
+        self.properties.pop(key)
+
+    """
     Data accessors
     """
     @property
@@ -138,18 +150,6 @@ class Element:
     @vertices.setter
     def vertices(self, vertex_list: list) -> None:
         self.x, self.y, self.z = np.array(vertex_list).T
-
-    """
-    Properties accessors
-    """
-    def set_property(self, key: str, value: any) -> None:
-        self.properties[key] = value
-
-    def get_property(self, key: str) -> any:
-        return self.properties[key]
-
-    def delete_property(self, key: str) -> None:
-        self.properties.pop(key)
 
     """
     Properties
