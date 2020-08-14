@@ -99,9 +99,15 @@ class Element:
         return list(set(super().__dir__() + list(self.properties.keys())))
 
     def __getattribute__(self, attr: str):
-        # Try to set get from _properties first, then try it from ourselves
+        # Do we have the desired attribute/property?
+        if hasattr(type(self), attr):
+            return super().__getattribute__(attr)
+
+        # Does self.properties have it?
         if attr in super().__getattribute__('properties').keys():
             return super().__getattribute__('properties')[attr]
+
+        # If everything fails, just raise the original exception
         return super().__getattribute__(attr)
 
     """
