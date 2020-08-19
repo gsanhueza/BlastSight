@@ -156,7 +156,8 @@ class MainWindow(QMainWindow):
         self.menu_Tools.addAction(actions.action_measurement_mode)
         self.menu_Tools.addSeparator()
         self.menu_Tools.addAction(actions.action_normal_mode)
-        self.menu_Tools.addAction(actions.action_cross_section)
+        # FIXME Removed until further notice
+        # self.menu_Tools.addAction(actions.action_cross_section)
 
         # Settings
         self.menu_Settings.addAction(actions.action_autofit)

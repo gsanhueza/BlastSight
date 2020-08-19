@@ -40,36 +40,23 @@ class CameraWidget(QWidget):
         self.current_mode = QLabel(self)
         self.current_projection = QLabel(self)
 
-        self.vertical_spacer = QSpacerItem(10, 10, QSizePolicy.Minimum, QSizePolicy.Expanding)
-
         # Layouts
         self.layout = QVBoxLayout(self)
         self.horizontal_position = QHBoxLayout()
         self.horizontal_center = QHBoxLayout()
         self.horizontal_rotation = QHBoxLayout()
 
-        # Adapter for horizontal generation
-        def adapter(layout):
-            layout.setStretch(0, 1)
-            layout.setStretch(1, 8)
-
         self._add_to_layout(self.layout, [
             QLabel('Camera position (location)'),
-            self._generate_horizontal(QLabel('X'), self.position_x, adapter=adapter),
-            self._generate_horizontal(QLabel('Y'), self.position_y, adapter=adapter),
-            self._generate_horizontal(QLabel('Z'), self.position_z, adapter=adapter),
+            self._generate_horizontal(self.position_x, self.position_y, self.position_z),
             self._generate_separator(),
 
             QLabel('Rotation center (location)'),
-            self._generate_horizontal(QLabel('X'), self.center_x, adapter=adapter),
-            self._generate_horizontal(QLabel('Y'), self.center_y, adapter=adapter),
-            self._generate_horizontal(QLabel('Z'), self.center_z, adapter=adapter),
+            self._generate_horizontal(self.center_x, self.center_y, self.center_z),
             self._generate_separator(),
 
             QLabel('Rotation angle (degrees)'),
-            self._generate_horizontal(QLabel('X°'), self.rotation_x, adapter=adapter),
-            self._generate_horizontal(QLabel('Y°'), self.rotation_y, adapter=adapter),
-            self._generate_horizontal(QLabel('Z°'), self.rotation_z, adapter=adapter),
+            self._generate_horizontal(self.rotation_x, self.rotation_y, self.rotation_z),
             self._generate_separator(),
 
             QLabel('Background color'),
@@ -80,8 +67,7 @@ class CameraWidget(QWidget):
             self._generate_horizontal(QLabel('Projection'), self.current_projection),
         ])
 
-        self.layout.addSpacerItem(self.vertical_spacer)
-
+        self.layout.addSpacerItem(QSpacerItem(10, 10, QSizePolicy.Minimum, QSizePolicy.Expanding))
         self._connect_internal_signals()
 
     @staticmethod
@@ -93,6 +79,7 @@ class CameraWidget(QWidget):
         spinbox = QDoubleSpinBox(self)
         spinbox.setMinimum(lower)
         spinbox.setMaximum(upper)
+        spinbox.setMinimumWidth(10)
 
         return spinbox
 
@@ -103,7 +90,7 @@ class CameraWidget(QWidget):
 
         return line_separator
 
-    def _generate_horizontal(self, *widgets, **kwargs) -> QWidget:
+    def _generate_horizontal(self, *widgets) -> QWidget:
         container = QWidget(self)
         layout = QHBoxLayout(container)
         layout.setContentsMargins(0, 0, 0, 0)
@@ -111,10 +98,6 @@ class CameraWidget(QWidget):
         for widget in widgets:
             # widget.set_parent(container)
             layout.addWidget(widget)
-
-        # Execute layout adapter
-        adapter = kwargs.get('adapter', lambda *args: None)
-        adapter(layout)
 
         return container
 
