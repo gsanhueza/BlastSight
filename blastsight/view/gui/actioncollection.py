@@ -102,10 +102,10 @@ class ActionCollection:
         self.action_about.setIcon(IconCollection.get('about.svg'))
         self.action_about.setShortcut('?')
 
-        self.action_animate = QAction('A&nimate movements', parent)
-        self.action_animate.setIcon(IconCollection.get('film_reel.svg'))
-        self.action_animate.setShortcut('Shift+N')
-        self.action_animate.setCheckable(True)
+        self.action_animated = QAction('A&nimate movements', parent)
+        self.action_animated.setIcon(IconCollection.get('film_reel.svg'))
+        self.action_animated.setShortcut('Shift+N')
+        self.action_animated.setCheckable(True)
 
         self.action_autofit = QAction('&Auto-fit to screen', parent)
         self.action_autofit.setIcon(IconCollection.get('globe.svg'))

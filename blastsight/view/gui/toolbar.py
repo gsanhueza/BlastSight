@@ -64,7 +64,10 @@ class ToolBar(QToolBar):
         def auto_turbo() -> None:
             viewer.set_turbo_rendering(actions.action_turbo_rendering.isChecked())
 
-        actions.action_animate.triggered.connect(viewer.set_animated)
+        def animated() -> None:
+            viewer.is_animated = actions.action_animated.isChecked()
+
+        actions.action_animated.triggered.connect(animated)
         actions.action_autofit.triggered.connect(auto_fit)
         actions.action_turbo_rendering.triggered.connect(auto_turbo)
 

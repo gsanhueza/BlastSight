@@ -110,14 +110,11 @@ class MainWindow(QMainWindow):
             actions.action_autorotate.trigger()
 
         # Set animated as True when starting the app
-        if not actions.action_animate.isChecked():
-            actions.action_animate.trigger()
+        if not actions.action_animated.isChecked():
+            actions.action_animated.trigger()
 
         # Set camera widget as hidden
         self.dockWidget_camera.hide()
-
-        # self.title = self.windowTitle()
-        # self.viewer.signal_fps_updated.connect(lambda x: self.setWindowTitle(f'{self.title} (FPS: {x:.1f})'))
 
     def generate_menubar(self) -> None:
         actions = self.toolbar.action_collection
@@ -161,7 +158,7 @@ class MainWindow(QMainWindow):
 
         # Settings
         self.menu_Settings.addAction(actions.action_autofit)
-        self.menu_Settings.addAction(actions.action_animate)
+        self.menu_Settings.addAction(actions.action_animated)
         self.menu_Settings.addAction(actions.action_autorotate)
         self.menu_Settings.addAction(actions.action_turbo_rendering)
 

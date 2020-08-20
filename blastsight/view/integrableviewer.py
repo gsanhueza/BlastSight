@@ -106,15 +106,12 @@ class IntegrableViewer(QOpenGLWidget):
         self.fps_counter = FPSCounter()
 
         # Initial positions and rotations
-        self.rotation_center = [0.0, 0.0, 0.0]
-        self.rotation_angle = [0.0, 0.0, 0.0]
-        self.camera_position = [0.0, 0.0, 200.0]
+        self._rotation_center = np.array([0.0, 0.0, 0.0])
+        self._rotation_angle = np.array([0.0, 0.0, 0.0])
+        self._camera_position = np.array([0.0, 0.0, 200.0])
 
         # Extra information
-        self._turbo = False
-        self._autofit = False
-        self._animated = False
-
+        self.is_animated = False
         self.fov = 45.0
         self.smoothness = 2.0  # Bigger => smoother (but slower) rotations
         self.current_projection = 'Perspective'  # 'Perspective'/'Orthographic'
@@ -171,29 +168,29 @@ class IntegrableViewer(QOpenGLWidget):
     """
     @property
     def camera_position(self) -> np.ndarray:
-        return np.array([self.xCameraPos, self.yCameraPos, self.zCameraPos])
+        return self._camera_position
 
     @property
     def rotation_angle(self) -> np.ndarray:
-        return np.array([self.xCenterRot, self.yCenterRot, self.zCenterRot])
+        return self._rotation_angle
 
     @property
     def rotation_center(self) -> np.ndarray:
-        return np.array([self.xCenterPos, self.yCenterPos, self.zCenterPos])
+        return self._rotation_center
 
     @camera_position.setter
     def camera_position(self, pos: list) -> None:
-        self.xCameraPos, self.yCameraPos, self.zCameraPos = pos
+        self._camera_position = np.asarray(pos)
         self.signal_camera_translated.emit(pos)
 
     @rotation_angle.setter
     def rotation_angle(self, rot: list) -> None:
-        self.xCenterRot, self.yCenterRot, self.zCenterRot = rot
+        self._rotation_angle = np.asarray(rot)
         self.signal_camera_rotated.emit(rot)
 
     @rotation_center.setter
     def rotation_center(self, center: list) -> None:
-        self.xCenterPos, self.yCenterPos, self.zCenterPos = center
+        self._rotation_center = np.asarray(center)
         self.signal_center_translated.emit(center)
 
     """
@@ -226,14 +223,14 @@ class IntegrableViewer(QOpenGLWidget):
 
         def setter(value):
             self.camera_position = value
-        self.animate(origin, target, method=setter) if self.is_animated() else setter(target)
+        self.animate(origin, target, method=setter) if self.is_animated else setter(target)
 
     def set_rotation_center(self, target) -> None:
         origin = self.get_rotation_center()
 
         def setter(value):
             self.rotation_center = value
-        self.animate(origin, target, method=setter) if self.is_animated() else setter(target)
+        self.animate(origin, target, method=setter) if self.is_animated else setter(target)
 
     def set_rotation_angle(self, target) -> None:
         # Fix any difference > 180° so the camera doesn't over-rotate
@@ -243,7 +240,7 @@ class IntegrableViewer(QOpenGLWidget):
 
         def setter(value):
             self.rotation_angle = value
-        self.animate(origin, target, method=setter) if self.is_animated() else setter(target)
+        self.animate(origin, target, method=setter) if self.is_animated else setter(target)
 
     """
     Animation / Turbo
@@ -257,11 +254,8 @@ class IntegrableViewer(QOpenGLWidget):
         self.blockSignals(False)
         self.recreate()
 
-    def is_animated(self) -> bool:
-        return self._animated
-
     def set_animated(self, status: bool) -> None:
-        self._animated = status
+        self.is_animated = status
 
     def animate(self, start, end, method: callable, **kwargs) -> callable:
         milliseconds = int(kwargs.get('milliseconds', 300))
@@ -573,9 +567,9 @@ class IntegrableViewer(QOpenGLWidget):
         self.world.translate(*self.rotation_center)
 
         # Allow rotation of the world
-        self.world.rotate(self.xCenterRot, 1.0, 0.0, 0.0)
-        self.world.rotate(self.yCenterRot, 0.0, 1.0, 0.0)
-        self.world.rotate(self.zCenterRot, 0.0, 0.0, 1.0)
+        self.world.rotate(self.rotation_angle[0], 1.0, 0.0, 0.0)
+        self.world.rotate(self.rotation_angle[1], 0.0, 1.0, 0.0)
+        self.world.rotate(self.rotation_angle[2], 0.0, 0.0, 1.0)
 
         # Restore world
         self.world.translate(*-self.rotation_center)
