@@ -13,13 +13,9 @@ mesh_path = '../test_files/caseron.off'
 blocks_path = '../test_files/rainbow.csv'
 
 mesh = viewer.load_mesh(mesh_path, color=[0.0, 0.8, 0.6], alpha=0.2)
-blocks = viewer.load_blocks(blocks_path)
-points = viewer.load_points(blocks_path)
+blocks = viewer.load_blocks(blocks_path, alpha=0.1)
 
 original_size = blocks.block_size
-shrunk_size = original_size / 2
-
-blocks.block_size = shrunk_size
 
 
 def slice_elements(description: dict) -> None:
@@ -65,7 +61,6 @@ def add_blocks_slices(slice_list: list) -> None:
         indices = sliced_blocks.get('indices')
         origin_id = sliced_blocks.get('element_id')
         block = viewer.get_drawable(origin_id)
-        block.block_size = original_size
 
         viewer.blocks(vertices=block.vertices[indices],
                       values=block.values[indices],
@@ -78,8 +73,6 @@ def add_blocks_slices(slice_list: list) -> None:
                       block_size=original_size,
                       alpha=1.0,
                       )
-
-        block.block_size = shrunk_size
 
 
 """
