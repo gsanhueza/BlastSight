@@ -14,9 +14,9 @@ from blastsight.view.drawables.tubegl import TubeGL
 
 from blastsight.view.integrableviewer import IntegrableViewer
 
-from blastsight.controller.normalmode import NormalMode
-from blastsight.controller.slicemode import SliceMode
-from blastsight.controller.detectionmode import DetectionMode
+from blastsight.controller.normalcontroller import NormalController
+from blastsight.controller.slicecontroller import SliceController
+from blastsight.controller.detectioncontroller import DetectionController
 
 from tests.globals import *
 
@@ -53,7 +53,7 @@ class TestIntegrableViewer:
 
         assert viewer.fov == 45.0
         assert viewer.smoothness == 2.0
-        assert viewer.projection_mode == 'Perspective'
+        assert viewer.current_projection == 'Perspective'
 
         assert viewer.last_id == -1
         assert viewer.last_drawable is None
@@ -394,24 +394,24 @@ class TestIntegrableViewer:
 
     def test_controller_modes(self):
         viewer = IntegrableViewer()
-        assert type(viewer.current_mode) is NormalMode
+        assert type(viewer.current_controller) is NormalController
 
-        viewer.set_slice_mode()
-        assert type(viewer.current_mode) is SliceMode
+        viewer.set_slice_controller()
+        assert type(viewer.current_controller) is SliceController
 
-        viewer.set_detection_mode()
-        assert type(viewer.current_mode) is DetectionMode
+        viewer.set_detection_controller()
+        assert type(viewer.current_controller) is DetectionController
 
-        viewer.set_normal_mode()
-        assert type(viewer.current_mode) is NormalMode
+        viewer.set_normal_controller()
+        assert type(viewer.current_controller) is NormalController
 
     def test_projections(self):
         viewer = IntegrableViewer()
-        assert viewer.projection_mode == 'Perspective'
+        assert viewer.current_projection == 'Perspective'
         viewer.orthographic_projection()
-        assert viewer.projection_mode == 'Orthographic'
+        assert viewer.current_projection == 'Orthographic'
         viewer.perspective_projection()
-        assert viewer.projection_mode == 'Perspective'
+        assert viewer.current_projection == 'Perspective'
 
     def test_turbo_rendering(self):
         viewer = IntegrableViewer()
@@ -456,7 +456,7 @@ class TestIntegrableViewer:
 
         viewer.camera_position = expected
         viewer.camera_at(viewer.last_id)
-        viewer.projection_mode = 'orthographic'
+        viewer.current_projection = 'orthographic'
 
         viewer.fit_to_bounds(*viewer.last_drawable.element.bounding_box)
         assert not self.equal_list(expected, viewer.off_center)

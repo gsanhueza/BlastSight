@@ -7,13 +7,13 @@
 
 from qtpy.QtCore import Qt
 from qtpy.QtGui import QMouseEvent
-from .mode import Mode
+from .basecontroller import BaseController
 
 
-class SliceMode(Mode):
+class MeasurementController(BaseController):
     def __init__(self, viewer):
         super().__init__(viewer)
-        self.name = 'Slice'
+        self.name = 'Measurement'
         self.origins = []
         self.rays = []
 
@@ -32,6 +32,6 @@ class SliceMode(Mode):
         self.origins.append(self.viewer.origin_from_click(x, y, z))
 
         if len(self.rays) == 2:
-            self.viewer.generate_slice_description(self.origins, self.rays)
+            self.viewer.measure_from_rays(self.origins, self.rays)
             self.origins.clear()
             self.rays.clear()

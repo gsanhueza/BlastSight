@@ -6,10 +6,10 @@
 #  Distributed under the MIT License.
 #  See LICENSE for more info.
 
-from qtpy.QtGui import QMouseEvent, QWheelEvent
+from qtpy.QtGui import QMouseEvent, QWheelEvent, QKeyEvent
 
 
-class Mode:
+class BaseController:
     def __init__(self, viewer):
         self.name = 'Base'
         self.viewer = viewer
@@ -24,6 +24,12 @@ class Mode:
         pass
 
     def mouseDoubleClickEvent(self, event: QMouseEvent) -> None:
+        pass
+
+    def keyPressEvent(self, event: QKeyEvent) -> None:
+        pass
+
+    def keyReleaseEvent(self, event: QKeyEvent) -> None:
         pass
 
     def wheelEvent(self, event: QWheelEvent) -> None:

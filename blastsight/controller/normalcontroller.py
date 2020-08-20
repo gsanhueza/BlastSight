@@ -7,10 +7,10 @@
 
 from qtpy.QtCore import Qt, QPoint
 from qtpy.QtGui import QMouseEvent
-from .mode import Mode
+from .basecontroller import BaseController
 
 
-class NormalMode(Mode):
+class NormalController(BaseController):
     def __init__(self, viewer):
         super().__init__(viewer)
         self.name = 'Normal'

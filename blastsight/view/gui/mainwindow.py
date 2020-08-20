@@ -152,10 +152,10 @@ class MainWindow(QMainWindow):
         # Tools
         self.menu_Tools.addAction(actions.action_slice_meshes)
         self.menu_Tools.addAction(actions.action_slice_blocks)
-        self.menu_Tools.addAction(actions.action_detection_mode)
-        self.menu_Tools.addAction(actions.action_measurement_mode)
+        self.menu_Tools.addAction(actions.action_detection_controller)
+        self.menu_Tools.addAction(actions.action_measurement_controller)
         self.menu_Tools.addSeparator()
-        self.menu_Tools.addAction(actions.action_normal_mode)
+        self.menu_Tools.addAction(actions.action_normal_controller)
         # FIXME Removed until further notice
         # self.menu_Tools.addAction(actions.action_cross_section)
 
@@ -201,10 +201,10 @@ class MainWindow(QMainWindow):
         # Tools
         actions.action_slice_meshes.triggered.connect(self.slot_slice_meshes)
         actions.action_slice_blocks.triggered.connect(self.slot_slice_blocks)
-        actions.action_detection_mode.triggered.connect(self.slot_detection_mode)
-        actions.action_measurement_mode.triggered.connect(self.slot_measurement_mode)
+        actions.action_detection_controller.triggered.connect(self.slot_detection_controller)
+        actions.action_measurement_controller.triggered.connect(self.slot_measurement_controller)
 
-        actions.action_normal_mode.triggered.connect(self.slot_normal_mode)
+        actions.action_normal_controller.triggered.connect(self.slot_normal_controller)
         actions.action_cross_section.triggered.connect(self.slot_cross_section)
 
         # Help
@@ -213,7 +213,7 @@ class MainWindow(QMainWindow):
 
         # Viewer signals
         self.viewer.signal_fps_updated.connect(self.print_fps)
-        self.viewer.signal_mode_updated.connect(self.slot_mode_updated)
+        self.viewer.signal_controller_updated.connect(self.slot_controller_updated)
         self.viewer.signal_elements_detected.connect(self.slot_elements_detected)
         self.viewer.signal_mesh_distances.connect(self.slot_mesh_distances)
 
@@ -257,8 +257,8 @@ class MainWindow(QMainWindow):
     def slot_element_export_failure(self) -> None:
         self.statusBar.showMessage(f'Failed to export.')
 
-    def slot_mode_updated(self, mode: str) -> None:
-        self.statusBar.showMessage(f'Mode: {mode}')
+    def slot_controller_updated(self, name: str) -> None:
+        self.statusBar.showMessage(f'Controller: {name}')
 
     def slot_mesh_distances(self, distance_dict: dict) -> None:
         self.statusBar.showMessage(f'Distance: {distance_dict.get("distance")}')
@@ -299,10 +299,10 @@ class MainWindow(QMainWindow):
                 self.handle_slices(description, executer_standard)
 
             # Disconnect
-            self.viewer.set_normal_mode()
+            self.viewer.set_normal_controller()
             self.viewer.signal_slice_description.disconnect()
 
-        self.viewer.set_slice_mode()
+        self.viewer.set_slice_controller()
         self.viewer.signal_slice_description.connect(handler)
 
     def slot_slice_blocks(self) -> None:
@@ -314,10 +314,10 @@ class MainWindow(QMainWindow):
             self.handle_slices(description, executer)
 
             # Disconnect
-            self.viewer.set_normal_mode()
+            self.viewer.set_normal_controller()
             self.viewer.signal_slice_description.disconnect()
 
-        self.viewer.set_slice_mode()
+        self.viewer.set_slice_controller()
         self.viewer.signal_slice_description.connect(handler)
 
     def slot_cross_section(self, status: bool) -> None:
@@ -483,16 +483,16 @@ class MainWindow(QMainWindow):
             self._thread_runner(self.viewer.export_element, path, _id)
 
     """
-    Slots for modifying interaction modes
+    Slots for modifying interaction controllers
     """
-    def slot_normal_mode(self) -> None:
-        self.viewer.set_normal_mode()
+    def slot_normal_controller(self) -> None:
+        self.viewer.set_normal_controller()
 
-    def slot_detection_mode(self) -> None:
-        self.viewer.set_detection_mode()
+    def slot_detection_controller(self) -> None:
+        self.viewer.set_detection_controller()
 
-    def slot_measurement_mode(self) -> None:
-        self.viewer.set_measurement_mode()
+    def slot_measurement_controller(self) -> None:
+        self.viewer.set_measurement_controller()
 
     """
     Slots for showing help/about dialogs

@@ -36,11 +36,11 @@ from .drawables.tubegl import TubeGL
 from .drawablefactory import DrawableFactory
 from .fpscounter import FPSCounter
 
-from ..controller.mode import Mode
-from ..controller.detectionmode import DetectionMode
-from ..controller.normalmode import NormalMode
-from ..controller.slicemode import SliceMode
-from ..controller.measurementmode import MeasurementMode
+from ..controller.basecontroller import BaseController
+from ..controller.detectioncontroller import DetectionController
+from ..controller.normalcontroller import NormalController
+from ..controller.slicecontroller import SliceController
+from ..controller.measurementcontroller import MeasurementController
 
 from ..model import utils
 from ..model.model import Model
@@ -71,7 +71,7 @@ class IntegrableViewer(QOpenGLWidget):
 
     signal_screen_clicked = Signal(object)
     signal_fps_updated = Signal(float)
-    signal_mode_updated = Signal(str)
+    signal_controller_updated = Signal(str)
     signal_projection_updated = Signal(str)
 
     signal_camera_rotated = Signal(object)
@@ -94,7 +94,7 @@ class IntegrableViewer(QOpenGLWidget):
         self.drawable_collection = GLDrawableCollection(self)
 
         # Controllers
-        self.current_mode = None
+        self.current_controller = None
         self.controllers = {}
 
         # Camera/World/Projection
@@ -117,7 +117,7 @@ class IntegrableViewer(QOpenGLWidget):
 
         self.fov = 45.0
         self.smoothness = 2.0  # Bigger => smoother (but slower) rotations
-        self.projection_mode = 'Perspective'  # 'Perspective'/'Prthographic'
+        self.current_projection = 'Perspective'  # 'Perspective'/'Orthographic'
 
         # Initialize viewer
         self.initialize()
@@ -134,11 +134,11 @@ class IntegrableViewer(QOpenGLWidget):
         self.signal_center_translated.connect(self.update)
 
         # Controllers
-        self.add_controller(NormalMode(self))
-        self.add_controller(DetectionMode(self))
-        self.add_controller(SliceMode(self))
-        self.add_controller(MeasurementMode(self))
-        self.set_normal_mode()
+        self.add_controller(NormalController(self))
+        self.add_controller(DetectionController(self))
+        self.add_controller(SliceController(self))
+        self.add_controller(MeasurementController(self))
+        self.set_normal_controller()
 
         # FPSCounter
         self.fps_counter.add_callback(self.signal_fps_updated.emit)
@@ -296,13 +296,13 @@ class IntegrableViewer(QOpenGLWidget):
     Projections
     """
     def perspective_projection(self) -> None:
-        self.projection_mode = 'Perspective'
-        self.signal_projection_updated.emit(self.projection_mode)
+        self.current_projection = 'Perspective'
+        self.signal_projection_updated.emit(self.current_projection)
         self.update()
 
     def orthographic_projection(self) -> None:
-        self.projection_mode = 'Orthographic'
-        self.signal_projection_updated.emit(self.projection_mode)
+        self.current_projection = 'Orthographic'
+        self.signal_projection_updated.emit(self.current_projection)
         self.update()
 
     """
@@ -510,7 +510,7 @@ class IntegrableViewer(QOpenGLWidget):
         fov_rad = self.fov * np.pi / 180.0
 
         # In perspective projection, we need a clever trigonometric calculation.
-        if self.projection_mode == 'Perspective':
+        if self.current_projection == 'Perspective':
             dist = (md / np.tan(fov_rad / 2) + md) / 2.0
             z_shift = dist * max(1.0, 1.0 / aspect)
 
@@ -603,9 +603,9 @@ class IntegrableViewer(QOpenGLWidget):
     def resizeGL(self, w: float, h: float) -> None:
         aspect = w / h
 
-        if self.projection_mode == 'Perspective':
+        if self.current_projection == 'Perspective':
             self.proj.perspective(self.fov, aspect, 1.0, 100000.0)
-        else:  # if self.projection_mode == 'Orthographic':
+        else:  # if self.current_projection == 'Orthographic':
             z = self.off_center[2]
             self.proj.ortho(-z, z, -z / aspect, z / aspect, 0.0, 100000.0)
 
@@ -666,7 +666,7 @@ class IntegrableViewer(QOpenGLWidget):
         def orthographic_ray() -> np.ndarray:
             return self.unproject(0.0, 0.0, 0.0)
 
-        if self.projection_mode == 'Perspective':
+        if self.current_projection == 'Perspective':
             return perspective_ray()
 
         return orthographic_ray()
@@ -700,7 +700,7 @@ class IntegrableViewer(QOpenGLWidget):
 
             return origin
 
-        if self.projection_mode == 'Perspective':
+        if self.current_projection == 'Perspective':
             return perspective_origin()
 
         return orthographic_origin()
@@ -715,7 +715,7 @@ class IntegrableViewer(QOpenGLWidget):
             origin_diff = np.diff(origin_list, axis=0)[0]
             return utils.normalize(np.cross(ray_list[0], origin_diff))
 
-        if self.projection_mode == 'Perspective':
+        if self.current_projection == 'Perspective':
             return perspective_normal()
 
         return orthographic_normal()
@@ -813,47 +813,55 @@ class IntegrableViewer(QOpenGLWidget):
     """
     Controller
     """
-    def add_controller(self, controller: Mode) -> None:
+    def add_controller(self, controller: BaseController) -> None:
         self.controllers[controller.name] = controller
 
-    def set_controller(self, mode_name: str) -> None:
-        self.current_mode = self.controllers.get(mode_name)
-        self.signal_mode_updated.emit(self.current_mode.name)
+    def set_controller(self, name: str) -> None:
+        self.current_controller = self.controllers.get(name)
+        self.signal_controller_updated.emit(name)
         self.update()
 
-    def set_normal_mode(self) -> None:
+    def set_normal_controller(self) -> None:
         self.set_controller('Normal')
 
-    def set_detection_mode(self) -> None:
+    def set_detection_controller(self) -> None:
         self.set_controller('Detection')
 
-    def set_slice_mode(self) -> None:
+    def set_slice_controller(self) -> None:
         self.set_controller('Slice')
 
-    def set_measurement_mode(self) -> None:
+    def set_measurement_controller(self) -> None:
         self.set_controller('Measurement')
 
     """
     Events (dependent on current controller)
     """
     def mouseMoveEvent(self, event, *args, **kwargs) -> None:
-        self.current_mode.mouseMoveEvent(event)
+        self.current_controller.mouseMoveEvent(event)
         self.update()
 
     def mousePressEvent(self, event, *args, **kwargs) -> None:
-        self.current_mode.mousePressEvent(event)
+        self.current_controller.mousePressEvent(event)
         self.update()
 
     def mouseDoubleClickEvent(self, event, *args, **kwargs) -> None:
-        self.current_mode.mouseDoubleClickEvent(event)
+        self.current_controller.mouseDoubleClickEvent(event)
         self.update()
 
     def mouseReleaseEvent(self, event, *args, **kwargs) -> None:
-        self.current_mode.mouseReleaseEvent(event)
+        self.current_controller.mouseReleaseEvent(event)
+        self.update()
+
+    def keyPressEvent(self, event, *args, **kwargs) -> None:
+        self.current_controller.keyPressEvent(event)
+        self.update()
+
+    def keyReleaseEvent(self, event, *args, **kwargs) -> None:
+        self.current_controller.keyReleaseEvent(event)
         self.update()
 
     def wheelEvent(self, event, *args, **kwargs) -> None:
-        self.current_mode.wheelEvent(event)
+        self.current_controller.wheelEvent(event)
         self.update()
 
     def dragEnterEvent(self, event, *args, **kwargs) -> None:

@@ -40,7 +40,7 @@ and measure the distance between those points.
 Keep in mind that while in this mode, you cannot move/rotate the mesh,
 but you can use the scroll wheel to zoom in/zoom out.
 """
-v.set_measurement_mode()
+v.set_measurement_controller()
 v.signal_mesh_distances.connect(update_info)
 
 v.fit_to_screen()
