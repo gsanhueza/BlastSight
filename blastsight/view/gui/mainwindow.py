@@ -31,7 +31,7 @@ class MainWindow(QMainWindow):
         uic.loadUi(f'{pathlib.Path(__file__).parent}/UI/mainwindow.ui', self)
         self.resize(1000, 620)
 
-        self.setWindowTitle('BlastSight')
+        self.setWindowTitle('BlastSightDM')
         self.setWindowIcon(IconCollection.get('blastsight.png'))
         self.toolbar.setWindowTitle('Toolbar')
 
@@ -84,7 +84,7 @@ class MainWindow(QMainWindow):
             }
         }
 
-        self.settings = QSettings('BlastSight', application='blastsight', parent=self)
+        self.settings = QSettings('BlastSightDM', application='blastsight-dm', parent=self)
 
         # Progress bar (hidden by default)
         self.progress_bar = QProgressBar(self.statusBar)
@@ -467,7 +467,8 @@ class MainWindow(QMainWindow):
         proposed_path = QDir(self.last_dir).filePath(element.name)
 
         # TODO Check hints by element type
-        filters = 'BlastSight FIXME (*.h5m);;'
+        filters = 'BlastSight Mesh (*.h5m);;'\
+                  'BlastSight Blocks/Points (*.h5p);;'
 
         (path, selected_filter) = QFileDialog.getSaveFileName(
             parent=self,
