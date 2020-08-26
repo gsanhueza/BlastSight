@@ -51,19 +51,22 @@ class GLCollection:
         # The copy avoids RuntimeError: OrderedDict mutated during iteration
         return [x for x in self._collection.copy().values() if type(x) is drawable_type]
 
-    def retrieve(self, drawable_type: type, required: str = 'all') -> callable:
-        runner = {
+    def select(self, drawable_type: type, requested: str = 'all') -> list:
+        filters = {
             'all': lambda x: True,
-            'mesh_standard': lambda x: not (x.is_turbo_ready or x.is_wireframed),
-            'mesh_wireframe': lambda x: x.is_wireframed,
-            'mesh_highlight': lambda x: x.is_highlighted,
-            'mesh_turbo': lambda x: x.is_turbo_ready,
-            'mesh_cross': lambda x: x.is_cross_sectionable,
+            'mesh_standard': lambda x: not (x.is_turbo_ready or x.is_wireframed or x.is_cross_sectionable),
+            'mesh_wireframe': lambda x: x.is_wireframed and not x.is_cross_sectionable,
+            'mesh_highlight': lambda x: x.is_highlighted and not x.is_cross_sectionable,
+            'mesh_turbo': lambda x: x.is_turbo_ready and not x.is_cross_sectionable,
+            'mesh_xsection': lambda x: x.is_cross_sectionable,
             'block_legacy': lambda x: x.is_legacy,
             'block_standard': lambda x: not x.is_legacy,
         }
 
-        return list(filter(runner.get(required), self.filter(drawable_type)))
+        def is_selected(d) -> bool:
+            return filters.get(requested)(d) and d.is_visible
+
+        return list(filter(is_selected, self.filter(drawable_type)))
 
     @property
     def last_id(self) -> int:
@@ -79,10 +82,10 @@ class GLCollection:
         for program in self.get_programs():
             program.initialize()
 
-    def associate(self, program: ShaderProgram, retriever: callable) -> None:
+    def associate(self, program: ShaderProgram, selector: callable) -> None:
         self._programs[program.get_base_name()] = {
             'program': program,
-            'retriever': retriever,
+            'selector': selector,
         }
 
     def recreate(self) -> None:
@@ -91,8 +94,8 @@ class GLCollection:
     def get_programs(self) -> list:
         return [x.get('program') for x in self._programs.values()]
 
-    def get_retrievers(self) -> list:
-        return [x.get('retriever') for x in self._programs.values()]
+    def get_selectors(self) -> list:
+        return [x.get('selector') for x in self._programs.values()]
 
     def update_drawables(self) -> None:
         # Update shader program so that it knows what to draw
@@ -100,8 +103,8 @@ class GLCollection:
         if self._needs_update:
             for association in self._programs.values():
                 program = association.get('program')
-                retriever = association.get('retriever')
-                program.set_drawables([d for d in retriever() if d.is_visible])
+                drawables = association.get('selector')()
+                program.set_drawables(drawables)
             self._needs_update = False
 
     def update_matrix(self, matrix: str, value) -> None:

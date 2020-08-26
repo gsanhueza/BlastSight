@@ -72,15 +72,15 @@ class TestGLCollection:
         collection.add(lines)
 
         # Remember that the element is a Line
-        assert len(collection.retrieve(MeshGL, 'all')) == 1
-        assert len(collection.retrieve(BlockGL, 'all')) == 1
-        assert len(collection.retrieve(LineGL, 'all')) == 1
+        assert len(collection.select(MeshGL, 'all')) == 1
+        assert len(collection.select(BlockGL, 'all')) == 1
+        assert len(collection.select(LineGL, 'all')) == 1
 
-        assert len(collection.retrieve(MeshGL, 'mesh_standard')) == 1
-        assert len(collection.retrieve(MeshGL, 'mesh_turbo')) == 0
-        assert len(collection.retrieve(MeshGL, 'mesh_wireframe')) == 0
-        assert len(collection.retrieve(BlockGL, 'block_legacy')) == 0
-        assert len(collection.retrieve(BlockGL, 'block_standard')) == 1
+        assert len(collection.select(MeshGL, 'mesh_standard')) == 1
+        assert len(collection.select(MeshGL, 'mesh_turbo')) == 0
+        assert len(collection.select(MeshGL, 'mesh_wireframe')) == 0
+        assert len(collection.select(BlockGL, 'block_legacy')) == 0
+        assert len(collection.select(BlockGL, 'block_standard')) == 1
 
     def test_programs(self):
         collection = GLCollection()
@@ -90,10 +90,10 @@ class TestGLCollection:
             return [x]
 
         assert program not in collection.get_programs()
-        assert retriever not in collection.get_retrievers()
+        assert retriever not in collection.get_selectors()
 
         collection.associate(program, retriever)
 
         assert program in collection.get_programs()
-        assert retriever in collection.get_retrievers()
+        assert retriever in collection.get_selectors()
 

@@ -30,17 +30,17 @@ from ..glprograms.tubeprogram import TubeProgram
 class GLDrawableCollection(GLCollection):
     def __init__(self, viewer=None):
         super().__init__(viewer)
-        self.associate(LineProgram(viewer), lambda: self.retrieve(LineGL))
-        self.associate(TubeProgram(viewer), lambda: self.retrieve(TubeGL))
-        self.associate(PointProgram(viewer), lambda: self.retrieve(PointGL))
+        self.associate(LineProgram(viewer), lambda: self.select(LineGL))
+        self.associate(TubeProgram(viewer), lambda: self.select(TubeGL))
+        self.associate(PointProgram(viewer), lambda: self.select(PointGL))
 
         # Blocks
-        self.associate(BlockLegacyProgram(viewer), lambda: self.retrieve(BlockGL, 'block_legacy'))
-        self.associate(BlockProgram(viewer), lambda: self.retrieve(BlockGL, 'block_standard'))
+        self.associate(BlockLegacyProgram(viewer), lambda: self.select(BlockGL, 'block_legacy'))
+        self.associate(BlockProgram(viewer), lambda: self.select(BlockGL, 'block_standard'))
 
         # Meshes
-        self.associate(MeshProgram(viewer), lambda: self.retrieve(MeshGL, 'mesh_standard'))
-        self.associate(WireProgram(viewer), lambda: self.retrieve(MeshGL, 'mesh_wireframe'))
-        self.associate(HighlightProgram(viewer), lambda: self.retrieve(MeshGL, 'mesh_highlight'))
-        self.associate(TurboMeshProgram(viewer), lambda: self.retrieve(MeshGL, 'mesh_turbo'))
-        self.associate(CrossSectionProgram(viewer), lambda: self.retrieve(MeshGL, 'mesh_cross'))
+        self.associate(MeshProgram(viewer), lambda: self.select(MeshGL, 'mesh_standard'))
+        self.associate(WireProgram(viewer), lambda: self.select(MeshGL, 'mesh_wireframe'))
+        self.associate(HighlightProgram(viewer), lambda: self.select(MeshGL, 'mesh_highlight'))
+        self.associate(TurboMeshProgram(viewer), lambda: self.select(MeshGL, 'mesh_turbo'))
+        self.associate(CrossSectionProgram(viewer), lambda: self.select(MeshGL, 'mesh_xsection'))
