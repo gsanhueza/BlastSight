@@ -21,6 +21,10 @@ class BlockGL(GLDrawable):
     Properties
     """
     @property
+    def is_standard(self) -> bool:
+        return not self.is_legacy
+
+    @property
     def is_legacy(self) -> bool:
         return self._legacy
 

@@ -31,11 +31,12 @@ class GLCollection:
     def get_last(self) -> GLDrawable:
         return self.get(self.last_id)
 
-    def get_all_ids(self) -> list:
+    def all_ids(self) -> list:
         return list(self._collection.keys())
 
-    def get_all_drawables(self) -> list:
-        return list(self._collection.values())
+    def all_drawables(self) -> list:
+        # The copy avoids RuntimeError: OrderedDict mutated during iteration
+        return list(self._collection.copy().values())
 
     def delete(self, _id: int) -> None:
         drawable = self._collection.pop(_id)
@@ -47,26 +48,16 @@ class GLCollection:
     def size(self) -> int:
         return len(self._collection)
 
-    def filter(self, drawable_type: type) -> list:
-        # The copy avoids RuntimeError: OrderedDict mutated during iteration
-        return [x for x in self._collection.copy().values() if type(x) is drawable_type]
+    def select(self, drawable_type: type, selector: callable = lambda x: True) -> list:
+        # Filters by type
+        def matches_type(x) -> bool:
+            return type(x) is drawable_type
 
-    def select(self, drawable_type: type, requested: str = 'all') -> list:
-        filters = {
-            'all': lambda x: True,
-            'mesh_standard': lambda x: not (x.is_turbo_ready or x.is_wireframed or x.is_cross_sectionable),
-            'mesh_wireframe': lambda x: x.is_wireframed and not x.is_cross_sectionable,
-            'mesh_highlight': lambda x: x.is_highlighted and not x.is_cross_sectionable,
-            'mesh_turbo': lambda x: x.is_turbo_ready and not x.is_cross_sectionable,
-            'mesh_xsection': lambda x: x.is_cross_sectionable,
-            'block_legacy': lambda x: x.is_legacy,
-            'block_standard': lambda x: not x.is_legacy,
-        }
+        # Filters by type and selector
+        def matches_all(x) -> bool:
+            return matches_type(x) and selector(x)
 
-        def is_selected(d) -> bool:
-            return filters.get(requested)(d) and d.is_visible
-
-        return list(filter(is_selected, self.filter(drawable_type)))
+        return list(filter(matches_all, self.all_drawables()))
 
     @property
     def last_id(self) -> int:
@@ -82,9 +73,10 @@ class GLCollection:
         for program in self.get_programs():
             program.initialize()
 
-    def associate(self, program: ShaderProgram, selector: callable) -> None:
+    def associate(self, program: ShaderProgram, d_type: type, selector: callable = lambda x: True) -> None:
         self._programs[program.get_base_name()] = {
             'program': program,
+            'type': d_type,
             'selector': selector,
         }
 
@@ -92,10 +84,7 @@ class GLCollection:
         self._needs_update = True
 
     def get_programs(self) -> list:
-        return [x.get('program') for x in self._programs.values()]
-
-    def get_selectors(self) -> list:
-        return [x.get('selector') for x in self._programs.values()]
+        return list(map(lambda x: x.get('program'), self._programs.values()))
 
     def update_drawables(self) -> None:
         # Update shader program so that it knows what to draw
@@ -103,7 +92,10 @@ class GLCollection:
         if self._needs_update:
             for association in self._programs.values():
                 program = association.get('program')
-                drawables = association.get('selector')()
+                drawable_type = association.get('type')
+                selector = association.get('selector')
+
+                drawables = self.select(drawable_type, selector)
                 program.set_drawables(drawables)
             self._needs_update = False
 

@@ -22,8 +22,8 @@ from qtpy.QtGui import QVector4D
 from qtpy.QtWidgets import QOpenGLWidget
 from scipy.spatial.transform import Rotation
 
-from .collections.glaxiscollection import GLAxisCollection
-from .collections.glbackgroundcollection import GLBackgroundCollection
+from .collections.glpostcollection import GLPostCollection
+from .collections.glprecollection import GLPreCollection
 from .collections.gldrawablecollection import GLDrawableCollection
 
 from .drawables.gldrawable import GLDrawable
@@ -89,9 +89,9 @@ class IntegrableViewer(QOpenGLWidget):
         self.factory = DrawableFactory(self.model)
 
         # Drawable elements
-        self.axis_collection = GLAxisCollection(self)
-        self.background_collection = GLBackgroundCollection(self)
         self.drawable_collection = GLDrawableCollection(self)
+        self.pre_collection = GLPreCollection(self)
+        self.post_collection = GLPostCollection(self)
 
         # Controllers
         self.current_controller = None
@@ -121,8 +121,8 @@ class IntegrableViewer(QOpenGLWidget):
 
     def initialize(self) -> None:
         # Axis/Background
-        self.register_drawable(self.factory.axis(), self.axis_collection)
-        self.register_drawable(self.factory.background(), self.background_collection)
+        self.register_drawable(self.factory.axis(), self.post_collection)
+        self.register_drawable(self.factory.background(), self.pre_collection)
 
         # Signals
         self.signal_file_modified.connect(self.recreate)
@@ -153,11 +153,11 @@ class IntegrableViewer(QOpenGLWidget):
 
     @property
     def axis(self) -> GLDrawable:
-        return self.axis_collection.get_last()
+        return self.post_collection.get_last()
 
     @property
     def background(self) -> GLDrawable:
-        return self.background_collection.get_last()
+        return self.pre_collection.get_last()
 
     @property
     def off_center(self) -> np.ndarray:
@@ -459,25 +459,25 @@ class IntegrableViewer(QOpenGLWidget):
     Drawable retrieval
     """
     def get_all_ids(self) -> list:
-        return self.drawable_collection.get_all_ids()
+        return self.drawable_collection.all_ids()
 
     def get_all_drawables(self) -> list:
-        return self.drawable_collection.get_all_drawables()
+        return self.drawable_collection.all_drawables()
 
     def get_all_meshes(self) -> list:
-        return self.drawable_collection.filter(MeshGL)
+        return self.drawable_collection.select(MeshGL)
 
     def get_all_blocks(self) -> list:
-        return self.drawable_collection.filter(BlockGL)
+        return self.drawable_collection.select(BlockGL)
 
     def get_all_points(self) -> list:
-        return self.drawable_collection.filter(PointGL)
+        return self.drawable_collection.select(PointGL)
 
     def get_all_lines(self) -> list:
-        return self.drawable_collection.filter(LineGL)
+        return self.drawable_collection.select(LineGL)
 
     def get_all_tubes(self) -> list:
-        return self.drawable_collection.filter(TubeGL)
+        return self.drawable_collection.select(TubeGL)
 
     """
     Camera handling
@@ -551,9 +551,9 @@ class IntegrableViewer(QOpenGLWidget):
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
 
         # Initialize collections
-        self.background_collection.initialize()
+        self.pre_collection.initialize()
         self.drawable_collection.initialize()
-        self.axis_collection.initialize()
+        self.post_collection.initialize()
 
     def paintGL(self) -> None:
         # Clear screen
@@ -583,13 +583,13 @@ class IntegrableViewer(QOpenGLWidget):
         # Update matrices
         self.drawable_collection.update_matrix('proj_matrix', self.proj)
         self.drawable_collection.update_matrix('model_view_matrix', self.camera * self.world)
-        self.axis_collection.update_matrix('model_view_matrix', self.camera * self.world)
+        self.post_collection.update_matrix('model_view_matrix', self.camera * self.world)
 
         # Draw every GLDrawable (meshes, blocks, points, etc)
         glEnable(GL_BLEND)
-        self.background_collection.draw()
+        self.pre_collection.draw()
         self.drawable_collection.draw()
-        self.axis_collection.draw()
+        self.post_collection.draw()
 
         # Tick FPS counter
         self.fps_counter.tick()
@@ -604,9 +604,9 @@ class IntegrableViewer(QOpenGLWidget):
             self.proj.ortho(-z, z, -z / aspect, z / aspect, 0.0, 100000.0)
 
     def recreate(self) -> None:
-        self.axis_collection.recreate()
-        self.background_collection.recreate()
+        self.pre_collection.recreate()
         self.drawable_collection.recreate()
+        self.post_collection.recreate()
         self.update()
 
     """

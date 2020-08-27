@@ -35,8 +35,8 @@ class TestIntegrableViewer:
         viewer = IntegrableViewer()
 
         assert viewer.model
-        assert viewer.axis_collection
-        assert viewer.background_collection
+        assert viewer.post_collection
+        assert viewer.pre_collection
         assert viewer.drawable_collection
 
         assert viewer.axis

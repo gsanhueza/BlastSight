@@ -38,8 +38,8 @@ class TestGLCollection:
         collection.add(self.drawable)
 
         assert collection.size() == 1
-        assert collection.get_all_ids()[0] == collection.get_all_ids()[-1] == 0
-        assert self.drawable in collection.get_all_drawables()
+        assert collection.all_ids()[0] == collection.all_ids()[-1] == 0
+        assert self.drawable in collection.all_drawables()
 
         assert collection.get_last() is self.drawable
 
@@ -72,28 +72,13 @@ class TestGLCollection:
         collection.add(lines)
 
         # Remember that the element is a Line
-        assert len(collection.select(MeshGL, 'all')) == 1
-        assert len(collection.select(BlockGL, 'all')) == 1
-        assert len(collection.select(LineGL, 'all')) == 1
+        assert len(collection.select(MeshGL)) == 1
+        assert len(collection.select(BlockGL,)) == 1
+        assert len(collection.select(LineGL)) == 1
 
-        assert len(collection.select(MeshGL, 'mesh_standard')) == 1
-        assert len(collection.select(MeshGL, 'mesh_turbo')) == 0
-        assert len(collection.select(MeshGL, 'mesh_wireframe')) == 0
-        assert len(collection.select(BlockGL, 'block_legacy')) == 0
-        assert len(collection.select(BlockGL, 'block_standard')) == 1
-
-    def test_programs(self):
-        collection = GLCollection()
-        program = ShaderProgram(None)
-
-        def retriever(x):
-            return [x]
-
-        assert program not in collection.get_programs()
-        assert retriever not in collection.get_selectors()
-
-        collection.associate(program, retriever)
-
-        assert program in collection.get_programs()
-        assert retriever in collection.get_selectors()
-
+        assert len(collection.select(MeshGL, lambda x: x.is_standard)) == 1
+        assert len(collection.select(MeshGL, lambda x: x.is_turbo_ready)) == 0
+        assert len(collection.select(MeshGL, lambda x: x.is_highlighted)) == 0
+        assert len(collection.select(MeshGL, lambda x: x.is_wireframed)) == 0
+        assert len(collection.select(BlockGL, lambda x: x.is_standard)) == 1
+        assert len(collection.select(BlockGL, lambda x: x.is_legacy)) == 0

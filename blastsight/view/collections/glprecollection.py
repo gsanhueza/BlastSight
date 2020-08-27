@@ -11,7 +11,7 @@ from ..drawables.backgroundgl import BackgroundGL
 from ..glprograms.backgroundprogram import BackgroundProgram
 
 
-class GLBackgroundCollection(GLCollection):
+class GLPreCollection(GLCollection):
     def __init__(self, viewer=None):
         super().__init__(viewer)
-        self.associate(BackgroundProgram(viewer), lambda: self.select(BackgroundGL))
+        self.associate(BackgroundProgram(viewer), BackgroundGL)
