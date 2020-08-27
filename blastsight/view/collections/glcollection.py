@@ -88,17 +88,14 @@ class GLCollection:
 
     def update_drawables(self) -> None:
         # Update shader program so that it knows what to draw
-        # FIXME Can we modify this method to not need self._needs_update ?
-        if self._needs_update:
-            for association in self._programs.values():
-                program = association.get('program')
-                drawable_type = association.get('type')
-                selector = association.get('selector')
+        for association in self._programs.values():
+            program = association.get('program')
+            drawable_type = association.get('type')
+            selector = association.get('selector')
 
-                drawables = self.select(drawable_type, selector)
-                visibles = list(filter(lambda x: x.is_visible, drawables))
-                program.set_drawables(visibles)
-            self._needs_update = False
+            drawables = self.select(drawable_type, selector)
+            visibles = list(filter(lambda x: x.is_visible, drawables))
+            program.set_drawables(visibles)
 
     def update_matrix(self, matrix: str, value) -> None:
         self._uniform_data[matrix] = value
@@ -134,7 +131,11 @@ class GLCollection:
                 program.redraw()
 
     def draw(self) -> None:
-        self.update_drawables()
+        # Try to update drawables if anyone changes
+        if self._needs_update:
+            self.update_drawables()
+            self._needs_update = False
+
         self.update_uniforms()
         self.draw_opaques()
         self.draw_transparents()
