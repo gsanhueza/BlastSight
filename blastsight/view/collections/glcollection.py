@@ -96,7 +96,8 @@ class GLCollection:
                 selector = association.get('selector')
 
                 drawables = self.select(drawable_type, selector)
-                program.set_drawables(drawables)
+                visibles = list(filter(lambda x: x.is_visible, drawables))
+                program.set_drawables(visibles)
             self._needs_update = False
 
     def update_matrix(self, matrix: str, value) -> None:
