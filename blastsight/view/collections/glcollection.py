@@ -15,7 +15,6 @@ class GLCollection:
         self._viewer = viewer
         self._programs = OrderedDict()
         self._collection = OrderedDict()
-        self._uniform_data = {}
         self._needs_update = True
 
     """
@@ -67,10 +66,8 @@ class GLCollection:
     """
     ShaderProgram collection handlers
     """
-    # FIXME We could have a collection handler, so every method from here and below
-    #  could be in the GLCollectionHandler, instead of in a collection
     def initialize(self) -> None:
-        for program in self.get_programs():
+        for program in self.all_programs():
             program.initialize()
 
     def associate(self, program: ShaderProgram, d_type: type, selector: callable = lambda x: True) -> None:
@@ -83,12 +80,18 @@ class GLCollection:
     def recreate(self) -> None:
         self._needs_update = True
 
-    def get_programs(self) -> list:
-        return list(map(lambda x: x.get('program'), self._programs.values()))
+    def get_program(self, program_name: str) -> ShaderProgram:
+        return self._programs.get(program_name).get('program')
+
+    def all_programs(self) -> list:
+        return list(map(lambda x: x.get('program'), self.all_associations()))
+
+    def all_associations(self) -> list:
+        return list(self._programs.values())
 
     def update_drawables(self) -> None:
         # Update shader program so that it knows what to draw
-        for association in self._programs.values():
+        for association in self.all_associations():
             program = association.get('program')
             drawable_type = association.get('type')
             selector = association.get('selector')
@@ -97,35 +100,25 @@ class GLCollection:
             visibles = list(filter(lambda x: x.is_visible, drawables))
             program.set_drawables(visibles)
 
-    def update_matrix(self, matrix: str, value) -> None:
-        self._uniform_data[matrix] = value
+    def update_uniform(self, uniform: str, *values) -> None:
+        for program in self.all_programs():
+            program.update_uniform(uniform, *values)
 
-    def update_uniform(self, program_name: str, uniform: str, *values) -> None:
-        program = self._programs.get(program_name).get('program')
+    def update_custom_uniform(self, program_name: str, uniform: str, *values) -> None:
+        program = self.get_program(program_name)
         program.update_uniform(uniform, *values)
-
-    def update_uniforms(self) -> None:
-        # Update matrices so that it knows where it's looking
-        def bind_update(prog):
-            prog.bind()
-            for k, v in self._uniform_data.items():
-                prog.update_uniform(k, v)
-
-        # Apply to each program
-        for program in self.get_programs():
-            bind_update(program)
 
     """
     Drawing methods
     """
     def draw_opaques(self) -> None:
-        for program in self.get_programs():
+        for program in self.all_programs():
             if len(program.opaques) > 0:
                 program.bind()
                 program.draw()
 
     def draw_transparents(self) -> None:
-        for program in self.get_programs():
+        for program in self.all_programs():
             if len(program.transparents) > 0:
                 program.bind()
                 program.redraw()
@@ -136,6 +129,5 @@ class GLCollection:
             self.update_drawables()
             self._needs_update = False
 
-        self.update_uniforms()
         self.draw_opaques()
         self.draw_transparents()
