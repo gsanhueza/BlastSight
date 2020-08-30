@@ -12,9 +12,8 @@ class TestAxisGL:
         assert len(dir(AxisGL())) > 0
 
     def test_draw(self):
-        viewer = IntegrableViewer()
         program = AxisProgram()
-        program.initialize(viewer)
+        program.initialize()
         program.bind()
 
         drawable = AxisGL(NullElement())

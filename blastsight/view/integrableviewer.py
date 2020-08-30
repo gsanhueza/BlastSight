@@ -551,9 +551,9 @@ class IntegrableViewer(QOpenGLWidget):
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
 
         # Initialize collections
-        self.pre_collection.initialize(self)
-        self.drawable_collection.initialize(self)
-        self.post_collection.initialize(self)
+        self.pre_collection.initialize()
+        self.drawable_collection.initialize()
+        self.post_collection.initialize()
 
     def paintGL(self) -> None:
         # Clear screen

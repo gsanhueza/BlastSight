@@ -33,9 +33,8 @@ class TestLineGL:
         assert drawable.is_initialized
 
     def test_draw(self):
-        viewer = IntegrableViewer()
         program = LineProgram()
-        program.initialize(viewer)
+        program.initialize()
         program.bind()
 
         drawable = LineGL(self.element)

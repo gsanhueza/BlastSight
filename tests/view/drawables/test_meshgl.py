@@ -99,9 +99,8 @@ class TestMeshGL:
         auto_test()
 
     def test_draw(self):
-        viewer = IntegrableViewer()
         program = MeshProgram()
-        program.initialize(viewer)
+        program.initialize()
         program.bind()
 
         drawable = MeshGL(self.element)
@@ -122,10 +121,9 @@ class TestMeshGL:
         assert not drawable.is_visible
 
     def test_mesh_program(self):
-        viewer = IntegrableViewer()
         program = MeshProgram()
         element = MeshElement(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], indices=[[0, 1, 2]], alpha=0.8)
-        program.initialize(viewer)
+        program.initialize()
         program.bind()
 
         drawable_normal = MeshGL(self.element)
@@ -147,10 +145,9 @@ class TestMeshGL:
         program.redraw()
 
     def test_wire_program(self):
-        viewer = IntegrableViewer()
         program = WireProgram()
         element = MeshElement(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], indices=[[0, 1, 2]], alpha=0.8)
-        program.initialize(viewer)
+        program.initialize()
         program.bind()
 
         drawable_normal = MeshGL(self.element)
@@ -169,10 +166,9 @@ class TestMeshGL:
         program.redraw()
 
     def test_turbo_program(self):
-        viewer = IntegrableViewer()
         program = TurboMeshProgram()
         element = MeshElement(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], indices=[[0, 1, 2]], alpha=0.8)
-        program.initialize(viewer)
+        program.initialize()
         program.bind()
 
         drawable_normal = MeshGL(self.element, turbo=True)

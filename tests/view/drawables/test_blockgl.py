@@ -34,9 +34,8 @@ class TestBlockGL:
         assert drawable.is_initialized
 
     def test_draw(self):
-        viewer = IntegrableViewer()
         program = BlockProgram()
-        program.initialize(viewer)
+        program.initialize()
         program.bind()
 
         drawable = BlockGL(self.element)
@@ -57,9 +56,8 @@ class TestBlockGL:
         assert not drawable.is_visible
 
     def test_program(self):
-        viewer = IntegrableViewer()
         program = BlockProgram()
-        program.initialize(viewer)
+        program.initialize()
         program.bind()
 
         drawable = BlockGL(self.element)
@@ -69,9 +67,8 @@ class TestBlockGL:
         program.draw()
 
     def test_legacy_program(self):
-        viewer = IntegrableViewer()
         program = BlockLegacyProgram()
-        program.initialize(viewer)
+        program.initialize()
         program.bind()
 
         drawable = BlockGL(self.element, legacy=True)

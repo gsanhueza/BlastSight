@@ -14,8 +14,8 @@ class AxisProgram(ShaderProgram):
         super().__init__()
         self.base_name = 'Axis'
 
-    def initialize(self, viewer) -> None:
-        super().initialize(viewer)
+    def initialize(self) -> None:
+        super().initialize()
         self.add_uniform_handler('viewport')
 
     def draw(self) -> None:

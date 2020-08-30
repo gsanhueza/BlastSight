@@ -13,8 +13,8 @@ class BackgroundProgram(ShaderProgram):
         super().__init__()
         self.base_name = 'Background'
 
-    def initialize(self, viewer) -> None:
-        super().initialize(viewer)
+    def initialize(self) -> None:
+        super().initialize()
         self.add_uniform_handler('top_color')
         self.add_uniform_handler('bottom_color')
 

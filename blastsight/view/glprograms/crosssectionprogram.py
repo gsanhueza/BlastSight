@@ -13,8 +13,8 @@ class CrossSectionProgram(ShaderProgram):
         super().__init__()
         self.base_name = 'CrossSection'
 
-    def initialize(self, viewer) -> None:
-        super().initialize(viewer)
+    def initialize(self) -> None:
+        super().initialize()
         self.add_uniform_handler('plane_origin')
         self.add_uniform_handler('plane_normal')
 

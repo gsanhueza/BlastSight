@@ -65,9 +65,9 @@ class GLCollection:
     """
     ShaderProgram collection handlers
     """
-    def initialize(self, viewer) -> None:
+    def initialize(self) -> None:
         for program in self.all_programs():
-            program.initialize(viewer)
+            program.initialize()
 
     def associate(self, program: ShaderProgram, d_type: type, selector: callable = lambda x: True) -> None:
         self._programs[program.get_base_name()] = {

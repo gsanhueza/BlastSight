@@ -59,9 +59,8 @@ class TestAutoDrawable:
         assert drawable.id == 50
 
     def test_program(self):
-        viewer = IntegrableViewer()
         program = ShaderProgram()
-        program.initialize(viewer)
+        program.initialize()
         program.bind()
 
         drawable = GLDrawable(self.element)
@@ -75,11 +74,10 @@ class TestAutoDrawable:
         drawable.cleanup()
         assert len(drawable._vaos) == 0
 
-    def test_draw(self):
-        viewer = IntegrableViewer()
+    def test_basic_draw(self):
         program = ShaderProgram()
         assert program.shader_program is None
-        program.initialize(viewer)
+        program.initialize()
         assert program.shader_program is not None
         program.bind()
 

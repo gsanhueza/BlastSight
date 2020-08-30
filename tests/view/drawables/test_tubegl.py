@@ -33,9 +33,8 @@ class TestTubeGL:
         assert drawable.is_initialized
 
     def test_draw(self):
-        viewer = IntegrableViewer()
         program = TubeProgram()
-        program.initialize(viewer)
+        program.initialize()
         program.bind()
 
         drawable = TubeGL(self.element)
@@ -56,9 +55,8 @@ class TestTubeGL:
         assert not drawable.is_visible
 
     def test_program(self):
-        viewer = IntegrableViewer()
         program = TubeProgram()
-        program.initialize(viewer)
+        program.initialize()
         program.bind()
 
         drawable = TubeGL(self.element)
