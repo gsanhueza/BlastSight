@@ -3,9 +3,7 @@
 import pytest
 
 from blastsight.model.elements.pointelement import PointElement
-from blastsight.view.integrableviewer import IntegrableViewer
 from blastsight.view.drawables.pointgl import PointGL
-from blastsight.view.glprograms.pointprogram import PointProgram
 
 
 class TestPointGL:
@@ -33,15 +31,8 @@ class TestPointGL:
         assert drawable.is_initialized
 
     def test_draw(self):
-        program = PointProgram()
-        program.initialize()
-        program.bind()
-
         drawable = PointGL(self.element)
         drawable.setup_attributes()
-
-        program.set_drawables([drawable])
-        program.draw()
 
         drawable.hide()
         assert not drawable.is_visible
@@ -53,12 +44,3 @@ class TestPointGL:
 
         drawable.hide()
         assert not drawable.is_visible
-
-    def test_program(self):
-        program = PointProgram()
-        program.initialize()
-        program.bind()
-
-        drawable = PointGL(self.element)
-        program.set_drawables([drawable])
-        program.draw()

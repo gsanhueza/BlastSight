@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 
-from blastsight.view.integrableviewer import IntegrableViewer
 from blastsight.view.drawables.backgroundgl import BackgroundGL
-from blastsight.view.glprograms.backgroundprogram import BackgroundProgram
-
 from blastsight.model.elements.nullelement import NullElement
 
 
@@ -19,10 +16,6 @@ class TestBackgroundGL:
         assert len(dir(BackgroundGL(NullElement()))) > 0
 
     def test_draw(self):
-        program = BackgroundProgram()
-        program.initialize()
-        program.bind()
-
         drawable = BackgroundGL(NullElement())
 
         drawable.hide()
@@ -37,10 +30,6 @@ class TestBackgroundGL:
         assert not drawable.is_visible
 
     def test_colors(self):
-        program = BackgroundProgram()
-        program.initialize()
-        program.bind()
-
         drawable = BackgroundGL(NullElement())
         top = [0.1, 0.2, 0.3]
         bot = [0.4, 0.5, 0.6]
@@ -56,18 +45,3 @@ class TestBackgroundGL:
 
         assert self.equal_list(top, drawable.top_color)
         assert self.equal_list(bot, drawable.bottom_color)
-
-    def test_program(self):
-        program = BackgroundProgram()
-        program.initialize()
-        program.bind()
-
-        assert len(program.drawables) == 0
-        assert len(program.transparents) == 0
-
-        drawable = BackgroundGL(NullElement())
-        program.set_drawables([drawable])
-        program.draw()
-
-        assert len(program.drawables) > 0
-        assert len(program.transparents) == 0

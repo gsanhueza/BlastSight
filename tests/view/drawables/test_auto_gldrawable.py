@@ -7,7 +7,6 @@ from qtpy.QtWidgets import QApplication
 from blastsight.model.elements.element import Element
 from blastsight.view.drawables.gldrawable import GLDrawable
 from blastsight.view.integrableviewer import IntegrableViewer
-from blastsight.view.glprograms.shaderprogram import ShaderProgram
 
 
 class TestAutoDrawable:
@@ -58,15 +57,6 @@ class TestAutoDrawable:
         drawable.id = 50
         assert drawable.id == 50
 
-    def test_program(self):
-        program = ShaderProgram()
-        program.initialize()
-        program.bind()
-
-        drawable = GLDrawable(self.element)
-        program.set_drawables([drawable])
-        program.draw()
-
     def test_cleanup(self):
         drawable = GLDrawable(self.element)
         assert len(drawable._vaos) == 0
@@ -74,38 +64,3 @@ class TestAutoDrawable:
         drawable.cleanup()
         assert len(drawable._vaos) == 0
 
-    def test_basic_draw(self):
-        program = ShaderProgram()
-        assert program.shader_program is None
-        program.initialize()
-        assert program.shader_program is not None
-        program.bind()
-
-        drawable = GLDrawable(self.element)
-        drawable.setup_attributes()
-
-        program.set_drawables([drawable])
-        program.draw()
-        program.redraw()
-
-        # Standard
-        drawable.hide()
-        assert not drawable.is_visible
-        drawable.draw()
-
-        drawable.show()
-        assert drawable.is_visible
-        drawable.draw()
-
-        drawable.hide()
-        assert not drawable.is_visible
-
-        # Toggle
-        drawable.show()
-        assert drawable.is_visible
-
-        drawable.toggle_visibility()
-        assert not drawable.is_visible
-
-        drawable.toggle_visibility()
-        assert drawable.is_visible

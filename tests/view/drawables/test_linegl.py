@@ -3,9 +3,7 @@
 import pytest
 
 from blastsight.model.elements.lineelement import LineElement
-from blastsight.view.integrableviewer import IntegrableViewer
 from blastsight.view.drawables.linegl import LineGL
-from blastsight.view.glprograms.lineprogram import LineProgram
 
 
 class TestLineGL:
@@ -33,10 +31,6 @@ class TestLineGL:
         assert drawable.is_initialized
 
     def test_draw(self):
-        program = LineProgram()
-        program.initialize()
-        program.bind()
-
         drawable = LineGL(self.element)
         drawable.setup_attributes()
 

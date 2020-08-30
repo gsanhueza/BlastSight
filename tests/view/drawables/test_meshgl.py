@@ -3,11 +3,7 @@
 import pytest
 
 from blastsight.model.elements.meshelement import MeshElement
-from blastsight.view.integrableviewer import IntegrableViewer
 from blastsight.view.drawables.meshgl import MeshGL
-from blastsight.view.glprograms.meshprogram import MeshProgram
-from blastsight.view.glprograms.wireprogram import WireProgram
-from blastsight.view.glprograms.turbomeshprogram import TurboMeshProgram
 
 
 class TestMeshGL:
@@ -98,33 +94,8 @@ class TestMeshGL:
         drawable.is_initialized = True
         auto_test()
 
-    def test_draw(self):
-        program = MeshProgram()
-        program.initialize()
-        program.bind()
-
-        drawable = MeshGL(self.element)
-        drawable.setup_attributes()
-
-        program.set_drawables([drawable])
-        program.draw()
-
-        drawable.hide()
-        assert not drawable.is_visible
-        drawable.draw()
-
-        drawable.show()
-        assert drawable.is_visible
-        drawable.draw()
-
-        drawable.hide()
-        assert not drawable.is_visible
-
     def test_mesh_program(self):
-        program = MeshProgram()
         element = MeshElement(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], indices=[[0, 1, 2]], alpha=0.8)
-        program.initialize()
-        program.bind()
 
         drawable_normal = MeshGL(self.element)
         drawable_alpha = MeshGL(element)
@@ -135,20 +106,8 @@ class TestMeshGL:
         assert not drawable_highlight.toggle_highlighting()
         assert drawable_highlight.toggle_highlighting()
 
-        program.set_drawables([drawable_normal,
-                               drawable_alpha,
-                               drawable_wireframe,
-                               drawable_highlight,
-                               drawable_highlight_alpha,
-                               ])
-        program.draw()
-        program.redraw()
-
     def test_wire_program(self):
-        program = WireProgram()
         element = MeshElement(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], indices=[[0, 1, 2]], alpha=0.8)
-        program.initialize()
-        program.bind()
 
         drawable_normal = MeshGL(self.element)
         drawable_alpha = MeshGL(element)
@@ -158,18 +117,8 @@ class TestMeshGL:
         assert not drawable_highlight.toggle_highlighting()
         assert drawable_highlight.toggle_highlighting()
 
-        program.set_drawables([drawable_normal,
-                               drawable_alpha,
-                               drawable_wireframe,
-                               drawable_highlight])
-        program.draw()
-        program.redraw()
-
     def test_turbo_program(self):
-        program = TurboMeshProgram()
         element = MeshElement(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], indices=[[0, 1, 2]], alpha=0.8)
-        program.initialize()
-        program.bind()
 
         drawable_normal = MeshGL(self.element, turbo=True)
         drawable_alpha = MeshGL(element, turbo=False)
@@ -179,10 +128,3 @@ class TestMeshGL:
 
         assert drawable_normal.is_turbo_ready
         assert not drawable_alpha.is_turbo_ready
-
-        program.set_drawables([drawable_normal])
-        program.draw()
-
-        program.set_drawables([drawable_normal, drawable_alpha])
-        program.draw()
-        program.redraw()

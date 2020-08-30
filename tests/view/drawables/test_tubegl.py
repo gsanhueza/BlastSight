@@ -3,9 +3,7 @@
 import pytest
 
 from blastsight.model.elements.tubeelement import TubeElement
-from blastsight.view.integrableviewer import IntegrableViewer
 from blastsight.view.drawables.tubegl import TubeGL
-from blastsight.view.glprograms.tubeprogram import TubeProgram
 
 
 class TestTubeGL:
@@ -33,15 +31,8 @@ class TestTubeGL:
         assert drawable.is_initialized
 
     def test_draw(self):
-        program = TubeProgram()
-        program.initialize()
-        program.bind()
-
         drawable = TubeGL(self.element)
         drawable.setup_attributes()
-
-        program.set_drawables([drawable])
-        program.draw()
 
         drawable.hide()
         assert not drawable.is_visible
@@ -53,12 +44,3 @@ class TestTubeGL:
 
         drawable.hide()
         assert not drawable.is_visible
-
-    def test_program(self):
-        program = TubeProgram()
-        program.initialize()
-        program.bind()
-
-        drawable = TubeGL(self.element)
-        program.set_drawables([drawable])
-        program.draw()

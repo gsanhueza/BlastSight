@@ -3,10 +3,7 @@
 import pytest
 
 from blastsight.model.elements.blockelement import BlockElement
-from blastsight.view.integrableviewer import IntegrableViewer
 from blastsight.view.drawables.blockgl import BlockGL
-from blastsight.view.glprograms.blockprogram import BlockProgram
-from blastsight.view.glprograms.blocklegacyprogram import BlockLegacyProgram
 
 
 class TestBlockGL:
@@ -34,15 +31,8 @@ class TestBlockGL:
         assert drawable.is_initialized
 
     def test_draw(self):
-        program = BlockProgram()
-        program.initialize()
-        program.bind()
-
         drawable = BlockGL(self.element)
         drawable.setup_attributes()
-
-        program.set_drawables([drawable])
-        program.draw()
 
         drawable.hide()
         assert not drawable.is_visible
@@ -54,31 +44,3 @@ class TestBlockGL:
 
         drawable.hide()
         assert not drawable.is_visible
-
-    def test_program(self):
-        program = BlockProgram()
-        program.initialize()
-        program.bind()
-
-        drawable = BlockGL(self.element)
-        assert not drawable.is_legacy
-
-        program.set_drawables([drawable])
-        program.draw()
-
-    def test_legacy_program(self):
-        program = BlockLegacyProgram()
-        program.initialize()
-        program.bind()
-
-        drawable = BlockGL(self.element, legacy=True)
-        assert drawable.is_legacy
-        program.set_drawables([drawable])
-        program.draw()
-
-        drawable.is_legacy = False
-        assert not drawable.is_initialized
-        program.set_drawables([drawable])
-        program.draw()
-
-        assert drawable.is_initialized

@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 
-from blastsight.view.integrableviewer import IntegrableViewer
 from blastsight.view.drawables.axisgl import AxisGL
-from blastsight.view.glprograms.axisprogram import AxisProgram
-
 from blastsight.model.elements.nullelement import NullElement
 
 
@@ -12,10 +9,6 @@ class TestAxisGL:
         assert len(dir(AxisGL())) > 0
 
     def test_draw(self):
-        program = AxisProgram()
-        program.initialize()
-        program.bind()
-
         drawable = AxisGL(NullElement())
         drawable.setup_attributes()
 
