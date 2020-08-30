@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+import pathlib
+
 from blastsight.view.viewer import Viewer
 
 """
@@ -11,7 +13,8 @@ The function must receive a single argument, of the same type of the 'start' and
 """
 
 v = Viewer()
-mesh = v.load_mesh('../test_files/caseron.off', highlight=True)
+path = f'{pathlib.Path(__file__).parent.parent}/test_files/caseron.off'
+mesh = v.load_mesh(path, highlight=True)
 
 
 def autorotate(angle):

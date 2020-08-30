@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 
 import numpy as np
+import pathlib
+
 from blastsight.view.viewer import Viewer
 
 """
@@ -8,7 +10,7 @@ In this demo, we'll manually detect which blocks can be sliced by a plane.
 """
 
 v = Viewer()
-path = '../test_files/rainbow.csv'
+path = f'{pathlib.Path(__file__).parent.parent}/test_files/rainbow.csv'
 
 """
 First, we'll load a block file.

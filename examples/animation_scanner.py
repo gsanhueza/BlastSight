@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 
 import numpy as np
+import pathlib
+
 from blastsight.view.viewer import Viewer
 
 """
@@ -20,7 +22,8 @@ To deactivate the cross-section, just use 'v.set_cross_section(False)'.
 """
 
 v = Viewer()
-mesh = v.load_mesh('../test_files/caseron.off', color=[1.0, 0.8, 0.0], alpha=0.2)
+path = f'{pathlib.Path(__file__).parent.parent}/test_files/caseron.off'
+mesh = v.load_mesh(path, color=[1.0, 0.8, 0.0], alpha=0.2)
 low, high = mesh.bounding_box
 
 

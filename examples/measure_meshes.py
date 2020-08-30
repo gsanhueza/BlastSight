@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+import pathlib
+
 from blastsight.view.viewer import Viewer
 
 """
@@ -11,8 +13,8 @@ title = v.windowTitle()
 
 v.setWindowTitle(f'{title} - Click two points of a mesh.')
 
-mesh = v.load_mesh(path='../test_files/caseron.off',
-                   color=[0.0, 0.3, 1.0])
+path = f'{pathlib.Path(__file__).parent.parent}/test_files/caseron.off'
+mesh = v.load_mesh(path, color=[0.0, 0.3, 1.0])
 
 phantom_tube = v.tubes(vertices=[mesh.center, mesh.center],
                        color=[1.0, 0.8, 0.0],

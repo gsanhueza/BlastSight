@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 
 import numpy as np
+import pathlib
+
 from blastsight.view.viewer import Viewer
 
 """
@@ -15,7 +17,9 @@ First, we'll load a mesh file.
 Then, we'll slice the mesh by a plane.
 We need the plane's normal and any point that belongs to that plane.
 """
-mesh = v.load_mesh('../test_files/caseron.off', color=[0.0, 0.0, 1.0], alpha=0.3)
+path = f'{pathlib.Path(__file__).parent.parent}/test_files/caseron.off'
+mesh = v.load_mesh(path, color=[0.0, 0.0, 1.0], alpha=0.3)
+
 origin = mesh.centroid
 normal = np.array([0.2, 1.0, 0.8])
 

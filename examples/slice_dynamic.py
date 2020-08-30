@@ -1,19 +1,23 @@
 #!/usr/bin/env python
 
+import pathlib
+
 from blastsight.view.viewer import Viewer
 
 """
-In this demo, a mesh and a block set will be sliced by yourself.
+In this demo, a mesh and a block set will be dynamically sliced by yourself,
+by clicking in two parts of the screen.
 """
 
 viewer = Viewer()
 title = viewer.windowTitle()
 viewer.setWindowTitle(f'{title} - Click two points in the screen.')
-mesh_path = '../test_files/caseron.off'
-blocks_path = '../test_files/rainbow.csv'
+
+mesh_path = f'{pathlib.Path(__file__).parent.parent}/test_files/caseron.off'
+block_path = f'{pathlib.Path(__file__).parent.parent}/test_files/rainbow.csv'
 
 mesh = viewer.load_mesh(mesh_path, color=[0.0, 0.8, 0.6], alpha=0.2)
-blocks = viewer.load_blocks(blocks_path, alpha=0.1)
+blocks = viewer.load_blocks(block_path, alpha=0.1)
 
 original_size = blocks.block_size
 
