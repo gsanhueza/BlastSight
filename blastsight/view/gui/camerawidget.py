@@ -42,9 +42,6 @@ class CameraWidget(QWidget):
 
         # Layouts
         self.layout = QVBoxLayout(self)
-        self.horizontal_position = QHBoxLayout()
-        self.horizontal_center = QHBoxLayout()
-        self.horizontal_rotation = QHBoxLayout()
 
         self._add_to_layout(self.layout, [
             QLabel('Camera position (location)'),
@@ -96,7 +93,6 @@ class CameraWidget(QWidget):
         layout.setContentsMargins(0, 0, 0, 0)
 
         for widget in widgets:
-            # widget.set_parent(container)
             layout.addWidget(widget)
 
         return container
