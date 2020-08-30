@@ -25,7 +25,7 @@ class MeshGL(GLDrawable):
     """
     @property
     def is_standard(self) -> bool:
-        return not (self.is_wireframed or self.is_cross_sectionable)
+        return not (self.is_wireframed or self.is_turbo_ready or self.is_cross_sectionable)
 
     @property
     def is_highlighted(self) -> bool:
@@ -37,7 +37,7 @@ class MeshGL(GLDrawable):
 
     @property
     def is_turbo_ready(self) -> bool:
-        return self.is_boostable and self.is_standard
+        return self.is_boostable and not (self.is_highlighted or self.is_wireframed or self.is_cross_sectionable)
 
     @property
     def is_cross_sectionable(self) -> bool:
