@@ -12,9 +12,8 @@ from qtpy.QtGui import QOpenGLShaderProgram
 
 
 class ShaderProgram:
-    def __init__(self, viewer):
+    def __init__(self):
         self.base_name = None
-        self.viewer = viewer
         self.shader_program = None
         self.shader_dir = f'{pathlib.Path(__file__).parent.parent}/drawables/shaders'
 
@@ -31,10 +30,8 @@ class ShaderProgram:
     def get_base_name(self) -> str:
         return self.base_name
 
-    def initialize(self) -> None:
-        # FIXME In the future, check how often we need 'self.viewer'
-        #  We might be able to receive it as parameter and not use it ever again
-        self.shader_program = QOpenGLShaderProgram(self.viewer.context())
+    def initialize(self, viewer) -> None:
+        self.shader_program = QOpenGLShaderProgram(viewer.context())
         self.setup_shaders()
 
         self.add_uniform_handler('model_view_matrix')

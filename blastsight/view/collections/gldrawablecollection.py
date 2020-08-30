@@ -28,20 +28,20 @@ from ..glprograms.tubeprogram import TubeProgram
 
 
 class GLDrawableCollection(GLCollection):
-    def __init__(self, viewer=None):
-        super().__init__(viewer)
+    def __init__(self):
+        super().__init__()
         # Lines/Tubes/Points
-        self.associate(LineProgram(viewer), LineGL)
-        self.associate(TubeProgram(viewer), TubeGL)
-        self.associate(PointProgram(viewer), PointGL)
+        self.associate(LineProgram(), LineGL)
+        self.associate(TubeProgram(), TubeGL)
+        self.associate(PointProgram(), PointGL)
 
         # Blocks
-        self.associate(BlockLegacyProgram(viewer), BlockGL, selector=lambda x: x.is_legacy)
-        self.associate(BlockProgram(viewer), BlockGL, selector=lambda x: x.is_standard)
+        self.associate(BlockLegacyProgram(), BlockGL, selector=lambda x: x.is_legacy)
+        self.associate(BlockProgram(), BlockGL, selector=lambda x: x.is_standard)
 
         # Meshes
-        self.associate(MeshProgram(viewer), MeshGL, selector=lambda x: x.is_standard)
-        self.associate(WireProgram(viewer), MeshGL, selector=lambda x: x.is_wireframed)
-        self.associate(HighlightProgram(viewer), MeshGL, selector=lambda x: x.is_highlighted)
-        self.associate(TurboMeshProgram(viewer), MeshGL, selector=lambda x: x.is_turbo_ready)
-        self.associate(CrossSectionProgram(viewer), MeshGL, selector=lambda x: x.is_cross_sectionable)
+        self.associate(MeshProgram(), MeshGL, selector=lambda x: x.is_standard)
+        self.associate(WireProgram(), MeshGL, selector=lambda x: x.is_wireframed)
+        self.associate(HighlightProgram(), MeshGL, selector=lambda x: x.is_highlighted)
+        self.associate(TurboMeshProgram(), MeshGL, selector=lambda x: x.is_turbo_ready)
+        self.associate(CrossSectionProgram(), MeshGL, selector=lambda x: x.is_cross_sectionable)

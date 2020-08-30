@@ -34,8 +34,8 @@ class TestTubeGL:
 
     def test_draw(self):
         viewer = IntegrableViewer()
-        program = TubeProgram(viewer)
-        program.initialize()
+        program = TubeProgram()
+        program.initialize(viewer)
         program.bind()
 
         drawable = TubeGL(self.element)
@@ -57,8 +57,8 @@ class TestTubeGL:
 
     def test_program(self):
         viewer = IntegrableViewer()
-        program = TubeProgram(viewer)
-        program.initialize()
+        program = TubeProgram()
+        program.initialize(viewer)
         program.bind()
 
         drawable = TubeGL(self.element)

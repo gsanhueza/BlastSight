@@ -9,6 +9,6 @@ from .shaderprogram import ShaderProgram
 
 
 class TubeProgram(ShaderProgram):
-    def __init__(self, viewer):
-        super().__init__(viewer)
+    def __init__(self):
+        super().__init__()
         self.base_name = 'Tube'

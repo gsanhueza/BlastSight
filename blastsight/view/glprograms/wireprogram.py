@@ -10,8 +10,8 @@ from OpenGL.GL import *
 
 
 class WireProgram(ShaderProgram):
-    def __init__(self, viewer):
-        super().__init__(viewer)
+    def __init__(self):
+        super().__init__()
         self.base_name = 'Wireframe'
 
     def inner_draw(self, drawables: list) -> None:

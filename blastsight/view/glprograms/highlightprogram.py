@@ -10,8 +10,8 @@ from OpenGL.GL import *
 
 
 class HighlightProgram(ShaderProgram):
-    def __init__(self, viewer):
-        super().__init__(viewer)
+    def __init__(self):
+        super().__init__()
         self.base_name = 'Highlight'
 
     def inner_draw(self, drawables: list) -> None:

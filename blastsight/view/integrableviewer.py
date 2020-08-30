@@ -89,9 +89,9 @@ class IntegrableViewer(QOpenGLWidget):
         self.factory = DrawableFactory(self.model)
 
         # Drawable elements
-        self.drawable_collection = GLDrawableCollection(self)
-        self.pre_collection = GLPreCollection(self)
-        self.post_collection = GLPostCollection(self)
+        self.drawable_collection = GLDrawableCollection()
+        self.pre_collection = GLPreCollection()
+        self.post_collection = GLPostCollection()
 
         # Controllers
         self.current_controller = None
@@ -524,7 +524,7 @@ class IntegrableViewer(QOpenGLWidget):
             self.fit_to_bounds(*bounds)
 
     def bounding_box(self) -> tuple or None:
-        drawables = [d for d in self.get_all_drawables() if d.is_visible]
+        drawables = list(filter(lambda d: d.is_visible, self.get_all_drawables()))
 
         if len(drawables) == 0:
             return None
@@ -551,9 +551,9 @@ class IntegrableViewer(QOpenGLWidget):
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
 
         # Initialize collections
-        self.pre_collection.initialize()
-        self.drawable_collection.initialize()
-        self.post_collection.initialize()
+        self.pre_collection.initialize(self)
+        self.drawable_collection.initialize(self)
+        self.post_collection.initialize(self)
 
     def paintGL(self) -> None:
         # Clear screen

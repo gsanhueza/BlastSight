@@ -20,8 +20,8 @@ class TestBackgroundGL:
 
     def test_draw(self):
         viewer = IntegrableViewer()
-        program = BackgroundProgram(viewer)
-        program.initialize()
+        program = BackgroundProgram()
+        program.initialize(viewer)
         program.bind()
 
         drawable = BackgroundGL(NullElement())
@@ -39,8 +39,8 @@ class TestBackgroundGL:
 
     def test_colors(self):
         viewer = IntegrableViewer()
-        program = BackgroundProgram(viewer)
-        program.initialize()
+        program = BackgroundProgram()
+        program.initialize(viewer)
         program.bind()
 
         drawable = BackgroundGL(NullElement())
@@ -61,8 +61,8 @@ class TestBackgroundGL:
 
     def test_program(self):
         viewer = IntegrableViewer()
-        program = BackgroundProgram(viewer)
-        program.initialize()
+        program = BackgroundProgram()
+        program.initialize(viewer)
         program.bind()
 
         assert len(program.drawables) == 0

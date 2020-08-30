@@ -12,6 +12,6 @@ from ..glprograms.backgroundprogram import BackgroundProgram
 
 
 class GLPreCollection(GLCollection):
-    def __init__(self, viewer=None):
-        super().__init__(viewer)
-        self.associate(BackgroundProgram(viewer), BackgroundGL)
+    def __init__(self):
+        super().__init__()
+        self.associate(BackgroundProgram(), BackgroundGL)

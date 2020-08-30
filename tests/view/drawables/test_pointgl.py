@@ -34,8 +34,8 @@ class TestPointGL:
 
     def test_draw(self):
         viewer = IntegrableViewer()
-        program = PointProgram(viewer)
-        program.initialize()
+        program = PointProgram()
+        program.initialize(viewer)
         program.bind()
 
         drawable = PointGL(self.element)
@@ -57,8 +57,8 @@ class TestPointGL:
 
     def test_program(self):
         viewer = IntegrableViewer()
-        program = PointProgram(viewer)
-        program.initialize()
+        program = PointProgram()
+        program.initialize(viewer)
         program.bind()
 
         drawable = PointGL(self.element)

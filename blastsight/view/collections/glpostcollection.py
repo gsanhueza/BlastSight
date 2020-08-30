@@ -12,6 +12,6 @@ from ..glprograms.axisprogram import AxisProgram
 
 
 class GLPostCollection(GLCollection):
-    def __init__(self, viewer=None):
-        super().__init__(viewer)
-        self.associate(AxisProgram(viewer), AxisGL)
+    def __init__(self):
+        super().__init__()
+        self.associate(AxisProgram(), AxisGL)

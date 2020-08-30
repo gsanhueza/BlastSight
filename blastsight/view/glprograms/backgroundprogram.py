@@ -9,12 +9,12 @@ from .shaderprogram import ShaderProgram
 
 
 class BackgroundProgram(ShaderProgram):
-    def __init__(self, viewer):
-        super().__init__(viewer)
+    def __init__(self):
+        super().__init__()
         self.base_name = 'Background'
 
-    def initialize(self) -> None:
-        super().initialize()
+    def initialize(self, viewer) -> None:
+        super().initialize(viewer)
         self.add_uniform_handler('top_color')
         self.add_uniform_handler('bottom_color')
 

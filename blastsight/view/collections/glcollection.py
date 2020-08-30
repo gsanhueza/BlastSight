@@ -11,8 +11,7 @@ from ..drawables.gldrawable import GLDrawable
 
 
 class GLCollection:
-    def __init__(self, viewer=None):
-        self._viewer = viewer
+    def __init__(self):
         self._programs = OrderedDict()
         self._collection = OrderedDict()
         self._needs_update = True
@@ -66,9 +65,9 @@ class GLCollection:
     """
     ShaderProgram collection handlers
     """
-    def initialize(self) -> None:
+    def initialize(self, viewer) -> None:
         for program in self.all_programs():
-            program.initialize()
+            program.initialize(viewer)
 
     def associate(self, program: ShaderProgram, d_type: type, selector: callable = lambda x: True) -> None:
         self._programs[program.get_base_name()] = {

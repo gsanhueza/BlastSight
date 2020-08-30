@@ -13,8 +13,8 @@ class TestAxisGL:
 
     def test_draw(self):
         viewer = IntegrableViewer()
-        program = AxisProgram(viewer)
-        program.initialize()
+        program = AxisProgram()
+        program.initialize(viewer)
         program.bind()
 
         drawable = AxisGL(NullElement())
@@ -30,13 +30,3 @@ class TestAxisGL:
 
         drawable.hide()
         assert not drawable.is_visible
-
-    def test_program(self):
-        viewer = IntegrableViewer()
-        program = AxisProgram(viewer)
-        program.initialize()
-        program.bind()
-
-        drawable = AxisGL(NullElement())
-        program.set_drawables([drawable])
-        program.draw()
