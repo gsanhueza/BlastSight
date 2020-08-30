@@ -63,8 +63,9 @@ class ShaderProgram:
         self.uniform_locs[loc_str] = self.shader_program.uniformLocation(loc_str)
 
     def update_uniform(self, loc_str, *values) -> None:
-        self.shader_program.bind()
-        self.shader_program.setUniformValue(self.uniform_locs[loc_str], *values)
+        if loc_str in self.uniform_locs.keys():
+            self.shader_program.bind()
+            self.shader_program.setUniformValue(self.uniform_locs[loc_str], *values)
 
     def set_drawables(self, drawables: list) -> None:
         self.opaques = [d for d in drawables if d.alpha >= 0.99]

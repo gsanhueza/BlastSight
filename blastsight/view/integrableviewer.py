@@ -580,11 +580,16 @@ class IntegrableViewer(QOpenGLWidget):
         # Project (Perspective/Orthographic)
         self.resizeGL(self.width(), self.height())
 
-        # Propagate uniform changes
+        # Propagate common uniform values (programs lacking the uniform will ignore the command)
         for collection in [self.pre_collection, self.drawable_collection, self.post_collection]:
-            # Update matrices
+            # MVP matrices
             collection.update_uniform('proj_matrix', self.proj)
             collection.update_uniform('model_view_matrix', self.camera * self.world)
+
+            # Viewport values (with DPI awareness)
+            viewport = [float(self.devicePixelRatio() * self.width()),
+                        float(self.devicePixelRatio() * self.height())]
+            collection.update_uniform('viewport', *viewport)
 
         # Draw every GLDrawable (meshes, blocks, points, etc)
         glEnable(GL_BLEND)
