@@ -15,8 +15,8 @@ class CrossSectionProgram(ShaderProgram):
 
     def initialize(self) -> None:
         super().initialize()
-        self.add_uniform_loc('plane_origin')
-        self.add_uniform_loc('plane_normal')
+        self.add_uniform_handler('plane_origin')
+        self.add_uniform_handler('plane_normal')
 
         # Default values
         self.update_uniform('plane_origin', *[0.0, 0.0, 0.0])

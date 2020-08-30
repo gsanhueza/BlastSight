@@ -15,8 +15,8 @@ class PointProgram(ShaderProgram):
 
     def initialize(self) -> None:
         super().initialize()
-        self.add_uniform_loc('viewport')
-        self.add_uniform_loc('marker')
+        self.add_uniform_handler('viewport')
+        self.add_uniform_handler('marker')
 
     def inner_draw(self, drawables: list) -> None:
         for drawable in drawables:

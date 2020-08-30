@@ -17,7 +17,10 @@ class ShaderProgram:
         self.viewer = viewer
         self.shader_program = None
         self.shader_dir = f'{pathlib.Path(__file__).parent.parent}/drawables/shaders'
-        self.uniform_locs = {}
+
+        self.uniform_locations = {}
+        self.uniform_values = {}
+
         self.opaques = []
         self.transparents = []
 
@@ -34,8 +37,8 @@ class ShaderProgram:
         self.shader_program = QOpenGLShaderProgram(self.viewer.context())
         self.setup_shaders()
 
-        self.add_uniform_loc('model_view_matrix')
-        self.add_uniform_loc('proj_matrix')
+        self.add_uniform_handler('model_view_matrix')
+        self.add_uniform_handler('proj_matrix')
 
     def setup_shaders(self) -> None:
         # Placeholders to avoid early garbage collection
@@ -59,13 +62,14 @@ class ShaderProgram:
     def enable_geometry_shader(self, filename='geometry.glsl') -> QOpenGLShader:
         return self._enable_shader(QOpenGLShader.Geometry, filename)
 
-    def add_uniform_loc(self, loc_str) -> None:
-        self.uniform_locs[loc_str] = self.shader_program.uniformLocation(loc_str)
+    def add_uniform_handler(self, loc_str) -> None:
+        self.uniform_locations[loc_str] = self.shader_program.uniformLocation(loc_str)
 
     def update_uniform(self, loc_str, *values) -> None:
-        if loc_str in self.uniform_locs.keys():
+        if loc_str in self.uniform_locations.keys():
+            self.uniform_values[loc_str] = values
             self.shader_program.bind()
-            self.shader_program.setUniformValue(self.uniform_locs[loc_str], *values)
+            self.shader_program.setUniformValue(self.uniform_locations[loc_str], *values)
 
     def set_drawables(self, drawables: list) -> None:
         self.opaques = [d for d in drawables if d.alpha >= 0.99]

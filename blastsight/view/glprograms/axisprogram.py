@@ -14,11 +14,11 @@ class AxisProgram(ShaderProgram):
         super().__init__(viewer)
         self.base_name = 'Axis'
 
-    def draw(self) -> None:
-        viewport = [self.viewer.devicePixelRatio() * self.viewer.width(),
-                    self.viewer.devicePixelRatio() * self.viewer.height()]
-        w, h = viewport
+    def initialize(self) -> None:
+        super().initialize()
+        self.add_uniform_handler('viewport')
 
+    def draw(self) -> None:
+        w, h = map(int, self.uniform_values.get('viewport'))
         glViewport(w // 100, h // 100, h // 6, h // 6)
         super().draw()
-        glViewport(0, 0, viewport[0], viewport[1])

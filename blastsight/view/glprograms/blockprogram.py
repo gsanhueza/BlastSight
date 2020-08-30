@@ -15,7 +15,7 @@ class BlockProgram(ShaderProgram):
 
     def initialize(self) -> None:
         super().initialize()
-        self.add_uniform_loc('block_size')
+        self.add_uniform_handler('block_size')
 
     def setup_shaders(self) -> None:
         # Placeholders to avoid early garbage collection
