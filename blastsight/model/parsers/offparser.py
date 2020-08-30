@@ -19,7 +19,7 @@ class OFFParser(Parser):
 
         with open(path, 'r') as fp:
             assert 'OFF' == fp.readline().strip()
-            n_vertices, n_faces, n_edges = tuple([int(s) for s in fp.readline().strip().split(' ')])
+            n_vertices, n_faces, n_edges = map(int, fp.readline().strip().split(' '))
 
             vertices = pd.read_csv(path, skiprows=1, nrows=n_vertices,
                                    usecols=range(3), sep=' ').to_numpy(dtype=float)

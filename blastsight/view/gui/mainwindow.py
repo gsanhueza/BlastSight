@@ -384,7 +384,9 @@ class MainWindow(QMainWindow):
             directory=self.last_dir,
             filter=self.filters_dict.get(hint).get('load'))
 
-        path_list = sorted([p for p in paths if p != ''])
+        # If path == '', then bool(path) is False
+        path_list = sorted(filter(bool, paths))
+
         if len(path_list) > 0:
             self.statusBar.showMessage(f'Loading {len(path_list)} element(s)...')
             self._thread_runner(self.viewer.load_multiple, path_list, loader, *args, **kwargs)

@@ -254,7 +254,7 @@ class TreeWidget(QTreeWidget):
         ctx_menu.exec_(global_pos)
 
     def center_camera(self) -> None:
-        row = min([self.indexOfTopLevelItem(x) for x in self.selectedItems()], default=0)
+        row = min(map(self.indexOfTopLevelItem, self.selectedItems()), default=0)
         drawable = self.topLevelItem(row).drawable
         self.viewer.show_drawable(drawable.id)
         self.viewer.camera_at(drawable.id)
@@ -294,13 +294,13 @@ class TreeWidget(QTreeWidget):
             item.toggle_visibility()
 
     def delete_items(self) -> None:
-        closest_row = min([self.indexOfTopLevelItem(x) for x in self.selectedItems()], default=0)
+        closest_row = min(map(self.indexOfTopLevelItem, self.selectedItems()), default=0)
 
         # We'll trick the viewer so it doesn't emit file_modified_signal until last item
         # has been deleted, so we're not forced to auto-fill for each deleted item.
         self.viewer.blockSignals(True)
 
-        for _id in [item.drawable.id for item in self.selectedItems()]:
+        for _id in map(lambda item: item.id, self.selectedItems()):
             self.viewer.delete(_id)
 
         self.viewer.blockSignals(False)
