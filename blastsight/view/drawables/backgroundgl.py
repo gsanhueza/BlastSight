@@ -35,9 +35,6 @@ class BackgroundGL(GLDrawable):
         self._bottom_color = color
         self.notify()
 
-    def __dir__(self) -> list:
-        return super().__dir__()
-
     def draw(self) -> None:
         glDisable(GL_DEPTH_TEST)
         glDrawArrays(GL_TRIANGLES, 0, 3)

@@ -1,24 +1,13 @@
 #!/usr/bin/env python
 
+import pytest
+
 from blastsight.view.drawables.axisgl import AxisGL
 from blastsight.model.elements.nullelement import NullElement
+from tests.view.drawables.test_auto_gldrawable import TestAutoDrawable
 
 
-class TestAxisGL:
-    def test_dir(self):
-        assert len(dir(AxisGL())) > 0
-
-    def test_draw(self):
-        drawable = AxisGL(NullElement())
-        drawable.setup_attributes()
-
-        drawable.hide()
-        assert not drawable.is_visible
-        drawable.draw()
-
-        drawable.show()
-        assert drawable.is_visible
-        drawable.draw()
-
-        drawable.hide()
-        assert not drawable.is_visible
+class TestAxisGL(TestAutoDrawable):
+    @pytest.fixture()
+    def drawable(self):
+        return AxisGL(NullElement(id=0))

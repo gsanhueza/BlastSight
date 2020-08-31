@@ -15,9 +15,6 @@ class AxisGL(GLDrawable):
     def __init__(self, element=None, *args, **kwargs):
         super().__init__(element, *args, **kwargs)
 
-    def __dir__(self) -> list:
-        return sorted(set(dir(type(self)) + list(self.__dict__.keys())))
-
     def setup_attributes(self) -> None:
         _POSITION = 0
         _COLOR = 1

@@ -1,36 +1,22 @@
 #!/usr/bin/env python
 
+import pytest
+
 from blastsight.view.drawables.backgroundgl import BackgroundGL
 from blastsight.model.elements.nullelement import NullElement
+from tests.view.drawables.test_auto_gldrawable import TestAutoDrawable
 
 
-class TestBackgroundGL:
+class TestBackgroundGL(TestAutoDrawable):
+    @pytest.fixture()
+    def drawable(self):
+        return BackgroundGL(NullElement(id=0))
+
     @staticmethod
     def equal_list(la, lb) -> bool:
-        for a, b in zip(la, lb):
-            if a != b:
-                return False
-        return True
+        return all(map(lambda x, y: x == y, la, lb))
 
-    def test_dir(self):
-        assert len(dir(BackgroundGL(NullElement()))) > 0
-
-    def test_draw(self):
-        drawable = BackgroundGL(NullElement())
-
-        drawable.hide()
-        assert not drawable.is_visible
-        drawable.draw()
-
-        drawable.show()
-        assert drawable.is_visible
-        drawable.draw()
-
-        drawable.hide()
-        assert not drawable.is_visible
-
-    def test_colors(self):
-        drawable = BackgroundGL(NullElement())
+    def test_colors(self, drawable):
         top = [0.1, 0.2, 0.3]
         bot = [0.4, 0.5, 0.6]
 

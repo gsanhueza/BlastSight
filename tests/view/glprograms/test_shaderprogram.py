@@ -8,11 +8,8 @@ from blastsight.view.drawables import GLDrawable
 
 
 class TestShaderProgram:
-    program = ShaderProgram()
     element = NullElement()
     drawable = GLDrawable(element)
-
-    program.initialize()
 
     @staticmethod
     def initialize_program(_program):
