@@ -378,6 +378,12 @@ class MainWindow(QMainWindow):
         worker = ThreadWorker(method, *args, **kwargs)
         QThreadPool.globalInstance().start(worker)
 
+    # FIXME DELETE THIS ASAP
+    def _shift_vertices(self, previous_last: int) -> None:
+        # We'll shift using the very first drawable as the base
+        for d in filter(lambda x: x.id > previous_last, self.viewer.get_all_drawables()):
+            d.vertices -= self.viewer.get_drawable(0).center
+
     def _dialog_load_element(self, loader: classmethod, hint: str, *args, **kwargs) -> None:
         (paths, selected_filter) = QFileDialog.getOpenFileNames(
             parent=self,
@@ -387,9 +393,17 @@ class MainWindow(QMainWindow):
         # If path == '', then bool(path) is False
         path_list = sorted(filter(bool, paths))
 
+        # FIXME DELETE THIS ASAP
+        def runner():
+            last_id = self.viewer.last_id
+            self.viewer.load_multiple(path_list, loader, *args, **kwargs)
+
+            # FIXME We're temporarily shifting
+            self._shift_vertices(last_id)
+
         if len(path_list) > 0:
             self.statusBar.showMessage(f'Loading {len(path_list)} element(s)...')
-            self._thread_runner(self.viewer.load_multiple, path_list, loader, *args, **kwargs)
+            self._thread_runner(runner, *args, **kwargs)
             self.last_dir = QFileInfo(path_list[-1]).absoluteDir().absolutePath()
 
     def _dialog_load_folder(self, loader: classmethod, *args, **kwargs) -> None:
@@ -398,10 +412,18 @@ class MainWindow(QMainWindow):
             directory=self.last_dir,
             options=QFileDialog.ShowDirsOnly)
 
+        # FIXME DELETE THIS ASAP
+        def runner():
+            last_id = self.viewer.last_id
+            loader(path, *args, **kwargs)
+
+            # FIXME We're temporarily shifting
+            self._shift_vertices(last_id)
+
         # Execute method
         if bool(path):
             self.statusBar.showMessage('Loading folder...')
-            self._thread_runner(loader, path, *args, **kwargs)
+            self._thread_runner(runner, *args, **kwargs)
             self.last_dir = path
 
     """
