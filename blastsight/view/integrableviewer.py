@@ -300,6 +300,21 @@ class IntegrableViewer(QOpenGLWidget):
         self.update()
 
     """
+    Shift new drawables
+    """
+    # FIXME DELETE THIS ASAP
+    def _shift_drawable(self, drawable) -> None:
+        # Check if we have a bias or not yet
+        if self.drawable_collection.size() == 0:
+            self._SHIFT_BIAS_ = drawable.center
+
+        # Avoid shifting slices, since their original drawables are already shifted
+        # FIXME This is HARDCODED, do not rely on it
+        if 'SLICE' not in drawable.get_property('name', ''):
+            # Yes, we need this to be "a = a - b" instead of "a -= b".
+            drawable.vertices = drawable.vertices - self._SHIFT_BIAS_
+
+    """
     Registration methods
     """
     def register_drawable(self, drawable, collection=None):
@@ -309,6 +324,9 @@ class IntegrableViewer(QOpenGLWidget):
 
         if collection is None:
             collection = self.drawable_collection
+
+            # FIXME Shift the drawable
+            self._shift_drawable(drawable)
 
         # Register in collection
         drawable.add_observer(self)
