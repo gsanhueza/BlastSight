@@ -116,8 +116,8 @@ class Element:
     def set_property(self, key: str, value: any) -> None:
         self.properties[key] = value
 
-    def get_property(self, key: str) -> any:
-        return self.properties[key]
+    def get_property(self, key: str, default: any = None) -> any:
+        return self.properties.get(key, default)
 
     def delete_property(self, key: str) -> None:
         self.properties.pop(key)
