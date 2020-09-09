@@ -19,7 +19,8 @@ class ToolBar(QToolBar):
 
     def add_actions(self) -> None:
         self.addAction(self.action_collection.action_show_tree)
-        self.addAction(self.action_collection.action_viewer_properties)
+        # FIXME Action disabled in shifted branch
+        # self.addAction(self.action_collection.action_viewer_properties)
         self.addSeparator()
         self.addAction(self.action_collection.action_plan_view)
         self.addAction(self.action_collection.action_north_view)

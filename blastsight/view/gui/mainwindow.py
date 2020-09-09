@@ -135,7 +135,8 @@ class MainWindow(QMainWindow):
         self.menu_File.addAction(actions.action_quit)
 
         # View
-        self.menu_View.addAction(actions.action_viewer_properties)
+        # FIXME Action disabled in shifted branch
+        # self.menu_View.addAction(actions.action_viewer_properties)
         self.menu_View.addAction(actions.action_plan_view)
         self.menu_View.addAction(actions.action_north_view)
         self.menu_View.addAction(actions.action_east_view)
@@ -172,10 +173,13 @@ class MainWindow(QMainWindow):
         # Toolbar/Tree/Camera
         self.toolbar.connect_viewer(self.viewer)
         self.toolbar.connect_tree(self.dockWidget_tree)
-        self.toolbar.connect_camera(self.dockWidget_camera)
+        # FIXME Action disabled in shifted branch
+        # self.toolbar.connect_camera(self.dockWidget_camera)
         self.cameraWidget.connect_viewer(self.viewer)
         self.treeWidget.connect_viewer(self.viewer)
-        self.treeWidget.enable_exportability(True)
+
+        # FIXME Action disabled in shifted branch
+        # self.treeWidget.enable_exportability(True)
 
         # File
         actions.action_load_mesh.triggered.connect(self.dialog_load_mesh)
