@@ -310,7 +310,7 @@ class IntegrableViewer(QOpenGLWidget):
 
         # Avoid shifting slices, since their original drawables are already shifted
         # FIXME This is HARDCODED, do not rely on it
-        if 'SLICE' not in drawable.get_property('name', ''):
+        if 'SLICE' not in drawable.name:
             # Yes, we need this to be "a = a - b" instead of "a -= b".
             drawable.vertices = drawable.vertices - self._SHIFT_BIAS_
 
