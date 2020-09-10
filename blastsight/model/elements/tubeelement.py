@@ -38,7 +38,7 @@ class TubeElement(Element):
 
     def _fill_properties(self, *args, **kwargs) -> None:
         super()._fill_properties(*args, **kwargs)
-        self.radius = kwargs.get('radius', 0.15)
+        self.radius = kwargs.get('radius', 1.0)
         self.resolution = kwargs.get('resolution', 15)
         self.loop = kwargs.get('loop', False)
 
