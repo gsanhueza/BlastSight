@@ -50,14 +50,6 @@ class LineElement(Element):
             self.vertices = np.append(self.vertices, [self.vertices[0, :]], axis=0)
 
     @property
-    def customizable_properties(self) -> list:
-        return ['color', 'alpha', 'thickness', 'loop']
-
-    @property
-    def exportable_properties(self) -> list:
-        return ['color', 'alpha', 'thickness', 'loop']
-
-    @property
     def loop(self) -> bool:
         return self.properties.get('loop')
 

@@ -59,14 +59,6 @@ class PointElement(DFElement):
     Properties
     """
     @property
-    def customizable_properties(self) -> list:
-        return ['alpha', 'colormap', 'vmin', 'vmax', 'marker', 'avg_size']
-
-    @property
-    def exportable_properties(self) -> list:
-        return ['alpha', 'colormap', 'headers', 'marker', 'avg_size']
-
-    @property
     def avg_size(self) -> float:
         return self.point_size.mean()
 
