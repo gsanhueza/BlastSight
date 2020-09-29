@@ -124,8 +124,7 @@ class TestDFElement:
         assert element.vmin == 0.5
         assert element.vmax == 1.2
 
-        element.vmin = None
-        element.vmax = None
+        element.recalculate_limits()
 
         assert element.vmin == 0.0
         assert element.vmax == 2.0

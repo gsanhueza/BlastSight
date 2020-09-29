@@ -61,6 +61,10 @@ class BlockElement(DFElement):
 
         return np.array(size)
 
+    def recalculate_limits(self) -> None:
+        super().recalculate_limits()
+        self.block_size = self.get_autosize()
+
     """
     Properties
     """

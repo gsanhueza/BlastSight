@@ -93,6 +93,10 @@ class DFElement(Element):
         self.vmin = kwargs.get('vmin', self.values.min())
         self.vmax = kwargs.get('vmax', self.values.max())
 
+    def recalculate_limits(self) -> None:
+        self.vmin = self.values.min()
+        self.vmax = self.values.max()
+
     """
     Data
     """
@@ -167,18 +171,12 @@ class DFElement(Element):
             self.properties['colormap'] = _colormap
 
     @vmin.setter
-    def vmin(self, _vmin: float) -> None:
-        try:
-            self.properties['vmin'] = float(_vmin)
-        except Exception:
-            self.properties['vmin'] = self.values.min()
+    def vmin(self, value: float) -> None:
+        self.properties['vmin'] = float(value)
 
     @vmax.setter
-    def vmax(self, _vmax: float) -> None:
-        try:
-            self.properties['vmax'] = float(_vmax)
-        except Exception:
-            self.properties['vmax'] = self.values.max()
+    def vmax(self, value: float) -> None:
+        self.properties['vmax'] = float(value)
 
     @headers.setter
     def headers(self, _headers: list) -> None:

@@ -5,8 +5,6 @@
 #  Distributed under the MIT License.
 #  See LICENSE for more info.
 
-import json
-
 from qtpy.QtCore import Qt
 from qtpy.QtCore import Signal
 from qtpy.QtGui import QColor
@@ -92,35 +90,69 @@ class TreeWidget(QTreeWidget):
 
     def handle_properties(self, item: TreeWidgetItem) -> None:
         element = self.viewer.get_drawable(item.id)
-        dialog = PropertiesDialog(element)
-        dialog.accepted.connect(lambda: self.update_properties(dialog, element))
+        dialog = PropertiesDialog()
+        dialog.setWindowTitle(f'Set properties ({element.name}.{element.extension})')
+
+        # Fill headers and set current ones
+        dialog.fill_headers(element.all_headers)
+        dialog.set_current_headers(element.headers)
+
+        # Fill properties
+        dialog.set_alpha(element.alpha)
+        dialog.set_colormap(element.colormap)
+        dialog.set_vmin(element.vmin)
+        dialog.set_vmax(element.vmax)
+
+        if hasattr(element, 'marker'):
+            dialog.enable_marker()
+            dialog.fill_markers(['square', 'sphere', 'circle'])
+            dialog.set_marker(element.marker)
+
+        try:
+            # Assume it's a BlockElement
+            dialog.set_size(element.size.tolist())
+        except AttributeError:
+            # It was a PointElement
+            dialog.set_size(element.avg_size)
+
+        def has_altered_coordinates() -> bool:
+            return any(map(lambda x, y: x != y, element.headers[:3], dialog.get_current_headers()[:3]))
+
+        def update_properties() -> None:
+            # Update headers
+            altered_coordinates = has_altered_coordinates()
+            element.headers = dialog.get_current_headers()
+
+            # Update properties
+            element.alpha = dialog.get_alpha()
+            element.colormap = dialog.get_colormap()
+
+            # Update limits
+            if dialog.is_recalculate_checked():
+                element.recalculate_limits()
+            else:
+                element.vmin = dialog.get_vmin()
+                element.vmax = dialog.get_vmax()
+
+                # Update sizes
+                if hasattr(element, 'block_size'):
+                    element.block_size = dialog.get_size()
+                else:
+                    element.avg_size = dialog.get_size()
+
+            # Update marker
+            if hasattr(element, 'marker'):
+                element.marker = dialog.get_marker()
+
+            # If coordinates were altered, call fit_to_screen()
+            if altered_coordinates:
+                self.viewer.fit_to_screen()
+
+            # Finally, recreate instance with the "new" data
+            self.viewer.update_drawable(element.id)
+
+        dialog.accepted.connect(update_properties)
         dialog.show()
-
-    def update_properties(self, dialog, element) -> None:
-        # Parse values in QTableWidget
-        for i in range(dialog.tableWidget_properties.rowCount()):
-            k = dialog.tableWidget_properties.verticalHeaderItem(i).text()
-            v = dialog.tableWidget_properties.item(i, 0).text()
-            try:
-                setattr(element, k, float(v))
-            except ValueError:  # Element might be a list or string
-                try:  # Element is a list
-                    setattr(element, k, json.loads(v))
-                except json.decoder.JSONDecodeError:  # Element is a string
-                    setattr(element, k, v)
-            except KeyError:  # Element clearly is not a property
-                print(f'{k} property does not exist.')
-
-        # Update headers
-        altered = dialog.has_altered_coordinates(element)
-        element.headers = dialog.current_headers
-
-        # Recreate instance with the "new" data
-        self.viewer.update_drawable(element.id)
-
-        # If coordinates were altered and auto-fit is enabled, call fit_to_screen()
-        if altered and self.viewer.get_autofit_status():
-            self.viewer.fit_to_screen()
 
     def enable_exportability(self, value: bool) -> None:
         self.is_export_enabled = value
