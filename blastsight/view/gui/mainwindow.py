@@ -153,8 +153,6 @@ class MainWindow(QMainWindow):
         self.menu_Tools.addAction(actions.action_measurement_controller)
         self.menu_Tools.addSeparator()
         self.menu_Tools.addAction(actions.action_normal_controller)
-        # FIXME Removed until further notice
-        # self.menu_Tools.addAction(actions.action_cross_section)
 
         # Settings
         self.menu_Settings.addAction(actions.action_autofit)
@@ -202,7 +200,6 @@ class MainWindow(QMainWindow):
         actions.action_measurement_controller.triggered.connect(self.slot_measurement_controller)
 
         actions.action_normal_controller.triggered.connect(self.slot_normal_controller)
-        actions.action_cross_section.triggered.connect(self.slot_cross_section)
 
         # Help
         actions.action_help.triggered.connect(self.slot_help)
@@ -265,7 +262,7 @@ class MainWindow(QMainWindow):
         self.statusBar.showMessage(f'Detected elements: {id_list}')
 
     """
-    Slots for cross-sections
+    Slots for slices
     """
     def handle_slices(self, description: dict, executer: callable) -> None:
         # Retrieve description vectors
@@ -282,18 +279,12 @@ class MainWindow(QMainWindow):
             self.viewer.set_camera_from_vectors(normal, up)
 
     def slot_slice_meshes(self) -> None:
-        def executer_standard(origin, normal) -> None:
+        def executer(origin, normal) -> None:
             slices = self.viewer.slice_meshes(origin, normal)
             self.add_mesh_slices(slices)
 
-        def executer_cross(origin, normal) -> None:
-            self.viewer.cross_section(origin, normal)
-
         def handler(description: dict) -> None:
-            if self.toolbar.action_collection.action_cross_section.isChecked():
-                self.handle_slices(description, executer_cross)
-            else:
-                self.handle_slices(description, executer_standard)
+            self.handle_slices(description, executer)
 
             # Disconnect
             self.viewer.set_normal_controller()
@@ -316,15 +307,6 @@ class MainWindow(QMainWindow):
 
         self.viewer.set_slice_controller()
         self.viewer.signal_slice_description.connect(handler)
-
-    def slot_cross_section(self, status: bool) -> None:
-        self.viewer.set_cross_section(status)
-
-        # Make all meshes either semi-transparent or fully opaque
-        for drawable in self.viewer.get_all_drawables():
-            drawable.alpha *= 0.1 if status else 10.0
-
-        self.viewer.update_all()
 
     def add_mesh_slices(self, slice_list: list) -> None:
         def add_slice(description: dict) -> None:

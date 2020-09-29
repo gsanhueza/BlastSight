@@ -17,7 +17,6 @@ from ..glprograms.meshprogram import MeshProgram
 from ..glprograms.wireprogram import WireProgram
 from ..glprograms.highlightprogram import HighlightProgram
 from ..glprograms.turbomeshprogram import TurboMeshProgram
-from ..glprograms.crosssectionprogram import CrossSectionProgram
 
 from ..glprograms.blockprogram import BlockProgram
 from ..glprograms.blocklegacyprogram import BlockLegacyProgram
@@ -44,4 +43,3 @@ class GLDrawableCollection(GLCollection):
         self.associate(WireProgram(), MeshGL, selector=lambda x: x.is_wireframed)
         self.associate(HighlightProgram(), MeshGL, selector=lambda x: x.is_highlighted)
         self.associate(TurboMeshProgram(), MeshGL, selector=lambda x: x.is_turbo_ready)
-        self.associate(CrossSectionProgram(), MeshGL, selector=lambda x: x.is_cross_sectionable)

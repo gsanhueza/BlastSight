@@ -142,11 +142,6 @@ class ActionCollection:
         self.action_slice_blocks.setIcon(IconCollection.get('flash_on.svg'))
         self.action_slice_blocks.setShortcut('Ctrl+B')
 
-        self.action_cross_section = QAction('&Cross-section', parent)
-        self.action_cross_section.setIcon(IconCollection.get('flash_on.svg'))
-        self.action_cross_section.setShortcut('Ctrl+Shift+S')
-        self.action_cross_section.setCheckable(True)
-
         self.action_viewer_properties = QAction('&Viewer properties', parent)
         self.action_viewer_properties.setIcon(IconCollection.get('compact_camera.svg'))
         self.action_viewer_properties.setShortcut('Ctrl+C')
