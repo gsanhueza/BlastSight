@@ -23,7 +23,7 @@ To deactivate the cross-section, just use 'v.set_cross_section(False)'.
 
 v = Viewer()
 path = f'{pathlib.Path(__file__).parent.parent}/test_files/caseron.off'
-mesh = v.load_mesh(path, color=[1.0, 0.8, 0.0], alpha=0.2)
+mesh = v.load_mesh(path, color=[1.0, 0.8, 0.0])
 low, high = mesh.bounding_box
 
 
@@ -48,8 +48,13 @@ def scan_right(*args, **kwargs):
 # Hack to disconnect before starting
 v.signal_animation_finished.connect(lambda: None)
 
-# Start animation
+# Mark all meshes as cross-sectionable
 v.set_cross_section(True)
+
+# Add a non-cross-sectioned mesh for comparison
+v.load_mesh(path, color=[1.0, 0.8, 0.0], alpha=0.2)
+
+# Start animation
 scan_right()
 
 # Show viewer
