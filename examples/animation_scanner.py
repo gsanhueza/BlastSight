@@ -6,7 +6,7 @@ import pathlib
 from blastsight.view.viewer import Viewer
 
 """
-In this demo, we'll show how you can animate a cross-section so you can simulate that you're scanning a mesh.
+In this demo, we'll show how you can animate a cross-section so you can simulate that you're scanning a mine.
 
 A Cross-Section is equivalent as slicing a mesh, but without returning the vertices of each slice.
 This means that we can easily generate a cross-section of all the rendered meshes in real time.
@@ -22,9 +22,12 @@ To deactivate the cross-section, just use 'v.set_cross_section(False)'.
 """
 
 v = Viewer()
-path = f'{pathlib.Path(__file__).parent.parent}/test_files/caseron.off'
-mesh = v.load_mesh(path, color=[1.0, 0.8, 0.0])
-low, high = mesh.bounding_box
+mesh_path = f'{pathlib.Path(__file__).parent.parent}/test_files/caseron.off'
+block_path = f'{pathlib.Path(__file__).parent.parent}/test_files/rainbow.csv'
+
+mesh = v.load_mesh(mesh_path, color=[1.0, 0.8, 0.0])
+blocks = v.load_blocks(block_path)
+low, high = v.bounding_box()
 
 
 def scan(origin):
@@ -48,11 +51,12 @@ def scan_right(*args, **kwargs):
 # Hack to disconnect before starting
 v.signal_animation_finished.connect(lambda: None)
 
-# Mark all meshes as cross-sectionable
+# Mark all meshes and blocks as cross-sectionable
 v.set_cross_section(True)
 
-# Add a non-cross-sectioned mesh for comparison
-v.load_mesh(path, color=[1.0, 0.8, 0.0], alpha=0.2)
+# Add the same mesh and block model, but without cross-sectioning, for comparison
+v.load_mesh(mesh_path, color=[1.0, 0.8, 0.0], alpha=0.3)
+v.load_blocks(block_path, alpha=0.3)
 
 # Start animation
 scan_right()
