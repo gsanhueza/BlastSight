@@ -96,6 +96,7 @@ class MainWindow(QMainWindow):
 
         # XSection Widget
         self.xsection_widget = XSectionWidget()
+        self.xsection_widget.connect_viewer(self.viewer)
 
         # Extra actions
         actions = self.toolbar.action_collection

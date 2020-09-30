@@ -73,6 +73,7 @@ class IntegrableViewer(QOpenGLWidget):
     signal_fps_updated = Signal(float)
     signal_controller_updated = Signal(str)
     signal_projection_updated = Signal(str)
+    signal_xsection_updated = Signal()
 
     signal_camera_rotated = Signal(object)
     signal_camera_translated = Signal(object)
@@ -109,6 +110,11 @@ class IntegrableViewer(QOpenGLWidget):
         self._rotation_center = np.array([0.0, 0.0, 0.0])
         self._rotation_angle = np.array([0.0, 0.0, 0.0])
         self._camera_position = np.array([0.0, 0.0, 200.0])
+
+        # Cross-section data
+        self.last_cross_origin = np.asarray([0.0, 0.0, 0.0])
+        self.last_cross_normal = np.asarray([1.0, 0.0, 0.0])
+        self.is_cross_sectioned = False
 
         # Extra information
         self.is_animated = False
@@ -591,6 +597,10 @@ class IntegrableViewer(QOpenGLWidget):
                         float(self.devicePixelRatio() * self.height())]
             collection.update_uniform('viewport', *viewport)
 
+            # Update common uniforms (programs lacking the uniform will ignore the command)
+            collection.update_uniform('plane_origin', *self.last_cross_origin)
+            collection.update_uniform('plane_normal', *self.last_cross_normal)
+
         # Draw every GLDrawable (meshes, blocks, points, etc)
         glEnable(GL_BLEND)
         self.pre_collection.draw()
@@ -803,12 +813,20 @@ class IntegrableViewer(QOpenGLWidget):
         self.signal_mesh_distances.emit(results)
 
     def cross_section(self, origin: np.ndarray, normal: np.ndarray) -> None:
-        self.drawable_collection.update_uniform('CrossSection', 'plane_origin', *origin)
-        self.drawable_collection.update_uniform('CrossSection', 'plane_normal', *normal)
+        # Uniforms in cross-section are always auto-updated in self.paintGL()
+        self.last_cross_origin = np.asarray(origin)
+        self.last_cross_normal = np.asarray(normal)
+        self.signal_xsection_updated.emit()
+
+        self.update()
 
     def set_cross_section(self, status: bool) -> None:
+        self.is_cross_sectioned = status
+
         for m in self.get_all_meshes():
             m.is_cross_sectionable = status
+
+        self.signal_xsection_updated.emit()
 
     """
     Controller
