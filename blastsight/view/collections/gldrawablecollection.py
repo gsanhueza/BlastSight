@@ -26,6 +26,7 @@ from ..glprograms.pointprogram import PointProgram
 from ..glprograms.tubeprogram import TubeProgram
 
 from ..glprograms.xsectionmeshprogram import XSectionMeshProgram
+from ..glprograms.xsectionblockprogram import XSectionBlockProgram
 
 
 class GLDrawableCollection(GLCollection):
@@ -48,3 +49,4 @@ class GLDrawableCollection(GLCollection):
 
         # XSection
         self.associate(XSectionMeshProgram(), MeshGL, selector=lambda x: x.is_cross_sectionable)
+        self.associate(XSectionBlockProgram(), BlockGL, selector=lambda x: x.is_cross_sectionable)

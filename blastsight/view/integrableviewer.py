@@ -823,7 +823,7 @@ class IntegrableViewer(QOpenGLWidget):
     def set_cross_section(self, status: bool) -> None:
         self.is_cross_sectioned = status
 
-        for m in self.get_all_meshes():
+        for m in self.get_all_meshes() + self.get_all_blocks():
             m.is_cross_sectionable = status
 
         self.signal_xsection_updated.emit()

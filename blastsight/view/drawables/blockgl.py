@@ -15,18 +15,30 @@ class BlockGL(GLDrawable):
     def __init__(self, element, *args, **kwargs):
         super().__init__(element, *args, **kwargs)
         self.num_cubes = 0
+
         self._legacy = kwargs.pop('legacy', False)
+        self._cross_sectionable = kwargs.pop('cross_section', False)
 
     """
     Properties
     """
     @property
     def is_standard(self) -> bool:
-        return not self.is_legacy
+        return not self.is_legacy and not self.is_cross_sectionable
 
     @property
     def is_legacy(self) -> bool:
         return self._legacy
+
+    @property
+    def is_cross_sectionable(self) -> bool:
+        return self._cross_sectionable
+
+    @is_standard.setter
+    def is_standard(self, status: bool) -> None:
+        self._legacy = not status
+        self.is_initialized = False
+        self.notify()
 
     @is_legacy.setter
     def is_legacy(self, status: bool) -> None:
@@ -34,6 +46,14 @@ class BlockGL(GLDrawable):
         self.is_initialized = False
         self.notify()
 
+    @is_cross_sectionable.setter
+    def is_cross_sectionable(self, status: bool) -> None:
+        self._cross_sectionable = status
+        self.notify()
+
+    """
+    Internal methods
+    """
     def setup_attributes(self) -> None:
         _POSITION = 0
         _COLOR = 1
