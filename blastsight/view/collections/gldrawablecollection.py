@@ -25,6 +25,8 @@ from ..glprograms.lineprogram import LineProgram
 from ..glprograms.pointprogram import PointProgram
 from ..glprograms.tubeprogram import TubeProgram
 
+from ..glprograms.xsectionmeshprogram import XSectionMeshProgram
+
 
 class GLDrawableCollection(GLCollection):
     def __init__(self):
@@ -43,3 +45,6 @@ class GLDrawableCollection(GLCollection):
         self.associate(WireProgram(), MeshGL, selector=lambda x: x.is_wireframed)
         self.associate(HighlightProgram(), MeshGL, selector=lambda x: x.is_highlighted)
         self.associate(TurboMeshProgram(), MeshGL, selector=lambda x: x.is_turbo_ready)
+
+        # XSection
+        self.associate(XSectionMeshProgram(), MeshGL, selector=lambda x: x.is_cross_sectionable)
