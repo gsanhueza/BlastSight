@@ -29,6 +29,7 @@ class ToolBar(QToolBar):
         self.addAction(self.action_collection.action_autofit)
         self.addAction(self.action_collection.action_turbo_rendering)
         self.addSeparator()
+        self.addAction(self.action_collection.action_xsection)
         self.addAction(self.action_collection.action_take_screenshot)
 
     def auto_connect(self, tree, viewer, camera) -> None:
@@ -45,6 +46,10 @@ class ToolBar(QToolBar):
     def connect_camera(self, camera):
         actions = self.action_collection
         actions.action_viewer_properties.triggered.connect(camera.show)
+
+    def connect_xsection(self, xsection):
+        actions = self.action_collection
+        actions.action_xsection.triggered.connect(xsection.show)
 
     def connect_viewer(self, viewer) -> None:
         actions = self.action_collection

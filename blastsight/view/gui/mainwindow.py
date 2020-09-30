@@ -17,9 +17,10 @@ from qtpy.QtWidgets import QFileDialog
 from qtpy.QtWidgets import QMainWindow
 from qtpy.QtWidgets import QProgressBar
 
-from .dialogs.helpdialog import HelpDialog
 from .dialogs.aboutdialog import AboutDialog
+from .dialogs.helpdialog import HelpDialog
 from .iconcollection import IconCollection
+from .xsectionwidget import XSectionWidget
 
 from .tools import uic
 from ..threadworker import ThreadWorker
@@ -29,7 +30,7 @@ class MainWindow(QMainWindow):
     def __init__(self, parent=None):
         QMainWindow.__init__(self, parent)
         uic.loadUi(f'{pathlib.Path(__file__).parent}/UI/mainwindow.ui', self)
-        self.resize(1000, 620)
+        self.resize(1100, 620)
 
         self.setWindowTitle('BlastSightDM')
         self.setWindowIcon(IconCollection.get('blastsight.png'))
@@ -93,6 +94,9 @@ class MainWindow(QMainWindow):
         self.progress_bar.hide()
         self.statusBar.addPermanentWidget(self.progress_bar)
 
+        # XSection Widget
+        self.xsection_widget = XSectionWidget()
+
         # Extra actions
         actions = self.toolbar.action_collection
         self.toolbar.addAction(actions.action_quit)
@@ -152,6 +156,7 @@ class MainWindow(QMainWindow):
         self.menu_Tools.addAction(actions.action_detection_controller)
         self.menu_Tools.addAction(actions.action_measurement_controller)
         self.menu_Tools.addSeparator()
+        self.menu_Tools.addAction(actions.action_xsection)
         self.menu_Tools.addAction(actions.action_normal_controller)
 
         # Settings
@@ -171,6 +176,7 @@ class MainWindow(QMainWindow):
         self.toolbar.connect_viewer(self.viewer)
         self.toolbar.connect_tree(self.dockWidget_tree)
         self.toolbar.connect_camera(self.dockWidget_camera)
+        self.toolbar.connect_xsection(self.xsection_widget)
         self.cameraWidget.connect_viewer(self.viewer)
         self.treeWidget.connect_viewer(self.viewer)
         self.treeWidget.enable_exportability(True)
