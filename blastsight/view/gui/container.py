@@ -14,6 +14,8 @@ from qtpy.QtWidgets import QWidget
 from .camerawidget import CameraWidget
 from .toolbar import ToolBar
 from .treewidget import TreeWidget
+from .xsectionwidget import XSectionWidget
+
 from .iconcollection import IconCollection
 from ..integrableviewer import IntegrableViewer
 
@@ -32,6 +34,7 @@ class Container(QWidget):
         self.viewer = IntegrableViewer(self)
         self.camera = CameraWidget()
         self.tree = TreeWidget()
+        self.xsection = XSectionWidget()
 
         # Layout
         self.layout = QVBoxLayout(self)
@@ -39,7 +42,7 @@ class Container(QWidget):
         self.layout.addWidget(self.toolbar)
 
         # Actions
-        self.toolbar.auto_connect(self.tree, self.viewer, self.camera)
+        self.toolbar.auto_connect(self.tree, self.viewer, self.camera, self.xsection)
 
         actions = self.toolbar.action_collection
         actions.action_take_screenshot.triggered.connect(self.handle_screenshot)

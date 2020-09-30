@@ -32,12 +32,15 @@ class ToolBar(QToolBar):
         self.addAction(self.action_collection.action_xsection)
         self.addAction(self.action_collection.action_take_screenshot)
 
-    def auto_connect(self, tree, viewer, camera) -> None:
+    def auto_connect(self, tree, viewer, camera, xsection) -> None:
         self.connect_tree(tree)
         self.connect_viewer(viewer)
         self.connect_camera(camera)
+        self.connect_xsection(xsection)
+
         tree.connect_viewer(viewer)
         camera.connect_viewer(viewer)
+        xsection.connect_viewer(viewer)
 
     def connect_tree(self, tree) -> None:
         actions = self.action_collection
