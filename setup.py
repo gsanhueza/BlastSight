@@ -7,7 +7,7 @@ with open('README.md', 'r') as fh:
 
 setuptools.setup(
     name='blastsight',
-    version='0.6.3',
+    version='0.7.0',
     author='Gabriel Sanhueza',
     description='A 3D visualization library oriented to mining applications',
     long_description=long_description,
