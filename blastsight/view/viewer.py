@@ -52,15 +52,7 @@ class Viewer(IntegrableViewer):
         super().dropEvent(event, *args, **kwargs)
         self.camera_at(self.last_id)
 
-    def keyPressEvent(self, event) -> None:
-        def rotate(angle_list: list) -> None:
-            self.rotation_angle += angle_list
-            self.update()
-
-        def move(pos_list: list) -> None:
-            self.camera_position += pos_list
-            self.update()
-
+    def keyPressEvent(self, event, *args, **kwargs) -> None:
         shortcut_commands_dict = {
             Qt.Key_1: self.plan_view,
             Qt.Key_2: self.north_view,
@@ -69,19 +61,19 @@ class Viewer(IntegrableViewer):
             Qt.Key_5: self.orthographic_projection,
             Qt.Key_Space: self.fit_to_screen,
             Qt.Key_Delete: lambda: self.delete(self.last_id),
-            Qt.Key_T: lambda: self.set_turbo_status(not self.get_turbo_status()),
-            Qt.Key_W: lambda: rotate([-10.0, 0.0, 0.0]),
-            Qt.Key_S: lambda: rotate([10.0, 0.0, 0.0]),
-            Qt.Key_A: lambda: rotate([0.0, -10.0, 0.0]),
-            Qt.Key_D: lambda: rotate([0.0, 10.0, 0.0]),
-            Qt.Key_Q: lambda: rotate([0.0, 0.0, 10.0]),
-            Qt.Key_E: lambda: rotate([0.0, 0.0, -10.0]),
-            Qt.Key_Left: lambda: move([1.0, 0.0, 0.0]),
-            Qt.Key_Right: lambda: move([-1.0, 0.0, 0.0]),
-            Qt.Key_Up: lambda: move([0.0, -1.0, 0.0]),
-            Qt.Key_Down: lambda: move([0.0, 1.0, 0.0]),
-            Qt.Key_PageDown: lambda: move([0.0, 0.0, -1.0]),
-            Qt.Key_PageUp: lambda: move([0.0, 0.0, 1.0]),
+            Qt.Key_T: lambda: self.take_screenshot('BlastSight Screenshot.png'),
+            Qt.Key_W: lambda: self.rotate(-10.0, 0.0, 0.0),
+            Qt.Key_S: lambda: self.rotate(10.0, 0.0, 0.0),
+            Qt.Key_A: lambda: self.rotate(0.0, -10.0, 0.0),
+            Qt.Key_D: lambda: self.rotate(0.0, 10.0, 0.0),
+            Qt.Key_Q: lambda: self.rotate(0.0, 0.0, 10.0),
+            Qt.Key_E: lambda: self.rotate(0.0, 0.0, -10.0),
+            Qt.Key_Left: lambda: self.translate(1.0, 0.0, 0.0),
+            Qt.Key_Right: lambda: self.translate(-1.0, 0.0, 0.0),
+            Qt.Key_Up: lambda: self.translate(0.0, -1.0, 0.0),
+            Qt.Key_Down: lambda: self.translate(0.0, 1.0, 0.0),
+            Qt.Key_PageDown: lambda: self.translate(0.0, 0.0, -1.0),
+            Qt.Key_PageUp: lambda: self.translate(0.0, 0.0, 1.0),
         }
 
         # Execute command based on event.key()
