@@ -5,6 +5,7 @@
 #  Distributed under the MIT License.
 #  See LICENSE for more info.
 
+from OpenGL.GL import *
 from .shaderprogram import ShaderProgram
 
 
@@ -25,3 +26,10 @@ class XSectionMeshProgram(ShaderProgram):
         gs = self.enable_geometry_shader()
 
         self.shader_program.link()
+
+    def inner_draw(self, drawables: list) -> None:
+        glDisable(GL_DEPTH_TEST)
+        glLineWidth(10)
+        super().inner_draw(drawables)
+        glLineWidth(1)
+        glEnable(GL_DEPTH_TEST)

@@ -48,5 +48,5 @@ class GLDrawableCollection(GLCollection):
         self.associate(TurboMeshProgram(), MeshGL, selector=lambda x: x.is_turbo_ready)
 
         # XSection
-        self.associate(XSectionMeshProgram(), MeshGL, selector=lambda x: x.is_cross_sectionable)
         self.associate(XSectionBlockProgram(), BlockGL, selector=lambda x: x.is_cross_sectionable)
+        self.associate(XSectionMeshProgram(), MeshGL, selector=lambda x: x.is_cross_sectionable)
