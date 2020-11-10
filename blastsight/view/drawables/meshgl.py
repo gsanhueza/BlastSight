@@ -19,13 +19,17 @@ class MeshGL(GLDrawable):
         self._highlighted = kwargs.pop('highlight', False)
         self._wireframed = kwargs.pop('wireframe', False)
         self._cross_sectionable = kwargs.pop('cross_section', False)
+        self._phantom = kwargs.pop('phantom', False)
 
     """
     Properties
     """
     @property
     def is_standard(self) -> bool:
-        return not (self.is_wireframed or self.is_turbo_ready or self.is_cross_sectionable)
+        return not any([self.is_wireframed,
+                        self.is_cross_sectionable,
+                        self.is_phantom,
+                        self.is_turbo_ready])
 
     @property
     def is_highlighted(self) -> bool:
@@ -36,12 +40,19 @@ class MeshGL(GLDrawable):
         return self._wireframed
 
     @property
-    def is_turbo_ready(self) -> bool:
-        return self.is_boostable and not (self.is_highlighted or self.is_wireframed or self.is_cross_sectionable)
-
-    @property
     def is_cross_sectionable(self) -> bool:
         return self._cross_sectionable
+
+    @property
+    def is_phantom(self) -> bool:
+        return self._phantom
+
+    @property
+    def is_turbo_ready(self) -> bool:
+        return self.is_boostable and not any([self.is_highlighted,
+                                              self.is_wireframed,
+                                              self.is_cross_sectionable,
+                                              self.is_phantom])
 
     @is_highlighted.setter
     def is_highlighted(self, status: bool) -> None:
@@ -56,6 +67,11 @@ class MeshGL(GLDrawable):
     @is_cross_sectionable.setter
     def is_cross_sectionable(self, status: bool) -> None:
         self._cross_sectionable = status
+        self.notify()
+
+    @is_phantom.setter
+    def is_phantom(self, status: bool) -> None:
+        self._phantom = status
         self.notify()
 
     """

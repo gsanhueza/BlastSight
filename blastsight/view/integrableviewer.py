@@ -73,7 +73,9 @@ class IntegrableViewer(QOpenGLWidget):
     signal_fps_updated = Signal(float)
     signal_controller_updated = Signal(str)
     signal_projection_updated = Signal(str)
+
     signal_xsection_updated = Signal()
+    signal_phantom_updated = Signal()
 
     signal_camera_rotated = Signal(object)
     signal_camera_translated = Signal(object)
@@ -115,6 +117,7 @@ class IntegrableViewer(QOpenGLWidget):
         self.last_cross_origin = np.asarray([0.0, 0.0, 0.0])
         self.last_cross_normal = np.asarray([1.0, 0.0, 0.0])
         self.is_cross_sectioned = False
+        self.is_phantom_enabled = False
 
         # Extra information
         self.is_animated = False
@@ -827,6 +830,14 @@ class IntegrableViewer(QOpenGLWidget):
             m.is_cross_sectionable = status
 
         self.signal_xsection_updated.emit()
+
+    def set_phantom_mesh(self, status: bool) -> None:
+        self.is_phantom_enabled = status
+
+        for m in self.get_all_meshes():
+            m.is_phantom = status
+
+        self.signal_phantom_updated.emit()
 
     """
     Controller
