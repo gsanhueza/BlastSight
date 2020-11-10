@@ -13,6 +13,8 @@ from qtpy.QtWidgets import *
 class XSectionWidget(QWidget):
     signal_controller_requested = Signal(bool)
     signal_status_altered = Signal(bool)
+    signal_phantom_altered = Signal(bool)
+
     signal_origin_altered = Signal(object)
     signal_normal_altered = Signal(object)
     signal_step_applied = Signal(int)
@@ -23,11 +25,14 @@ class XSectionWidget(QWidget):
         self.setWindowFlags(Qt.WindowStaysOnTopHint)
 
         # Status buttons
+        self.pushButton_controller = QPushButton('Slice from screen')
+        self.pushButton_controller.setCheckable(True)
+
         self.pushButton_status = QPushButton('Show/Hide cross-section')
         self.pushButton_status.setCheckable(True)
 
-        self.pushButton_controller = QPushButton('Slice from screen')
-        self.pushButton_controller.setCheckable(True)
+        self.pushButton_phantom = QPushButton('Show/Hide phantom')
+        self.pushButton_phantom.setCheckable(True)
 
         # Origin
         self.origin_x = self._generate_spinbox()
@@ -52,7 +57,9 @@ class XSectionWidget(QWidget):
         self._add_to_grid(self.grid, 2, QLabel('Step'), self.step, self.button_minus, self.button_plus)
 
         self.layout = QVBoxLayout(self)
-        self.layout.addWidget(self._generate_horizontal(self.pushButton_controller, self.pushButton_status))
+        self.layout.addWidget(self._generate_horizontal(self.pushButton_controller,
+                                                        self.pushButton_status,
+                                                        self.pushButton_phantom))
         self.layout.addWidget(self.container)
 
         self._connect_internal_signals()
@@ -90,8 +97,9 @@ class XSectionWidget(QWidget):
         return spinbox
 
     def _connect_internal_signals(self) -> None:
-        self.pushButton_status.clicked.connect(self.signal_status_altered.emit)
         self.pushButton_controller.clicked.connect(self.signal_controller_requested.emit)
+        self.pushButton_status.clicked.connect(self.signal_status_altered.emit)
+        self.pushButton_phantom.clicked.connect(self.signal_phantom_altered.emit)
 
         self.button_plus.clicked.connect(lambda: self.signal_step_applied.emit(+1))
         self.button_minus.clicked.connect(lambda: self.signal_step_applied.emit(-1))
@@ -116,6 +124,7 @@ class XSectionWidget(QWidget):
             self.set_origin(viewer.last_cross_origin.tolist())
             self.set_normal(viewer.last_cross_normal.tolist())
             self.set_status(viewer.is_cross_sectioned)
+            self.set_phantom(viewer.is_phantom_enabled)
 
         # Connect signals to automatically update the viewer
         def handle_direction(direction: int) -> None:
@@ -147,8 +156,10 @@ class XSectionWidget(QWidget):
 
         # Connect signals
         viewer.signal_xsection_updated.connect(handle_xsection_updated)
-        self.signal_status_altered.connect(viewer.set_cross_section)
+
         self.signal_controller_requested.connect(handle_controller)
+        self.signal_status_altered.connect(viewer.set_cross_section)
+        self.signal_phantom_altered.connect(viewer.set_phantom)
 
         self.signal_step_applied.connect(handle_direction)
         self.signal_origin_altered.connect(
@@ -175,6 +186,11 @@ class XSectionWidget(QWidget):
     def set_status(self, value: bool) -> None:
         self.blockSignals(True)
         self.pushButton_status.setChecked(value)
+        self.blockSignals(False)
+
+    def set_phantom(self, value: bool) -> None:
+        self.blockSignals(True)
+        self.pushButton_phantom.setChecked(value)
         self.blockSignals(False)
 
     def set_origin(self, value: list) -> None:

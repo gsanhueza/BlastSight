@@ -831,7 +831,7 @@ class IntegrableViewer(QOpenGLWidget):
 
         self.signal_xsection_updated.emit()
 
-    def set_phantom_mesh(self, status: bool) -> None:
+    def set_phantom(self, status: bool) -> None:
         self.is_phantom_enabled = status
 
         for m in self.get_all_meshes():
