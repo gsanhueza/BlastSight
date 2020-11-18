@@ -54,41 +54,6 @@ def distances_between(origin: np.ndarray, points: np.ndarray) -> np.ndarray or N
     return np.linalg.norm(origin - points, axis=1)
 
 
-def aabb_intersection(origin: np.ndarray,
-                      ray: np.ndarray,
-                      b_min: np.ndarray,
-                      b_max: np.ndarray) -> bool:
-    # Adapted from https://tavianator.com/fast-branchless-raybounding-box-intersections-part-2-nans/
-    if (b_max - b_min).min() < 1e-12:  # Flat mesh means AABB unreliable
-        return True
-
-    # Result of division by zero used deliberately
-    with np.errstate(divide='ignore'):
-        ray_inv = 1.0 / ray
-
-    tmin = -np.inf
-    tmax = +np.inf
-
-    for i in range(3):
-        t1 = (b_min[i] - origin[i]) * ray_inv[i]
-        t2 = (b_max[i] - origin[i]) * ray_inv[i]
-
-        tmin = max(tmin, min(t1, t2))
-        tmax = min(tmax, max(t1, t2))
-
-    return tmax > max(tmin, 0.0)
-
-
-def plane_intersection(origin: np.ndarray,
-                       ray: np.ndarray,
-                       plane_normal: np.ndarray,
-                       plane_d: np.ndarray) -> np.ndarray:
-    # Taken from https://courses.cs.washington.edu/courses/cse457/09au/lectures/triangle_intersection.pdf
-    t = (plane_d - np.dot(plane_normal, origin)) / np.dot(plane_normal, ray)
-
-    return origin + t * ray
-
-
 def points_inside_mesh(mesh, point_vertices: np.ndarray) -> np.ndarray:
     # With ray tracing, we'll detect which points are inside the mesh
     ray = np.array([0.0, 0.0, 1.0])  # Arbitrary direction
