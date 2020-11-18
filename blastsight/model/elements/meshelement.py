@@ -42,7 +42,9 @@ class MeshElement(Element):
     """
     def _fill_element(self, *args, **kwargs) -> None:
         # Vertices
-        msg = f'Data must contain ["x", "y", "z"] or "vertices", got {list(kwargs.keys())}.'
+        msg = f'Data must contain ["x", "y", "z", "indices"], ' \
+              f'["vertices", "indices"], or ["triangles"],' \
+              f' got {list(kwargs.keys())}.'
 
         if 'vertices' in kwargs.keys():
             self._fill_as_vertices(*args, **kwargs)
@@ -50,6 +52,8 @@ class MeshElement(Element):
         elif 'x' in kwargs.keys() and 'y' in kwargs.keys() and 'z' in kwargs.keys():
             self._fill_as_xyz(*args, **kwargs)
             self._fill_indices(*args, **kwargs)
+        elif 'triangles' in kwargs.keys():
+            self._fill_as_triangles(*args, **kwargs)
         elif 'data' in kwargs.keys():
             self._fill_as_data(*args, **kwargs)
         else:
@@ -69,6 +73,9 @@ class MeshElement(Element):
         self.vertices = data.get('vertices', [])
         self.indices = data.get('indices', [])
 
+    def _fill_as_triangles(self, *args, **kwargs) -> None:
+        self.triangles = kwargs.get('triangles', [])
+
     def _check_integrity(self) -> None:
         super()._check_integrity()
         if self.x.size != self.indices.max() + 1:
@@ -78,13 +85,24 @@ class MeshElement(Element):
     Data
     """
     @property
-    def indices(self) -> np.array:
+    def indices(self) -> np.ndarray:
         return self.data.get('indices', np.empty(0))
 
     @indices.setter
     def indices(self, indices) -> None:
         # GL_UNSIGNED_INT = np.uint32
         self.data['indices'] = np.array(indices, np.uint32)
+
+    @property
+    def triangles(self) -> np.ndarray:
+        return self.vertices[self.indices].flatten().reshape((-1, 3))
+
+    @triangles.setter
+    def triangles(self, values) -> None:
+        assert len(values) % 3 == 0
+        vertices, indices = np.unique(np.array(values), axis=0, return_inverse=True)
+        self.vertices = vertices.reshape((-1, 3))
+        self.indices = indices.reshape((-1, 3))
 
     """
     Utilities
