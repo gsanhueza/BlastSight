@@ -39,24 +39,25 @@ class Intersections:
     def ray_with_plane(origin: np.ndarray,
                        ray: np.ndarray,
                        plane_normal: np.ndarray,
-                       plane_d: np.ndarray) -> np.ndarray:
+                       plane_d: float) -> np.ndarray:
         # Taken from https://courses.cs.washington.edu/courses/cse457/09au/lectures/triangle_intersection.pdf
         t = (plane_d - np.dot(plane_normal, origin)) / np.dot(plane_normal, ray)
 
         return origin + t * ray
 
     @staticmethod
-    def ray_with_mesh(origin: np.ndarray,
-                      ray: np.ndarray,
-                      triangles: np.ndarray) -> np.ndarray:
+    def ray_with_triangles(origin: np.ndarray,
+                           ray: np.ndarray,
+                           triangles: np.ndarray) -> np.ndarray:
         # Idea taken from https://cadxfem.org/inf/Fast%20MinimumStorage%20RayTriangle%20Intersection.pdf
         # Code adapted from https://en.wikipedia.org/wiki/M%C3%B6ller%E2%80%93Trumbore_intersection_algorithm
         # Manually vectorized to benefit from numpy's performance.
 
         # Get individual vertices of each triangle
-        vertex0 = triangles[:, 0, :]
-        vertex1 = triangles[:, 1, :]
-        vertex2 = triangles[:, 2, :]
+        triangles = triangles.flatten().reshape((-1, 3))
+        vertex0 = triangles[0::3]
+        vertex1 = triangles[1::3]
+        vertex2 = triangles[2::3]
 
         edge1 = vertex1 - vertex0
         edge2 = vertex2 - vertex0
@@ -86,7 +87,9 @@ class Intersections:
             t = f * (edge2 * q).sum(axis=1)
 
             mask = (t > 1e-12) & mask  # Ray intersections
-        return origin + ray * t[mask].reshape(-1, 1)  # Here are the intersections.
+
+        # Here are the intersections.
+        return np.unique(origin + ray * t[mask].reshape(-1, 1), axis=0)
 
     @staticmethod
     def ray_with_lines(origin: np.ndarray,

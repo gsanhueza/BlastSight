@@ -59,6 +59,34 @@ class TestMeshElement:
             for j in range(len(expected[0])):
                 assert element.indices[i][j] == expected[i][j]
 
+    def test_load_as_xyz(self):
+        element = MeshElement(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], indices=[[0, 1, 2]])
+
+        assert len(element.vertices) == 3
+        assert len(element.indices) == 1
+
+    def test_load_as_vertices(self):
+        element = MeshElement(vertices=[[-1, 1, 0], [0, 0, 1], [0, 0, 0]], indices=[[0, 1, 2]])
+
+        assert len(element.vertices) == 3
+        assert len(element.indices) == 1
+
+    def test_load_as_triangles(self):
+        element = MeshElement(triangles=[[-1, 1, 0], [0, 0, 1], [0, 0, 0]])
+
+        assert len(element.vertices) == 3
+        assert len(element.indices) == 1
+
+    def test_load_as_data(self):
+        data = {
+            'vertices': [[-1, 1, 0], [0, 0, 1], [0, 0, 0]],
+            'indices': [[0, 1, 2]],
+        }
+        element = MeshElement(data=data)
+
+        assert len(element.vertices) == 3
+        assert len(element.indices) == 1
+
     def test_wrong_mesh(self):
         with pytest.raises(ValueError):
             MeshElement(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0], indices=[[0, 1, 2]])
@@ -134,33 +162,3 @@ class TestMeshElement:
         volume = element.volume
 
         assert abs(volume - 8.0) < epsilon
-
-    def test_intersection(self):
-        origin = np.array([0.0, 0.5, 10.0])
-        origin_translated = np.array([10.0, 0.5, 1.0])
-
-        ray = np.array([0.0, 0.0, -1.0])
-        ray_reversed = np.array([0.0, 0.0, 1.0])
-        ray_oblique = np.array([0.6, 0.0, -0.8])
-        ray_low = np.array([0.0, 0.8, -0.9])
-        ray_perpendicular = np.array([1.0, 0.0, 0.0])
-
-        vertices = np.array([[-1.0, 0.0, 0.0],
-                             [1.0, 0.0, 0.0],
-                             [0.0, 1.0, 0.0],
-                             [0.0, -1.0, 0.0]])
-
-        indices = [[0, 1, 2], [0, 1, 3], [1, 2, 3], [2, 0, 3]]
-
-        mesh = MeshElement(vertices=vertices, indices=[[0, 1, 2], [0, 3, 1]])
-        tetrahedron = MeshElement(vertices=vertices, indices=indices)
-
-        assert len(mesh.intersect_with_ray(origin, ray)) > 0
-        assert len(mesh.intersect_with_ray(origin, ray)) > 0
-        assert len(mesh.intersect_with_ray(origin, ray_reversed)) == 0
-        assert len(mesh.intersect_with_ray(origin, ray_low)) == 0
-        assert len(mesh.intersect_with_ray(origin, ray_perpendicular)) == 0
-        assert len(mesh.intersect_with_ray(origin_translated, ray)) == 0
-        assert len(mesh.intersect_with_ray(origin_translated, ray_oblique)) == 0
-        assert len(mesh.intersect_with_ray(origin, ray_oblique)) == 0
-        assert len(tetrahedron.intersect_with_ray(origin_translated, ray)) == 0

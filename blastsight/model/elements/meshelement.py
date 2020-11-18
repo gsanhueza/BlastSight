@@ -152,13 +152,13 @@ class MeshElement(Element):
 
         def preprocess_triangles(triangles: np.ndarray) -> np.ndarray:
             # Pre-processes the triangles by each of their edges
-            mask_a = intersect_edges(triangles[:, 0], triangles[:, 1])
-            mask_b = intersect_edges(triangles[:, 1], triangles[:, 2])
-            mask_c = intersect_edges(triangles[:, 2], triangles[:, 0])
+            mask_a = intersect_edges(triangles[0::3], triangles[1::3])
+            mask_b = intersect_edges(triangles[1::3], triangles[2::3])
+            mask_c = intersect_edges(triangles[2::3], triangles[0::3])
 
             return mask_a | mask_b | mask_c
 
-        mask = preprocess_triangles(self.vertices[self.indices])
+        mask = preprocess_triangles(self.triangles)
 
         try:
             return meshcut.cross_section(self.vertices, self.indices[mask], np.array(origin), np.array(normal))
@@ -172,4 +172,4 @@ class MeshElement(Element):
         if not Intersections.aabb_intersection(origin, ray, *self.bounding_box):
             return np.empty(0)
 
-        return Intersections.ray_with_mesh(origin, ray, self.vertices[self.indices])
+        return Intersections.ray_with_triangles(origin, ray, self.triangles)
