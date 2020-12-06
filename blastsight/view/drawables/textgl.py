@@ -39,12 +39,12 @@ class TextGL(GLDrawable):
     @staticmethod
     def _get_rendering_buffer(xpos, ypos, w, h, zfix=0.0):
         return np.asarray([
-            xpos,     ypos - h, 0, 0,
+            xpos,     ypos + h, 0, 0,
             xpos,     ypos,     0, 1,
             xpos + w, ypos,     1, 1,
-            xpos,     ypos - h, 0, 0,
+            xpos,     ypos + h, 0, 0,
             xpos + w, ypos,     1, 1,
-            xpos + w, ypos - h, 1, 0,
+            xpos + w, ypos + h, 1, 0,
         ], np.float32)
 
     def setup_attributes(self) -> None:
