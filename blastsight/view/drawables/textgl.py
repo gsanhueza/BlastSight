@@ -32,12 +32,11 @@ class TextGL(GLDrawable):
     def __init__(self, element, *args, **kwargs):
         super().__init__(element, *args, **kwargs)
         self.fontfile = r'/usr/share/fonts/gnu-free/FreeMono.otf'
-
         self.face = freetype.Face(self.fontfile)
         self.characters = {}
 
     @staticmethod
-    def _get_rendering_buffer(xpos, ypos, w, h, zfix=0.0):
+    def _get_rendering_buffer(xpos, ypos, w, h, zfix=0.0) -> np.ndarray:
         return np.asarray([
             xpos,     ypos + h, 0, 0,
             xpos,     ypos,     0, 1,
@@ -47,15 +46,7 @@ class TextGL(GLDrawable):
             xpos + w, ypos + h, 1, 0,
         ], np.float32)
 
-    def setup_attributes(self) -> None:
-        _POSITION = 0
-
-        # Disable byte-alignment restriction
-        glPixelStorei(GL_UNPACK_ALIGNMENT, 1)
-
-        self.face.set_char_size(48 * 64)
-
-        # load first 128 characters of ASCII set
+    def _setup_characters(self) -> None:
         for i in range(0, 128):
             self.face.load_char(chr(i))
             glyph = self.face.glyph
@@ -75,18 +66,28 @@ class TextGL(GLDrawable):
             # Now store character for later use
             self.characters[chr(i)] = CharacterSlot(texture, glyph)
 
-        glBindTexture(GL_TEXTURE_2D, 0)
+            glBindTexture(GL_TEXTURE_2D, 0)
+
+    def setup_attributes(self) -> None:
+        _POSITION = 0
+
+        # Disable byte-alignment restriction
+        glPixelStorei(GL_UNPACK_ALIGNMENT, 1)
+
+        # Set character size
+        self.face.set_char_size(48 * 64)
+
+        # Load first 128 characters of ASCII set
+        self._setup_characters()
 
         # Generate VAO and VBOs (see GLDrawable)
         self.generate_buffers(1)
         glBindVertexArray(self.vao)
 
-        glBindBuffer(GL_ARRAY_BUFFER, self._vbos)
-        glBufferData(GL_ARRAY_BUFFER, 6 * 4 * 4, None, GL_DYNAMIC_DRAW)
-        glEnableVertexAttribArray(_POSITION)
-        glVertexAttribPointer(_POSITION, 4, GL_FLOAT, GL_FALSE, 0, None)
-
+        # Fill buffer (with empty data for now)
+        self.fill_buffer(_POSITION, 4, np.zeros(6 * 4), GLfloat, GL_FLOAT, self._vbos)
         glBindBuffer(GL_ARRAY_BUFFER, 0)
+
         glBindVertexArray(0)
 
     def draw(self) -> None:
@@ -94,7 +95,7 @@ class TextGL(GLDrawable):
         glBindVertexArray(self.vao)
 
         # FIXME Extract these from the drawable, instead of hard-coding them
-        text = "hello"
+        text = "Hello"
         scale = 1
         x = 20
         y = 50
