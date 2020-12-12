@@ -95,7 +95,7 @@ class TextGL(GLDrawable):
         glBindVertexArray(self.vao)
 
         # FIXME Extract these from the drawable, instead of hard-coding them
-        text = "Hello"
+        text = "hello"
         scale = 1
         x = 20
         y = 50

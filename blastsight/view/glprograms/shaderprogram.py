@@ -7,7 +7,6 @@
 
 import pathlib
 
-from qtpy.QtGui import QOpenGLContext
 from qtpy.QtGui import QOpenGLShader
 from qtpy.QtGui import QOpenGLShaderProgram
 
@@ -32,7 +31,7 @@ class ShaderProgram:
         return self.base_name
 
     def initialize(self) -> None:
-        self.shader_program = QOpenGLShaderProgram(QOpenGLContext.currentContext())
+        self.shader_program = QOpenGLShaderProgram()
         self.setup_shaders()
 
         self.add_uniform_handler('model_view_matrix')
