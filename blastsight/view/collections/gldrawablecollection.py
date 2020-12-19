@@ -12,6 +12,7 @@ from ..drawables.blockgl import BlockGL
 from ..drawables.linegl import LineGL
 from ..drawables.pointgl import PointGL
 from ..drawables.tubegl import TubeGL
+from ..drawables.textgl import TextGL
 
 from ..glprograms.meshprogram import MeshProgram
 from ..glprograms.wireprogram import WireProgram
@@ -28,6 +29,8 @@ from ..glprograms.tubeprogram import TubeProgram
 from ..glprograms.meshphantomprogram import MeshPhantomProgram
 from ..glprograms.xsectionmeshprogram import XSectionMeshProgram
 from ..glprograms.xsectionblockprogram import XSectionBlockProgram
+
+from ..glprograms.textprogram import TextProgram
 
 
 class GLDrawableCollection(GLCollection):
@@ -52,3 +55,6 @@ class GLDrawableCollection(GLCollection):
         self.associate(MeshPhantomProgram(), MeshGL, selector=lambda x: x.is_phantom)
         self.associate(XSectionBlockProgram(), BlockGL, selector=lambda x: x.is_cross_sectionable)
         self.associate(XSectionMeshProgram(), MeshGL, selector=lambda x: x.is_cross_sectionable)
+
+        # Text
+        self.associate(TextProgram(), TextGL)

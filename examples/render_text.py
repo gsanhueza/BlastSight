@@ -13,24 +13,10 @@ def demo_text():
     viewer = Viewer()
     viewer.setWindowTitle('BlastSight (Text demo)')
 
-    textgl = TextGL(NullElement(id=0))
-    viewer.register_drawable(textgl, viewer.post_collection)
+    # Setup our text
+    viewer.register_drawable(TextGL(text="Hello", position=[0.0, 0.0, 180.0]))
 
-    # First letter should be here
-    square = viewer.mesh(
-        triangles=[
-            [20.0, 79.0, 0.0],
-            [20.0, 50.0, 0.0],
-            [45.0, 50.0, 0.0],
-            [20.0, 79.0, 0.0],
-            [45.0, 50.0, 0.0],
-            [45.0, 79.0, 0.0]],
-        color=[1.0, 1.0, 1.0],
-        wireframe=True,
-    )
-
-    square.show()
-    viewer.show(autofit=False)
+    viewer.show()
 
 
 if __name__ == '__main__':
