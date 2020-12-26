@@ -14,7 +14,9 @@ def demo_text():
     viewer.setWindowTitle('BlastSight (Text demo)')
 
     # Setup our text
-    viewer.register_drawable(TextGL(text="Hello", position=[0.0, 0.0, 180.0]))
+    viewer.register_drawable(TextGL(text="Hello world", position=[0.0, 0.0, 100.0], name='Hello', id=10))
+    viewer.register_drawable(TextGL(text="Guten Tag", position=[0.0, 100.0, 0.0], name='Guten', id=20))
+    viewer.register_drawable(TextGL(text="Bonjour", position=[100.0, 0.0, 0.0], name='Bonjour', id=30))
 
     viewer.show()
 

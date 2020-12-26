@@ -30,10 +30,8 @@ class CharacterSlot:
 
 
 class TextGL(GLDrawable):
-    TEXT_ID = -1
-
-    def __init__(self, element=NullElement(), *args, **kwargs):
-        super().__init__(element, *args, **kwargs)
+    def __init__(self, element=None, *args, **kwargs):
+        super().__init__(NullElement(*args, **kwargs), *args, **kwargs)
         self.fontfile = r'/usr/share/fonts/gnu-free/FreeMono.otf'
         self.face = freetype.Face(self.fontfile)
         self.characters = {}
@@ -41,10 +39,6 @@ class TextGL(GLDrawable):
         self.text = kwargs.get('text', ' ')
         self.scale = kwargs.get('scale', 1)
         self.vertices = [kwargs.get('position', [0.0, 0.0, 0.0])]
-
-        # Force self-identifiers for now
-        self.id = TextGL.TEXT_ID
-        TextGL.TEXT_ID -= 1
 
     @staticmethod
     def _get_rendering_buffer(xpos, ypos, zpos, w, h) -> np.ndarray:
