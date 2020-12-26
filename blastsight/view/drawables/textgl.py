@@ -35,6 +35,7 @@ class TextGL(GLDrawable):
         self.fontfile = r'/usr/share/fonts/gnu-free/FreeMono.otf'
         self.face = freetype.Face(self.fontfile)
         self.characters = {}
+        self.text_vertices = []
 
         self.text = kwargs.get('text', ' ')
         self.scale = kwargs.get('scale', 1)
@@ -84,6 +85,22 @@ class TextGL(GLDrawable):
 
             glBindTexture(GL_TEXTURE_2D, 0)
 
+    def _setup_text_vertices(self) -> None:
+        # Retrieve positions
+        x = self.x[0]
+        y = self.y[0]
+        z = self.z[0]
+
+        for c in self.text:
+            ch = self.characters[c]
+            w, h = ch.textureSize
+            w = w * self.scale
+            h = h * self.scale
+            self.text_vertices.append(self._get_rendering_buffer(x, y, z, w, h))
+
+            # Now advance cursors for next glyph (note that advance is number of 1/64 pixels)
+            x += (ch.advance >> 6) * self.scale
+
     def setup_attributes(self) -> None:
         _POSITION = 0
         _TEXTURE = 1
@@ -96,6 +113,9 @@ class TextGL(GLDrawable):
 
         # Load first 128 characters of ASCII set
         self._setup_characters()
+
+        # Setup text vertices
+        self._setup_text_vertices()
 
         # Generate VAO and VBOs (see GLDrawable)
         self.generate_buffers(2)
@@ -112,43 +132,28 @@ class TextGL(GLDrawable):
         glActiveTexture(GL_TEXTURE0)
         glBindVertexArray(self.vao)
 
-        # Retrieve positions
-        x = self.x[0]
-        y = self.y[0]
-        z = self.z[0]
-
-        for c in self.text:
+        for i, c in enumerate(self.text):
             ch = self.characters[c]
-            w, h = ch.textureSize
-            w = w * self.scale
-            h = h * self.scale
-            vertices = self._get_rendering_buffer(x, y, z, w, h)
+            vertices = self.text_vertices[i]
 
-            # render glyph texture over quad
+            # Render glyph texture over quad
             glBindTexture(GL_TEXTURE_2D, ch.texture)
-            # update content of VBO memory
+            # Update content of VBO memory
             glBindBuffer(GL_ARRAY_BUFFER, self._vbos[0])
             glBufferSubData(GL_ARRAY_BUFFER, 0, vertices.nbytes, vertices)
 
             glBindBuffer(GL_ARRAY_BUFFER, 0)
-            # render quad
+            # Render quad
             glDrawArrays(GL_TRIANGLES, 0, 6)
-            # now advance cursors for next glyph (note that advance is number of 1/64 pixels)
-            x += (ch.advance >> 6) * self.scale
 
         glBindVertexArray(0)
         glBindTexture(GL_TEXTURE_2D, 0)
 
     @property
     def bounding_box(self):
-        min_bound = self.vertices[0]
-        max_bound = self.vertices[0]
-
         if not bool(self.characters):
             print(f'{self} characters have not been generated yet!')
-            return min_bound, max_bound
+            return self.vertices[0], self.vertices[0]
 
-        max_bound[0] += sum(map(lambda c: (self.characters[c].advance >> 6) * self.scale, self.text))
-        max_bound[1] += self.characters[self.text[0]].textureSize[1]
-
-        return min_bound, max_bound
+        self.vertices = np.unique(np.array(self.text_vertices).flatten().reshape((-1, 3)), axis=0)
+        return self.element.bounding_box
