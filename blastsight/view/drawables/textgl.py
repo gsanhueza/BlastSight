@@ -39,7 +39,19 @@ class TextGL(GLDrawable):
 
         self.text = kwargs.get('text', ' ')
         self.scale = kwargs.get('scale', 1)
-        self.vertices = [kwargs.get('position', [0.0, 0.0, 0.0])]
+        self.position = kwargs.get('position', [0.0, 0.0, 0.0])
+
+        # Set character size
+        self.face.set_char_size(48 * 64)
+
+        # Load first 128 characters of ASCII set
+        self._setup_characters()
+
+        # Setup text vertices
+        self._setup_text_vertices()
+
+        # Now we can update the real vertices
+        self.vertices = np.unique(np.array(self.text_vertices).flatten().reshape((-1, 3)), axis=0)
 
     @staticmethod
     def _get_rendering_buffer(xpos, ypos, zpos, w, h) -> np.ndarray:
@@ -86,10 +98,10 @@ class TextGL(GLDrawable):
             glBindTexture(GL_TEXTURE_2D, 0)
 
     def _setup_text_vertices(self) -> None:
+        self.text_vertices.clear()
+
         # Retrieve positions
-        x = self.x[0]
-        y = self.y[0]
-        z = self.z[0]
+        x, y, z = self.position
 
         for c in self.text:
             ch = self.characters[c]
@@ -108,14 +120,9 @@ class TextGL(GLDrawable):
         # Disable byte-alignment restriction
         glPixelStorei(GL_UNPACK_ALIGNMENT, 1)
 
-        # Set character size
-        self.face.set_char_size(48 * 64)
-
         # Load first 128 characters of ASCII set
+        # (Why do we have to setup this twice (once in the constructor)?)
         self._setup_characters()
-
-        # Setup text vertices
-        self._setup_text_vertices()
 
         # Generate VAO and VBOs (see GLDrawable)
         self.generate_buffers(2)
@@ -148,12 +155,3 @@ class TextGL(GLDrawable):
 
         glBindVertexArray(0)
         glBindTexture(GL_TEXTURE_2D, 0)
-
-    @property
-    def bounding_box(self):
-        if not bool(self.characters):
-            print(f'{self} characters have not been generated yet!')
-            return self.vertices[0], self.vertices[0]
-
-        self.vertices = np.unique(np.array(self.text_vertices).flatten().reshape((-1, 3)), axis=0)
-        return self.element.bounding_box
