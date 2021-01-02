@@ -38,7 +38,7 @@ class TextGL(GLDrawable):
         self.text_vertices = []
 
         self.text = kwargs.get('text', ' ')
-        self.scale = kwargs.get('scale', 1)
+        self.scale = kwargs.get('scale', 0.1)
         self.position = kwargs.get('position', [0.0, 0.0, 0.0])
 
         # Set character size
