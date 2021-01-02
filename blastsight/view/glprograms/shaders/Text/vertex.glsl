@@ -30,8 +30,8 @@ mat4 billboard_matrix(mat4 matrix)
 void main()
 {
     // Billboard model_view_matrix
-    mat4 modelView = model_view_matrix;
-//    mat4 modelView = billboard_matrix(model_view_matrix);
+//    mat4 modelView = model_view_matrix;
+    mat4 modelView = billboard_matrix(model_view_matrix);
 
     gl_Position = proj_matrix * modelView * vec4(vertex, 1.0);
     TexCoords = texcoord;
