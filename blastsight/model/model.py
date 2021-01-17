@@ -6,7 +6,6 @@
 #  See LICENSE for more info.
 
 import numpy as np
-import warnings
 
 from . import utils
 
@@ -124,6 +123,9 @@ class Model:
 
     def tubes(self, *args, **kwargs) -> TubeElement:
         return self.register_element(self.factory.tubes(*args, **kwargs))
+
+    def text(self, *args, **kwargs) -> NullElement:
+        return self.register_element(self.factory.null(*args, **kwargs))
 
     """
     Load methods by path

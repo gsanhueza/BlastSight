@@ -32,6 +32,7 @@ from .drawables.linegl import LineGL
 from .drawables.meshgl import MeshGL
 from .drawables.pointgl import PointGL
 from .drawables.tubegl import TubeGL
+from .drawables.textgl import TextGL
 
 from .drawablefactory import DrawableFactory
 from .fpscounter import FPSCounter
@@ -347,6 +348,9 @@ class IntegrableViewer(QOpenGLWidget):
 
     def tubes(self, *args, **kwargs) -> TubeGL:
         return self.register_drawable(self.factory.tubes(*args, **kwargs))
+
+    def text(self, *args, **kwargs) -> TextGL:
+        return self.register_drawable(self.factory.text(*args, **kwargs))
 
     """
     Load methods by path

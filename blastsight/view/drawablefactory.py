@@ -15,6 +15,7 @@ from .drawables.blockgl import BlockGL
 from .drawables.pointgl import PointGL
 from .drawables.linegl import LineGL
 from .drawables.tubegl import TubeGL
+from .drawables.textgl import TextGL
 
 
 class DrawableFactory:
@@ -56,6 +57,9 @@ class DrawableFactory:
 
     def tubes(self, *args, **kwargs) -> TubeGL:
         return self.generate_drawable(TubeGL, self.engine.tubes, *args, **kwargs)
+
+    def text(self, *args, **kwargs) -> TextGL:
+        return self.generate_drawable(TextGL, self.engine.text, *args, **kwargs)
 
     """
     Drawables by path

@@ -10,7 +10,6 @@ import numpy as np
 
 from OpenGL.GL import *
 from .gldrawable import GLDrawable
-from ...model.elements.nullelement import NullElement
 
 
 # Adapted from https://stackoverflow.com/questions/63836707/how-to-render-text-with-pyopengl
@@ -30,8 +29,8 @@ class CharacterSlot:
 
 
 class TextGL(GLDrawable):
-    def __init__(self, element=None, *args, **kwargs):
-        super().__init__(NullElement(*args, **kwargs), *args, **kwargs)
+    def __init__(self, element, *args, **kwargs):
+        super().__init__(element, *args, **kwargs)
         self.fontfile = r'/usr/share/fonts/gnu-free/FreeMono.otf'
         self.face = freetype.Face(self.fontfile)
         self.characters = {}
