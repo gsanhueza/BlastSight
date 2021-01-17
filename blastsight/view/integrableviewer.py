@@ -70,6 +70,7 @@ class IntegrableViewer(QOpenGLWidget):
     signal_animation_finished = Signal()
 
     signal_screen_clicked = Signal(object)
+    signal_ray_generated = Signal(object)
     signal_fps_updated = Signal(float)
     signal_controller_updated = Signal(str)
     signal_projection_updated = Signal(str)

@@ -15,7 +15,12 @@ class BaseController:
         self.viewer = viewer
 
     def mousePressEvent(self, event: QMouseEvent) -> None:
-        self.viewer.signal_screen_clicked.emit([event.x(), event.y(), 0])
+        x, y, z = [event.pos().x(), event.pos().y(), 0]
+        origin = self.viewer.origin_from_click(x, y, z)
+        ray = self.viewer.ray_from_click(x, y, z)
+
+        self.viewer.signal_screen_clicked.emit([x, y, z])
+        self.viewer.signal_ray_generated.emit({'origin': origin, 'ray': ray})
 
     def mouseMoveEvent(self, event: QMouseEvent) -> None:
         pass
