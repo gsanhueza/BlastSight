@@ -57,20 +57,20 @@ class TextGL(GLDrawable):
         return np.asarray([
             xpos,     ypos + h, zpos,
             xpos,     ypos,     zpos,
-            xpos + w, ypos,     zpos,
+            xpos,     ypos,     zpos + w,
             xpos,     ypos + h, zpos,
-            xpos + w, ypos,     zpos,
-            xpos + w, ypos + h, zpos,
+            xpos,     ypos,     zpos + w,
+            xpos,     ypos + h, zpos + w,
         ], np.float32)
 
     @staticmethod
     def _get_rendering_texture() -> np.ndarray:
         return np.asarray([
-            0, 0,
+            1, 1,
             0, 1,
-            1, 1,
             0, 0,
             1, 1,
+            0, 0,
             1, 0,
         ], np.float32)
 
@@ -107,10 +107,12 @@ class TextGL(GLDrawable):
             w, h = ch.textureSize
             w = w * self.scale
             h = h * self.scale
-            self.text_vertices.append(self._get_rendering_buffer(x, y, z, w, h))
+
+            # w, h are deliberately inverted
+            self.text_vertices.append(self._get_rendering_buffer(x, y, z, h, w))
 
             # Now advance cursors for next glyph (note that advance is number of 1/64 pixels)
-            x += (ch.advance >> 6) * self.scale
+            y += (ch.advance >> 6) * self.scale
 
     def setup_attributes(self) -> None:
         _POSITION = 0
