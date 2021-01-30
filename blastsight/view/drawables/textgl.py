@@ -39,6 +39,7 @@ class TextGL(GLDrawable):
         self.text = kwargs.get('text', ' ')
         self.scale = kwargs.get('scale', 0.1)
         self.position = kwargs.get('position', [0.0, 0.0, 0.0])
+        self.orientation = kwargs.get('orientation', 'elevation')
 
         # Set character size
         self.face.set_char_size(48 * 64)
@@ -53,24 +54,46 @@ class TextGL(GLDrawable):
         self.vertices = np.unique(np.array(self.text_vertices).flatten().reshape((-1, 3)), axis=0)
 
     @staticmethod
-    def _get_rendering_buffer(xpos, ypos, zpos, w, h) -> np.ndarray:
+    def _rendering_buffer_elevation(xpos, ypos, zpos, w, h) -> np.ndarray:
         return np.asarray([
             xpos,     ypos + h, zpos,
             xpos,     ypos,     zpos,
-            xpos,     ypos,     zpos + w,
+            xpos + w, ypos,     zpos,
             xpos,     ypos + h, zpos,
-            xpos,     ypos,     zpos + w,
-            xpos,     ypos + h, zpos + w,
+            xpos + w, ypos,     zpos,
+            xpos + w, ypos + h, zpos,
+        ], np.float32)
+
+    @staticmethod
+    def _rendering_buffer_north(xpos, ypos, zpos, w, h) -> np.ndarray:
+        return np.asarray([
+            xpos,     ypos,     zpos + h,
+            xpos,     ypos,     zpos,
+            xpos,     ypos + w, zpos,
+            xpos,     ypos,     zpos + h,
+            xpos,     ypos + w, zpos,
+            xpos,     ypos + w, zpos + h,
+        ], np.float32)
+
+    @staticmethod
+    def _rendering_buffer_east(xpos, ypos, zpos, w, h) -> np.ndarray:
+        return np.asarray([
+            xpos,     ypos,     zpos + h,
+            xpos,     ypos,     zpos,
+            xpos + w, ypos,     zpos,
+            xpos,     ypos,     zpos + h,
+            xpos + w, ypos,     zpos,
+            xpos + w, ypos,     zpos + h,
         ], np.float32)
 
     @staticmethod
     def _get_rendering_texture() -> np.ndarray:
         return np.asarray([
-            1, 1,
+            0, 0,
             0, 1,
-            0, 0,
             1, 1,
             0, 0,
+            1, 1,
             1, 0,
         ], np.float32)
 
@@ -108,11 +131,18 @@ class TextGL(GLDrawable):
             w = w * self.scale
             h = h * self.scale
 
-            # w, h are deliberately inverted
-            self.text_vertices.append(self._get_rendering_buffer(x, y, z, h, w))
+            # Select best vertices using orientation
+            if self.orientation == 'elevation':
+                self.text_vertices.append(self._rendering_buffer_elevation(x, y, z, w, h))
+                x += (ch.advance >> 6) * self.scale
 
-            # Now advance cursors for next glyph (note that advance is number of 1/64 pixels)
-            y += (ch.advance >> 6) * self.scale
+            elif self.orientation == 'north':
+                self.text_vertices.append(self._rendering_buffer_north(x, y, z, w, h))
+                y += (ch.advance >> 6) * self.scale
+
+            else:  # if self.orientation == 'east':
+                self.text_vertices.append(self._rendering_buffer_east(x, y, z, w, h))
+                x += (ch.advance >> 6) * self.scale
 
     def setup_attributes(self) -> None:
         _POSITION = 0

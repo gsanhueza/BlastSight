@@ -27,6 +27,11 @@ def demo_text():
     viewer.text(text=f'.y = {str(round(max_bound[1], 3))}', position=pos_max)
     viewer.lines(vertices=[pos_min, pos_max], color=[1.0, 0.0, 0.0], thickness=20)
 
+    # Showcase orientations
+    viewer.text(text='Facing: Elevation', position=[0.0, 0.0, 0.0], orientation='elevation')
+    viewer.text(text='Facing: North', position=[0.0, 0.0, 3.0], orientation='north')
+    viewer.text(text='Facing: East', position=[0.0, 5.0, 6.0], orientation='east')
+
     viewer.show()
 
 
