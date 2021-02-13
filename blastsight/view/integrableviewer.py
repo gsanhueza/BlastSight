@@ -767,19 +767,23 @@ class IntegrableViewer(QOpenGLWidget):
 
         self.set_rotation_angle(self.angles_from_vectors(normal, up))
 
-    def generate_slice_description(self, origin_list: list, ray_list: list) -> None:
+    def generate_slice_description(self, origin_list: list, ray_list: list) -> dict:
         # A plane is created from `origin` and `ray_list`.
         # In perspective projection, the origin is the same.
         origin = origin_list[0]
         normal = self.get_normal(origin_list, ray_list)
         up = utils.normalize(np.cross(ray_list[0], normal))
 
-        # Emit description of the slice
-        self.signal_slice_description.emit({
+        response = {
             'origin': origin,
             'normal': normal,
             'up': up,
-        })
+        }
+
+        # Emit description of the slice
+        self.signal_slice_description.emit(response)
+
+        return response
 
     def slice_meshes(self, origin: np.ndarray, normal: np.ndarray, include_hidden: bool = False) -> list:
         # By default, slice only visible meshes
@@ -814,11 +818,15 @@ class IntegrableViewer(QOpenGLWidget):
         self.signal_lines_clicked.emit(lines)
         self.signal_elements_detected.emit(results)
 
-    def measure_from_rays(self, origin_list: list, ray_list: list) -> None:
+        return results
+
+    def measure_from_rays(self, origin_list: list, ray_list: list) -> dict:
         meshes = list(filter(lambda m: m.is_visible, self.get_all_meshes()))
 
-        results = self.model.measure_from_rays(origin_list, ray_list, meshes)
-        self.signal_mesh_distances.emit(results)
+        response = self.model.measure_from_rays(origin_list, ray_list, meshes)
+        self.signal_mesh_distances.emit(response)
+
+        return response
 
     def cross_section(self, origin: np.ndarray, normal: np.ndarray) -> None:
         # Uniforms in cross-section are always auto-updated in self.paintGL()
