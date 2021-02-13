@@ -15,6 +15,21 @@ class AxisGL(GLDrawable):
     def __init__(self, element=None, *args, **kwargs):
         super().__init__(element, *args, **kwargs)
 
+        self.origin = kwargs.get('origin', np.zeros(3))
+        self.lengths = kwargs.get('lengths', np.ones(3))
+
+    @property
+    def x_pos(self) -> np.array:
+        return self.origin + [self.lengths[0], 0.0, 0.0]
+
+    @property
+    def y_pos(self) -> np.array:
+        return self.origin + [0.0, self.lengths[1], 0.0]
+
+    @property
+    def z_pos(self) -> np.array:
+        return self.origin + [0.0, 0.0, self.lengths[2]]
+
     def setup_attributes(self) -> None:
         _POSITION = 0
         _COLOR = 1
@@ -23,9 +38,9 @@ class AxisGL(GLDrawable):
         self.generate_buffers(2)
 
         # Data
-        vertices = np.array([[0.0, 0.0, 0.0], [1.0, 0.0, 0.0],
-                             [0.0, 0.0, 0.0], [0.0, 1.0, 0.0],
-                             [0.0, 0.0, 0.0], [0.0, 0.0, 1.0]]).astype(np.float32)
+        vertices = np.array([self.origin, self.x_pos,
+                             self.origin, self.y_pos,
+                             self.origin, self.z_pos]).astype(np.float32)
 
         colors = np.array([[1.0, 0.0, 0.0], [1.0, 0.0, 0.0],
                            [0.0, 1.0, 0.0], [0.0, 1.0, 0.0],
