@@ -8,10 +8,10 @@
 from .glcollection import GLCollection
 
 from ..drawables.axisgl import AxisGL
-from ..glprograms.axisprogram import AxisProgram
+from ..glprograms.orientationaxisprogram import OrientationAxisProgram
 
 
 class GLPostCollection(GLCollection):
     def __init__(self):
         super().__init__()
-        self.associate(AxisProgram(), AxisGL)
+        self.associate(OrientationAxisProgram(), AxisGL)

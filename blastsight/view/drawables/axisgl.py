@@ -30,6 +30,11 @@ class AxisGL(GLDrawable):
     def z_pos(self) -> np.array:
         return self.origin + [0.0, 0.0, self.lengths[2]]
 
+    @property
+    def bounding_box(self) -> tuple:
+        # The bounding_box property is part of Element, but NullElement doesn't have it
+        return self.origin, self.origin + self.lengths
+
     def setup_attributes(self) -> None:
         _POSITION = 0
         _COLOR = 1
