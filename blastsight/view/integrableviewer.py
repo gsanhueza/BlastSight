@@ -196,9 +196,7 @@ class IntegrableViewer(QOpenGLWidget):
             collection.update_uniform('model_view_matrix', self.camera * self.world)
 
             # Viewport values (with DPI awareness)
-            viewport = [float(self.devicePixelRatio() * self.width()),
-                        float(self.devicePixelRatio() * self.height())]
-            collection.update_uniform('viewport', *viewport)
+            collection.update_uniform('viewport', *self.viewport)
 
             # Update common uniforms (programs lacking the uniform will ignore the command)
             collection.update_uniform('plane_origin', *self.last_cross_origin)
@@ -254,6 +252,11 @@ class IntegrableViewer(QOpenGLWidget):
     @property
     def aspect(self) -> float:
         return 1.0 * self.width() / self.height()
+
+    @property
+    def viewport(self) -> iter:
+        return [float(self.devicePixelRatio() * self.width()),
+                float(self.devicePixelRatio() * self.height())]
 
     """
     Camera movements/rotations
