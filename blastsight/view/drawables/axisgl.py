@@ -62,7 +62,7 @@ class AxisGL(GLDrawable):
     def draw(self) -> None:
         glDisable(GL_DEPTH_TEST)
         glBindVertexArray(self.vao)
-        glLineWidth(5)
+        glLineWidth(3)
         glDrawArrays(GL_LINES, 0, 6)
         glLineWidth(1)
         glBindVertexArray(0)
