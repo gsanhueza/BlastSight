@@ -681,17 +681,11 @@ class IntegrableViewer(QOpenGLWidget):
 
     def ray_from_click(self, x: float, y: float, z: float) -> np.ndarray:
         # Perspective projection is straightforward
-        def perspective_ray() -> np.ndarray:
+        if self.current_projection == 'Perspective':
             return self.unproject(*self.screen_to_ndc(x, y, z))
 
         # Orthographic projection "forces" a click in the center (normalized to [-1.0, +1.0])
-        def orthographic_ray() -> np.ndarray:
-            return self.unproject(0.0, 0.0, 0.0)
-
-        if self.current_projection == 'Perspective':
-            return perspective_ray()
-
-        return orthographic_ray()
+        return self.unproject(0.0, 0.0, 0.0)
 
     def origin_from_click(self, x: float, y: float, z: float) -> np.ndarray:
         # Perspective projection is straightforward
@@ -729,18 +723,12 @@ class IntegrableViewer(QOpenGLWidget):
 
     def get_normal(self, origin_list, ray_list: list) -> np.ndarray:
         # Perspective: Same origins, different rays
-        def perspective_normal() -> np.ndarray:
+        if self.current_projection == 'Perspective':
             return utils.normalize(np.cross(*ray_list))
 
-        def orthographic_normal() -> np.ndarray:
-            # Orthographic: Same rays, different origins
-            origin_diff = np.diff(origin_list, axis=0)[0]
-            return utils.normalize(np.cross(ray_list[0], origin_diff))
-
-        if self.current_projection == 'Perspective':
-            return perspective_normal()
-
-        return orthographic_normal()
+        # Orthographic: Same rays, different origins
+        origin_diff = np.diff(origin_list, axis=0)[0]
+        return utils.normalize(np.cross(ray_list[0], origin_diff))
 
     @staticmethod
     def angles_from_vectors(normal: np.ndarray, up: np.ndarray) -> np.ndarray:
