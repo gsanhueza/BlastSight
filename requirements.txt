@@ -9,3 +9,4 @@ tables
 dxfgrabber
 colour
 meshcut
+freetype-py
