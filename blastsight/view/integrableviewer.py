@@ -191,19 +191,19 @@ class IntegrableViewer(QOpenGLWidget):
         return self._rotation_center
 
     @camera_position.setter
-    def camera_position(self, pos: list) -> None:
-        self._camera_position = np.asarray(pos)
-        self.signal_camera_translated.emit(pos)
+    def camera_position(self, value: iter) -> None:
+        self._camera_position = np.asarray(value)
+        self.signal_camera_translated.emit(value)
 
     @rotation_angle.setter
-    def rotation_angle(self, rot: list) -> None:
-        self._rotation_angle = np.asarray(rot)
-        self.signal_camera_rotated.emit(rot)
+    def rotation_angle(self, value: iter) -> None:
+        self._rotation_angle = np.asarray(value)
+        self.signal_camera_rotated.emit(value)
 
     @rotation_center.setter
-    def rotation_center(self, center: list) -> None:
-        self._rotation_center = np.asarray(center)
-        self.signal_center_translated.emit(center)
+    def rotation_center(self, value: iter) -> None:
+        self._rotation_center = np.asarray(value)
+        self.signal_center_translated.emit(value)
 
     """
     API for partial camera movements/rotations
