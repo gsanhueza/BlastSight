@@ -174,7 +174,6 @@ class IntegrableViewer(QOpenGLWidget):
 
         self.world.setToIdentity()
         self.camera.setToIdentity()
-        self.proj.setToIdentity()
 
         # Translate by rotation center (world position)
         self.world.translate(*self.rotation_center)
@@ -189,9 +188,6 @@ class IntegrableViewer(QOpenGLWidget):
 
         # Translate the camera
         self.camera.translate(*-self.camera_position)
-
-        # Project (Perspective/Orthographic)
-        self.resizeGL(self.width(), self.height())
 
         # Propagate common uniform values (programs lacking the uniform will ignore the command)
         for collection in [self.pre_collection, self.drawable_collection, self.post_collection]:
@@ -218,13 +214,13 @@ class IntegrableViewer(QOpenGLWidget):
         self.fps_counter.tick()
 
     def resizeGL(self, w: float, h: float) -> None:
-        aspect = w / h
+        self.proj.setToIdentity()
 
         if self.current_projection == 'Perspective':
-            self.proj.perspective(self.fov, aspect, 1.0, 100000.0)
+            self.proj.perspective(self.fov, self.aspect, 1.0, 100000.0)
         else:  # if self.current_projection == 'Orthographic':
             z = self.off_center[2] * 0.65
-            self.proj.ortho(-z, z, -z / aspect, z / aspect, 0.0, 100000.0)
+            self.proj.ortho(-z, z, -z / self.aspect, z / self.aspect, 0.0, 100000.0)
 
     def recreate(self) -> None:
         self.pre_collection.recreate()
@@ -254,6 +250,10 @@ class IntegrableViewer(QOpenGLWidget):
     @property
     def off_center(self) -> np.ndarray:
         return self.camera_position - self.rotation_center
+
+    @property
+    def aspect(self) -> float:
+        return 1.0 * self.width() / self.height()
 
     """
     Camera movements/rotations
@@ -384,11 +384,13 @@ class IntegrableViewer(QOpenGLWidget):
     def perspective_projection(self) -> None:
         self.current_projection = 'Perspective'
         self.signal_projection_updated.emit(self.current_projection)
+        self.resizeGL(self.width(), self.height())
         self.update()
 
     def orthographic_projection(self) -> None:
         self.current_projection = 'Orthographic'
         self.signal_projection_updated.emit(self.current_projection)
+        self.resizeGL(self.width(), self.height())
         self.update()
 
     """
@@ -598,18 +600,17 @@ class IntegrableViewer(QOpenGLWidget):
 
         # Put the camera in a position that allow us to see between the boundaries.
         md = np.max(np.diff([min_bound, max_bound], axis=0))
-        aspect = self.width() / self.height()
         fov_rad = self.fov * np.pi / 180.0
 
         # In perspective projection, we need a clever trigonometric calculation.
         if self.current_projection == 'Perspective':
             dist = (md / np.tan(fov_rad / 2) + md) / 2.0
-            z_shift = dist * max(1.0, 1.0 / aspect)
+            z_shift = dist * max(1.0, 1.0 / self.aspect)
 
         # But in orthographic projection, it's more direct.
         else:
             dist = md / 2
-            z_shift = dist * max(1.0, aspect)
+            z_shift = dist * max(1.0, self.aspect)
 
         camera_shift = center + np.array([0.0, 0.0, 1.1 * z_shift])
         self.set_camera_position(camera_shift)
@@ -701,8 +702,7 @@ class IntegrableViewer(QOpenGLWidget):
         # we need to trick the origin calculation.
         def orthographic_origin() -> np.ndarray:
             ndc = self.screen_to_ndc(x, y, z)
-            aspect = self.width() / self.height()
-            aspect_bias = np.array([1.0, 1.0 / aspect, 0.0])
+            aspect_bias = np.array([1.0, 1.0 / self.aspect, 0.0])
 
             # The idea is to strategically move the camera by an offset, so that
             # clicking anywhere in the screen will give us the same result as
