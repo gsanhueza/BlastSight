@@ -153,6 +153,86 @@ class IntegrableViewer(QOpenGLWidget):
         self.fps_counter.add_callback(self.signal_fps_updated.emit)
 
     """
+    Internal methods
+    """
+    def initializeGL(self) -> None:
+        glClearColor(0.0, 0.0, 0.0, 1.0)
+        glEnable(GL_VERTEX_PROGRAM_POINT_SIZE)
+        glEnable(GL_POINT_SPRITE)
+        glDisable(GL_CULL_FACE)
+        glEnable(GL_DEPTH_TEST)
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
+
+        # Initialize collections
+        self.pre_collection.initialize()
+        self.drawable_collection.initialize()
+        self.post_collection.initialize()
+
+    def paintGL(self) -> None:
+        # Clear screen
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+
+        self.world.setToIdentity()
+        self.camera.setToIdentity()
+        self.proj.setToIdentity()
+
+        # Translate by rotation center (world position)
+        self.world.translate(*self.rotation_center)
+
+        # Allow rotation of the world
+        self.world.rotate(self.rotation_angle[0], 1.0, 0.0, 0.0)
+        self.world.rotate(self.rotation_angle[1], 0.0, 1.0, 0.0)
+        self.world.rotate(self.rotation_angle[2], 0.0, 0.0, 1.0)
+
+        # Restore world
+        self.world.translate(*-self.rotation_center)
+
+        # Translate the camera
+        self.camera.translate(*-self.camera_position)
+
+        # Project (Perspective/Orthographic)
+        self.resizeGL(self.width(), self.height())
+
+        # Propagate common uniform values (programs lacking the uniform will ignore the command)
+        for collection in [self.pre_collection, self.drawable_collection, self.post_collection]:
+            # MVP matrices
+            collection.update_uniform('proj_matrix', self.proj)
+            collection.update_uniform('model_view_matrix', self.camera * self.world)
+
+            # Viewport values (with DPI awareness)
+            viewport = [float(self.devicePixelRatio() * self.width()),
+                        float(self.devicePixelRatio() * self.height())]
+            collection.update_uniform('viewport', *viewport)
+
+            # Update common uniforms (programs lacking the uniform will ignore the command)
+            collection.update_uniform('plane_origin', *self.last_cross_origin)
+            collection.update_uniform('plane_normal', *self.last_cross_normal)
+
+        # Draw every GLDrawable (meshes, blocks, points, etc)
+        glEnable(GL_BLEND)
+        self.pre_collection.draw()
+        self.drawable_collection.draw()
+        self.post_collection.draw()
+
+        # Tick FPS counter
+        self.fps_counter.tick()
+
+    def resizeGL(self, w: float, h: float) -> None:
+        aspect = w / h
+
+        if self.current_projection == 'Perspective':
+            self.proj.perspective(self.fov, aspect, 1.0, 100000.0)
+        else:  # if self.current_projection == 'Orthographic':
+            z = self.off_center[2]
+            self.proj.ortho(-z, z, -z / aspect, z / aspect, 0.0, 100000.0)
+
+    def recreate(self) -> None:
+        self.pre_collection.recreate()
+        self.drawable_collection.recreate()
+        self.post_collection.recreate()
+        self.update()
+
+    """
     Properties
     """
     @property
@@ -556,86 +636,6 @@ class IntegrableViewer(QOpenGLWidget):
             max_all = np.max((max_all, max_bound), axis=0)
 
         return min_all, max_all
-
-    """
-    Internal methods
-    """
-    def initializeGL(self) -> None:
-        glClearColor(0.0, 0.0, 0.0, 1.0)
-        glEnable(GL_VERTEX_PROGRAM_POINT_SIZE)
-        glEnable(GL_POINT_SPRITE)
-        glDisable(GL_CULL_FACE)
-        glEnable(GL_DEPTH_TEST)
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
-
-        # Initialize collections
-        self.pre_collection.initialize()
-        self.drawable_collection.initialize()
-        self.post_collection.initialize()
-
-    def paintGL(self) -> None:
-        # Clear screen
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-
-        self.world.setToIdentity()
-        self.camera.setToIdentity()
-        self.proj.setToIdentity()
-
-        # Translate by rotation center (world position)
-        self.world.translate(*self.rotation_center)
-
-        # Allow rotation of the world
-        self.world.rotate(self.rotation_angle[0], 1.0, 0.0, 0.0)
-        self.world.rotate(self.rotation_angle[1], 0.0, 1.0, 0.0)
-        self.world.rotate(self.rotation_angle[2], 0.0, 0.0, 1.0)
-
-        # Restore world
-        self.world.translate(*-self.rotation_center)
-
-        # Translate the camera
-        self.camera.translate(*-self.camera_position)
-
-        # Project (Perspective/Orthographic)
-        self.resizeGL(self.width(), self.height())
-
-        # Propagate common uniform values (programs lacking the uniform will ignore the command)
-        for collection in [self.pre_collection, self.drawable_collection, self.post_collection]:
-            # MVP matrices
-            collection.update_uniform('proj_matrix', self.proj)
-            collection.update_uniform('model_view_matrix', self.camera * self.world)
-
-            # Viewport values (with DPI awareness)
-            viewport = [float(self.devicePixelRatio() * self.width()),
-                        float(self.devicePixelRatio() * self.height())]
-            collection.update_uniform('viewport', *viewport)
-
-            # Update common uniforms (programs lacking the uniform will ignore the command)
-            collection.update_uniform('plane_origin', *self.last_cross_origin)
-            collection.update_uniform('plane_normal', *self.last_cross_normal)
-
-        # Draw every GLDrawable (meshes, blocks, points, etc)
-        glEnable(GL_BLEND)
-        self.pre_collection.draw()
-        self.drawable_collection.draw()
-        self.post_collection.draw()
-
-        # Tick FPS counter
-        self.fps_counter.tick()
-
-    def resizeGL(self, w: float, h: float) -> None:
-        aspect = w / h
-
-        if self.current_projection == 'Perspective':
-            self.proj.perspective(self.fov, aspect, 1.0, 100000.0)
-        else:  # if self.current_projection == 'Orthographic':
-            z = self.off_center[2]
-            self.proj.ortho(-z, z, -z / aspect, z / aspect, 0.0, 100000.0)
-
-    def recreate(self) -> None:
-        self.pre_collection.recreate()
-        self.drawable_collection.recreate()
-        self.post_collection.recreate()
-        self.update()
 
     """
     Utilities
