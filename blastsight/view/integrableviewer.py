@@ -132,8 +132,8 @@ class IntegrableViewer(QOpenGLWidget):
         self.initialize()
 
     def initialize(self) -> None:
-        # Axis/Background
-        self.register_drawable(self.factory.axis(), self.post_collection)
+        # Orientation-Axis/Background
+        self.register_drawable(self.factory.axis(rgb=True), self.post_collection)
         self.register_drawable(self.factory.background(), self.pre_collection)
 
         # Signals
