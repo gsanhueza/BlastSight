@@ -14,14 +14,26 @@ from qtpy.QtGui import QOpenGLShaderProgram
 class ShaderProgram:
     def __init__(self):
         self.base_name = None
+        self.base_folder = f'{pathlib.Path(__file__).parent}/shaders'
         self.shader_program = None
-        self.shader_dir = f'{pathlib.Path(__file__).parent}/shaders'
 
         self.uniform_locations = {}
         self.uniform_values = {}
 
         self.opaques = []
         self.transparents = []
+
+    @property
+    def vertex_path(self) -> str:
+        return f'{self.base_folder}/{self.base_name}/vertex.glsl'
+
+    @property
+    def fragment_path(self) -> str:
+        return f'{self.base_folder}/{self.base_name}/fragment.glsl'
+
+    @property
+    def geometry_path(self) -> str:
+        return f'{self.base_folder}/{self.base_name}/geometry.glsl'
 
     @property
     def drawables(self) -> list:
@@ -32,32 +44,28 @@ class ShaderProgram:
 
     def initialize(self) -> None:
         self.shader_program = QOpenGLShaderProgram()
-        self.setup_shaders()
+        self.generate_shaders()
+        self.link_shaders()
 
         self.add_uniform_handler('model_view_matrix')
         self.add_uniform_handler('proj_matrix')
 
-    def setup_shaders(self) -> None:
-        # Placeholders to avoid early garbage collection
-        vs = self.enable_vertex_shader()
-        fs = self.enable_fragment_shader()
-
-        self.shader_program.link()
-
-    def _enable_shader(self, shader_type, filename: str) -> QOpenGLShader:
+    def generate_shader(self, shader_type, shader_path: str) -> QOpenGLShader:
         shader = QOpenGLShader(shader_type)
-        shader.compileSourceFile(f'{self.shader_dir}/{self.base_name}/{filename}')
+        shader.compileSourceFile(shader_path)
         self.shader_program.addShader(shader)
+
         return shader
 
-    def enable_vertex_shader(self, filename='vertex.glsl') -> QOpenGLShader:
-        return self._enable_shader(QOpenGLShader.Vertex, filename)
+    def generate_shaders(self) -> list:
+        shaders = list()
+        shaders.append(self.generate_shader(QOpenGLShader.Vertex, self.vertex_path))
+        shaders.append(self.generate_shader(QOpenGLShader.Fragment, self.fragment_path))
 
-    def enable_fragment_shader(self, filename='fragment.glsl') -> QOpenGLShader:
-        return self._enable_shader(QOpenGLShader.Fragment, filename)
+        return shaders
 
-    def enable_geometry_shader(self, filename='geometry.glsl') -> QOpenGLShader:
-        return self._enable_shader(QOpenGLShader.Geometry, filename)
+    def link_shaders(self) -> None:
+        self.shader_program.link()
 
     def add_uniform_handler(self, loc_str) -> None:
         self.uniform_locations[loc_str] = self.shader_program.uniformLocation(loc_str)
