@@ -17,12 +17,13 @@ class TubeGL(GLDrawable):
 
         self.indices_size = 0
 
+    def generate_buffers(self) -> None:
+        self._vaos = [glGenVertexArrays(1)]
+        self._vbos = glGenBuffers(3)
+
     def setup_attributes(self) -> None:
         _POSITION = 0
         _COLOR = 1
-
-        # Generate VAO and VBOs (see GLDrawable)
-        self.generate_buffers(3)
 
         # Data
         vertices, indices = self.element.as_mesh()

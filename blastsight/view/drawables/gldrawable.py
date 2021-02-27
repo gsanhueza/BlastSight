@@ -17,9 +17,9 @@ class GLDrawable:
         self._vbos = []
         self._observers = []
 
-        self._initialized = kwargs.pop('initialized', False)
-        self._visible = kwargs.pop('visible', True)
-        self._boostable = kwargs.pop('turbo', False)
+        self._is_initialized = kwargs.pop('initialized', False)
+        self._is_visible = kwargs.pop('visible', True)
+        self._is_boostable = kwargs.pop('turbo', False)
 
     # Note: The following "hacks" are shortened versions of Delegator Pattern.
     # They're convenient, but optional.
@@ -57,17 +57,23 @@ class GLDrawable:
         return self._vaos[-1]
 
     def initialize(self) -> None:
-        if not self.is_initialized:
-            self.setup_attributes()
+        if self.is_initialized:
+            return
+
+        self.generate_buffers()
+        self.setup_attributes()
+
         self.is_initialized = True
+
+    def reload(self) -> None:
+        self.is_initialized = False
+        self.initialize()
 
     def setup_attributes(self) -> None:
         pass
 
-    def generate_buffers(self, vbo_count: int) -> None:
-        if len(self._vaos) == 0:
-            self._vaos = [glGenVertexArrays(1)]
-            self._vbos = glGenBuffers(vbo_count)
+    def generate_buffers(self) -> None:
+        pass
 
     @staticmethod
     def fill_buffer(pointer, basesize, array, glsize, gltype, vbo):
@@ -80,7 +86,7 @@ class GLDrawable:
         pass
 
     def cleanup(self) -> None:
-        if self.is_initialized:
+        if self._is_initialized:
             glDeleteBuffers(len(self._vbos), self._vbos)
             glDeleteVertexArrays(len(self._vaos), self._vaos)
 
@@ -89,28 +95,28 @@ class GLDrawable:
     """
     @property
     def is_initialized(self) -> bool:
-        return self._initialized
+        return self._is_initialized
 
     @property
     def is_visible(self) -> bool:
-        return self._visible
+        return self._is_visible
 
     @property
     def is_boostable(self) -> bool:
-        return self._boostable
+        return self._is_boostable
 
     @is_initialized.setter
     def is_initialized(self, status: bool) -> None:
-        self._initialized = status
+        self._is_initialized = status
 
     @is_visible.setter
     def is_visible(self, status: bool) -> None:
-        self._visible = status
+        self._is_visible = status
         self.notify()
 
     @is_boostable.setter
     def is_boostable(self, status: bool) -> None:
-        self._boostable = status
+        self._is_boostable = status
         self.notify()
 
     """

@@ -144,6 +144,10 @@ class TextGL(GLDrawable):
                 self.text_vertices.append(self._rendering_buffer_east(x, y, z, w, h))
                 x += (ch.advance >> 6) * self.scale
 
+    def generate_buffers(self) -> None:
+        self._vaos = [glGenVertexArrays(1)]
+        self._vbos = glGenBuffers(2)
+
     def setup_attributes(self) -> None:
         _POSITION = 0
         _TEXTURE = 1
@@ -155,11 +159,8 @@ class TextGL(GLDrawable):
         # (Why do we have to setup this twice (once in the constructor)?)
         self._setup_characters()
 
-        # Generate VAO and VBOs (see GLDrawable)
-        self.generate_buffers(2)
-        glBindVertexArray(self.vao)
-
         # Fill buffer (with empty data for now)
+        glBindVertexArray(self.vao)
         self.fill_buffer(_POSITION, 3, np.zeros(6 * 3), GLfloat, GL_FLOAT, self._vbos[_POSITION])
         self.fill_buffer(_TEXTURE, 2, self._get_rendering_texture(), GLfloat, GL_FLOAT, self._vbos[_TEXTURE])
         glBindBuffer(GL_ARRAY_BUFFER, 0)

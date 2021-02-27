@@ -534,7 +534,7 @@ class IntegrableViewer(QOpenGLWidget):
 
     def update_drawable(self, _id: int) -> None:
         self.makeCurrent()
-        self.get_drawable(_id).setup_attributes()
+        self.get_drawable(_id).reload()
         self.recreate()
 
     def delete(self, _id: int) -> None:

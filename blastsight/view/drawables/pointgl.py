@@ -16,14 +16,15 @@ class PointGL(GLDrawable):
         super().__init__(element, *args, **kwargs)
         self.num_points = 0
 
+    def generate_buffers(self) -> None:
+        self._vaos = [glGenVertexArrays(1)]
+        self._vbos = glGenBuffers(4)
+
     def setup_attributes(self) -> None:
         _POSITION = 0
         _COLOR = 1
         _ALPHA = 2
         _SIZE = 3
-
-        # Generate VAO and VBOs (see GLDrawable)
-        self.generate_buffers(4)
 
         # Data
         vertices = self.element.vertices.astype(np.float32)

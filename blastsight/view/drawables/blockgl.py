@@ -54,14 +54,15 @@ class BlockGL(GLDrawable):
     """
     Internal methods
     """
+    def generate_buffers(self) -> None:
+        self._vaos = [glGenVertexArrays(1)]
+        self._vbos = glGenBuffers(4)
+
     def setup_attributes(self) -> None:
         _POSITION = 0
         _COLOR = 1
         _ALPHA = 2
         _TEMPLATE = 3
-
-        # Generate VAO and VBOs (see GLDrawable)
-        self.generate_buffers(4)
 
         # Data
         vertices = np.array(self.element.vertices, np.float32)

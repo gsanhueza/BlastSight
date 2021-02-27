@@ -16,12 +16,13 @@ class LineGL(GLDrawable):
         super().__init__(element, *args, **kwargs)
         self.num_vertices = 0
 
+    def generate_buffers(self) -> None:
+        self._vaos = [glGenVertexArrays(1)]
+        self._vbos = glGenBuffers(2)
+
     def setup_attributes(self) -> None:
         _POSITION = 0
         _COLOR = 1
-
-        # Generate VAO and VBOs (see GLDrawable)
-        self.generate_buffers(2)
 
         # Data
         vertices = self.element.vertices.astype(np.float32)

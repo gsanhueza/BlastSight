@@ -36,12 +36,13 @@ class AxisGL(GLDrawable):
         # The bounding_box property is part of Element, but NullElement doesn't have it
         return self.origin, self.origin + self.lengths
 
+    def generate_buffers(self) -> None:
+        self._vaos = [glGenVertexArrays(1)]
+        self._vbos = glGenBuffers(2)
+
     def setup_attributes(self) -> None:
         _POSITION = 0
         _COLOR = 1
-
-        # Generate VAO and VBOs (see GLDrawable)
-        self.generate_buffers(2)
 
         # Data
         vertices = np.array([self.origin, self.x_pos,
