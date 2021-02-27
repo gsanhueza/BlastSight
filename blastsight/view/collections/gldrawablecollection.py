@@ -36,8 +36,7 @@ from ..glprograms.axisprogram import AxisProgram
 
 
 class GLDrawableCollection(GLCollection):
-    def __init__(self):
-        super().__init__()
+    def generate_associations(self):
         # Lines/Tubes/Points
         self.associate(LineProgram(), LineGL)
         self.associate(TubeProgram(), TubeGL)

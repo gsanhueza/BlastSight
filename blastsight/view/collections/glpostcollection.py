@@ -12,6 +12,5 @@ from ..glprograms.orientationaxisprogram import OrientationAxisProgram
 
 
 class GLPostCollection(GLCollection):
-    def __init__(self):
-        super().__init__()
+    def generate_associations(self):
         self.associate(OrientationAxisProgram(), AxisGL)

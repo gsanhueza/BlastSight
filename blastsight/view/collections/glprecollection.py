@@ -12,6 +12,5 @@ from ..glprograms.backgroundprogram import BackgroundProgram
 
 
 class GLPreCollection(GLCollection):
-    def __init__(self):
-        super().__init__()
+    def generate_associations(self):
         self.associate(BackgroundProgram(), BackgroundGL)

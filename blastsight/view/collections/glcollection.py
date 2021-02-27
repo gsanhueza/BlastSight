@@ -15,6 +15,7 @@ class GLCollection:
         self._programs = OrderedDict()
         self._collection = OrderedDict()
         self._needs_update = True
+        self._is_initialized = False
 
     """
     Drawable collection handlers
@@ -66,6 +67,19 @@ class GLCollection:
     ShaderProgram collection handlers
     """
     def initialize(self) -> None:
+        if self._is_initialized:
+            return
+
+        self.generate_associations()
+        self.initialize_programs()
+        self.update_drawables()
+
+        self._is_initialized = True
+
+    def generate_associations(self):
+        pass
+
+    def initialize_programs(self):
         for program in self.all_programs():
             program.initialize()
 
