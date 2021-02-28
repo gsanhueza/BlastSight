@@ -11,9 +11,9 @@ class TestShaderProgram:
     element = NullElement()
     drawable = GLDrawable(element)
 
-    @staticmethod
-    def initialize_program(_program):
+    def initialize_program(self, _program):
         assert _program.shader_program is None
+        _program.set_drawables([self.drawable])
         _program.initialize()
         assert _program.shader_program is not None
         return _program
@@ -23,7 +23,6 @@ class TestShaderProgram:
         return self.initialize_program(ShaderProgram())
 
     def test_draw(self, program):
-        program.set_drawables([self.drawable])
         assert len(program.opaques) == 1
         assert len(program.transparents) == 0
 

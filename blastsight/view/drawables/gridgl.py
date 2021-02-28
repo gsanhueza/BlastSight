@@ -88,7 +88,7 @@ class GridGL(GLDrawable):
         for i in range(rate, int(self.lengths[2]), rate):
             marks += self._z_mark(i, mark_size)
 
-        return np.array(marks).astype(np.float32)
+        return np.array(marks).reshape((-1, 3)).astype(np.float32)
 
     def setup_attributes(self) -> None:
         _POSITION = 0
