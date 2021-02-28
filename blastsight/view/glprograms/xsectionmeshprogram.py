@@ -6,6 +6,8 @@
 #  See LICENSE for more info.
 
 from OpenGL.GL import *
+from qtpy.QtGui import QOpenGLShader
+
 from .shaderprogram import ShaderProgram
 
 
@@ -19,13 +21,11 @@ class XSectionMeshProgram(ShaderProgram):
         self.add_uniform_handler('plane_origin')
         self.add_uniform_handler('plane_normal')
 
-    def setup_shaders(self) -> None:
-        # Placeholders to avoid early garbage collection
-        vs = self.enable_vertex_shader()
-        fs = self.enable_fragment_shader()
-        gs = self.enable_geometry_shader()
+    def generate_shaders(self) -> list:
+        shaders = super().generate_shaders()
+        shaders.append(self.generate_shader(QOpenGLShader.Geometry, self.geometry_path))
 
-        self.shader_program.link()
+        return shaders
 
     def inner_draw(self, drawables: list) -> None:
         glDisable(GL_DEPTH_TEST)
