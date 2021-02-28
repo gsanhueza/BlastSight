@@ -147,6 +147,10 @@ class XSectionWidget(QWidget):
             viewer.cross_section(origin, normal)
             viewer.set_camera_from_vectors(normal, up)
 
+            # Auto-pop button after cross-sectioning from screen
+            self.pushButton_controller.setChecked(False)
+            handle_controller(False)
+
         def handle_controller(status: bool) -> None:
             if status:
                 viewer.set_slice_controller()
