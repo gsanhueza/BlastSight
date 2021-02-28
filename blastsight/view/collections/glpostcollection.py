@@ -8,9 +8,9 @@
 from .glcollection import GLCollection
 
 from ..drawables.axisgl import AxisGL
-from ..glprograms.orientationaxisprogram import OrientationAxisProgram
+from ..glprograms.orientationprogram import OrientationProgram
 
 
 class GLPostCollection(GLCollection):
     def generate_associations(self):
-        self.associate(OrientationAxisProgram(), AxisGL)
+        self.associate(OrientationProgram(), AxisGL)

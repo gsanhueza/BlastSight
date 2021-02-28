@@ -9,10 +9,10 @@ from OpenGL.GL import glViewport
 from .shaderprogram import ShaderProgram
 
 
-class OrientationAxisProgram(ShaderProgram):
+class OrientationProgram(ShaderProgram):
     def __init__(self):
         super().__init__()
-        self.base_name = 'OrientationAxis'
+        self.base_name = 'Orientation'
 
     def initialize(self) -> None:
         super().initialize()

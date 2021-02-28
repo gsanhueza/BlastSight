@@ -238,7 +238,7 @@ class IntegrableViewer(QOpenGLWidget):
         return self.get_drawable(self.last_id)
 
     @property
-    def orientation_axis(self) -> GLDrawable:
+    def orientation(self) -> GLDrawable:
         return self.post_collection.get_last()
 
     @property
