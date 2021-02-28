@@ -17,6 +17,7 @@ class AxisGL(GLDrawable):
 
         self.origin = kwargs.get('origin', np.zeros(3))
         self.lengths = kwargs.get('lengths', np.ones(3))
+        self.color = kwargs.get('color', np.ones(3))
 
     @property
     def x_pos(self) -> np.array:
@@ -48,8 +49,8 @@ class AxisGL(GLDrawable):
                              self.origin, self.y_pos,
                              self.origin, self.z_pos]).astype(np.float32)
 
-        # Full white
-        colors = np.array(6 * [3 * [1.0]]).astype(np.float32)
+        # Color
+        colors = np.tile(self.color, 6).astype(np.float32)
 
         glBindVertexArray(self.vao)
 
