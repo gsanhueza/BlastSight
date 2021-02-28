@@ -7,10 +7,11 @@
 
 from .glcollection import GLCollection
 
-from ..drawables.axisgl import AxisGL
+from ..drawables.orientationgl import OrientationGL
 from ..glprograms.orientationprogram import OrientationProgram
 
 
 class GLPostCollection(GLCollection):
     def generate_associations(self):
-        self.associate(OrientationProgram(), AxisGL)
+        # Orientation Axis (the one in the corner)
+        self.associate(OrientationProgram(), OrientationGL)

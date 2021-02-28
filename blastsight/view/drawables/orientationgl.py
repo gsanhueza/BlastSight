@@ -11,29 +11,9 @@ from .gldrawable import GLDrawable
 from OpenGL.GL import *
 
 
-class AxisGL(GLDrawable):
+class OrientationGL(GLDrawable):
     def __init__(self, element=None, *args, **kwargs):
         super().__init__(element, *args, **kwargs)
-
-        self.origin = kwargs.get('origin', np.zeros(3))
-        self.lengths = kwargs.get('lengths', np.ones(3))
-
-    @property
-    def x_pos(self) -> np.array:
-        return self.origin + [self.lengths[0], 0.0, 0.0]
-
-    @property
-    def y_pos(self) -> np.array:
-        return self.origin + [0.0, self.lengths[1], 0.0]
-
-    @property
-    def z_pos(self) -> np.array:
-        return self.origin + [0.0, 0.0, self.lengths[2]]
-
-    @property
-    def bounding_box(self) -> tuple:
-        # The bounding_box property is part of Element, but NullElement doesn't have it
-        return self.origin, self.origin + self.lengths
 
     def generate_buffers(self) -> None:
         self._vaos = [glGenVertexArrays(1)]
@@ -44,12 +24,13 @@ class AxisGL(GLDrawable):
         _COLOR = 1
 
         # Data
-        vertices = np.array([self.origin, self.x_pos,
-                             self.origin, self.y_pos,
-                             self.origin, self.z_pos]).astype(np.float32)
+        vertices = np.array([[0.0, 0.0, 0.0], [1.0, 0.0, 0.0],
+                             [0.0, 0.0, 0.0], [0.0, 1.0, 0.0],
+                             [0.0, 0.0, 0.0], [0.0, 0.0, 1.0]]).astype(np.float32)
 
-        # Full white
-        colors = np.array(6 * [3 * [1.0]]).astype(np.float32)
+        colors = np.array([[1.0, 0.0, 0.0], [1.0, 0.0, 0.0],
+                           [0.0, 1.0, 0.0], [0.0, 1.0, 0.0],
+                           [0.0, 0.0, 1.0], [0.0, 0.0, 1.0]]).astype(np.float32)
 
         glBindVertexArray(self.vao)
 
@@ -60,8 +41,10 @@ class AxisGL(GLDrawable):
         glBindVertexArray(0)
 
     def draw(self) -> None:
+        glDisable(GL_DEPTH_TEST)
         glBindVertexArray(self.vao)
-        glLineWidth(3)
+        glLineWidth(5)
         glDrawArrays(GL_LINES, 0, 6)
         glLineWidth(1)
         glBindVertexArray(0)
+        glEnable(GL_DEPTH_TEST)
