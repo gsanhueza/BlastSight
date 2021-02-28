@@ -4,10 +4,10 @@ import pytest
 
 from blastsight.view.drawables.axisgl import AxisGL
 from blastsight.model.elements.nullelement import NullElement
-from tests.view.drawables.test_auto_gldrawable import TestAutoDrawable
+from tests.view.drawables.test_gldrawable import TestGLDrawable
 
 
-class TestAxisGL(TestAutoDrawable):
+class TestAxisGL(TestGLDrawable):
     @pytest.fixture()
     def drawable(self):
         return AxisGL(NullElement(id=0))

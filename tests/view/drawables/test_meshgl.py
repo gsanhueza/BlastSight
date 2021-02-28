@@ -4,10 +4,10 @@ import pytest
 
 from blastsight.model.elements.meshelement import MeshElement
 from blastsight.view.drawables.meshgl import MeshGL
-from tests.view.drawables.test_auto_gldrawable import TestAutoDrawable
+from tests.view.drawables.test_gldrawable import TestGLDrawable
 
 
-class TestMeshGL(TestAutoDrawable):
+class TestMeshGL(TestGLDrawable):
     @pytest.fixture()
     def drawable(self):
         return MeshGL(MeshElement(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], indices=[[0, 1, 2]], id=0))

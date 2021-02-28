@@ -1,23 +1,12 @@
 #!/usr/bin/env python
 
 import pytest
-import sys
-
-from qtpy.QtWidgets import QApplication
 
 from blastsight.model.elements.element import Element
 from blastsight.view.drawables.gldrawable import GLDrawable
-from blastsight.view.integrableviewer import IntegrableViewer
 
 
-class TestAutoDrawable:
-    app = QApplication(sys.argv)
-
-    # Needed to create OpenGLWidget.context()
-    viewer = IntegrableViewer()
-    viewer.show()
-    viewer.hide()
-
+class TestGLDrawable:
     @pytest.fixture()
     def drawable(self):
         return GLDrawable(Element(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], id=0))

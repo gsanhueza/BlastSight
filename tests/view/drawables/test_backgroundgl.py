@@ -4,10 +4,10 @@ import pytest
 
 from blastsight.view.drawables.backgroundgl import BackgroundGL
 from blastsight.model.elements.nullelement import NullElement
-from tests.view.drawables.test_auto_gldrawable import TestAutoDrawable
+from tests.view.drawables.test_gldrawable import TestGLDrawable
 
 
-class TestBackgroundGL(TestAutoDrawable):
+class TestBackgroundGL(TestGLDrawable):
     @pytest.fixture()
     def drawable(self):
         return BackgroundGL(NullElement(id=0))
