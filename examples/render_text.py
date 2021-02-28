@@ -18,8 +18,8 @@ def demo_text():
     mesh = viewer.load_mesh(path, color=[1.0, 1.0, 0.0], alpha=0.1)
     min_bound, max_bound = mesh.bounding_box
 
-    # Show an axis using the bounding box of the figure
-    viewer.axis(origin=min_bound, lengths=max_bound - min_bound, color=[1.0, 0.8, 0.0])
+    # Show a grid using the bounding box of the figure
+    viewer.grid(origin=min_bound, lengths=max_bound - min_bound, color=[1.0, 0.8, 0.0])
 
     # Get some positions
     pos_x = [max_bound[0], min_bound[1], min_bound[2]]

@@ -33,7 +33,7 @@ from .drawables.meshgl import MeshGL
 from .drawables.pointgl import PointGL
 from .drawables.tubegl import TubeGL
 from .drawables.textgl import TextGL
-from .drawables.axisgl import AxisGL
+from .drawables.gridgl import GridGL
 
 from .drawablefactory import DrawableFactory
 from .fpscounter import FPSCounter
@@ -133,7 +133,7 @@ class IntegrableViewer(QOpenGLWidget):
 
     def initialize(self) -> None:
         # Orientation-Axis/Background
-        self.register_drawable(self.factory.orientation(), self.post_collection)
+        self.register_drawable(self.factory.axis(), self.post_collection)
         self.register_drawable(self.factory.background(), self.pre_collection)
 
         # Signals
@@ -238,7 +238,7 @@ class IntegrableViewer(QOpenGLWidget):
         return self.get_drawable(self.last_id)
 
     @property
-    def orientation(self) -> GLDrawable:
+    def axis(self) -> GLDrawable:
         return self.post_collection.get_last()
 
     @property
@@ -438,8 +438,8 @@ class IntegrableViewer(QOpenGLWidget):
     def text(self, *args, **kwargs) -> TextGL:
         return self.register_drawable(self.factory.text(*args, **kwargs))
 
-    def axis(self, *args, **kwargs) -> AxisGL:
-        return self.register_drawable(self.factory.axis(*args, **kwargs))
+    def grid(self, *args, **kwargs) -> GridGL:
+        return self.register_drawable(self.factory.grid(*args, **kwargs))
 
     """
     Load methods by path

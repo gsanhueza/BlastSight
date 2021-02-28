@@ -6,7 +6,7 @@
 #  See LICENSE for more info.
 
 from .gldrawable import GLDrawable
-from .axisgl import AxisGL
+from .gridgl import GridGL
 from .backgroundgl import BackgroundGL
 from .blockgl import BlockGL
 from .pointgl import PointGL

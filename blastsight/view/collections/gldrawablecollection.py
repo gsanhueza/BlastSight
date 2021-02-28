@@ -13,7 +13,7 @@ from ..drawables.linegl import LineGL
 from ..drawables.pointgl import PointGL
 from ..drawables.tubegl import TubeGL
 from ..drawables.textgl import TextGL
-from ..drawables.axisgl import AxisGL
+from ..drawables.gridgl import GridGL
 
 from ..glprograms.meshprogram import MeshProgram
 from ..glprograms.wireprogram import WireProgram
@@ -32,7 +32,7 @@ from ..glprograms.xsectionmeshprogram import XSectionMeshProgram
 from ..glprograms.xsectionblockprogram import XSectionBlockProgram
 
 from ..glprograms.textprogram import TextProgram
-from ..glprograms.axisprogram import AxisProgram
+from ..glprograms.gridprogram import GridProgram
 
 
 class GLDrawableCollection(GLCollection):
@@ -61,4 +61,4 @@ class GLDrawableCollection(GLCollection):
         self.associate(TextProgram(), TextGL)
 
         # Axis
-        self.associate(AxisProgram(), AxisGL)
+        self.associate(GridProgram(), GridGL)

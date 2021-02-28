@@ -8,7 +8,7 @@
 import traceback
 
 from .drawables.gldrawable import GLDrawable
-from .drawables.orientationgl import OrientationGL
+from .drawables.axisgl import AxisGL
 from .drawables.backgroundgl import BackgroundGL
 
 from .drawables.meshgl import MeshGL
@@ -17,7 +17,7 @@ from .drawables.pointgl import PointGL
 from .drawables.linegl import LineGL
 from .drawables.tubegl import TubeGL
 from .drawables.textgl import TextGL
-from .drawables.axisgl import AxisGL
+from .drawables.gridgl import GridGL
 
 
 class DrawableFactory:
@@ -39,8 +39,8 @@ class DrawableFactory:
     """
     Drawables by arguments
     """
-    def orientation(self, *args, **kwargs) -> OrientationGL:
-        return self.generate_drawable(OrientationGL, self.engine.null, *args, **kwargs)
+    def axis(self, *args, **kwargs) -> AxisGL:
+        return self.generate_drawable(AxisGL, self.engine.null, *args, **kwargs)
 
     def background(self, *args, **kwargs) -> BackgroundGL:
         return self.generate_drawable(BackgroundGL, self.engine.null, *args, **kwargs)
@@ -63,8 +63,8 @@ class DrawableFactory:
     def text(self, *args, **kwargs) -> TextGL:
         return self.generate_drawable(TextGL, self.engine.text, *args, **kwargs)
 
-    def axis(self, *args, **kwargs) -> AxisGL:
-        return self.generate_drawable(AxisGL, self.engine.null, *args, **kwargs)
+    def grid(self, *args, **kwargs) -> GridGL:
+        return self.generate_drawable(GridGL, self.engine.null, *args, **kwargs)
 
     """
     Drawables by path
