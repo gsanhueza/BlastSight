@@ -88,3 +88,10 @@ class PointElement(DFElement):
     @marker.setter
     def marker(self, _marker: str) -> None:
         self.properties['marker'] = _marker
+
+    """
+    Utilities
+    """
+    def slice_with_plane(self, origin: np.ndarray, normal: np.ndarray) -> np.ndarray:
+        # Implementation abstracted in dfelement.py
+        return super().slice_with_plane_and_threshold(origin, normal, threshold=self.avg_size / 2)

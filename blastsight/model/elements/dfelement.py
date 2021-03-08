@@ -181,3 +181,40 @@ class DFElement(Element):
     @headers.setter
     def headers(self, _headers: list) -> None:
         self._mapper['x'], self._mapper['y'], self._mapper['z'], self._mapper['values'] = _headers
+
+    """
+    Utilities
+    """
+    def slice_with_plane_and_threshold(self, origin: np.ndarray, normal: np.ndarray, threshold: float):
+        """
+        *** Plane Equation: ax + by + cz + d = 0 ***
+
+        Where [a, b, c] = plane_normal
+        Where [x, y, z] = plane_origin (or any point that we know belongs to the plane)
+
+        With this, we can get `d`:
+        dot([a, b, c], [x, y, z]) + d = 0
+        d = -dot([a, b, c], [x, y, z])
+
+        Since we have multiple vertices, it's easier to multiply plane_normal with
+        each vertex, and manually sum them to get an array of dot products.
+
+        But our points are blocks (they have 3D dimensions in `block_size`).
+        That means we have to tolerate more points, so we will use a threshold.
+
+        *** Plane Inequation: abs(ax + by + cz + d) <= threshold ***
+
+        The projection idea comes from
+        https://gdbooks.gitbooks.io/3dcollisions/content/Chapter2/static_aabb_plane.html
+        """
+        normal /= np.linalg.norm(normal)
+        vertices = self.vertices
+
+        plane_d = -np.dot(normal, origin)
+
+        # In this context, np.inner(a, b) returns the same as (a * b).sum(axis=1), but it's faster.
+        # Luckily, we don't run out of memory like in vectorized_triangles_intersection.
+        mask = np.abs(np.inner(normal, vertices) + plane_d) <= threshold
+
+        # If mask = [True, False, True], then mask.nonzero()[-1] = [0, 2]
+        return mask.nonzero()[-1]

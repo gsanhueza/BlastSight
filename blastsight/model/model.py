@@ -182,9 +182,10 @@ class Model:
         for mesh in meshes:
             vertices = mesh.slice_with_plane(origin, normal)
             if len(vertices) > 0:
-                result.append({'element_id': mesh.id,
-                               'vertices': vertices,
-                               })
+                result.append({
+                    'element_id': mesh.id,
+                    'vertices': vertices,
+                })
 
         return result
 
@@ -200,6 +201,23 @@ class Model:
             if len(indices) > 0:
                 result.append({
                     'element_id': block.id,
+                    'indices': indices,
+                })
+
+        return result
+
+    @staticmethod
+    def slice_points(origin: np.ndarray, normal: np.ndarray, point_list: list) -> list:
+        """
+        Returns a list of dicts, where each dict is the point ID and its sliced indices
+        """
+        result = []
+
+        for point in point_list:
+            indices = point.slice_with_plane(origin, normal)
+            if len(indices) > 0:
+                result.append({
+                    'element_id': point.id,
                     'indices': indices,
                 })
 
