@@ -89,6 +89,7 @@ class DFElement(Element):
         self.alpha = kwargs.get('alpha', 1.0)
         self.colormap = kwargs.get('colormap', 'red-blue')  # red-blue (min is red, max is blue)
         self.color = kwargs.get('color', [])
+        self.is_slice = kwargs.get('is_slice', False)
 
         self.vmin = kwargs.get('vmin', self.values.min())
         self.vmax = kwargs.get('vmax', self.values.max())
@@ -165,6 +166,10 @@ class DFElement(Element):
     def headers(self) -> list:
         return list(self._mapper.values())
 
+    @property
+    def is_slice(self) -> bool:
+        return self.properties.get('is_slice', False)
+
     @colormap.setter
     def colormap(self, _colormap: str) -> None:
         if utils.parse_colormap(_colormap):  # Empty list interpreted as False
@@ -181,6 +186,10 @@ class DFElement(Element):
     @headers.setter
     def headers(self, _headers: list) -> None:
         self._mapper['x'], self._mapper['y'], self._mapper['z'], self._mapper['values'] = _headers
+
+    @is_slice.setter
+    def is_slice(self, value: bool) -> None:
+        self.properties['is_slice'] = value
 
     """
     Utilities

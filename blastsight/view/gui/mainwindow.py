@@ -342,7 +342,7 @@ class MainWindow(QMainWindow):
             block_id = description.get('element_id')
             block = self.viewer.get_drawable(block_id)
 
-            if 'SLICE' in str(block.name):
+            if block.is_slice:
                 return
 
             self.viewer.blocks(vertices=block.vertices[indices],
@@ -353,7 +353,8 @@ class MainWindow(QMainWindow):
                                colormap=block.colormap,
                                block_size=block.block_size,
                                name=f'BLOCKSLICE_{block.name}',
-                               extension='csv')
+                               extension='csv',
+                               is_slice=True)
 
         # Execute add_slice over all slice descriptions
         for sl in slice_list:
