@@ -173,55 +173,43 @@ class Model:
     Adapter for viewer's utilities (slice/distance)
     """
     @staticmethod
+    def slice_elements(origin: np.ndarray, normal: np.ndarray, elements: list) -> list:
+        """
+        Returns a list of dicts, where each dict is the element ID and its sliced data (vertices or indices)
+        """
+        result = []
+
+        for element in elements:
+            data = element.slice_with_plane(origin, normal)
+
+            if len(data) > 0:
+                result.append({
+                    'element_id': element.id,
+                    'slices': data,
+                })
+
+        return result
+
+    @staticmethod
     def slice_meshes(origin: np.ndarray, normal: np.ndarray, meshes: list) -> list:
         """
         Returns a list of dicts, where each dict is the mesh ID and its sliced vertices
         """
-        result = []
-
-        for mesh in meshes:
-            vertices = mesh.slice_with_plane(origin, normal)
-            if len(vertices) > 0:
-                result.append({
-                    'element_id': mesh.id,
-                    'vertices': vertices,
-                })
-
-        return result
+        return Model.slice_elements(origin, normal, meshes)
 
     @staticmethod
     def slice_blocks(origin: np.ndarray, normal: np.ndarray, block_list: list) -> list:
         """
         Returns a list of dicts, where each dict is the block ID and its sliced indices
         """
-        result = []
-
-        for block in block_list:
-            indices = block.slice_with_plane(origin, normal)
-            if len(indices) > 0:
-                result.append({
-                    'element_id': block.id,
-                    'indices': indices,
-                })
-
-        return result
+        return Model.slice_elements(origin, normal, block_list)
 
     @staticmethod
     def slice_points(origin: np.ndarray, normal: np.ndarray, point_list: list) -> list:
         """
         Returns a list of dicts, where each dict is the point ID and its sliced indices
         """
-        result = []
-
-        for point in point_list:
-            indices = point.slice_with_plane(origin, normal)
-            if len(indices) > 0:
-                result.append({
-                    'element_id': point.id,
-                    'indices': indices,
-                })
-
-        return result
+        return Model.slice_elements(origin, normal, point_list)
 
     @staticmethod
     def measure_from_rays(origin_list: list, ray_list: list, meshes: list) -> dict:
