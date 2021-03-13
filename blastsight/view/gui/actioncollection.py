@@ -142,6 +142,10 @@ class ActionCollection:
         self.action_slice_blocks.setIcon(IconCollection.get('flash_on.svg'))
         self.action_slice_blocks.setShortcut('Ctrl+B')
 
+        self.action_slice_points = QAction('Slice &points', parent)
+        self.action_slice_points.setIcon(IconCollection.get('flash_on.svg'))
+        self.action_slice_points.setShortcut('Ctrl+Shift+P')
+
         self.action_xsection = QAction('&Cross-section', parent)
         self.action_xsection.setIcon(IconCollection.get('flash_on.svg'))
         self.action_xsection.setShortcut('Ctrl+Shift+S')

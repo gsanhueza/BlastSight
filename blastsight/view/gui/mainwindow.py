@@ -154,6 +154,7 @@ class MainWindow(QMainWindow):
         # Tools
         self.menu_Tools.addAction(actions.action_slice_meshes)
         self.menu_Tools.addAction(actions.action_slice_blocks)
+        self.menu_Tools.addAction(actions.action_slice_points)
         self.menu_Tools.addAction(actions.action_detection_controller)
         self.menu_Tools.addAction(actions.action_measurement_controller)
         self.menu_Tools.addSeparator()
@@ -203,6 +204,7 @@ class MainWindow(QMainWindow):
         # Tools
         actions.action_slice_meshes.triggered.connect(self.slot_slice_meshes)
         actions.action_slice_blocks.triggered.connect(self.slot_slice_blocks)
+        actions.action_slice_points.triggered.connect(self.slot_slice_points)
         actions.action_detection_controller.triggered.connect(self.slot_detection_controller)
         actions.action_measurement_controller.triggered.connect(self.slot_measurement_controller)
 
@@ -315,6 +317,21 @@ class MainWindow(QMainWindow):
         self.viewer.set_slice_controller()
         self.viewer.signal_slice_description.connect(handler)
 
+    def slot_slice_points(self) -> None:
+        def executer(origin, normal) -> None:
+            slices = self.viewer.slice_points(origin, normal)
+            self.add_point_slices(slices)
+
+        def handler(description: dict) -> None:
+            self.handle_slices(description, executer)
+
+            # Disconnect
+            self.viewer.set_normal_controller()
+            self.viewer.signal_slice_description.disconnect()
+
+        self.viewer.set_slice_controller()
+        self.viewer.signal_slice_description.connect(handler)
+
     def add_mesh_slices(self, slice_list: list) -> None:
         def add_slice(description: dict) -> None:
             slices = description.get('slices')
@@ -353,6 +370,30 @@ class MainWindow(QMainWindow):
                                colormap=block.colormap,
                                block_size=block.block_size,
                                name=f'BLOCKSLICE_{block.name}',
+                               extension='csv',
+                               is_slice=True)
+
+        # Execute add_slice over all slice descriptions
+        for sl in slice_list:
+            add_slice(sl)
+
+    def add_point_slices(self, slice_list: list) -> None:
+        def add_slice(description: dict) -> None:
+            indices = description.get('slices')
+            point_id = description.get('element_id')
+            point = self.viewer.get_drawable(point_id)
+
+            if point.is_slice:
+                return
+
+            self.viewer.points(vertices=point.vertices[indices],
+                               values=point.values[indices],
+                               color=point.color[indices],
+                               vmin=point.vmin,
+                               vmax=point.vmax,
+                               colormap=point.colormap,
+                               point_size=point.point_size,
+                               name=f'POINTSLICE_{point.name}',
                                extension='csv',
                                is_slice=True)
 

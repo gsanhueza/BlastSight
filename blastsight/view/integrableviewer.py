@@ -792,6 +792,12 @@ class IntegrableViewer(QOpenGLWidget):
 
         return self.model.slice_blocks(origin, normal, blocks)
 
+    def slice_points(self, origin: np.ndarray, normal: np.ndarray, include_hidden: bool = True) -> list:
+        # By default, slice visible and hidden points
+        points = list(filter(lambda m: m.is_visible or include_hidden, self.get_all_points()))
+
+        return self.model.slice_points(origin, normal, points)
+
     def intersect_meshes(self, origin: np.ndarray, ray: np.ndarray, include_hidden: bool = False) -> list:
         # By default, intersect only visible meshes
         meshes = list(filter(lambda m: m.is_visible or include_hidden, self.get_all_meshes()))
