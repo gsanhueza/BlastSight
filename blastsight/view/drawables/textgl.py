@@ -31,8 +31,14 @@ class CharacterSlot:
 class TextGL(GLDrawable):
     def __init__(self, element, *args, **kwargs):
         super().__init__(element, *args, **kwargs)
-        self.fontfile = r'/usr/share/fonts/gnu-free/FreeMono.otf'
-        self.face = freetype.Face(self.fontfile)
+        self.fontfile = r'/usr/share/fonts/TTF/cour.ttf'
+
+        try:
+            self.face = freetype.Face(self.fontfile)
+        except freetype.ft_errors.FT_Exception:
+            self.fontfile = r'C:\Windows\Fonts\cour.ttf'
+            self.face = freetype.Face(self.fontfile)
+
         self.characters = {}
         self.text_vertices = []
 
