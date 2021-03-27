@@ -30,6 +30,7 @@ setuptools.setup(
         'tables',
         'meshcut',
         'colour',
+        'freetype-py',
     ],
     tests_require=[
         'pytest',
