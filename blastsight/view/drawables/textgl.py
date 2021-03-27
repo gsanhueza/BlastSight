@@ -41,6 +41,7 @@ class TextGL(GLDrawable):
 
         self.characters = {}
         self.text_vertices = []
+        self.vertices = np.empty(3)
 
         self.text = kwargs.get('text', ' ')
         self.scale = kwargs.get('scale', 0.1)
@@ -50,6 +51,14 @@ class TextGL(GLDrawable):
         # Set character size
         self.face.set_char_size(48 * 64)
 
+    def initialize(self) -> None:
+        if self.is_initialized:
+            return
+
+        self.initialize_textures()
+        super().initialize()
+
+    def initialize_textures(self) -> None:
         # Load first 128 characters of ASCII set
         self._setup_characters()
 
