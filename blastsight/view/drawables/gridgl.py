@@ -54,6 +54,54 @@ class GridGL(GLDrawable):
         self._vaos = [glGenVertexArrays(1)]
         self._vbos = glGenBuffers(2)
 
+    def _xy_grid(self) -> list:
+        rate = self.mark_separation
+        response = []
+
+        # Marks in X
+        for shift_x in range(rate, int(self.lengths[0]), rate):
+            response.append(self.origin + [shift_x, 0.0, 0.0])
+            response.append(self.origin + [shift_x, self.lengths[1], 0.0])
+
+        # Marks in Y
+        for shift_y in range(rate, int(self.lengths[1]), rate):
+            response.append(self.origin + [0.0, shift_y, 0.0])
+            response.append(self.origin + [self.lengths[0], shift_y, 0.0])
+
+        return response
+
+    def _yz_grid(self) -> list:
+        rate = self.mark_separation
+        response = []
+
+        # Marks in Y
+        for shift_y in range(rate, int(self.lengths[1]), rate):
+            response.append(self.origin + [0.0, shift_y, 0.0])
+            response.append(self.origin + [0.0, shift_y, self.lengths[2]])
+
+        # Marks in Z
+        for shift_z in range(rate, int(self.lengths[2]), rate):
+            response.append(self.origin + [0.0, 0.0, shift_z])
+            response.append(self.origin + [0.0, self.lengths[1], shift_z])
+
+        return response
+
+    def _xz_grid(self) -> list:
+        rate = self.mark_separation
+        response = []
+
+        # Marks in Z
+        for shift_z in range(rate, int(self.lengths[2]), rate):
+            response.append(self.origin + [0.0, 0.0, shift_z])
+            response.append(self.origin + [self.lengths[0], 0.0, shift_z])
+
+        # Marks in X
+        for shift_x in range(rate, int(self.lengths[0]), rate):
+            response.append(self.origin + [shift_x, 0.0, 0.0])
+            response.append(self.origin + [shift_x, 0.0, self.lengths[2]])
+
+        return response
+
     def _x_mark(self, shift: int, mark_size) -> list:
         return [
             self.origin + [shift, -mark_size, 0.0],
@@ -90,6 +138,16 @@ class GridGL(GLDrawable):
 
         return np.array(marks).reshape((-1, 3)).astype(np.float32)
 
+    def generate_grid(self) -> np.ndarray:
+        marks = []
+
+        # Grid
+        marks += self._xy_grid()
+        marks += self._yz_grid()
+        marks += self._xz_grid()
+
+        return np.array(marks).reshape((-1, 3)).astype(np.float32)
+
     def setup_attributes(self) -> None:
         _POSITION = 0
         _COLOR = 1
@@ -99,7 +157,7 @@ class GridGL(GLDrawable):
                              self.origin, self.y_pos,
                              self.origin, self.z_pos]).astype(np.float32)
 
-        marks = self.generate_marks()
+        marks = self.generate_grid()
         vertices = np.concatenate((vertices, marks), axis=0).astype(np.float32)
 
         self._total_lines = len(vertices)
