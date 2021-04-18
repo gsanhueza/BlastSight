@@ -159,6 +159,10 @@ class TextGL(GLDrawable):
                 self.text_vertices.append(self._rendering_buffer_east(x, y, z, w, h))
                 x += (ch.advance >> 6) * self.scale
 
+        # Offset
+        for i in range(len(self.text_vertices)):
+            self.text_vertices[i] = (self.text_vertices[i].reshape((-1, 3)) + self.rendering_offset).astype(np.float32)
+
     def generate_buffers(self) -> None:
         self._vaos = [glGenVertexArrays(1)]
         self._vbos = glGenBuffers(2)

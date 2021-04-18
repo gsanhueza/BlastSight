@@ -27,7 +27,7 @@ class PointGL(GLDrawable):
         _SIZE = 3
 
         # Data
-        vertices = self.element.vertices.astype(np.float32)
+        vertices = (self.element.vertices + self.rendering_offset).astype(np.float32)
         colors = self.element.color.astype(np.float32)
         alpha = np.array([self.element.alpha], np.float32)
         sizes = self.element.point_size.astype(np.float32)

@@ -160,6 +160,9 @@ class GridGL(GLDrawable):
         marks = self.generate_grid()
         vertices = np.concatenate((vertices, marks), axis=0).astype(np.float32)
 
+        # Offset
+        vertices = (vertices + self.rendering_offset).astype(np.float32)
+
         self._total_lines = len(vertices)
 
         # Color

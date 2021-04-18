@@ -28,7 +28,7 @@ class TubeGL(GLDrawable):
         # Data
         vertices, indices = self.element.as_mesh()
 
-        vertices = np.array(vertices).astype(np.float32)
+        vertices = (vertices + self.rendering_offset).astype(np.float32)
         indices = np.array(indices).astype(np.uint32)
         colors = self.element.rgba.astype(np.float32)
 
