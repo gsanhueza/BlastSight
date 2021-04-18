@@ -448,6 +448,9 @@ class IntegrableViewer(QOpenGLWidget):
         drawable.add_observer(self)
         collection.add(drawable)
 
+        # Update the new drawable with the current rendering offset
+        drawable.rendering_offset = self.rendering_offset
+
         # Emit success signals
         self.signal_file_modified.emit()
         self.signal_load_success.emit(drawable.id)
