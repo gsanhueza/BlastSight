@@ -581,7 +581,7 @@ class IntegrableViewer(QOpenGLWidget):
     def update_all(self) -> None:
         self.makeCurrent()
         for _id in self.get_all_ids():
-            self.get_drawable(_id).setup_attributes()
+            self.get_drawable(_id).reload()
         self.recreate()
 
     def clear(self) -> None:
@@ -655,6 +655,9 @@ class IntegrableViewer(QOpenGLWidget):
 
         camera_shift = center + np.array([0.0, 0.0, 1.1 * z_shift])
         self.set_camera_position(camera_shift)
+
+        # Update offset to minimize wobbling
+        self.rendering_offset = -self.rotation_center
         self.update()
 
     def fit_to_screen(self) -> None:
