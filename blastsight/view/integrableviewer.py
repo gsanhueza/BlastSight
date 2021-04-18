@@ -128,6 +128,7 @@ class IntegrableViewer(QOpenGLWidget):
         self.is_phantom_enabled = False
 
         # Extra information
+        self.is_gl_initialized = False
         self.is_animated = False
         self.fov = 45.0
         self.smoothness = 2.0  # Bigger => smoother (but slower) rotations
@@ -172,6 +173,7 @@ class IntegrableViewer(QOpenGLWidget):
         self.pre_collection.initialize()
         self.drawable_collection.initialize()
         self.post_collection.initialize()
+        self.is_gl_initialized = True
 
     def paintGL(self) -> None:
         # Clear screen
@@ -308,9 +310,12 @@ class IntegrableViewer(QOpenGLWidget):
     @rendering_offset.setter
     def rendering_offset(self, value: iter) -> None:
         self._rendering_offset = np.asarray(value)
+
         for drawable in self.get_all_drawables():
             drawable.rendering_offset = value
-        self.update_all()
+
+        if self.is_gl_initialized:
+            self.update_all()
 
     @property
     def render_camera_position(self) -> np.ndarray:
