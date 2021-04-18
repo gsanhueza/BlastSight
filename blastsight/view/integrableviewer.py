@@ -103,10 +103,14 @@ class IntegrableViewer(QOpenGLWidget):
         self.current_controller = None
         self.controllers = {}
 
-        # Camera/World/Projection
-        self.view_matrix = QMatrix4x4()
+        # Model/View/Projection matrices (math)
         self.model_matrix = QMatrix4x4()
+        self.view_matrix = QMatrix4x4()
         self.proj_matrix = QMatrix4x4()
+
+        # Model/View matrices (rendering offset)
+        self.render_model_matrix = QMatrix4x4()
+        self.render_view_matrix = QMatrix4x4()
 
         # FPS Counter
         self.fps_counter = FPSCounter()
@@ -115,6 +119,7 @@ class IntegrableViewer(QOpenGLWidget):
         self._rotation_center = np.array([0.0, 0.0, 0.0])
         self._rotation_angle = np.array([0.0, 0.0, 0.0])
         self._camera_position = np.array([0.0, 0.0, 200.0])
+        self._rendering_offset = np.array([0.0, 0.0, 0.0])
 
         # Cross-section data
         self.last_cross_origin = np.asarray([0.0, 0.0, 0.0])
@@ -174,15 +179,17 @@ class IntegrableViewer(QOpenGLWidget):
 
         # Setup model matrix
         self.setup_model_matrix(self.model_matrix, self.rotation_angle, self.rotation_center)
+        self.setup_model_matrix(self.render_model_matrix, self.rotation_angle, self.render_rotation_center)
 
         # Setup view matrix
         self.setup_view_matrix(self.view_matrix, self.camera_position)
+        self.setup_view_matrix(self.render_view_matrix, self.render_camera_position)
 
         # Propagate common uniform values (programs lacking the uniform will ignore the command)
         for collection in [self.pre_collection, self.drawable_collection, self.post_collection]:
             # MVP matrices
             collection.update_uniform('proj_matrix', self.proj_matrix)
-            collection.update_uniform('model_view_matrix', self.view_matrix * self.model_matrix)
+            collection.update_uniform('model_view_matrix', self.render_view_matrix * self.render_model_matrix)
 
             # Viewport values (with DPI awareness)
             collection.update_uniform('viewport', *self.viewport)
@@ -290,6 +297,28 @@ class IntegrableViewer(QOpenGLWidget):
     def rotation_center(self, value: iter) -> None:
         self._rotation_center = np.asarray(value)
         self.signal_center_translated.emit(value)
+
+    """
+    Rendering offsets
+    """
+    @property
+    def rendering_offset(self) -> np.ndarray:
+        return self._rendering_offset
+
+    @rendering_offset.setter
+    def rendering_offset(self, value: iter) -> None:
+        self._rendering_offset = np.asarray(value)
+        for drawable in self.get_all_drawables():
+            drawable.rendering_offset = value
+        self.update_all()
+
+    @property
+    def render_camera_position(self) -> np.ndarray:
+        return self.camera_position + self.rendering_offset
+
+    @property
+    def render_rotation_center(self) -> np.ndarray:
+        return self.rotation_center + self.rendering_offset
 
     """
     API for partial camera movements/rotations
