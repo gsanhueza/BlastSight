@@ -173,10 +173,17 @@ class Model:
     Adapter for viewer's utilities (slice/distance)
     """
     @staticmethod
-    def slice_elements(origin: np.ndarray, normal: np.ndarray, elements: list) -> list:
+    def slice_elements(origin: np.ndarray, normal: np.ndarray, elements: list, name: str) -> list:
         """
         Returns a list of dicts, where each dict is the element ID and its sliced data (vertices or indices)
+
+        :param origin: Origin of the plane
+        :param normal: Normal of the plane
+        :param elements: A list of elements ready to be sliced
+        :param name: The name of the key in the return dictionary ('vertices' or 'indices')
+        :return: list[dict]
         """
+
         result = []
 
         for element in elements:
@@ -185,7 +192,7 @@ class Model:
             if len(data) > 0:
                 result.append({
                     'element_id': element.id,
-                    'slices': data,
+                    name: data,
                 })
 
         return result
@@ -195,21 +202,21 @@ class Model:
         """
         Returns a list of dicts, where each dict is the mesh ID and its sliced vertices
         """
-        return Model.slice_elements(origin, normal, meshes)
+        return Model.slice_elements(origin, normal, meshes, 'vertices')
 
     @staticmethod
     def slice_blocks(origin: np.ndarray, normal: np.ndarray, block_list: list) -> list:
         """
         Returns a list of dicts, where each dict is the block ID and its sliced indices
         """
-        return Model.slice_elements(origin, normal, block_list)
+        return Model.slice_elements(origin, normal, block_list, 'indices')
 
     @staticmethod
     def slice_points(origin: np.ndarray, normal: np.ndarray, point_list: list) -> list:
         """
         Returns a list of dicts, where each dict is the point ID and its sliced indices
         """
-        return Model.slice_elements(origin, normal, point_list)
+        return Model.slice_elements(origin, normal, point_list, 'indices')
 
     @staticmethod
     def measure_from_rays(origin_list: list, ray_list: list, meshes: list) -> dict:
