@@ -427,16 +427,16 @@ class TestIntegrableViewer:
     def test_resize_gl(self):
         viewer = IntegrableViewer()
 
-        expected = viewer.proj.data()
-        assert self.equal_list(expected, viewer.proj.data())
+        expected = viewer.proj_matrix.data()
+        assert self.equal_list(expected, viewer.proj_matrix.data())
 
         viewer.resizeGL(10, 10)
-        perspective = viewer.proj.data()
+        perspective = viewer.proj_matrix.data()
         assert not self.equal_list(expected, perspective)
 
         viewer.orthographic_projection()
         viewer.resizeGL(10, 10)
-        orthographic = viewer.proj.data()
+        orthographic = viewer.proj_matrix.data()
 
         assert not self.equal_list(expected, orthographic)
         assert not self.equal_list(perspective, orthographic)

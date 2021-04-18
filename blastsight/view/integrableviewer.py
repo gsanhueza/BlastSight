@@ -104,9 +104,9 @@ class IntegrableViewer(QOpenGLWidget):
         self.controllers = {}
 
         # Camera/World/Projection
-        self.camera = QMatrix4x4()
-        self.world = QMatrix4x4()
-        self.proj = QMatrix4x4()
+        self.view_matrix = QMatrix4x4()
+        self.model_matrix = QMatrix4x4()
+        self.proj_matrix = QMatrix4x4()
 
         # FPS Counter
         self.fps_counter = FPSCounter()
@@ -172,28 +172,17 @@ class IntegrableViewer(QOpenGLWidget):
         # Clear screen
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
-        self.world.setToIdentity()
-        self.camera.setToIdentity()
+        # Setup model matrix
+        self.setup_model_matrix(self.model_matrix, self.rotation_angle, self.rotation_center)
 
-        # Translate by rotation center (world position)
-        self.world.translate(*self.rotation_center)
-
-        # Allow rotation of the world
-        self.world.rotate(self.rotation_angle[0], 1.0, 0.0, 0.0)
-        self.world.rotate(self.rotation_angle[1], 0.0, 1.0, 0.0)
-        self.world.rotate(self.rotation_angle[2], 0.0, 0.0, 1.0)
-
-        # Restore world
-        self.world.translate(*-self.rotation_center)
-
-        # Translate the camera
-        self.camera.translate(*-self.camera_position)
+        # Setup view matrix
+        self.setup_view_matrix(self.view_matrix, self.camera_position)
 
         # Propagate common uniform values (programs lacking the uniform will ignore the command)
         for collection in [self.pre_collection, self.drawable_collection, self.post_collection]:
             # MVP matrices
-            collection.update_uniform('proj_matrix', self.proj)
-            collection.update_uniform('model_view_matrix', self.camera * self.world)
+            collection.update_uniform('proj_matrix', self.proj_matrix)
+            collection.update_uniform('model_view_matrix', self.view_matrix * self.model_matrix)
 
             # Viewport values (with DPI awareness)
             collection.update_uniform('viewport', *self.viewport)
@@ -212,19 +201,33 @@ class IntegrableViewer(QOpenGLWidget):
         self.fps_counter.tick()
 
     def resizeGL(self, w: float, h: float) -> None:
-        self.proj.setToIdentity()
+        self.proj_matrix.setToIdentity()
 
         if self.current_projection == 'Perspective':
-            self.proj.perspective(self.fov, self.aspect, 1.0, 100000.0)
+            self.proj_matrix.perspective(self.fov, self.aspect, 1.0, 100000.0)
         else:  # if self.current_projection == 'Orthographic':
             z = self.off_center[2] * 0.65
-            self.proj.ortho(-z, z, -z / self.aspect, z / self.aspect, 0.0, 100000.0)
+            self.proj_matrix.ortho(-z, z, -z / self.aspect, z / self.aspect, 0.0, 100000.0)
 
-    def recreate(self) -> None:
-        self.pre_collection.recreate()
-        self.drawable_collection.recreate()
-        self.post_collection.recreate()
-        self.update()
+    @staticmethod
+    def setup_model_matrix(matrix: QMatrix4x4, rotation: np.ndarray, translation: np.ndarray) -> None:
+        matrix.setToIdentity()
+
+        # Translate matrix (translation = rotation_center)
+        matrix.translate(*translation)
+
+        # Rotate matrix
+        matrix.rotate(rotation[0], 1.0, 0.0, 0.0)
+        matrix.rotate(rotation[1], 0.0, 1.0, 0.0)
+        matrix.rotate(rotation[2], 0.0, 0.0, 1.0)
+
+        # Restore matrix
+        matrix.translate(*-translation)
+
+    @staticmethod
+    def setup_view_matrix(matrix: QMatrix4x4, camera: iter) -> None:
+        matrix.setToIdentity()
+        matrix.translate(*-camera)
 
     """
     Properties
@@ -558,6 +561,12 @@ class IntegrableViewer(QOpenGLWidget):
         self.drawable_collection.clear()
         self.signal_file_modified.emit()
 
+    def recreate(self) -> None:
+        self.pre_collection.recreate()
+        self.drawable_collection.recreate()
+        self.post_collection.recreate()
+        self.update()
+
     """
     Drawable retrieval
     """
@@ -671,7 +680,7 @@ class IntegrableViewer(QOpenGLWidget):
         vector = [x, y, -1.0, 1.0]
         temp_matrix = QMatrix4x4(*[e for e in vector for _ in range(4)])
 
-        ray_eye = (self.proj.inverted()[0] * temp_matrix).column(0)
+        ray_eye = (self.proj_matrix.inverted()[0] * temp_matrix).column(0)
         ray_eye = QVector4D(ray_eye.x(), ray_eye.y(), -1.0, 0.0)
 
         # We'd use `ray_eye`, but PySide2
@@ -679,7 +688,7 @@ class IntegrableViewer(QOpenGLWidget):
         vector = [ray_eye.x(), ray_eye.y(), ray_eye.z(), ray_eye.w()]
         temp_matrix = QMatrix4x4(*[e for e in vector for _ in range(4)])
 
-        ray_world = ((self.camera * self.world).inverted()[0] * temp_matrix).column(0).toVector3D()
+        ray_world = ((self.view_matrix * self.model_matrix).inverted()[0] * temp_matrix).column(0).toVector3D()
         ray = ray_world.normalized()
         return np.array([ray.x(), ray.y(), ray.z()])
 
@@ -694,7 +703,7 @@ class IntegrableViewer(QOpenGLWidget):
     def origin_from_click(self, x: float, y: float, z: float) -> np.ndarray:
         # Perspective projection is straightforward
         def perspective_origin() -> np.ndarray:
-            origin = (self.camera * self.world).inverted()[0].column(3).toVector3D()
+            origin = (self.view_matrix * self.model_matrix).inverted()[0].column(3).toVector3D()
             return np.array([origin.x(), origin.y(), origin.z()])
 
         # Orthographic projection needs a bit more of vector arithmetic.
@@ -713,9 +722,9 @@ class IntegrableViewer(QOpenGLWidget):
             offset = self.off_center[2] * ndc * aspect_bias
 
             # Hack to get the origin when the click is not exactly at center of screen.
-            self.camera.translate(*-offset)
+            self.view_matrix.translate(*-offset)
             origin = perspective_origin()
-            self.camera.translate(*offset)
+            self.view_matrix.translate(*offset)
 
             return origin
 
