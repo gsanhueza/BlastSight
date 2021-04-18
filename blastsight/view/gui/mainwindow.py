@@ -150,6 +150,7 @@ class MainWindow(QMainWindow):
         self.menu_View.addAction(actions.action_orthographic_projection)
         self.menu_View.addSeparator()
         self.menu_View.addAction(actions.action_take_screenshot)
+        self.menu_View.addAction(actions.action_fix_wobbling)
 
         # Tools
         self.menu_Tools.addAction(actions.action_slice_meshes)
@@ -200,6 +201,7 @@ class MainWindow(QMainWindow):
 
         # View
         actions.action_take_screenshot.triggered.connect(self.slot_screenshot)
+        actions.action_fix_wobbling.triggered.connect(self.slot_wobbling)
 
         # Tools
         actions.action_slice_meshes.triggered.connect(self.slot_slice_meshes)
@@ -449,7 +451,7 @@ class MainWindow(QMainWindow):
         self.progress_bar.hide()
 
     """
-    Slot for screenshots
+    Slot for extra items in view
     """
     def slot_screenshot(self) -> None:
         (path, selected_filter) = QFileDialog.getSaveFileName(
@@ -458,6 +460,9 @@ class MainWindow(QMainWindow):
             filter='PNG image (*.png);;')
 
         self.viewer.take_screenshot(path)
+
+    def slot_wobbling(self) -> None:
+        self.viewer.fix_wobbling()
 
     """
     Slots for loading files

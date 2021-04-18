@@ -181,3 +181,7 @@ class ActionCollection:
         self.action_take_screenshot = QAction('&Take screenshot', parent)
         self.action_take_screenshot.setIcon(IconCollection.get('webcam.svg'))
         self.action_take_screenshot.setShortcut('Shift+S')
+
+        self.action_fix_wobbling = QAction('Fix &wobbling', parent)
+        self.action_fix_wobbling.setIcon(IconCollection.get('services.svg'))
+        self.action_fix_wobbling.setShortcut('Ctrl+K')

@@ -660,9 +660,6 @@ class IntegrableViewer(QOpenGLWidget):
 
         camera_shift = center + np.array([0.0, 0.0, 1.1 * z_shift])
         self.set_camera_position(camera_shift)
-
-        # Update offset to minimize wobbling
-        self.rendering_offset = -self.rotation_center
         self.update()
 
     def fit_to_screen(self) -> None:
@@ -686,6 +683,10 @@ class IntegrableViewer(QOpenGLWidget):
             max_all = np.max((max_all, max_bound), axis=0)
 
         return min_all, max_all
+
+    def fix_wobbling(self) -> None:
+        # Update offset to minimize wobbling
+        self.rendering_offset = -self.rotation_center
 
     """
     Utilities
