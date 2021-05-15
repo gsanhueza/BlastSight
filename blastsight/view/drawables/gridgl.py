@@ -15,37 +15,27 @@ class GridGL(GLDrawable):
     def __init__(self, element=None, *args, **kwargs):
         super().__init__(element, *args, **kwargs)
         self.origin = kwargs.get('origin', np.zeros(3))
-        self.lengths = kwargs.get('lengths', np.ones(3))
+        self.size = kwargs.get('size', np.ones(3))
         self.color = kwargs.get('color', np.ones(3))
-
-        self._total_lines = 0
-        self._mark_separation = kwargs.get('mark_separation', 5)
+        self.mark_separation = kwargs.get('mark_separation', 5)
+        self.total_lines = 0
 
     @property
     def x_pos(self) -> np.array:
-        return self.origin + [self.lengths[0], 0.0, 0.0]
+        return self.origin + [self.size[0], 0.0, 0.0]
 
     @property
     def y_pos(self) -> np.array:
-        return self.origin + [0.0, self.lengths[1], 0.0]
+        return self.origin + [0.0, self.size[1], 0.0]
 
     @property
     def z_pos(self) -> np.array:
-        return self.origin + [0.0, 0.0, self.lengths[2]]
+        return self.origin + [0.0, 0.0, self.size[2]]
 
     @property
     def bounding_box(self) -> tuple:
         # The bounding_box property is part of Element, but NullElement doesn't have it
-        return self.origin, self.origin + self.lengths
-
-    @property
-    def mark_separation(self) -> int:
-        return self._mark_separation
-
-    @mark_separation.setter
-    def mark_separation(self, value: int) -> None:
-        self._mark_separation = int(value)
-        self.reload()
+        return self.origin, self.origin + self.size
 
     """
     Internal methods
@@ -59,14 +49,14 @@ class GridGL(GLDrawable):
         response = []
 
         # Marks in X
-        for shift_x in range(rate, int(self.lengths[0]), rate):
+        for shift_x in range(rate, int(self.size[0]), rate):
             response.append(self.origin + [shift_x, 0.0, 0.0])
-            response.append(self.origin + [shift_x, self.lengths[1], 0.0])
+            response.append(self.origin + [shift_x, self.size[1], 0.0])
 
         # Marks in Y
-        for shift_y in range(rate, int(self.lengths[1]), rate):
+        for shift_y in range(rate, int(self.size[1]), rate):
             response.append(self.origin + [0.0, shift_y, 0.0])
-            response.append(self.origin + [self.lengths[0], shift_y, 0.0])
+            response.append(self.origin + [self.size[0], shift_y, 0.0])
 
         return response
 
@@ -75,14 +65,14 @@ class GridGL(GLDrawable):
         response = []
 
         # Marks in Y
-        for shift_y in range(rate, int(self.lengths[1]), rate):
+        for shift_y in range(rate, int(self.size[1]), rate):
             response.append(self.origin + [0.0, shift_y, 0.0])
-            response.append(self.origin + [0.0, shift_y, self.lengths[2]])
+            response.append(self.origin + [0.0, shift_y, self.size[2]])
 
         # Marks in Z
-        for shift_z in range(rate, int(self.lengths[2]), rate):
+        for shift_z in range(rate, int(self.size[2]), rate):
             response.append(self.origin + [0.0, 0.0, shift_z])
-            response.append(self.origin + [0.0, self.lengths[1], shift_z])
+            response.append(self.origin + [0.0, self.size[1], shift_z])
 
         return response
 
@@ -91,14 +81,14 @@ class GridGL(GLDrawable):
         response = []
 
         # Marks in Z
-        for shift_z in range(rate, int(self.lengths[2]), rate):
+        for shift_z in range(rate, int(self.size[2]), rate):
             response.append(self.origin + [0.0, 0.0, shift_z])
-            response.append(self.origin + [self.lengths[0], 0.0, shift_z])
+            response.append(self.origin + [self.size[0], 0.0, shift_z])
 
         # Marks in X
-        for shift_x in range(rate, int(self.lengths[0]), rate):
+        for shift_x in range(rate, int(self.size[0]), rate):
             response.append(self.origin + [shift_x, 0.0, 0.0])
-            response.append(self.origin + [shift_x, 0.0, self.lengths[2]])
+            response.append(self.origin + [shift_x, 0.0, self.size[2]])
 
         return response
 
@@ -125,15 +115,15 @@ class GridGL(GLDrawable):
         rate = self.mark_separation
 
         # Marks in X
-        for i in range(rate, int(self.lengths[0]), rate):
+        for i in range(rate, int(self.size[0]), rate):
             marks += self._x_mark(i, mark_size)
 
         # Marks in Y
-        for i in range(rate, int(self.lengths[1]), rate):
+        for i in range(rate, int(self.size[1]), rate):
             marks += self._y_mark(i, mark_size)
 
         # Marks in Z
-        for i in range(rate, int(self.lengths[2]), rate):
+        for i in range(rate, int(self.size[2]), rate):
             marks += self._z_mark(i, mark_size)
 
         return np.array(marks).reshape((-1, 3)).astype(np.float32)
@@ -163,10 +153,10 @@ class GridGL(GLDrawable):
         # Offset
         vertices = (vertices + self.rendering_offset).astype(np.float32)
 
-        self._total_lines = len(vertices)
+        self.total_lines = len(vertices)
 
         # Color
-        colors = np.tile(self.color, self._total_lines).astype(np.float32)
+        colors = np.tile(self.color, self.total_lines).astype(np.float32)
 
         glBindVertexArray(self.vao)
 
@@ -179,6 +169,6 @@ class GridGL(GLDrawable):
     def draw(self) -> None:
         glBindVertexArray(self.vao)
         glLineWidth(3)
-        glDrawArrays(GL_LINES, 0, self._total_lines)
+        glDrawArrays(GL_LINES, 0, self.total_lines)
         glLineWidth(1)
         glBindVertexArray(0)
