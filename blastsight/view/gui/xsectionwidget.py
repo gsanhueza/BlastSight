@@ -28,10 +28,10 @@ class XSectionWidget(QWidget):
         self.pushButton_controller = QPushButton('Slice from screen')
         self.pushButton_controller.setCheckable(True)
 
-        self.pushButton_status = QPushButton('Show/Hide cross-section')
+        self.pushButton_status = QPushButton('Toggle cross-section')
         self.pushButton_status.setCheckable(True)
 
-        self.pushButton_phantom = QPushButton('Show/Hide phantom')
+        self.pushButton_phantom = QPushButton('Toggle phantom')
         self.pushButton_phantom.setCheckable(True)
 
         # Origin
@@ -52,8 +52,8 @@ class XSectionWidget(QWidget):
         # Layout
         self.container = QWidget(self)
         self.grid = QGridLayout(self.container)
-        self._add_to_grid(self.grid, 0, QLabel('Origin'), self.origin_x, self.origin_y, self.origin_z)
-        self._add_to_grid(self.grid, 1, QLabel('Normal'), self.normal_x, self.normal_y, self.normal_z)
+        self._add_to_grid(self.grid, 0, QLabel('Origin (position)'), self.origin_x, self.origin_y, self.origin_z)
+        self._add_to_grid(self.grid, 1, QLabel('Normal (direction)'), self.normal_x, self.normal_y, self.normal_z)
         self._add_to_grid(self.grid, 2, QLabel('Step'), self.step, self.button_minus, self.button_plus)
 
         self.layout = QVBoxLayout(self)
