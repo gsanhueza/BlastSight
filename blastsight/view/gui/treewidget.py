@@ -75,6 +75,8 @@ class TreeWidget(QTreeWidget):
 
     def handle_multiple(self, item_list: list) -> None:
         dialog = QColorDialog()
+        dialog.setOption(QColorDialog.ShowAlphaChannel)
+        dialog.setOption(QColorDialog.DontUseNativeDialog)
 
         def update_color(item: TreeWidgetItem) -> None:
             element = self.viewer.get_drawable(item.id)
