@@ -138,9 +138,10 @@ class IntegrableViewer(QOpenGLWidget):
         self.initialize()
 
     def initialize(self) -> None:
-        # Orientation-Axis/Background
-        self.register_drawable(self.factory.axis(), self.post_collection)
-        self.register_drawable(self.factory.background(), self.pre_collection)
+        # Axis/Background/Grid
+        self.register_drawable(self.factory.background(id=0), self.pre_collection)
+        self.register_drawable(self.factory.axis(id=1), self.post_collection)
+        self.register_drawable(self.factory.grid(id=2, visible=False), self.post_collection)
 
         # Signals
         self.signal_file_modified.connect(self.recreate)
@@ -239,6 +240,21 @@ class IntegrableViewer(QOpenGLWidget):
         matrix.translate(*-camera)
 
     """
+    Environment drawables
+    """
+    @property
+    def background(self) -> GLDrawable:
+        return self.pre_collection.get(0)
+
+    @property
+    def axis(self) -> GLDrawable:
+        return self.post_collection.get(1)
+
+    @property
+    def grid(self) -> GLDrawable:
+        return self.post_collection.get(2)
+
+    """
     Properties
     """
     @property
@@ -248,14 +264,6 @@ class IntegrableViewer(QOpenGLWidget):
     @property
     def last_drawable(self) -> GLDrawable:
         return self.get_drawable(self.last_id)
-
-    @property
-    def axis(self) -> GLDrawable:
-        return self.post_collection.get_last()
-
-    @property
-    def background(self) -> GLDrawable:
-        return self.pre_collection.get_last()
 
     @property
     def off_center(self) -> np.ndarray:
@@ -477,9 +485,6 @@ class IntegrableViewer(QOpenGLWidget):
 
     def text(self, *args, **kwargs) -> TextGL:
         return self.register_drawable(self.factory.text(*args, **kwargs))
-
-    def grid(self, *args, **kwargs) -> GridGL:
-        return self.register_drawable(self.factory.grid(*args, **kwargs))
 
     """
     Load methods by path

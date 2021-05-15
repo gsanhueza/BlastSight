@@ -8,10 +8,16 @@
 from .glcollection import GLCollection
 
 from ..drawables.axisgl import AxisGL
+from ..drawables.gridgl import GridGL
+
 from ..glprograms.axisprogram import AxisProgram
+from ..glprograms.gridprogram import GridProgram
 
 
 class GLPostCollection(GLCollection):
     def generate_associations(self):
-        # Orientation Axis (the one in the corner)
+        # Axis
         self.associate(AxisProgram(), AxisGL)
+
+        # Grid
+        self.associate(GridProgram(), GridGL)
