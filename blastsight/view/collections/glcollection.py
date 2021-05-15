@@ -72,7 +72,7 @@ class GLCollection:
 
         self.generate_associations()
         self.initialize_programs()
-        self.update_drawables()
+        self.update_drawables(include_hidden=True)
 
         self._is_initialized = True
 
@@ -102,7 +102,7 @@ class GLCollection:
     def all_associations(self) -> list:
         return list(self._programs.values())
 
-    def update_drawables(self) -> None:
+    def update_drawables(self, include_hidden: bool = False) -> None:
         # Update shader program so that it knows what to draw
         for association in self.all_associations():
             program = association.get('program')
@@ -110,7 +110,7 @@ class GLCollection:
             selector = association.get('selector')
 
             drawables = self.select(drawable_type, selector)
-            visibles = list(filter(lambda x: x.is_visible, drawables))
+            visibles = list(filter(lambda x: x.is_visible or include_hidden, drawables))
             program.set_drawables(visibles)
 
     def update_uniform(self, uniform: str, *values) -> None:
