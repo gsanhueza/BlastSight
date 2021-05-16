@@ -19,30 +19,28 @@ def demo_text():
 
     # Setup the grid using the bounding box of the figure
     min_bound, max_bound = mesh.bounding_box
-    size = max_bound - min_bound
-    mark_separation = 10
 
     viewer.grid.origin = min_bound
     viewer.grid.size = max_bound - min_bound
     viewer.grid.color = [1.0, 0.8, 0.0]
-    viewer.grid.mark_separation = mark_separation
+    viewer.grid.mark_separation = 10
     viewer.grid.is_visible = True
 
     # Labels in X
     # Remember to separate the number text from the grid
-    for x in range(int(size[0] / mark_separation) + 1):
-        pos = min_bound[0] + x * mark_separation
-        viewer.text(text=f'{round(pos, 1)}', position=[pos, min_bound[1] - 2.0, min_bound[2]], scale=0.05)
+    for x in viewer.grid.x_divisions:
+        pos = int(min_bound[0] + x)
+        viewer.text(text=f'{pos}', position=[pos, min_bound[1] - 2.0, min_bound[2]], scale=0.05)
 
     # Labels in Y
-    for y in range(int(size[1] / mark_separation) + 1):
-        pos = min_bound[1] + y * mark_separation
-        viewer.text(text=f'{round(pos, 1)}', position=[min_bound[0] - 8.0, pos, min_bound[2] - 2.0], scale=0.05)
+    for y in viewer.grid.y_divisions:
+        pos = int(min_bound[1] + y)
+        viewer.text(text=f'{pos}', position=[min_bound[0] - 2.0, pos, min_bound[2] - 2.0], scale=0.05)
 
     # Labels in Z
-    for z in range(int(size[2] / mark_separation) + 1):
-        pos = min_bound[2] + z * mark_separation
-        viewer.text(text=f'{round(pos, 1)}', position=[min_bound[0] - 8.0, min_bound[1], pos], scale=0.05)
+    for z in viewer.grid.z_divisions:
+        pos = int(min_bound[2] + z)
+        viewer.text(text=f'{pos}', position=[min_bound[0] - 2.0, min_bound[1], pos], scale=0.05)
 
     # Showcase orientations
     viewer.text(text='Facing: Elevation', position=mesh.center + [0.0, 0.0, 0.0], orientation='elevation')
