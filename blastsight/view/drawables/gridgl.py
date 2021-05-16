@@ -33,6 +33,18 @@ class GridGL(GLDrawable):
         return self.origin + [0.0, 0.0, self.size[2]]
 
     @property
+    def x_divisions(self) -> np.ndarray:
+        return np.ceil(np.arange(self.origin[0], self.x_pos[0], self.mark_separation)) - self.origin[0]
+
+    @property
+    def y_divisions(self) -> np.ndarray:
+        return np.ceil(np.arange(self.origin[1], self.y_pos[1], self.mark_separation)) - self.origin[1]
+
+    @property
+    def z_divisions(self) -> np.ndarray:
+        return np.ceil(np.arange(self.origin[2], self.z_pos[2], self.mark_separation)) - self.origin[2]
+
+    @property
     def bounding_box(self) -> tuple:
         # The bounding_box property is part of Element, but NullElement doesn't have it
         return self.origin, self.origin + self.size
@@ -45,88 +57,49 @@ class GridGL(GLDrawable):
         self._vbos = glGenBuffers(2)
 
     def _xy_grid(self) -> list:
-        rate = self.mark_separation
         response = []
 
-        # Marks in X
-        for shift_x in range(rate, int(self.size[0]), rate):
-            response.append(self.origin + [shift_x, 0.0, 0.0])
-            response.append(self.origin + [shift_x, self.size[1], 0.0])
+        # Lines in X
+        for x_div in self.x_divisions:
+            response.append(self.origin + [x_div, 0.0, 0.0])
+            response.append(self.origin + [x_div, self.size[1], 0.0])
 
-        # Marks in Y
-        for shift_y in range(rate, int(self.size[1]), rate):
-            response.append(self.origin + [0.0, shift_y, 0.0])
-            response.append(self.origin + [self.size[0], shift_y, 0.0])
+        # Lines in Y
+        for y_div in self.y_divisions:
+            response.append(self.origin + [0.0, y_div, 0.0])
+            response.append(self.origin + [self.size[0], y_div, 0.0])
 
         return response
 
     def _yz_grid(self) -> list:
-        rate = self.mark_separation
         response = []
 
-        # Marks in Y
-        for shift_y in range(rate, int(self.size[1]), rate):
-            response.append(self.origin + [0.0, shift_y, 0.0])
-            response.append(self.origin + [0.0, shift_y, self.size[2]])
+        # Lines in Y
+        for y_div in self.y_divisions:
+            response.append(self.origin + [0.0, y_div, 0.0])
+            response.append(self.origin + [0.0, y_div, self.size[2]])
 
-        # Marks in Z
-        for shift_z in range(rate, int(self.size[2]), rate):
-            response.append(self.origin + [0.0, 0.0, shift_z])
-            response.append(self.origin + [0.0, self.size[1], shift_z])
+        # Lines in Z
+        for z_div in self.z_divisions:
+            response.append(self.origin + [0.0, 0.0, z_div])
+            response.append(self.origin + [0.0, self.size[1], z_div])
 
         return response
 
     def _xz_grid(self) -> list:
-        rate = self.mark_separation
         response = []
 
-        # Marks in Z
-        for shift_z in range(rate, int(self.size[2]), rate):
-            response.append(self.origin + [0.0, 0.0, shift_z])
-            response.append(self.origin + [self.size[0], 0.0, shift_z])
+        # Lines in X
+        for x_div in self.x_divisions:
+            response.append(self.origin + [x_div, 0.0, 0.0])
+            response.append(self.origin + [x_div, 0.0, self.size[2]])
 
-        # Marks in X
-        for shift_x in range(rate, int(self.size[0]), rate):
-            response.append(self.origin + [shift_x, 0.0, 0.0])
-            response.append(self.origin + [shift_x, 0.0, self.size[2]])
+        # Lines in Z
+        for z_div in self.z_divisions:
+            response.append(self.origin + [0.0, 0.0, z_div])
+            response.append(self.origin + [self.size[0], 0.0, z_div])
 
         return response
-
-    def _x_mark(self, shift: int, mark_size) -> list:
-        return [
-            self.origin + [shift, -mark_size, 0.0],
-            self.origin + [shift, +mark_size, 0.0],
-        ]
-
-    def _y_mark(self, shift: int, mark_size) -> list:
-        return [
-            self.origin + [-mark_size, shift, 0.0],
-            self.origin + [+mark_size, shift, 0.0],
-        ]
-
-    def _z_mark(self, shift: int, mark_size) -> list:
-        return [
-            self.origin + [-mark_size, 0.0, shift],
-            self.origin + [+mark_size, 0.0, shift],
-        ]
-
-    def generate_marks(self, mark_size: float = 1.0) -> np.ndarray:
-        marks = []
-        rate = self.mark_separation
-
-        # Marks in X
-        for i in range(rate, int(self.size[0]), rate):
-            marks += self._x_mark(i, mark_size)
-
-        # Marks in Y
-        for i in range(rate, int(self.size[1]), rate):
-            marks += self._y_mark(i, mark_size)
-
-        # Marks in Z
-        for i in range(rate, int(self.size[2]), rate):
-            marks += self._z_mark(i, mark_size)
-
-        return np.array(marks).reshape((-1, 3)).astype(np.float32)
 
     def generate_grid(self) -> np.ndarray:
         marks = []
@@ -143,16 +116,7 @@ class GridGL(GLDrawable):
         _COLOR = 1
 
         # Data
-        vertices = np.array([self.origin, self.x_pos,
-                             self.origin, self.y_pos,
-                             self.origin, self.z_pos]).astype(np.float32)
-
-        marks = self.generate_grid()
-        vertices = np.concatenate((vertices, marks), axis=0).astype(np.float32)
-
-        # Offset
-        vertices = (vertices + self.rendering_offset).astype(np.float32)
-
+        vertices = (self.generate_grid() + self.rendering_offset).astype(np.float32)
         self.total_lines = len(vertices)
 
         # Color
