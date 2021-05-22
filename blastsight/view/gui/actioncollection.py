@@ -150,6 +150,10 @@ class ActionCollection:
         self.action_xsection.setIcon(IconCollection.get('flash_on.svg'))
         self.action_xsection.setShortcut('Ctrl+Shift+S')
 
+        self.action_grid = QAction('&Grid visibility', parent)
+        self.action_grid.setIcon(IconCollection.get('grid.svg'))
+        self.action_grid.setShortcut('Ctrl+G')
+
         self.action_viewer_properties = QAction('&Viewer properties', parent)
         self.action_viewer_properties.setIcon(IconCollection.get('compact_camera.svg'))
         self.action_viewer_properties.setShortcut('Ctrl+C')
