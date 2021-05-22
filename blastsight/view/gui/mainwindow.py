@@ -20,6 +20,7 @@ from qtpy.QtWidgets import QProgressBar
 from .dialogs.aboutdialog import AboutDialog
 from .dialogs.helpdialog import HelpDialog
 from .iconcollection import IconCollection
+from .gridwidget import GridWidget
 from .xsectionwidget import XSectionWidget
 
 from .tools import uic
@@ -94,6 +95,10 @@ class MainWindow(QMainWindow):
         self.progress_bar.hide()
         self.statusBar.addPermanentWidget(self.progress_bar)
 
+        # Grid Widget
+        self.grid_widget = GridWidget()
+        self.grid_widget.connect_viewer(self.viewer)
+
         # XSection Widget
         self.xsection_widget = XSectionWidget()
         self.xsection_widget.connect_viewer(self.viewer)
@@ -149,6 +154,7 @@ class MainWindow(QMainWindow):
         self.menu_View.addAction(actions.action_perspective_projection)
         self.menu_View.addAction(actions.action_orthographic_projection)
         self.menu_View.addSeparator()
+        self.menu_View.addAction(actions.action_grid)
         self.menu_View.addAction(actions.action_take_screenshot)
         self.menu_View.addAction(actions.action_fix_wobbling)
 
@@ -200,6 +206,7 @@ class MainWindow(QMainWindow):
         actions.action_quit.triggered.connect(self.close)
 
         # View
+        actions.action_grid.triggered.connect(self.slot_grid)
         actions.action_take_screenshot.triggered.connect(self.slot_screenshot)
         actions.action_fix_wobbling.triggered.connect(self.slot_wobbling)
 
@@ -453,6 +460,10 @@ class MainWindow(QMainWindow):
     """
     Slot for extra items in view
     """
+    def slot_grid(self) -> None:
+        # FIXME We can put this in the toolbar too!
+        self.grid_widget.show()
+
     def slot_screenshot(self) -> None:
         (path, selected_filter) = QFileDialog.getSaveFileName(
             parent=self.viewer,
