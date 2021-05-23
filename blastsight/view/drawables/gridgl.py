@@ -14,12 +14,39 @@ from OpenGL.GL import *
 class GridGL(GLDrawable):
     def __init__(self, element=None, *args, **kwargs):
         super().__init__(element, *args, **kwargs)
-        self.origin = kwargs.get('origin', np.zeros(3))
-        self.size = kwargs.get('size', np.ones(3))
-        self.color = kwargs.get('color', np.ones(3))
-        self.mark_separation = kwargs.get('mark_separation', 5)
+        self._origin = kwargs.get('origin', np.zeros(3))
+        self._size = kwargs.get('size', 10 * np.ones(3))
+        self._color = kwargs.get('color', np.ones(3))
+        self.mark_separation = kwargs.get('mark_separation', 1)
         self.total_lines = 0
 
+    @property
+    def origin(self) -> np.array:
+        return self._origin
+
+    @origin.setter
+    def origin(self, value: iter) -> None:
+        self._origin = np.array(value, np.float32)
+
+    @property
+    def size(self) -> np.array:
+        return self._size
+
+    @size.setter
+    def size(self, value: iter) -> None:
+        self._size = np.array(value, np.int32)
+
+    @property
+    def color(self) -> np.array:
+        return self._color
+
+    @color.setter
+    def color(self, value: iter) -> None:
+        self._color = np.array(value, np.float32)
+
+    """
+    Utilities
+    """
     @property
     def x_pos(self) -> np.array:
         return self.origin + [self.size[0], 0.0, 0.0]
