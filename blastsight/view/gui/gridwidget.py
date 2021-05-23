@@ -103,15 +103,21 @@ class GridWidget(QWidget):
 
         def handle_grid_separation(value: float) -> None:
             viewer.grid.mark_separation = value
-            viewer.grid.reload()
+            viewer.makeCurrent()
+            viewer.grid.setup_attributes()
+            viewer.recreate()
 
         def handle_grid_origin(value: list) -> None:
             viewer.grid.origin = value
+            viewer.makeCurrent()
             viewer.grid.reload()
+            viewer.recreate()
 
         def handle_grid_length(value: list) -> None:
             viewer.grid.size = value
+            viewer.makeCurrent()
             viewer.grid.reload()
+            viewer.recreate()
 
         self.signal_visibility_altered.connect(handle_grid_visibility)
         self.signal_separation_altered.connect(handle_grid_separation)
