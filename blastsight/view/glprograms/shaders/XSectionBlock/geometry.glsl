@@ -18,9 +18,9 @@ uniform vec2 viewport;
 
 uniform vec3 plane_origin;
 uniform vec3 plane_normal;
+uniform vec3 rendering_offset;
 
 float EPSILON = 1e-6;
-
 
 void main()
 {
@@ -40,7 +40,7 @@ void main()
     // Check if the "block" can be sliced with the plane equation
     if (abs(dot(plane_normal, v_position[0]) + plane_d) <= threshold)
     {
-        gl_Position = proj_matrix * model_view_matrix * vec4(v_position[0], 1.0);
+        gl_Position = proj_matrix * model_view_matrix * vec4(v_position[0] + rendering_offset, 1.0);
 
         // Perspective / Orthographic
         if (proj_matrix[3][3] == 0.0)

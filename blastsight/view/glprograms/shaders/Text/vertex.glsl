@@ -6,6 +6,7 @@ out vec2 TexCoords;
 
 uniform mat4 model_view_matrix;
 uniform mat4 proj_matrix;
+uniform vec3 rendering_offset;
 
 mat4 billboard_matrix(mat4 matrix)
 {
@@ -33,6 +34,6 @@ void main()
     mat4 modelView = model_view_matrix;
 //    mat4 modelView = billboard_matrix(model_view_matrix);
 
-    gl_Position = proj_matrix * modelView * vec4(vertex, 1.0);
+    gl_Position = proj_matrix * modelView * vec4(vertex + rendering_offset, 1.0);
     TexCoords = texcoord;
 }

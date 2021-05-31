@@ -65,7 +65,7 @@ class BlockGL(GLDrawable):
         _TEMPLATE = 3
 
         # Data
-        vertices = (self.element.vertices + self.rendering_offset).astype(np.float32)
+        vertices = self.element.vertices.astype(np.float32)
         colors = np.array(self.element.color, np.float32)
         alpha = np.array([self.element.alpha], np.float32)
         template = self.generate_cube(self.element.block_size)

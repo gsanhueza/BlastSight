@@ -49,6 +49,7 @@ class ShaderProgram:
 
         self.add_uniform_handler('model_view_matrix')
         self.add_uniform_handler('proj_matrix')
+        self.add_uniform_handler('rendering_offset')
 
     def generate_shader(self, shader_type, shader_path: str) -> QOpenGLShader:
         shader = QOpenGLShader(shader_type)

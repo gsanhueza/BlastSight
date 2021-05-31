@@ -10,11 +10,12 @@ out float v_alpha;
 
 uniform mat4 proj_matrix;
 uniform mat4 model_view_matrix;
+uniform vec3 rendering_offset;
 
 void main()
 {
-    gl_Position = proj_matrix * model_view_matrix * vec4(a_position, 1.0);
-    v_position = a_position;
+    gl_Position = proj_matrix * model_view_matrix * vec4(a_position + rendering_offset, 1.0);
+    v_position = a_position + rendering_offset;
     v_color = a_color;
     v_alpha = a_alpha;
 }

@@ -12,12 +12,13 @@ uniform mat4 proj_matrix;
 uniform mat4 model_view_matrix;
 uniform vec3 plane_origin;
 uniform vec3 plane_normal;
+uniform vec3 rendering_offset;
 
 float EPSILON = 1e-6;
 
 void emit_vertex(vec3 pos, vec4 color)
 {
-    gl_Position = proj_matrix * model_view_matrix * vec4(pos, 1.0);
+    gl_Position = proj_matrix * model_view_matrix * vec4(pos + rendering_offset, 1.0);
     f_color = color;
 
     EmitVertex();

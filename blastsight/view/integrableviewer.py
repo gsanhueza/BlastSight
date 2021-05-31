@@ -103,14 +103,10 @@ class IntegrableViewer(QOpenGLWidget):
         self.current_controller = None
         self.controllers = {}
 
-        # Model/View/Projection matrices (math)
+        # Model/View/Projection matrices
         self.model_matrix = QMatrix4x4()
         self.view_matrix = QMatrix4x4()
         self.proj_matrix = QMatrix4x4()
-
-        # Model/View matrices (rendering offset)
-        self.render_model_matrix = QMatrix4x4()
-        self.render_view_matrix = QMatrix4x4()
 
         # FPS Counter
         self.fps_counter = FPSCounter()
@@ -180,22 +176,21 @@ class IntegrableViewer(QOpenGLWidget):
         # Clear screen
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
-        # Setup model matrix
-        self.setup_model_matrix(self.model_matrix, self.rotation_angle, self.rotation_center)
-        self.setup_model_matrix(self.render_model_matrix, self.rotation_angle, self.render_rotation_center)
-
-        # Setup view matrix
-        self.setup_view_matrix(self.view_matrix, self.camera_position)
-        self.setup_view_matrix(self.render_view_matrix, self.render_camera_position)
+        # Setup matrices
+        self.setup_model_matrix(self.model_matrix, self.rotation_angle, self.render_rotation_center)
+        self.setup_view_matrix(self.view_matrix, self.render_camera_position)
 
         # Propagate common uniform values (programs lacking the uniform will ignore the command)
         for collection in [self.pre_collection, self.drawable_collection, self.post_collection]:
             # MVP matrices
             collection.update_uniform('proj_matrix', self.proj_matrix)
-            collection.update_uniform('model_view_matrix', self.render_view_matrix * self.render_model_matrix)
+            collection.update_uniform('model_view_matrix', self.view_matrix * self.model_matrix)
 
             # Viewport values (with DPI awareness)
             collection.update_uniform('viewport', *self.viewport)
+
+            # Rendering offset (avoid wobbling when rotating the camera)
+            collection.update_uniform('rendering_offset', *self.rendering_offset)
 
             # Update common uniforms (programs lacking the uniform will ignore the command)
             collection.update_uniform('plane_origin', *self.last_cross_origin)
@@ -318,12 +313,6 @@ class IntegrableViewer(QOpenGLWidget):
     @rendering_offset.setter
     def rendering_offset(self, value: iter) -> None:
         self._rendering_offset = np.asarray(value)
-
-        for drawable in self.get_all_drawables():
-            drawable.rendering_offset = value
-
-        if self.is_gl_initialized:
-            self.update_all()
 
     @property
     def render_camera_position(self) -> np.ndarray:
@@ -455,9 +444,6 @@ class IntegrableViewer(QOpenGLWidget):
         # Register in collection
         drawable.add_observer(self)
         collection.add(drawable)
-
-        # Update the new drawable with the current rendering offset
-        drawable.rendering_offset = self.rendering_offset
 
         # Emit success signals
         self.signal_file_modified.emit()

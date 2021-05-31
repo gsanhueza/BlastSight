@@ -12,10 +12,11 @@ out float v_alpha;
 uniform vec2 viewport;
 uniform mat4 proj_matrix;
 uniform mat4 model_view_matrix;
+uniform vec3 rendering_offset;
 
 void main()
 {
-    gl_Position = proj_matrix * model_view_matrix * vec4(a_position, 1.0);
+    gl_Position = proj_matrix * model_view_matrix * vec4(a_position + rendering_offset, 1.0);
     v_color = a_color;
     v_alpha = a_alpha;
     // The 1.21 factor was found by trial and error, with the goal of

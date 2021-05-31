@@ -116,7 +116,7 @@ class GridGL(GLDrawable):
         _COLOR = 1
 
         # Data
-        vertices = (self.generate_grid() + self.rendering_offset).astype(np.float32)
+        vertices = self.generate_grid().astype(np.float32)
         self.total_lines = len(vertices)
 
         # Color

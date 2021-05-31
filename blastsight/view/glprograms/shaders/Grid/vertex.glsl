@@ -8,9 +8,10 @@ out vec3 v_color;
 
 uniform mat4 model_view_matrix;
 uniform mat4 proj_matrix;
+uniform vec3 rendering_offset;
 
 void main()
 {
-    gl_Position = proj_matrix * model_view_matrix * vec4(a_position, 1.0);
+    gl_Position = proj_matrix * model_view_matrix * vec4(a_position + rendering_offset, 1.0);
     v_color = a_color;
 }

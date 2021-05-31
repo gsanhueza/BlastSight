@@ -22,11 +22,6 @@ class GLDrawable:
         self._is_visible = kwargs.pop('visible', True)
         self._is_boostable = kwargs.pop('turbo', False)
 
-        # If a drawable is too far from zero, it tends to wobble.
-        # This idea allows the drawable to be rendered near zero,
-        # without altering the original vertices
-        self._rendering_offset = kwargs.pop('rendering_offset', np.zeros(3))
-
     # Note: The following "hacks" are shortened versions of Delegator Pattern.
     # They're convenient, but optional.
     #
@@ -124,17 +119,6 @@ class GLDrawable:
     def is_boostable(self, status: bool) -> None:
         self._is_boostable = status
         self.notify()
-
-    """
-    Render adjustments
-    """
-    @property
-    def rendering_offset(self) -> np.ndarray:
-        return self._rendering_offset
-
-    @rendering_offset.setter
-    def rendering_offset(self, value: iter) -> None:
-        self._rendering_offset = np.asarray(value)
 
     """
     Quick GLDrawable API

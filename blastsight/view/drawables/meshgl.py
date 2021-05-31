@@ -109,7 +109,7 @@ class MeshGL(GLDrawable):
         _COLOR = 1
 
         # Data
-        vertices = (self.element.vertices + self.rendering_offset).astype(np.float32)
+        vertices = self.element.vertices.astype(np.float32)
         indices = self.element.indices.astype(np.uint32)
         colors = self.element.rgba.astype(np.float32)
 

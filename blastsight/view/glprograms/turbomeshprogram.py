@@ -54,7 +54,7 @@ class TurboMeshProgram(MeshProgram):
         for index, mesh in enumerate(meshes):
             num_vertices = len(mesh.element.vertices)
 
-            vertices[index] = (mesh.element.vertices + mesh.rendering_offset).astype(np.float32)
+            vertices[index] = mesh.element.vertices.astype(np.float32)
             indices[index] = (mesh.element.indices + vertices_counter)
             colors[index] = np.tile(mesh.element.rgba, num_vertices).astype(np.float32)
 
