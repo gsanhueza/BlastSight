@@ -15,11 +15,11 @@ class TubeGL(GLDrawable):
     def __init__(self, element, *args, **kwargs):
         super().__init__(element, *args, **kwargs)
 
-        self.indices_size = 0
+        self.num_vertices = 0
 
     def generate_buffers(self) -> None:
         self._vaos = [glGenVertexArrays(1)]
-        self._vbos = glGenBuffers(3)
+        self._vbos = glGenBuffers(2)
 
     def setup_attributes(self) -> None:
         _POSITION = 0
@@ -27,12 +27,26 @@ class TubeGL(GLDrawable):
 
         # Data
         vertices, indices = self.element.as_mesh()
+        vertices = vertices[indices.astype(np.uint32)].astype(np.float32)
+        self.num_vertices = vertices.size
 
-        vertices = vertices.astype(np.float32)
-        indices = np.array(indices).astype(np.uint32)
-        colors = self.element.rgba.astype(np.float32)
+        # Color extraction
+        colors = []
+        num_tubes = len(self.element.vertices) - 1
+        triangles_per_tube = self.num_vertices // (3 * num_tubes)
 
-        self.indices_size = indices.size
+        # Check if single-color (replicate) or multiple color (for each tube)
+        if hasattr(self.element.color[0], '__len__'):
+            for i in range(num_tubes):
+                # When loop=True, we will replicate the last tube color
+                index = min(i, len(self.element.color) - 1)
+                base_color = np.append(self.element.color[index], self.element.alpha)
+                colors.append(np.tile(base_color, triangles_per_tube))
+        else:
+            base_color = np.append(self.element.color, self.element.alpha)
+            colors = np.tile(base_color, self.num_vertices)
+
+        colors = np.array(colors, np.float32)
 
         glBindVertexArray(self.vao)
 
@@ -40,16 +54,11 @@ class TubeGL(GLDrawable):
         self.fill_buffer(_POSITION, 3, vertices, GLfloat, GL_FLOAT, self._vbos[_POSITION])
         self.fill_buffer(_COLOR, 4, colors, GLfloat, GL_FLOAT, self._vbos[_COLOR])
 
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, self._vbos[-1])
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices, GL_STATIC_DRAW)
-
-        # The attribute advances once per divisor instances of the set(s) of vertices being rendered
-        # And guess what, we have just 1 instance, exactly what we wanted!
-        glVertexAttribDivisor(_COLOR, 1)
+        glBindBuffer(GL_ARRAY_BUFFER, self._vbos[-1])
 
         glBindVertexArray(0)
 
     def draw(self) -> None:
         glBindVertexArray(self.vao)
-        glDrawElements(GL_TRIANGLES, self.indices_size, GL_UNSIGNED_INT, None)
+        glDrawArrays(GL_TRIANGLES, 0, self.num_vertices)
         glBindVertexArray(0)

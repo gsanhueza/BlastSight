@@ -149,14 +149,18 @@ def demo():
                  name='Un-looped thick lines')
 
     """
-    A tube is practically the same as a line, except
-    that you can set the tube's radius and resolution
+    A tube is similar to a line, except that you
+    can set the tube's radius and resolution
     (quality of the tube).
+    At the moment, only tubes can have multiple colors,
+    where len(colors) == len(vertices) - 1
     """
     viewer.tubes(x=[1.0, -1.0, 1.0, -1.0],
                  y=[2.0, 2.0, -2.0, -2.0],
                  z=[-1.5, -1.5, -1.5, -1.5],
-                 color=[0.9, 0.2, 0.2],
+                 color=[[1.0, 0.5, 0.0],
+                        [0.5, 1.0, 0.0],
+                        [0.5, 0.0, 1.0]],
                  radius=0.2,
                  resolution=150,
                  alpha=1.0,
