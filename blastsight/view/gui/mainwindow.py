@@ -343,7 +343,7 @@ class MainWindow(QMainWindow):
 
     def add_mesh_slices(self, slice_list: list) -> None:
         def add_slice(description: dict) -> None:
-            slices = description.get('slices')
+            slices = description.get('vertices')
             mesh_id = description.get('element_id')
             mesh = self.viewer.get_drawable(mesh_id)
 
@@ -364,7 +364,7 @@ class MainWindow(QMainWindow):
 
     def add_block_slices(self, slice_list: list) -> None:
         def add_slice(description: dict) -> None:
-            indices = description.get('slices')
+            indices = description.get('indices')
             block_id = description.get('element_id')
             block = self.viewer.get_drawable(block_id)
 
@@ -388,7 +388,7 @@ class MainWindow(QMainWindow):
 
     def add_point_slices(self, slice_list: list) -> None:
         def add_slice(description: dict) -> None:
-            indices = description.get('slices')
+            indices = description.get('indices')
             point_id = description.get('element_id')
             point = self.viewer.get_drawable(point_id)
 
