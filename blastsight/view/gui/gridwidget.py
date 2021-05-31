@@ -33,17 +33,16 @@ class GridWidget(QWidget):
         self.origin_z = self._generate_spinbox()
 
         # Normal
-        self.length_x = self._generate_spinbox(lower=1, decimals=0, step=1)
-        self.length_y = self._generate_spinbox(lower=1, decimals=0, step=1)
-        self.length_z = self._generate_spinbox(lower=1, decimals=0, step=1)
+        self.length_x = self._generate_spinbox(lower=0, decimals=0, step=1)
+        self.length_y = self._generate_spinbox(lower=0, decimals=0, step=1)
+        self.length_z = self._generate_spinbox(lower=0, decimals=0, step=1)
 
         # Layout
         self.container = QWidget(self)
         self.grid = QGridLayout(self.container)
-        self._add_to_grid(self.grid, 0, QLabel('Grid visibility'), self.checkbox_visibility)
-        self._add_to_grid(self.grid, 1, QLabel('Line separation'), self.separation)
-        self._add_to_grid(self.grid, 2, QLabel('Start position'), self.origin_x, self.origin_y, self.origin_z)
-        self._add_to_grid(self.grid, 3, QLabel('Grid length'), self.length_x, self.length_y, self.length_z)
+        self._add_to_grid(self.grid, 0, QLabel('Grid visibility'), self.checkbox_visibility, QLabel('Line separation'), self.separation)
+        self._add_to_grid(self.grid, 1, QLabel('Start position'), self.origin_x, self.origin_y, self.origin_z)
+        self._add_to_grid(self.grid, 2, QLabel('Grid length'), self.length_x, self.length_y, self.length_z)
 
         self.layout = QVBoxLayout(self)
         self.layout.addWidget(self.container)

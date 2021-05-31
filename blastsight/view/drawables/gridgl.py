@@ -16,7 +16,7 @@ class GridGL(GLDrawable):
         super().__init__(element, *args, **kwargs)
         self._origin = kwargs.get('origin', np.zeros(3))
         self._size = kwargs.get('size', 10 * np.ones(3))
-        self._color = kwargs.get('color', np.ones(3))
+        self._color = kwargs.get('color', np.array([1.0, 0.8, 0.0]))
         self.mark_separation = kwargs.get('mark_separation', 1)
         self.total_lines = 0
 
