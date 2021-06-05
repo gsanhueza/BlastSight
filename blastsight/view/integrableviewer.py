@@ -180,6 +180,10 @@ class IntegrableViewer(QOpenGLWidget):
         self.setup_model_matrix(self.model_matrix, self.rotation_angle, self.render_rotation_center)
         self.setup_view_matrix(self.view_matrix, self.render_camera_position)
 
+        # Project (Perspective/Orthographic)
+        self.proj_matrix.setToIdentity()
+        self.resizeGL(self.width(), self.height())
+
         # Propagate common uniform values (programs lacking the uniform will ignore the command)
         for collection in [self.pre_collection, self.drawable_collection, self.post_collection]:
             # MVP matrices
@@ -206,13 +210,13 @@ class IntegrableViewer(QOpenGLWidget):
         self.fps_counter.tick()
 
     def resizeGL(self, w: float, h: float) -> None:
-        self.proj_matrix.setToIdentity()
+        aspect = w / h
 
         if self.current_projection == 'Perspective':
-            self.proj_matrix.perspective(self.fov, self.aspect, 1.0, 100000.0)
+            self.proj_matrix.perspective(self.fov, aspect, 1.0, 100000.0)
         else:  # if self.current_projection == 'Orthographic':
             z = self.off_center[2] * 0.65
-            self.proj_matrix.ortho(-z, z, -z / self.aspect, z / self.aspect, 0.0, 100000.0)
+            self.proj_matrix.ortho(-z, z, -z / self.aspect, z / aspect, 0.0, 100000.0)
 
     @staticmethod
     def setup_model_matrix(matrix: QMatrix4x4, rotation: np.ndarray, translation: np.ndarray) -> None:
