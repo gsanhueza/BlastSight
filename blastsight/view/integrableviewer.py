@@ -720,7 +720,14 @@ class IntegrableViewer(QOpenGLWidget):
         vector = [ray_eye.x(), ray_eye.y(), ray_eye.z(), ray_eye.w()]
         temp_matrix = QMatrix4x4(*[e for e in vector for _ in range(4)])
 
-        ray_world = ((self.view_matrix * self.model_matrix).inverted()[0] * temp_matrix).column(0).toVector3D()
+        # As self.view_matrix and self.model_matrix are altered to simplify rendering, we need to
+        # use the correct mathematical matrices for our calculus
+        model_matrix = QMatrix4x4()
+        view_matrix = QMatrix4x4()
+        self.setup_model_matrix(model_matrix, self.rotation_angle, self.rotation_center)
+        self.setup_view_matrix(view_matrix, self.camera_position)
+
+        ray_world = ((view_matrix * model_matrix).inverted()[0] * temp_matrix).column(0).toVector3D()
         ray = ray_world.normalized()
         return np.array([ray.x(), ray.y(), ray.z()])
 
@@ -733,9 +740,16 @@ class IntegrableViewer(QOpenGLWidget):
         return self.unproject(0.0, 0.0, 0.0)
 
     def origin_from_click(self, x: float, y: float, z: float) -> np.ndarray:
+        # As self.view_matrix and self.model_matrix are altered to simplify rendering, we need to
+        # use the correct mathematical matrices for our calculus
+        model_matrix = QMatrix4x4()
+        view_matrix = QMatrix4x4()
+        self.setup_model_matrix(model_matrix, self.rotation_angle, self.rotation_center)
+        self.setup_view_matrix(view_matrix, self.camera_position)
+
         # Perspective projection is straightforward
         def perspective_origin() -> np.ndarray:
-            origin = (self.view_matrix * self.model_matrix).inverted()[0].column(3).toVector3D()
+            origin = (view_matrix * model_matrix).inverted()[0].column(3).toVector3D()
             return np.array([origin.x(), origin.y(), origin.z()])
 
         # Orthographic projection needs a bit more of vector arithmetic.
