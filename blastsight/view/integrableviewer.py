@@ -323,6 +323,21 @@ class IntegrableViewer(QOpenGLWidget):
         return self.rotation_center + self.rendering_offset
 
     """
+    Matrices
+    """
+    @property
+    def model_matrix_math(self) -> QMatrix4x4:
+        matrix = QMatrix4x4()
+        self.setup_model_matrix(matrix, self.rotation_angle, self.rotation_center)
+        return matrix
+
+    @property
+    def view_matrix_math(self) -> QMatrix4x4:
+        matrix = QMatrix4x4()
+        self.setup_view_matrix(matrix, self.camera_position)
+        return matrix
+
+    """
     API for partial camera movements/rotations
     """
     def translate(self, x: float, y: float, z: float) -> None:
@@ -722,12 +737,7 @@ class IntegrableViewer(QOpenGLWidget):
 
         # As self.view_matrix and self.model_matrix are altered to simplify rendering, we need to
         # use the correct mathematical matrices for our calculus
-        model_matrix = QMatrix4x4()
-        view_matrix = QMatrix4x4()
-        self.setup_model_matrix(model_matrix, self.rotation_angle, self.rotation_center)
-        self.setup_view_matrix(view_matrix, self.camera_position)
-
-        ray_world = ((view_matrix * model_matrix).inverted()[0] * temp_matrix).column(0).toVector3D()
+        ray_world = ((self.view_matrix_math * self.model_matrix_math).inverted()[0] * temp_matrix).column(0).toVector3D()
         ray = ray_world.normalized()
         return np.array([ray.x(), ray.y(), ray.z()])
 
@@ -740,16 +750,9 @@ class IntegrableViewer(QOpenGLWidget):
         return self.unproject(0.0, 0.0, 0.0)
 
     def origin_from_click(self, x: float, y: float, z: float) -> np.ndarray:
-        # As self.view_matrix and self.model_matrix are altered to simplify rendering, we need to
-        # use the correct mathematical matrices for our calculus
-        model_matrix = QMatrix4x4()
-        view_matrix = QMatrix4x4()
-        self.setup_model_matrix(model_matrix, self.rotation_angle, self.rotation_center)
-        self.setup_view_matrix(view_matrix, self.camera_position)
-
         # Perspective projection is straightforward
         def perspective_origin() -> np.ndarray:
-            origin = (view_matrix * model_matrix).inverted()[0].column(3).toVector3D()
+            origin = (self.view_matrix_math * self.model_matrix_math).inverted()[0].column(3).toVector3D()
             return np.array([origin.x(), origin.y(), origin.z()])
 
         # Orthographic projection needs a bit more of vector arithmetic.
