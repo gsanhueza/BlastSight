@@ -84,7 +84,7 @@ class GLCollection:
             program.initialize()
 
     def associate(self, program: ShaderProgram, d_type: type, selector: callable = lambda x: True) -> None:
-        self._programs[program.get_base_name()] = {
+        self._programs[program.class_name] = {
             'program': program,
             'type': d_type,
             'selector': selector,

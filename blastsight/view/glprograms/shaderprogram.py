@@ -39,8 +39,9 @@ class ShaderProgram:
     def drawables(self) -> list:
         return self.opaques + self.transparents
 
-    def get_base_name(self) -> str:
-        return self.base_name
+    @property
+    def class_name(self) -> str:
+        return self.__class__.__name__
 
     def initialize(self) -> None:
         self.shader_program = QOpenGLShaderProgram()
