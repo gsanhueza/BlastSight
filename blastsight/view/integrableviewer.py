@@ -739,8 +739,8 @@ class IntegrableViewer(QOpenGLWidget):
         vector = [ray_eye.x(), ray_eye.y(), ray_eye.z(), ray_eye.w()]
         temp_matrix = QMatrix4x4(*[e for e in vector for _ in range(4)])
 
-        # As self.view_matrix and self.model_matrix are altered to simplify rendering, we need to
-        # use the correct mathematical matrices for our calculus
+        # Our self.view_matrix and self.model_matrix are altered to simplify rendering.
+        # For ray calculations, that's irrelevant, although we'll still use the correct ones for consistency.
         ray_world = ((self.view_matrix_math * self.model_matrix_math).inverted()[0] * temp_matrix).column(0).toVector3D()
         ray = ray_world.normalized()
         return np.array([ray.x(), ray.y(), ray.z()])
@@ -756,8 +756,10 @@ class IntegrableViewer(QOpenGLWidget):
     def origin_from_click(self, x: float, y: float, z: float) -> np.ndarray:
         # Perspective projection is straightforward
         def perspective_origin() -> np.ndarray:
-            origin = (self.view_matrix_math * self.model_matrix_math).inverted()[0].column(3).toVector3D()
-            return np.array([origin.x(), origin.y(), origin.z()])
+            origin = (self.view_matrix * self.model_matrix).inverted()[0].column(3).toVector3D()
+
+            # Remember that we have a rendering offset now!
+            return np.array([origin.x(), origin.y(), origin.z()]) - self.rendering_offset
 
         # Orthographic projection needs a bit more of vector arithmetic.
         # A click in the center of the screen gives us the perfect ray,
