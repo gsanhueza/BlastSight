@@ -12,6 +12,7 @@ from qtpy.QtWidgets import QVBoxLayout
 from qtpy.QtWidgets import QWidget
 
 from .camerawidget import CameraWidget
+from .gridwidget import GridWidget
 from .toolbar import ToolBar
 from .treewidget import TreeWidget
 from .xsectionwidget import XSectionWidget
@@ -35,6 +36,7 @@ class Container(QWidget):
         self.camera = CameraWidget()
         self.tree = TreeWidget()
         self.xsection = XSectionWidget()
+        self.grid = GridWidget()
 
         # Layout
         self.layout = QVBoxLayout(self)
@@ -42,7 +44,7 @@ class Container(QWidget):
         self.layout.addWidget(self.toolbar)
 
         # Actions
-        self.toolbar.auto_connect(self.tree, self.viewer, self.camera, self.xsection)
+        self.toolbar.auto_connect(self.tree, self.viewer, self.camera, self.xsection, self.grid)
 
         actions = self.toolbar.action_collection
         actions.action_take_screenshot.triggered.connect(self.handle_screenshot)

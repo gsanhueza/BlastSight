@@ -31,7 +31,6 @@ class MainWindow(QMainWindow):
     def __init__(self, parent=None):
         QMainWindow.__init__(self, parent)
         uic.loadUi(f'{pathlib.Path(__file__).parent}/UI/mainwindow.ui', self)
-        self.resize(1100, 620)
 
         self.setWindowTitle('BlastSightDM')
         self.setWindowIcon(IconCollection.get('blastsight.png'))
@@ -186,6 +185,8 @@ class MainWindow(QMainWindow):
         self.toolbar.connect_tree(self.dockWidget_tree)
         self.toolbar.connect_camera(self.dockWidget_camera)
         self.toolbar.connect_xsection(self.xsection_widget)
+        self.toolbar.connect_grid(self.grid_widget)
+
         self.cameraWidget.connect_viewer(self.viewer)
         self.treeWidget.connect_viewer(self.viewer)
         self.treeWidget.enable_exportability(True)
@@ -206,7 +207,6 @@ class MainWindow(QMainWindow):
         actions.action_quit.triggered.connect(self.close)
 
         # View
-        actions.action_grid.triggered.connect(self.slot_grid)
         actions.action_take_screenshot.triggered.connect(self.slot_screenshot)
         actions.action_fix_wobbling.triggered.connect(self.slot_wobbling)
 
@@ -460,10 +460,6 @@ class MainWindow(QMainWindow):
     """
     Slot for extra items in view
     """
-    def slot_grid(self) -> None:
-        # FIXME We can put this in the toolbar too!
-        self.grid_widget.show()
-
     def slot_screenshot(self) -> None:
         (path, selected_filter) = QFileDialog.getSaveFileName(
             parent=self.viewer,

@@ -30,17 +30,20 @@ class ToolBar(QToolBar):
         self.addAction(self.action_collection.action_turbo_rendering)
         self.addSeparator()
         self.addAction(self.action_collection.action_xsection)
+        self.addAction(self.action_collection.action_grid)
         self.addAction(self.action_collection.action_take_screenshot)
 
-    def auto_connect(self, tree, viewer, camera, xsection) -> None:
+    def auto_connect(self, tree, viewer, camera, xsection, grid) -> None:
         self.connect_tree(tree)
         self.connect_viewer(viewer)
         self.connect_camera(camera)
         self.connect_xsection(xsection)
+        self.connect_grid(grid)
 
         tree.connect_viewer(viewer)
         camera.connect_viewer(viewer)
         xsection.connect_viewer(viewer)
+        grid.connect_viewer(viewer)
 
     def connect_tree(self, tree) -> None:
         actions = self.action_collection
@@ -53,6 +56,10 @@ class ToolBar(QToolBar):
     def connect_xsection(self, xsection):
         actions = self.action_collection
         actions.action_xsection.triggered.connect(xsection.show)
+
+    def connect_grid(self, grid):
+        actions = self.action_collection
+        actions.action_grid.triggered.connect(grid.show)
 
     def connect_viewer(self, viewer) -> None:
         actions = self.action_collection
