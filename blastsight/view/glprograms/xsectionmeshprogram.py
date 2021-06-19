@@ -29,7 +29,11 @@ class XSectionMeshProgram(ShaderProgram):
 
     def inner_draw(self, drawables: list) -> None:
         glDisable(GL_DEPTH_TEST)
-        glLineWidth(10)
-        super().inner_draw(drawables)
+
+        # Each mesh can have its own cross-section line width
+        for drawable in drawables:
+            glLineWidth(drawable.cross_section_width)
+            drawable.draw()
+
         glLineWidth(1)
         glEnable(GL_DEPTH_TEST)

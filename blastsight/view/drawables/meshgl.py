@@ -15,7 +15,7 @@ class MeshGL(GLDrawable):
     def __init__(self, element, *args, **kwargs):
         super().__init__(element, *args, **kwargs)
         self.indices_size = 0
-
+        self._xsection_width = kwargs.pop('cross_section_width', 5)
         self._highlighted = kwargs.pop('highlight', False)
         self._wireframed = kwargs.pop('wireframe', False)
         self._phantom = kwargs.pop('phantom', False)
@@ -37,6 +37,10 @@ class MeshGL(GLDrawable):
     @property
     def is_wireframed(self) -> bool:
         return self._wireframed
+
+    @property
+    def cross_section_width(self) -> int:
+        return self._xsection_width
 
     @property
     def is_phantom(self) -> bool:
@@ -62,6 +66,11 @@ class MeshGL(GLDrawable):
     @is_phantom.setter
     def is_phantom(self, status: bool) -> None:
         self._phantom = status
+        self.notify()
+
+    @cross_section_width.setter
+    def cross_section_width(self, value: int) -> None:
+        self._xsection_width = value
         self.notify()
 
     """
