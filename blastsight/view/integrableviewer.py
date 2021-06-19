@@ -460,6 +460,9 @@ class IntegrableViewer(QOpenGLWidget):
         if collection is None:
             collection = self.drawable_collection
 
+        # Update shared settings
+        drawable.is_cross_sectioned = self.is_cross_sectioned
+
         # Register in collection
         drawable.add_observer(self)
         collection.add(drawable)
@@ -905,7 +908,7 @@ class IntegrableViewer(QOpenGLWidget):
         self.is_cross_sectioned = status
 
         for m in self.get_all_meshes() + self.get_all_blocks():
-            m.is_cross_sectionable = status
+            m.is_cross_sectioned = status
 
         self.signal_xsection_updated.emit()
 

@@ -21,6 +21,7 @@ class GLDrawable:
         self._is_initialized = kwargs.pop('initialized', False)
         self._is_visible = kwargs.pop('visible', True)
         self._is_boostable = kwargs.pop('turbo', False)
+        self._is_cross_sectioned = kwargs.pop('cross_section', False)
 
     # Note: The following "hacks" are shortened versions of Delegator Pattern.
     # They're convenient, but optional.
@@ -106,6 +107,10 @@ class GLDrawable:
     def is_boostable(self) -> bool:
         return self._is_boostable
 
+    @property
+    def is_cross_sectioned(self) -> bool:
+        return self._is_cross_sectioned
+
     @is_initialized.setter
     def is_initialized(self, status: bool) -> None:
         self._is_initialized = status
@@ -118,6 +123,11 @@ class GLDrawable:
     @is_boostable.setter
     def is_boostable(self, status: bool) -> None:
         self._is_boostable = status
+        self.notify()
+
+    @is_cross_sectioned.setter
+    def is_cross_sectioned(self, status: bool) -> None:
+        self._is_cross_sectioned = status
         self.notify()
 
     """

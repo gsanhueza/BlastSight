@@ -52,8 +52,8 @@ class GLDrawableCollection(GLCollection):
 
         # XSection
         self.associate(MeshPhantomProgram(), MeshGL, selector=lambda x: x.is_phantom)
-        self.associate(XSectionBlockProgram(), BlockGL, selector=lambda x: x.is_cross_sectionable)
-        self.associate(XSectionMeshProgram(), MeshGL, selector=lambda x: x.is_cross_sectionable)
+        self.associate(XSectionBlockProgram(), BlockGL, selector=lambda x: x.is_cross_sectioned)
+        self.associate(XSectionMeshProgram(), MeshGL, selector=lambda x: x.is_cross_sectioned)
 
         # Text
         self.associate(TextProgram(), TextGL)

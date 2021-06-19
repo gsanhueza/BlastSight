@@ -67,8 +67,3 @@ class TestMeshGL(TestGLDrawable):
 
         drawable.is_initialized = True
         auto_test()
-
-    def test_xsection(self, drawable):
-        assert not drawable.is_cross_sectionable
-        drawable.is_cross_sectionable = True
-        assert drawable.is_cross_sectionable
