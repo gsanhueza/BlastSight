@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-import pytest
 
 from blastsight.model.elements.nullelement import NullElement
 from blastsight.view.drawables.gridgl import GridGL
@@ -9,9 +8,13 @@ from tests.view.glprograms.test_shaderprogram import TestShaderProgram
 
 
 class TestGridProgram(TestShaderProgram):
-    # element = NullElement()
-    # drawable = GridGL(element)
+    @property
+    def base_program(self):
+        return GridProgram()
 
-    @pytest.fixture()
-    def program(self):
-        return self.initialize_program(GridProgram())
+    @property
+    def base_drawable(self):
+        element = NullElement()
+        drawable = GridGL(element)
+
+        return drawable

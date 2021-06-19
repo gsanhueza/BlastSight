@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 
-import pytest
-
 from blastsight.model.elements.nullelement import NullElement
 from blastsight.view.drawables.axisgl import AxisGL
 from blastsight.view.glprograms.axisprogram import AxisProgram
@@ -9,11 +7,19 @@ from tests.view.glprograms.test_shaderprogram import TestShaderProgram
 
 
 class TestAxisProgram(TestShaderProgram):
-    element = NullElement()
-    drawable = AxisGL(element)
+    @property
+    def base_program(self):
+        return AxisProgram()
 
-    @pytest.fixture()
-    def program(self):
-        _program = self.initialize_program(AxisProgram())
-        _program.uniform_values['viewport'] = [1920, 1080]
-        return _program
+    @property
+    def base_drawable(self):
+        element = NullElement()
+        drawable = AxisGL(element)
+
+        return drawable
+
+    def generate_program(self):
+        prog = super().generate_program()
+        prog.uniform_values['viewport'] = [1920, 1080]
+
+        return prog
