@@ -12,8 +12,9 @@ class TestMeshProgram(TestShaderProgram):
         return MeshProgram()
 
     @property
-    def base_drawable(self):
-        element = MeshElement(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], indices=[0, 1, 2])
-        drawable = MeshGL(element)
+    def base_element(self):
+        return MeshElement(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], indices=[0, 1, 2])
 
-        return drawable
+    @property
+    def base_drawable(self):
+        return MeshGL(self.base_element)

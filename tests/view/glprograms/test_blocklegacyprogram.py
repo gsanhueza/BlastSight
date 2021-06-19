@@ -12,8 +12,9 @@ class TestBlockLegacyProgram(TestShaderProgram):
         return BlockLegacyProgram()
 
     @property
-    def base_drawable(self):
-        element = BlockElement(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], values=[0, 1, 2])
-        drawable = BlockGL(element, legacy=True)
+    def base_element(self):
+        return BlockElement(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], values=[0, 1, 2])
 
-        return drawable
+    @property
+    def base_drawable(self):
+        return BlockGL(self.base_element, legacy=True)

@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-from blastsight.model.elements.nullelement import NullElement
 from blastsight.view.drawables.axisgl import AxisGL
 from blastsight.view.glprograms.axisprogram import AxisProgram
 from tests.view.glprograms.test_shaderprogram import TestShaderProgram
@@ -13,10 +12,7 @@ class TestAxisProgram(TestShaderProgram):
 
     @property
     def base_drawable(self):
-        element = NullElement()
-        drawable = AxisGL(element)
-
-        return drawable
+        return AxisGL(self.base_element)
 
     def generate_program(self):
         prog = super().generate_program()

@@ -13,7 +13,4 @@ class TestTextProgram(TestShaderProgram):
 
     @property
     def base_drawable(self):
-        element = NullElement()
-        drawable = TextGL(element)
-
-        return drawable
+        return TextGL(self.base_element)

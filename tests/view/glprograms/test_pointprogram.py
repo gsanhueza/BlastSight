@@ -12,8 +12,9 @@ class TestPointProgram(TestShaderProgram):
         return PointProgram()
 
     @property
-    def base_drawable(self):
-        element = PointElement(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], values=[0, 1, 2])
-        drawable = PointGL(element)
+    def base_element(self):
+        return PointElement(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0], values=[0, 1, 2])
 
-        return drawable
+    @property
+    def base_drawable(self):
+        return PointGL(self.base_element)

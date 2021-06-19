@@ -12,8 +12,9 @@ class TestTubeProgram(TestShaderProgram):
         return TubeProgram()
 
     @property
-    def base_drawable(self):
-        element = TubeElement(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0])
-        drawable = TubeGL(element)
+    def base_element(self):
+        return TubeElement(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0])
 
-        return drawable
+    @property
+    def base_drawable(self):
+        return TubeGL(self.base_element)

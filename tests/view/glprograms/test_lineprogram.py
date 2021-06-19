@@ -12,8 +12,9 @@ class TestLineProgram(TestShaderProgram):
         return LineProgram()
 
     @property
-    def base_drawable(self):
-        element = LineElement(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0])
-        drawable = LineGL(element)
+    def base_element(self):
+        return LineElement(x=[-1, 1, 0], y=[0, 0, 1], z=[0, 0, 0])
 
-        return drawable
+    @property
+    def base_drawable(self):
+        return LineGL(self.base_element)

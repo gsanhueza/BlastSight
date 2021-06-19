@@ -13,11 +13,12 @@ class TestShaderProgram:
         return ShaderProgram()
 
     @property
-    def base_drawable(self):
-        element = NullElement()
-        drawable = GLDrawable(element)
+    def base_element(self):
+        return NullElement()
 
-        return drawable
+    @property
+    def base_drawable(self):
+        return GLDrawable(self.base_element)
 
     def generate_program(self):
         prog = self.base_program
