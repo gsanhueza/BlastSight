@@ -312,11 +312,7 @@ class IntegrableViewer(QOpenGLWidget):
     """
     @property
     def rendering_offset(self) -> np.ndarray:
-        return self._rendering_offset
-
-    @rendering_offset.setter
-    def rendering_offset(self, value: iter) -> None:
-        self._rendering_offset = np.asarray(value)
+        return -self.rotation_center
 
     @property
     def render_camera_position(self) -> np.ndarray:
@@ -699,10 +695,6 @@ class IntegrableViewer(QOpenGLWidget):
             max_all = np.max((max_all, max_bound), axis=0)
 
         return min_all, max_all
-
-    def fix_wobbling(self) -> None:
-        # Update offset to minimize wobbling
-        self.rendering_offset = -self.rotation_center
 
     """
     Utilities
