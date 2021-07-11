@@ -115,7 +115,6 @@ class IntegrableViewer(QOpenGLWidget):
         self._rotation_center = np.array([0.0, 0.0, 0.0])
         self._rotation_angle = np.array([0.0, 0.0, 0.0])
         self._camera_position = np.array([0.0, 0.0, 200.0])
-        self._rendering_offset = np.array([0.0, 0.0, 0.0])
 
         # Cross-section data
         self.last_cross_origin = np.asarray([0.0, 0.0, 0.0])
@@ -312,7 +311,7 @@ class IntegrableViewer(QOpenGLWidget):
     """
     @property
     def rendering_offset(self) -> np.ndarray:
-        return -self.rotation_center
+        return np.zeros(3)  # -self.rotation_center
 
     @property
     def render_camera_position(self) -> np.ndarray:
