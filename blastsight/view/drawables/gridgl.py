@@ -14,6 +14,8 @@ from OpenGL.GL import *
 class GridGL(GLDrawable):
     def __init__(self, element=None, *args, **kwargs):
         super().__init__(element, *args, **kwargs)
+
+        # Lines description
         self._origin = kwargs.get('origin', np.zeros(3))
         self._size = kwargs.get('size', 10 * np.ones(3))
         self._color = kwargs.get('color', np.array([1.0, 0.8, 0.0]))

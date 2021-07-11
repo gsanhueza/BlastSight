@@ -5,7 +5,6 @@
 #  Distributed under the MIT License.
 #  See LICENSE for more info.
 
-from OpenGL.GL import glViewport
 from .shaderprogram import ShaderProgram
 
 

@@ -11,7 +11,7 @@ from ..drawables.axisgl import AxisGL
 from ..drawables.gridgl import GridGL
 
 from ..glprograms.axisprogram import AxisProgram
-from ..glprograms.gridprogram import GridProgram
+from ..glprograms.gridcomposite import GridComposite
 
 
 class GLPostCollection(GLCollection):
@@ -20,4 +20,4 @@ class GLPostCollection(GLCollection):
         self.associate(AxisProgram(), AxisGL)
 
         # Grid
-        self.associate(GridProgram(), GridGL)
+        self.associate(GridComposite(), GridGL)

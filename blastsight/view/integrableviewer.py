@@ -33,7 +33,6 @@ from .drawables.meshgl import MeshGL
 from .drawables.pointgl import PointGL
 from .drawables.tubegl import TubeGL
 from .drawables.textgl import TextGL
-from .drawables.gridgl import GridGL
 
 from .drawablefactory import DrawableFactory
 from .fpscounter import FPSCounter
