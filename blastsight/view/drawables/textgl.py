@@ -10,22 +10,7 @@ import numpy as np
 
 from OpenGL.GL import *
 from .gldrawable import GLDrawable
-
-
-# Adapted from https://stackoverflow.com/questions/63836707/how-to-render-text-with-pyopengl
-class CharacterSlot:
-    def __init__(self, texture, glyph):
-        self.texture = texture
-        self.textureSize = (glyph.bitmap.width, glyph.bitmap.rows)
-
-        if isinstance(glyph, freetype.GlyphSlot):
-            self.bearing = (glyph.bitmap_left, glyph.bitmap_top)
-            self.advance = glyph.advance.x
-        elif isinstance(glyph, freetype.BitmapGlyph):
-            self.bearing = (glyph.left, glyph.top)
-            self.advance = None
-        else:
-            raise RuntimeError('unknown glyph type')
+from ..glprograms.textprogram import TextProgram
 
 
 class TextGL(GLDrawable):
@@ -55,14 +40,10 @@ class TextGL(GLDrawable):
         if self.is_initialized:
             return
 
-        TextGL.setup_characters()
         self.initialize_textures()
         super().initialize()
 
     def initialize_textures(self) -> None:
-        # Load first 128 characters of ASCII set
-        TextGL.setup_characters()
-
         # Setup text vertices
         self._setup_text_vertices()
 
@@ -113,29 +94,6 @@ class TextGL(GLDrawable):
             1, 0,
         ], np.float32)
 
-    @staticmethod
-    def setup_characters() -> None:
-        for i in range(0, 128):
-            TextGL.face.load_char(chr(i))
-            glyph = TextGL.face.glyph
-
-            # Generate texture
-            texture = glGenTextures(1)
-            glBindTexture(GL_TEXTURE_2D, texture)
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, glyph.bitmap.width, glyph.bitmap.rows, 0,
-                         GL_RED, GL_UNSIGNED_BYTE, glyph.bitmap.buffer)
-
-            # Texture options
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE)
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE)
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
-
-            # Now store character for later use
-            TextGL.characters[chr(i)] = CharacterSlot(texture, glyph)
-
-            glBindTexture(GL_TEXTURE_2D, 0)
-
     def _setup_text_vertices(self) -> None:
         self.text_vertices.clear()
 
@@ -143,7 +101,7 @@ class TextGL(GLDrawable):
         x, y, z = self.position
 
         for c in self.text:
-            ch = self.characters[c]
+            ch = TextProgram.characters[c]
             w, h = ch.textureSize
             w = w * self.scale
             h = h * self.scale
@@ -189,7 +147,7 @@ class TextGL(GLDrawable):
         glBindVertexArray(self.vao)
 
         for i, c in enumerate(self.text):
-            ch = self.characters[c]
+            ch = TextProgram.characters[c]
             vertices = self.text_vertices[i]
 
             # Render glyph texture over quad
