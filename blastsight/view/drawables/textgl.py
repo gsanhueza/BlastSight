@@ -29,17 +29,17 @@ class CharacterSlot:
 
 
 class TextGL(GLDrawable):
+    fontfile = r'/usr/share/fonts/TTF/cour.ttf'
+    characters = {}
+
+    try:
+        face = freetype.Face(fontfile)
+    except freetype.ft_errors.FT_Exception:
+        fontfile = r'C:\Windows\Fonts\cour.ttf'
+        face = freetype.Face(fontfile)
+
     def __init__(self, element, *args, **kwargs):
         super().__init__(element, *args, **kwargs)
-        self.fontfile = r'/usr/share/fonts/TTF/cour.ttf'
-
-        try:
-            self.face = freetype.Face(self.fontfile)
-        except freetype.ft_errors.FT_Exception:
-            self.fontfile = r'C:\Windows\Fonts\cour.ttf'
-            self.face = freetype.Face(self.fontfile)
-
-        self.characters = {}
         self.text_vertices = []
         self.vertices = np.empty(3)
 
@@ -55,12 +55,13 @@ class TextGL(GLDrawable):
         if self.is_initialized:
             return
 
+        TextGL.setup_characters()
         self.initialize_textures()
         super().initialize()
 
     def initialize_textures(self) -> None:
         # Load first 128 characters of ASCII set
-        self._setup_characters()
+        TextGL.setup_characters()
 
         # Setup text vertices
         self._setup_text_vertices()
@@ -112,10 +113,11 @@ class TextGL(GLDrawable):
             1, 0,
         ], np.float32)
 
-    def _setup_characters(self) -> None:
+    @staticmethod
+    def setup_characters() -> None:
         for i in range(0, 128):
-            self.face.load_char(chr(i))
-            glyph = self.face.glyph
+            TextGL.face.load_char(chr(i))
+            glyph = TextGL.face.glyph
 
             # Generate texture
             texture = glGenTextures(1)
@@ -130,7 +132,7 @@ class TextGL(GLDrawable):
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
 
             # Now store character for later use
-            self.characters[chr(i)] = CharacterSlot(texture, glyph)
+            TextGL.characters[chr(i)] = CharacterSlot(texture, glyph)
 
             glBindTexture(GL_TEXTURE_2D, 0)
 
@@ -173,10 +175,6 @@ class TextGL(GLDrawable):
 
         # Disable byte-alignment restriction
         glPixelStorei(GL_UNPACK_ALIGNMENT, 1)
-
-        # Load first 128 characters of ASCII set
-        # (Why do we have to setup this twice (once in the constructor)?)
-        self._setup_characters()
 
         # Fill buffer (with empty data for now)
         glBindVertexArray(self.vao)
