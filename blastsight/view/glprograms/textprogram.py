@@ -51,8 +51,8 @@ class TextProgram(ShaderProgram):
 
     @staticmethod
     def setup_characters() -> None:
-        for i in range(0, 128):
-            TextProgram.face.load_char(chr(i))
+        for char in map(chr, range(0, 128)):
+            TextProgram.face.load_char(char)
             glyph = TextProgram.face.glyph
 
             # Generate texture
@@ -68,7 +68,7 @@ class TextProgram(ShaderProgram):
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
 
             # Now store character for later use
-            TextProgram.characters[chr(i)] = CharacterSlot(texture, glyph)
+            TextProgram.characters[char] = CharacterSlot(texture, glyph)
 
             glBindTexture(GL_TEXTURE_2D, 0)
 

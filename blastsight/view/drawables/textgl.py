@@ -55,10 +55,8 @@ class TextGL(GLDrawable):
         return np.asarray([
             xpos,     ypos + h, zpos,
             xpos,     ypos,     zpos,
-            xpos + w, ypos,     zpos,
-            xpos,     ypos + h, zpos,
-            xpos + w, ypos,     zpos,
             xpos + w, ypos + h, zpos,
+            xpos + w, ypos, zpos,
         ], np.float32)
 
     @staticmethod
@@ -66,10 +64,8 @@ class TextGL(GLDrawable):
         return np.asarray([
             xpos,     ypos,     zpos + h,
             xpos,     ypos,     zpos,
-            xpos,     ypos + w, zpos,
-            xpos,     ypos,     zpos + h,
-            xpos,     ypos + w, zpos,
             xpos,     ypos + w, zpos + h,
+            xpos, ypos + w, zpos,
         ], np.float32)
 
     @staticmethod
@@ -77,10 +73,8 @@ class TextGL(GLDrawable):
         return np.asarray([
             xpos,     ypos,     zpos + h,
             xpos,     ypos,     zpos,
-            xpos + w, ypos,     zpos,
-            xpos,     ypos,     zpos + h,
-            xpos + w, ypos,     zpos,
             xpos + w, ypos,     zpos + h,
+            xpos + w, ypos, zpos,
         ], np.float32)
 
     @staticmethod
@@ -88,10 +82,8 @@ class TextGL(GLDrawable):
         return np.asarray([
             0, 0,
             0, 1,
-            1, 1,
-            0, 0,
-            1, 1,
             1, 0,
+            1, 1,
         ], np.float32)
 
     def _setup_text_vertices(self) -> None:
@@ -119,10 +111,6 @@ class TextGL(GLDrawable):
                 self.text_vertices.append(self._rendering_buffer_east(x, y, z, w, h))
                 x += (ch.advance >> 6) * self.scale
 
-        # Offset
-        for i in range(len(self.text_vertices)):
-            self.text_vertices[i] = self.text_vertices[i].reshape((-1, 3)).astype(np.float32)
-
     def generate_buffers(self) -> None:
         self._vaos = [glGenVertexArrays(1)]
         self._vbos = glGenBuffers(2)
@@ -136,7 +124,7 @@ class TextGL(GLDrawable):
 
         # Fill buffer (with empty data for now)
         glBindVertexArray(self.vao)
-        self.fill_buffer(_POSITION, 3, np.zeros(6 * 3), GLfloat, GL_FLOAT, self._vbos[_POSITION])
+        self.fill_buffer(_POSITION, 3, np.zeros(4 * 3), GLfloat, GL_FLOAT, self._vbos[_POSITION])
         self.fill_buffer(_TEXTURE, 2, self._get_rendering_texture(), GLfloat, GL_FLOAT, self._vbos[_TEXTURE])
         glBindBuffer(GL_ARRAY_BUFFER, 0)
 
@@ -158,7 +146,7 @@ class TextGL(GLDrawable):
 
             glBindBuffer(GL_ARRAY_BUFFER, 0)
             # Render quad
-            glDrawArrays(GL_TRIANGLES, 0, 6)
+            glDrawArrays(GL_TRIANGLE_STRIP, 0, 4)
 
         glBindVertexArray(0)
         glBindTexture(GL_TEXTURE_2D, 0)

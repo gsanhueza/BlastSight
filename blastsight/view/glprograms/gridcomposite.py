@@ -66,7 +66,7 @@ class GridComposite(ShaderProgram):
         # Labels in X
         # Remember to separate the number text from the grid
         for x in grid.x_divisions:
-            pos = int(min_bound[0] + x) % 10
+            pos = int(min_bound[0] + x)
             textgl = factory.text(text=f'{pos}', position=[pos, min_bound[1] - 2.0, min_bound[2]], scale=scale)
             text_drawables.append(textgl)
 
