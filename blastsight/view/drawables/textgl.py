@@ -5,7 +5,6 @@
 #  Distributed under the MIT License.
 #  See LICENSE for more info.
 
-import freetype
 import numpy as np
 
 from OpenGL.GL import *
@@ -14,15 +13,6 @@ from ..glprograms.textprogram import TextProgram
 
 
 class TextGL(GLDrawable):
-    fontfile = r'/usr/share/fonts/TTF/cour.ttf'
-    characters = {}
-
-    try:
-        face = freetype.Face(fontfile)
-    except freetype.ft_errors.FT_Exception:
-        fontfile = r'C:\Windows\Fonts\cour.ttf'
-        face = freetype.Face(fontfile)
-
     def __init__(self, element, *args, **kwargs):
         super().__init__(element, *args, **kwargs)
         self.text_vertices = []
@@ -32,9 +22,6 @@ class TextGL(GLDrawable):
         self.scale = kwargs.get('scale', 0.1)
         self.position = kwargs.get('position', [0.0, 0.0, 0.0])
         self.orientation = kwargs.get('orientation', 'elevation')
-
-        # Set character size
-        self.face.set_char_size(48 * 64)
 
     def initialize(self) -> None:
         if self.is_initialized:

@@ -5,9 +5,14 @@
 #  Distributed under the MIT License.
 #  See LICENSE for more info.
 
+import numpy as np
+
 from .shaderprogram import ShaderProgram
 from .gridprogram import GridProgram
 from .textprogram import TextProgram
+
+from ..drawables.textgl import TextGL
+from ...model.elements.nullelement import NullElement
 
 
 class GridComposite(ShaderProgram):
@@ -47,17 +52,9 @@ class GridComposite(ShaderProgram):
         if len(drawables) == 0:
             return
 
-        import numpy as np
-        from blastsight.view.drawables.gridgl import GridGL
-        from blastsight.view.drawablefactory import DrawableFactory
-        from blastsight.model.model import Model
-
         # When setting the Grid drawable, we can only assume one is selected
         # WARNING Remember that this is only a workaround for the current architecture!!!
-        temp_model = Model()
-        factory = DrawableFactory(temp_model)
-
-        grid: GridGL = drawables[-1]
+        grid = drawables[-1]
         min_bound, max_bound = grid.bounding_box
         scale = 0.02 * max(1, np.sqrt(grid.mark_separation))
 
@@ -67,19 +64,19 @@ class GridComposite(ShaderProgram):
         # Remember to separate the number text from the grid
         for x in grid.x_divisions:
             pos = int(min_bound[0] + x)
-            textgl = factory.text(text=f'{pos}', position=[pos, min_bound[1] - 2.0, min_bound[2]], scale=scale)
+            textgl = TextGL(NullElement(), text=f'{pos}', position=[pos, min_bound[1] - 2.0, min_bound[2]], scale=scale)
             text_drawables.append(textgl)
 
         # Labels in Y
         for y in grid.y_divisions:
             pos = int(min_bound[1] + y)
-            textgl = factory.text(text=f'{pos}', position=[min_bound[0] - 2.0, pos, min_bound[2] - 2.0], scale=scale)
+            textgl = TextGL(NullElement(), text=f'{pos}', position=[min_bound[0] - 2.0, pos, min_bound[2] - 2.0], scale=scale)
             text_drawables.append(textgl)
 
         # Labels in Z
         for z in grid.z_divisions:
             pos = int(min_bound[2] + z)
-            textgl = factory.text(text=f'{pos}', position=[min_bound[0] - 2.0, min_bound[1], pos], scale=scale)
+            textgl = TextGL(NullElement(), text=f'{pos}', position=[min_bound[0] - 2.0, min_bound[1], pos], scale=scale)
             text_drawables.append(textgl)
 
         self.grid_program.set_drawables(drawables)

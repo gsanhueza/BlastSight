@@ -45,15 +45,11 @@ class TextProgram(ShaderProgram):
         super().__init__()
         self.base_name = 'Text'
 
-    def initialize(self) -> None:
-        super().initialize()
-        TextProgram.setup_characters()
-
-    @staticmethod
-    def setup_characters() -> None:
+    @classmethod
+    def setup_characters(cls) -> None:
         for char in map(chr, range(0, 128)):
-            TextProgram.face.load_char(char)
-            glyph = TextProgram.face.glyph
+            cls.face.load_char(char)
+            glyph = cls.face.glyph
 
             # Generate texture
             texture = glGenTextures(1)
@@ -68,9 +64,15 @@ class TextProgram(ShaderProgram):
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
 
             # Now store character for later use
-            TextProgram.characters[char] = CharacterSlot(texture, glyph)
+            cls.characters[char] = CharacterSlot(texture, glyph)
 
             glBindTexture(GL_TEXTURE_2D, 0)
+
+    def set_drawables(self, drawables: list) -> None:
+        # Generate characters (For some reason, textures look weird if I do this in initialize())
+        self.setup_characters()
+
+        super().set_drawables(drawables)
 
     def draw(self) -> None:
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)
