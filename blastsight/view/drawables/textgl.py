@@ -38,34 +38,38 @@ class TextGL(GLDrawable):
         self.vertices = np.unique(np.array(self.text_vertices).flatten().reshape((-1, 3)), axis=0)
 
     @staticmethod
-    def _rendering_buffer_elevation(xpos, ypos, zpos, w, h) -> np.ndarray:
-        return np.asarray([
-            xpos,     ypos + h, zpos,
-            xpos,     ypos,     zpos,
-            xpos + w, ypos + h, zpos,
-            xpos + w, ypos, zpos,
+    def _rendering_buffer(xpos, ypos, zpos) -> np.ndarray:
+        return np.asarray(4 * [xpos, ypos, zpos], np.float32)
+
+    @classmethod
+    def _rendering_buffer_elevation(cls, xpos, ypos, zpos, w, h) -> np.ndarray:
+        return cls._rendering_buffer(xpos, ypos, zpos) + np.asarray([
+            0, h, 0,
+            0, 0, 0,
+            w, h, 0,
+            w, 0, 0,
         ], np.float32)
 
-    @staticmethod
-    def _rendering_buffer_north(xpos, ypos, zpos, w, h) -> np.ndarray:
-        return np.asarray([
-            xpos,     ypos,     zpos + h,
-            xpos,     ypos,     zpos,
-            xpos,     ypos + w, zpos + h,
-            xpos, ypos + w, zpos,
+    @classmethod
+    def _rendering_buffer_north(cls, xpos, ypos, zpos, w, h) -> np.ndarray:
+        return cls._rendering_buffer(xpos, ypos, zpos) + np.array([
+            0, 0, h,
+            0, 0, 0,
+            0, w, h,
+            0, w, 0,
         ], np.float32)
 
-    @staticmethod
-    def _rendering_buffer_east(xpos, ypos, zpos, w, h) -> np.ndarray:
-        return np.asarray([
-            xpos,     ypos,     zpos + h,
-            xpos,     ypos,     zpos,
-            xpos + w, ypos,     zpos + h,
-            xpos + w, ypos, zpos,
+    @classmethod
+    def _rendering_buffer_east(cls, xpos, ypos, zpos, w, h) -> np.ndarray:
+        return cls._rendering_buffer(xpos, ypos, zpos) + np.asarray([
+            0, 0, h,
+            0, 0, 0,
+            w, 0, h,
+            w, 0, 0,
         ], np.float32)
 
-    @staticmethod
-    def _get_rendering_texture() -> np.ndarray:
+    @classmethod
+    def _get_rendering_texture(cls) -> np.ndarray:
         return np.asarray([
             0, 0,
             0, 1,
