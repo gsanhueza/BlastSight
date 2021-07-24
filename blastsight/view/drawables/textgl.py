@@ -106,9 +106,6 @@ class TextGL(GLDrawable):
         _POSITION = 0
         _TEXTURE = 1
 
-        # Disable byte-alignment restriction
-        glPixelStorei(GL_UNPACK_ALIGNMENT, 1)
-
         # Fill buffer (with empty data for now)
         glBindVertexArray(self.vao)
         self.fill_buffer(_POSITION, 3, np.zeros(4 * 3), GLfloat, GL_FLOAT, self._vbos[_POSITION])
@@ -127,13 +124,14 @@ class TextGL(GLDrawable):
 
             # Render glyph texture over quad
             glBindTexture(GL_TEXTURE_2D, ch.texture)
+
             # Update content of VBO memory
             glBindBuffer(GL_ARRAY_BUFFER, self._vbos[0])
             glBufferSubData(GL_ARRAY_BUFFER, 0, vertices.nbytes, vertices)
-
             glBindBuffer(GL_ARRAY_BUFFER, 0)
+
             # Render quad
             glDrawArrays(GL_TRIANGLE_STRIP, 0, 4)
 
-        glBindVertexArray(0)
         glBindTexture(GL_TEXTURE_2D, 0)
+        glBindVertexArray(0)

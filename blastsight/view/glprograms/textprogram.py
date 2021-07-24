@@ -45,8 +45,15 @@ class TextProgram(ShaderProgram):
         super().__init__()
         self.base_name = 'Text'
 
+    def initialize(self) -> None:
+        super().initialize()
+        self.setup_characters()
+
     @classmethod
     def setup_characters(cls) -> None:
+        # Disable byte-alignment restriction
+        glPixelStorei(GL_UNPACK_ALIGNMENT, 1)
+
         for char in map(chr, range(0, 128)):
             cls.face.load_char(char)
             glyph = cls.face.glyph
@@ -67,12 +74,6 @@ class TextProgram(ShaderProgram):
             cls.characters[char] = CharacterSlot(texture, glyph)
 
             glBindTexture(GL_TEXTURE_2D, 0)
-
-    def set_drawables(self, drawables: list) -> None:
-        # Generate characters (For some reason, textures look weird if I do this in initialize())
-        self.setup_characters()
-
-        super().set_drawables(drawables)
 
     def draw(self) -> None:
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)
