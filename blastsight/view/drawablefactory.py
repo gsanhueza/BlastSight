@@ -16,6 +16,8 @@ from .drawables.blockgl import BlockGL
 from .drawables.pointgl import PointGL
 from .drawables.linegl import LineGL
 from .drawables.tubegl import TubeGL
+
+from .drawables.blocklegacygl import BlockLegacyGL
 from .drawables.tubelegacygl import TubeLegacyGL
 
 from .drawables.textgl import TextGL
@@ -51,6 +53,8 @@ class DrawableFactory:
         return self.generate_drawable(MeshGL, self.engine.mesh, *args, **kwargs)
 
     def blocks(self, *args, **kwargs) -> BlockGL:
+        if kwargs.pop('legacy', False):
+            return self.generate_drawable(BlockLegacyGL, self.engine.blocks, *args, **kwargs)
         return self.generate_drawable(BlockGL, self.engine.blocks, *args, **kwargs)
 
     def points(self, *args, **kwargs) -> PointGL:
