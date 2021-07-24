@@ -31,16 +31,6 @@ class GridComposite(ShaderProgram):
         self.grid_program.initialize()
         self.text_program.initialize()
 
-    def generate_shaders(self) -> list:
-        self.grid_program.generate_shaders()
-        self.text_program.generate_shaders()
-
-        return []
-
-    def link_shaders(self) -> None:
-        self.grid_program.link_shaders()
-        self.text_program.link_shaders()
-
     def update_uniform(self, loc_str, *values) -> None:
         self.grid_program.update_uniform(loc_str, *values)
         self.text_program.update_uniform(loc_str, *values)
