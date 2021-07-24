@@ -80,5 +80,3 @@ class TestGLCollection:
         assert len(collection.select(MeshGL, lambda x: x.is_turbo_ready)) == 0
         assert len(collection.select(MeshGL, lambda x: x.is_highlighted)) == 0
         assert len(collection.select(MeshGL, lambda x: x.is_wireframed)) == 0
-        assert len(collection.select(BlockGL, lambda x: x.is_standard)) == 1
-        assert len(collection.select(BlockGL, lambda x: x.is_legacy)) == 0

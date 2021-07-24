@@ -15,16 +15,3 @@ class TestBlockGL(TestGLDrawable):
     def test_empty(self):
         with pytest.raises(Exception):
             BlockGL()
-
-    def test_legacy(self, drawable):
-        # Standard
-        assert not drawable.is_initialized
-        drawable.initialize()
-        assert drawable.is_initialized
-
-        # Legacy
-        drawable.is_legacy = True
-
-        assert not drawable.is_initialized
-        drawable.initialize()
-        assert drawable.is_initialized
