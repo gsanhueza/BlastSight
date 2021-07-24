@@ -85,60 +85,69 @@ class GridGL(GLDrawable):
         self._vaos = [glGenVertexArrays(1)]
         self._vbos = glGenBuffers(2)
 
-    def _xy_grid(self) -> list:
-        response = []
-
-        # Lines in X
-        for x_div in self.x_divisions:
-            response.append(self.origin + [x_div, 0.0, 0.0])
-            response.append(self.origin + [x_div, self.size[1], 0.0])
-
-        # Lines in Y
-        for y_div in self.y_divisions:
-            response.append(self.origin + [0.0, y_div, 0.0])
-            response.append(self.origin + [self.size[0], y_div, 0.0])
-
-        return response
-
-    def _yz_grid(self) -> list:
-        response = []
-
-        # Lines in Y
-        for y_div in self.y_divisions:
-            response.append(self.origin + [0.0, y_div, 0.0])
-            response.append(self.origin + [0.0, y_div, self.size[2]])
-
-        # Lines in Z
-        for z_div in self.z_divisions:
-            response.append(self.origin + [0.0, 0.0, z_div])
-            response.append(self.origin + [0.0, self.size[1], z_div])
-
-        return response
-
-    def _xz_grid(self) -> list:
-        response = []
-
-        # Lines in X
-        for x_div in self.x_divisions:
-            response.append(self.origin + [x_div, 0.0, 0.0])
-            response.append(self.origin + [x_div, 0.0, self.size[2]])
-
-        # Lines in Z
-        for z_div in self.z_divisions:
-            response.append(self.origin + [0.0, 0.0, z_div])
-            response.append(self.origin + [self.size[0], 0.0, z_div])
-
-        return response
-
     def generate_grid(self) -> np.ndarray:
+        """
+        Let the grid be
+
+         (Z) ^
+             | |
+             | |  ^(Y)
+             | | /
+             | |/_______  <-- Example of a line in the "Y Corner".
+             | /
+             +/__________> (X)
+
+        A line of the "X corner" is (x, 0, MAX_Z) -> (x, 0, 0) -> (x, MAX_Y, 0)
+        A line of the "Y corner" is (0, y, MAX_Z) -> (0, y, 0) -> (MAX_X, y, 0)
+        A line of the "Z corner" is (MAX_X, 0, z) -> (0, 0, z) -> (0, MAX_Y, z)
+        """
         marks = []
 
         # Grid
-        marks += self._xy_grid()
-        marks += self._yz_grid()
-        marks += self._xz_grid()
+        marks += self.x_corner()
+        marks += self.y_corner()
+        marks += self.z_corner()
 
         return np.array(marks).reshape((-1, 3)).astype(np.float32)
+
+    def x_corner(self) -> list:
+        # A line of the "X corner" is (x, 0, MAX_Z) -> (x, 0, 0) -> (x, MAX_Y, 0)
+        response = []
+        origin = self.origin
+
+        for x in self.x_divisions:
+            response.append(origin + [x, 0.0, self.size[2]])
+            response.append(origin + [x, 0.0, 0.0])
+            response.append(origin + [x, 0.0, 0.0])
+            response.append(origin + [x, self.size[1], 0.0])
+
+        return response
+
+    def y_corner(self) -> list:
+        # A line of the "Y corner" is (0, y, MAX_Z) -> (0, y, 0) -> (MAX_X, y, 0)
+        response = []
+        origin = self.origin
+
+        for y in self.y_divisions:
+            response.append(origin + [0.0, y, self.size[2]])
+            response.append(origin + [0.0, y, 0.0])
+            response.append(origin + [0.0, y, 0.0])
+            response.append(origin + [self.size[0], y, 0.0])
+
+        return response
+
+    def z_corner(self) -> list:
+        # A line of the "Z corner" is (MAX_X, 0, z) -> (0, 0, z) -> (0, MAX_Y, z)
+        response = []
+        origin = self.origin
+
+        for z in self.z_divisions:
+            response.append(origin + [self.size[0], 0.0, z])
+            response.append(origin + [0.0, 0.0, z])
+            response.append(origin + [0.0, 0.0, z])
+            response.append(origin + [0.0, self.size[1], z])
+
+        return response
 
     def setup_attributes(self) -> None:
         _POSITION = 0
