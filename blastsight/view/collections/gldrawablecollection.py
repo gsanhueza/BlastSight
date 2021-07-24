@@ -11,8 +11,9 @@ from ..drawables.meshgl import MeshGL
 from ..drawables.blockgl import BlockGL
 from ..drawables.linegl import LineGL
 from ..drawables.pointgl import PointGL
-from ..drawables.tubegl import TubeGL
 from ..drawables.textgl import TextGL
+from ..drawables.tubegl import TubeGL
+from ..drawables.tubelegacygl import TubeLegacyGL
 
 from ..glprograms.meshprogram import MeshProgram
 from ..glprograms.wireprogram import WireProgram
@@ -25,6 +26,7 @@ from ..glprograms.blocklegacyprogram import BlockLegacyProgram
 from ..glprograms.lineprogram import LineProgram
 from ..glprograms.pointprogram import PointProgram
 from ..glprograms.tubeprogram import TubeProgram
+from ..glprograms.tubelegacyprogram import TubeLegacyProgram
 
 from ..glprograms.meshphantomprogram import MeshPhantomProgram
 from ..glprograms.xsectionmeshprogram import XSectionMeshProgram
@@ -37,6 +39,7 @@ class GLDrawableCollection(GLCollection):
     def generate_associations(self):
         # Lines/Tubes/Points
         self.associate(LineProgram(), LineGL)
+        self.associate(TubeLegacyProgram(), TubeLegacyGL)
         self.associate(TubeProgram(), TubeGL)
         self.associate(PointProgram(), PointGL)
 

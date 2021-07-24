@@ -16,6 +16,8 @@ from .drawables.blockgl import BlockGL
 from .drawables.pointgl import PointGL
 from .drawables.linegl import LineGL
 from .drawables.tubegl import TubeGL
+from .drawables.tubelegacygl import TubeLegacyGL
+
 from .drawables.textgl import TextGL
 from .drawables.gridgl import GridGL
 
@@ -58,6 +60,8 @@ class DrawableFactory:
         return self.generate_drawable(LineGL, self.engine.lines, *args, **kwargs)
 
     def tubes(self, *args, **kwargs) -> TubeGL:
+        if kwargs.pop('legacy', False):
+            return self.generate_drawable(TubeLegacyGL, self.engine.tubes, *args, **kwargs)
         return self.generate_drawable(TubeGL, self.engine.tubes, *args, **kwargs)
 
     def text(self, *args, **kwargs) -> TextGL:
