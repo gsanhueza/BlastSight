@@ -11,6 +11,7 @@ from .shaderprogram import ShaderProgram
 from .gridprogram import GridProgram
 from .textprogram import TextProgram
 
+from ..drawables.gridgl import GridGL
 from ..drawables.textgl import TextGL
 from ...model.elements.nullelement import NullElement
 
@@ -44,17 +45,8 @@ class GridComposite(ShaderProgram):
         self.grid_program.update_uniform(loc_str, *values)
         self.text_program.update_uniform(loc_str, *values)
 
-    def set_drawables(self, drawables: list) -> None:
-        # WARNING Input only contains GridGL, but this is needed, or GLCollection will skip
-        # this program (composite) if it doesn't see drawables inside!
-        super().set_drawables(drawables)
-
-        if len(drawables) == 0:
-            return
-
-        # When setting the Grid drawable, we can only assume one is selected
-        # WARNING Remember that this is only a workaround for the current architecture!!!
-        grid = drawables[-1]
+    @staticmethod
+    def generate_labels(grid: GridGL) -> list:
         min_bound, max_bound = grid.bounding_box
         scale = 0.02 * max(1, np.sqrt(grid.mark_separation))
 
@@ -79,8 +71,19 @@ class GridComposite(ShaderProgram):
             textgl = TextGL(NullElement(), text=f'{pos}', position=[min_bound[0] - 2.0, min_bound[1], pos], scale=scale)
             text_drawables.append(textgl)
 
+        return text_drawables
+
+    def set_drawables(self, drawables: list) -> None:
+        def flatten(t):
+            return [item for sublist in t for item in sublist]
+
+        # WARNING Input only contains GridGL, but this is needed, or GLCollection will skip
+        # this program (composite) if it doesn't see drawables inside!
+        super().set_drawables(drawables)
+        all_text_drawables = flatten(map(self.generate_labels, drawables))
+
         self.grid_program.set_drawables(drawables)
-        self.text_program.set_drawables(text_drawables)
+        self.text_program.set_drawables(all_text_drawables)
 
     def bind(self) -> None:
         pass
