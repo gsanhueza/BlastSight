@@ -310,7 +310,7 @@ class IntegrableViewer(QOpenGLWidget):
     """
     @property
     def rendering_offset(self) -> np.ndarray:
-        return np.zeros(3)  # -self.rotation_center
+        return -self.rotation_center
 
     @property
     def render_camera_position(self) -> np.ndarray:
