@@ -78,8 +78,8 @@ class MeshElement(Element):
 
     def _check_integrity(self) -> None:
         super()._check_integrity()
-        if self.x.size != self.indices.max() + 1:
-            raise ValueError('Wrong number of indices for mesh.')
+        if self.x.size < self.indices.max() + 1:
+            raise ValueError('Too many indices for available vertices.')
 
     """
     Data
