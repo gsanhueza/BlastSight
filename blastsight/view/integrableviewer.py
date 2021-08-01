@@ -162,7 +162,6 @@ class IntegrableViewer(QOpenGLWidget):
         glEnable(GL_POINT_SPRITE)
         glDisable(GL_CULL_FACE)
         glEnable(GL_DEPTH_TEST)
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
 
         # Initialize collections
         self.pre_collection.initialize()
@@ -174,32 +173,13 @@ class IntegrableViewer(QOpenGLWidget):
         # Clear screen
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
-        # Setup matrices
-        self.setup_model_matrix(self.model_matrix, self.rotation_angle, self.render_rotation_center)
-        self.setup_view_matrix(self.view_matrix, self.render_camera_position)
-
-        # Project (Perspective/Orthographic)
-        self.proj_matrix.setToIdentity()
-        self.resizeGL(self.width(), self.height())
-
-        # Propagate common uniform values (programs lacking the uniform will ignore the command)
-        for collection in [self.pre_collection, self.drawable_collection, self.post_collection]:
-            # MVP matrices
-            collection.update_uniform('proj_matrix', self.proj_matrix)
-            collection.update_uniform('model_view_matrix', self.view_matrix * self.model_matrix)
-
-            # Viewport values (with DPI awareness)
-            collection.update_uniform('viewport', *self.viewport)
-
-            # Rendering offset (avoid wobbling when rotating the camera)
-            collection.update_uniform('rendering_offset', *self.rendering_offset)
-
-            # Update common uniforms (programs lacking the uniform will ignore the command)
-            collection.update_uniform('plane_origin', *self.last_cross_origin)
-            collection.update_uniform('plane_normal', *self.last_cross_normal)
+        # Propagate uniform values (matrices, viewport, etc)
+        self.propagate_uniforms()
 
         # Draw every GLDrawable (meshes, blocks, points, etc)
         glEnable(GL_BLEND)
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
+
         self.pre_collection.draw()
         self.drawable_collection.draw()
         self.post_collection.draw()
@@ -235,6 +215,31 @@ class IntegrableViewer(QOpenGLWidget):
     def setup_view_matrix(matrix: QMatrix4x4, camera: iter) -> None:
         matrix.setToIdentity()
         matrix.translate(*-camera)
+
+    def propagate_uniforms(self) -> None:
+        # Setup matrices
+        self.setup_model_matrix(self.model_matrix, self.rotation_angle, self.render_rotation_center)
+        self.setup_view_matrix(self.view_matrix, self.render_camera_position)
+
+        # Project (Perspective/Orthographic)
+        self.proj_matrix.setToIdentity()
+        self.resizeGL(self.width(), self.height())
+
+        # Propagate common uniform values (programs lacking the uniform will ignore the command)
+        for collection in [self.pre_collection, self.drawable_collection, self.post_collection]:
+            # MVP matrices
+            collection.update_uniform('proj_matrix', self.proj_matrix)
+            collection.update_uniform('model_view_matrix', self.view_matrix * self.model_matrix)
+
+            # Viewport values (with DPI awareness)
+            collection.update_uniform('viewport', *self.viewport)
+
+            # Rendering offset (avoid wobbling when rotating the camera)
+            collection.update_uniform('rendering_offset', *self.rendering_offset)
+
+            # Update common uniforms (programs lacking the uniform will ignore the command)
+            collection.update_uniform('plane_origin', *self.last_cross_origin)
+            collection.update_uniform('plane_normal', *self.last_cross_normal)
 
     """
     Environment drawables
