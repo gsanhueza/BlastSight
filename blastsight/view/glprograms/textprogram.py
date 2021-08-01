@@ -74,15 +74,3 @@ class TextProgram(ShaderProgram):
             cls.characters[char] = CharacterSlot(texture, glyph)
 
             glBindTexture(GL_TEXTURE_2D, 0)
-
-    def draw(self) -> None:
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)
-        glDepthMask(GL_FALSE)
-        glEnable(GL_CULL_FACE)
-
-        for gl_cull in [GL_FRONT, GL_BACK]:
-            glCullFace(gl_cull)
-            super().draw()
-
-        glDisable(GL_CULL_FACE)
-        glDepthMask(GL_TRUE)
