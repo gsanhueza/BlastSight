@@ -7,11 +7,11 @@
 
 import numpy as np
 
-from .gldrawable import GLDrawable
+from .blockgl import BlockGL
 from OpenGL.GL import *
 
 
-class BlockLegacyGL(GLDrawable):
+class BlockLegacyGL(BlockGL):
     def __init__(self, element, *args, **kwargs):
         super().__init__(element, *args, **kwargs)
         self.num_cubes = 0

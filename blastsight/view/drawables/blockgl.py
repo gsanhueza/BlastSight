@@ -16,6 +16,10 @@ class BlockGL(GLDrawable):
         super().__init__(element, *args, **kwargs)
         self.num_cubes = 0
 
+    @property
+    def is_standard(self) -> bool:
+        return not self.is_cross_sectioned
+
     """
     Internal methods
     """

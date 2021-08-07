@@ -48,8 +48,8 @@ class GLDrawableCollection(GLCollection):
         self.associate(TubeProgram(), TubeGL)
 
         # Blocks
-        self.associate(BlockLegacyProgram(), BlockLegacyGL)
-        self.associate(BlockProgram(), BlockGL)
+        self.associate(BlockLegacyProgram(), BlockLegacyGL, selector=lambda x: x.is_standard)
+        self.associate(BlockProgram(), BlockGL, selector=lambda x: x.is_standard)
 
         # Meshes
         self.associate(MeshProgram(), MeshGL, selector=lambda x: x.is_standard)
