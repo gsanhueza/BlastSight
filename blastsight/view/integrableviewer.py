@@ -189,12 +189,13 @@ class IntegrableViewer(QOpenGLWidget):
 
     def resizeGL(self, w: float, h: float) -> None:
         aspect = w / h
+        max_distance = 100000.0
 
         if self.current_projection == 'Perspective':
-            self.proj_matrix.perspective(self.fov, aspect, 1.0, 100000.0)
+            self.proj_matrix.perspective(self.fov, aspect, 1.0, max_distance)
         else:  # if self.current_projection == 'Orthographic':
             z = self.off_center[2]
-            self.proj_matrix.ortho(-z, z, -z / self.aspect, z / aspect, 0.0, 100000.0)
+            self.proj_matrix.ortho(-z, z, -z / self.aspect, z / aspect, -max_distance, max_distance)
 
     @staticmethod
     def setup_model_matrix(matrix: QMatrix4x4, rotation: np.ndarray, translation: np.ndarray) -> None:
