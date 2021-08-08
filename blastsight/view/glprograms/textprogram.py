@@ -38,6 +38,7 @@ class TextProgram(ShaderProgram):
         fontfile = r'C:\Windows\Fonts\cour.ttf'
         face = freetype.Face(fontfile)
 
+
     # Set character size
     face.set_char_size(48 * 64)
 
@@ -74,3 +75,8 @@ class TextProgram(ShaderProgram):
             cls.characters[char] = CharacterSlot(texture, glyph)
 
             glBindTexture(GL_TEXTURE_2D, 0)
+
+    def draw(self) -> None:
+        glDepthMask(GL_FALSE)
+        super().draw()
+        glDepthMask(GL_TRUE)
