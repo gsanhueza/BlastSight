@@ -19,7 +19,7 @@ class TextGL(GLDrawable):
         self.vertices = np.empty(3)
 
         self.text = kwargs.get('text', ' ')
-        self.scale = kwargs.get('scale', 0.1)
+        self.scale = kwargs.get('scale', 1.0)
         self.position = kwargs.get('position', [0.0, 0.0, 0.0])
         self.orientation = kwargs.get('orientation', 'elevation')
 
@@ -36,6 +36,10 @@ class TextGL(GLDrawable):
 
         # Now we can update the real vertices
         self.vertices = np.unique(np.array(self.text_vertices).flatten().reshape((-1, 3)), axis=0)
+
+    @property
+    def tex_scale(self) -> float:
+        return self.scale / 48
 
     @staticmethod
     def _rendering_buffer(xpos, ypos, zpos) -> np.ndarray:
@@ -86,21 +90,21 @@ class TextGL(GLDrawable):
         for c in self.text:
             ch = TextProgram.characters[c]
             w, h = ch.textureSize
-            w = w * self.scale
-            h = h * self.scale
+            w = w * self.tex_scale
+            h = h * self.tex_scale
 
             # Select best vertices using orientation
             if self.orientation == 'elevation':
                 self.text_vertices.append(self._rendering_buffer_elevation(x, y, z, w, h))
-                x += (ch.advance >> 6) * self.scale
+                x += (ch.advance >> 6) * self.tex_scale
 
             elif self.orientation == 'north':
                 self.text_vertices.append(self._rendering_buffer_north(x, y, z, w, h))
-                y += (ch.advance >> 6) * self.scale
+                y += (ch.advance >> 6) * self.tex_scale
 
             else:  # if self.orientation == 'east':
                 self.text_vertices.append(self._rendering_buffer_east(x, y, z, w, h))
-                x += (ch.advance >> 6) * self.scale
+                x += (ch.advance >> 6) * self.tex_scale
 
     def generate_buffers(self) -> None:
         self._vaos = [glGenVertexArrays(1)]

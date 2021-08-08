@@ -38,7 +38,7 @@ class GridComposite(ShaderProgram):
     @staticmethod
     def generate_labels(grid: GridGL) -> list:
         min_bound, max_bound = grid.bounding_box
-        scale = 0.02 * max(1, np.sqrt(grid.mark_separation))
+        scale = max(1.0, np.sqrt(grid.mark_separation))
 
         text_drawables = []
 
