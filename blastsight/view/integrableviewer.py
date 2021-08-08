@@ -122,7 +122,6 @@ class IntegrableViewer(QOpenGLWidget):
         self.is_phantom_enabled = False
 
         # Extra information
-        self.is_gl_initialized = False
         self.is_animated = False
         self.fov = 45.0
         self.smoothness = 2.0  # Bigger => smoother (but slower) rotations
@@ -167,7 +166,6 @@ class IntegrableViewer(QOpenGLWidget):
         self.pre_collection.initialize()
         self.drawable_collection.initialize()
         self.post_collection.initialize()
-        self.is_gl_initialized = True
 
     def paintGL(self) -> None:
         # Clear screen
