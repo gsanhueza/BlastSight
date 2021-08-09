@@ -37,28 +37,38 @@ class GridComposite(ShaderProgram):
 
     @staticmethod
     def generate_labels(grid: GridGL) -> list:
-        min_bound, max_bound = grid.bounding_box
-        scale = max(1.0, np.sqrt(grid.mark_separation))
-
         text_drawables = []
+
+        min_bound, max_bound = grid.bounding_box
+        max_width = max(map(lambda i: len(str(int(i))), grid.x_divisions.tolist() +
+                                                        grid.y_divisions.tolist() +
+                                                        grid.z_divisions.tolist()))
+
+        scale = grid.mark_separation / max_width
 
         # Labels in X
         # Remember to separate the number text from the grid
         for x in grid.x_divisions:
             pos = int(min_bound[0] + x)
-            textgl = TextGL(NullElement(), text=f'{pos}', position=[pos, min_bound[1] - 2.0, min_bound[2]], scale=scale)
+            textgl = TextGL(NullElement(), text=f'{pos}', scale=scale, centered=True, position=[pos,
+                                                                                                min_bound[1] - scale,
+                                                                                                min_bound[2]])
             text_drawables.append(textgl)
 
         # Labels in Y
         for y in grid.y_divisions:
             pos = int(min_bound[1] + y)
-            textgl = TextGL(NullElement(), text=f'{pos}', position=[min_bound[0] - 2.0, pos, min_bound[2] - 2.0], scale=scale)
+            textgl = TextGL(NullElement(), text=f'{pos}', scale=scale, centered=True, position=[min_bound[0] - scale,
+                                                                                                pos,
+                                                                                                min_bound[2]],)
             text_drawables.append(textgl)
 
         # Labels in Z
         for z in grid.z_divisions:
             pos = int(min_bound[2] + z)
-            textgl = TextGL(NullElement(), text=f'{pos}', position=[min_bound[0] - 2.0, min_bound[1], pos], scale=scale)
+            textgl = TextGL(NullElement(), text=f'{pos}', scale=scale, centered=True, position=[min_bound[0] - 2 * scale,
+                                                                                                min_bound[1],
+                                                                                                pos])
             text_drawables.append(textgl)
 
         return text_drawables
