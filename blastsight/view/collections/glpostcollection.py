@@ -9,9 +9,11 @@ from .glcollection import GLCollection
 
 from ..drawables.axisgl import AxisGL
 from ..drawables.gridgl import GridGL
+from ..drawables.linegl import LineGL
 
-from ..glprograms.axisprogram import AxisProgram
 from ..glprograms.gridcomposite import GridComposite
+from ..glprograms.axisprogram import AxisProgram
+from ..glprograms.flatlineprogram import FlatLineProgram
 
 
 class GLPostCollection(GLCollection):
@@ -21,3 +23,6 @@ class GLPostCollection(GLCollection):
 
         # Grid
         self.associate(GridComposite(), GridGL)
+
+        # FlatLine
+        self.associate(FlatLineProgram(), LineGL)
