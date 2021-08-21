@@ -1,3 +1,4 @@
 include blastsight/view/glprograms/shaders/*/*
 include blastsight/view/gui/UI/*
 include blastsight/view/gui/UI/icons/*
+include blastsight/view/gui/UI/fonts/*
