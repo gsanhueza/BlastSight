@@ -7,6 +7,8 @@
 
 import numpy as np
 
+from OpenGL.GL import *
+
 from .shaderprogram import ShaderProgram
 from .gridprogram import GridProgram
 from .textprogram import TextProgram
@@ -112,8 +114,12 @@ class GridComposite(ShaderProgram):
         pass
 
     def inner_draw(self, drawables: list) -> None:
+        glDisable(GL_DEPTH_TEST)
+
         self.grid_program.bind()
         self.grid_program.inner_draw(self.grid_program.drawables)
 
         self.text_program.bind()
         self.text_program.inner_draw(self.text_program.drawables)
+
+        glEnable(GL_DEPTH_TEST)
