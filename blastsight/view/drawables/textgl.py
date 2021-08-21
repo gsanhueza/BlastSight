@@ -102,7 +102,7 @@ class TextGL(GLDrawable):
         ], np.float32)
 
     def _setup_text_vertices(self) -> None:
-        self.text_vertices.clear()
+        text_vertices = []
 
         # Retrieve positions
         x, y, z = self.position
@@ -115,23 +115,25 @@ class TextGL(GLDrawable):
 
             # Select best vertices using orientation
             if self.orientation == 'elevation':
-                self.text_vertices.append(self._rendering_buffer_elevation(x, y, z, w, h))
+                text_vertices.append(self._rendering_buffer_elevation(x, y, z, w, h))
                 x += (ch.advance >> 6) * self.tex_scale
 
             elif self.orientation == 'north':
-                self.text_vertices.append(self._rendering_buffer_north(x, y, z, w, h))
+                text_vertices.append(self._rendering_buffer_north(x, y, z, w, h))
                 y += (ch.advance >> 6) * self.tex_scale
 
             else:  # if self.orientation == 'east':
-                self.text_vertices.append(self._rendering_buffer_east(x, y, z, w, h))
+                text_vertices.append(self._rendering_buffer_east(x, y, z, w, h))
                 x += (ch.advance >> 6) * self.tex_scale
+
+        tvs = np.array(text_vertices).reshape((-1, 3))
 
         # Centered = Position represents center of the whole text, instead of the bottom left.
         if self.centered:
-            tvs = np.array(self.text_vertices).reshape((-1, 3))
             ptp = np.ptp(tvs, axis=0)
             tvs -= ptp / 2
-            self.text_vertices = tvs.reshape((len(self.text), -1))
+
+        self.text_vertices = tvs.reshape((len(self.text), -1))
 
     def generate_buffers(self) -> None:
         self._vaos = [glGenVertexArrays(1)]
