@@ -21,6 +21,7 @@ class GridGL(GLDrawable):
         self._grid_color = kwargs.get('grid_color', np.array([1.0, 0.8, 0.0]))
         self._text_color = kwargs.get('text_color', np.array([1.0, 1.0, 1.0]))
         self.mark_separation = kwargs.get('mark_separation', 1)
+        self.enclosed = kwargs.get('enclosed', True)
         self.total_lines = 0
 
     @property
@@ -123,8 +124,13 @@ class GridGL(GLDrawable):
         # A line of the "X corner" is (x, 0, MAX_Z) -> (x, 0, 0) -> (x, MAX_Y, 0)
         response = []
         origin = self.origin
+        divisions = self.x_divisions
 
-        for x in self.x_divisions:
+        # Enclose the grid if required
+        if self.enclosed:
+            divisions = np.append(divisions, self.size[0])
+
+        for x in divisions:
             response.append(origin + [x, 0.0, self.size[2]])
             response.append(origin + [x, 0.0, 0.0])
             response.append(origin + [x, 0.0, 0.0])
@@ -136,8 +142,13 @@ class GridGL(GLDrawable):
         # A line of the "Y corner" is (0, y, MAX_Z) -> (0, y, 0) -> (MAX_X, y, 0)
         response = []
         origin = self.origin
+        divisions = self.y_divisions
 
-        for y in self.y_divisions:
+        # Enclose the grid if required
+        if self.enclosed:
+            divisions = np.append(divisions, self.size[1])
+
+        for y in divisions:
             response.append(origin + [0.0, y, self.size[2]])
             response.append(origin + [0.0, y, 0.0])
             response.append(origin + [0.0, y, 0.0])
@@ -149,8 +160,13 @@ class GridGL(GLDrawable):
         # A line of the "Z corner" is (MAX_X, 0, z) -> (0, 0, z) -> (0, MAX_Y, z)
         response = []
         origin = self.origin
+        divisions = self.z_divisions
 
-        for z in self.z_divisions:
+        # Enclose the grid if required
+        if self.enclosed:
+            divisions = np.append(divisions, self.size[2])
+
+        for z in divisions:
             response.append(origin + [self.size[0], 0.0, z])
             response.append(origin + [0.0, 0.0, z])
             response.append(origin + [0.0, 0.0, z])
