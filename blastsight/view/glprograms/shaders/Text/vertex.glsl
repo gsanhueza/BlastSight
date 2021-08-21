@@ -1,8 +1,11 @@
 #version 330
 
-layout (location = 0) in vec3 vertex;
-layout (location = 1) in vec2 texcoord;
-out vec2 TexCoords;
+layout (location = 0) in vec3 a_position;
+layout (location = 1) in vec3 a_color;
+layout (location = 2) in vec2 a_texcoords;
+
+out vec3 v_color;
+out vec2 v_texcoords;
 
 uniform mat4 model_view_matrix;
 uniform mat4 proj_matrix;
@@ -34,6 +37,7 @@ void main()
     mat4 modelView = model_view_matrix;
 //    mat4 modelView = billboard_matrix(model_view_matrix);
 
-    gl_Position = proj_matrix * modelView * vec4(vertex + rendering_offset, 1.0);
-    TexCoords = texcoord;
+    gl_Position = proj_matrix * modelView * vec4(a_position + rendering_offset, 1.0);
+    v_color = a_color;
+    v_texcoords = a_texcoords;
 }

@@ -18,11 +18,30 @@ class TextGL(GLDrawable):
         self.text_vertices = []
         self.vertices = np.empty(3)
 
+        self._position = kwargs.get('position', np.zeros(3))
+        self._color = kwargs.get('color', np.ones(3))
+
         self.text = kwargs.get('text', ' ')
         self.scale = kwargs.get('scale', 1.0)
-        self.position = kwargs.get('position', [0.0, 0.0, 0.0])
+
         self.orientation = kwargs.get('orientation', 'elevation')
         self.centered = kwargs.get('centered', False)
+
+    @property
+    def position(self) -> np.array:
+        return np.asarray(self._position, np.float32)
+
+    @position.setter
+    def position(self, value: iter) -> None:
+        self._position = np.array(value, np.float32)
+
+    @property
+    def color(self) -> np.array:
+        return np.asarray(self._color, np.float32)
+
+    @color.setter
+    def color(self, value: iter) -> None:
+        self._color = np.array(value, np.float32)
 
     def initialize(self) -> None:
         if self.is_initialized:
@@ -116,17 +135,22 @@ class TextGL(GLDrawable):
 
     def generate_buffers(self) -> None:
         self._vaos = [glGenVertexArrays(1)]
-        self._vbos = glGenBuffers(2)
+        self._vbos = glGenBuffers(3)
 
     def setup_attributes(self) -> None:
         _POSITION = 0
-        _TEXTURE = 1
+        _COLOR = 1
+        _TEXTURE = 2
 
         # Fill buffer (with empty data for now)
         glBindVertexArray(self.vao)
         self.fill_buffer(_POSITION, 3, np.zeros(4 * 3), GLfloat, GL_FLOAT, self._vbos[_POSITION])
+        self.fill_buffer(_COLOR, 3, self.color, GLfloat, GL_FLOAT, self._vbos[_COLOR])
         self.fill_buffer(_TEXTURE, 2, self._get_rendering_texture(), GLfloat, GL_FLOAT, self._vbos[_TEXTURE])
         glBindBuffer(GL_ARRAY_BUFFER, 0)
+
+        # Distribute along the whole instance
+        glVertexAttribDivisor(_COLOR, 1)
 
         glBindVertexArray(0)
 
