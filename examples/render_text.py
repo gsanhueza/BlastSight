@@ -27,9 +27,9 @@ def demo_text():
     viewer.grid.is_visible = True
 
     # Showcase orientations
-    viewer.text(text='Facing: Elevation', position=mesh.center, orientation='elevation', scale=10)
-    viewer.text(text='Facing: North', position=mesh.center, orientation='north', scale=10)
-    viewer.text(text='Facing: East', position=mesh.center, orientation='east', scale=10)
+    viewer.text(text='Facing: Elevation', position=mesh.center, rotation=[0.0, 0.0, 0.0], scale=10)
+    viewer.text(text='Facing: North', position=mesh.center, rotation=[0.0, 90.0, 90.0], scale=10)
+    viewer.text(text='Facing: East', position=mesh.center, rotation=[90.0, 0.0, 0.0], scale=10)
 
     viewer.show()
 

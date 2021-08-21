@@ -6,6 +6,7 @@
 #  See LICENSE for more info.
 
 import numpy as np
+from qtpy.QtGui import QMatrix4x4, QVector3D
 
 from OpenGL.GL import *
 from .gldrawable import GLDrawable
@@ -24,7 +25,7 @@ class TextGL(GLDrawable):
         self.text = kwargs.get('text', ' ')
         self.scale = kwargs.get('scale', 1.0)
 
-        self.orientation = kwargs.get('orientation', 'elevation')
+        self.rotation = kwargs.get('rotation', np.zeros(3))
         self.centered = kwargs.get('centered', False)
 
     @property
@@ -104,29 +105,32 @@ class TextGL(GLDrawable):
     def _setup_text_vertices(self) -> None:
         text_vertices = []
 
-        # Retrieve positions
+        # Retrieve initial position
         x, y, z = self.position
 
+        # Setup text vertices
         for c in self.text:
             ch = TextProgram.characters[c]
             w, h = ch.textureSize
             w = w * self.tex_scale
             h = h * self.tex_scale
 
-            # Select best vertices using orientation
-            if self.orientation == 'elevation':
-                text_vertices.append(self._rendering_buffer_elevation(x, y, z, w, h))
-                x += (ch.advance >> 6) * self.tex_scale
-
-            elif self.orientation == 'north':
-                text_vertices.append(self._rendering_buffer_north(x, y, z, w, h))
-                y += (ch.advance >> 6) * self.tex_scale
-
-            else:  # if self.orientation == 'east':
-                text_vertices.append(self._rendering_buffer_east(x, y, z, w, h))
-                x += (ch.advance >> 6) * self.tex_scale
+            text_vertices.append(self._rendering_buffer_elevation(x, y, z, w, h))
+            x += (ch.advance >> 6) * self.tex_scale
 
         tvs = np.array(text_vertices).reshape((-1, 3))
+
+        # Rotate vertices as required
+        matrix = QMatrix4x4()
+
+        matrix.translate(*self.position)
+        matrix.rotate(self.rotation[0], 1.0, 0.0, 0.0)
+        matrix.rotate(self.rotation[1], 0.0, 1.0, 0.0)
+        matrix.rotate(self.rotation[2], 0.0, 0.0, 1.0)
+        matrix.translate(*-self.position)
+
+        tvs_rot3 = [matrix * QVector3D(*vec) for vec in tvs]
+        tvs = np.array([[vec.x(), vec.y(), vec.z()] for vec in tvs_rot3], np.float32).reshape((len(self.text), -1))
 
         # Centered = Position represents center of the whole text, instead of the bottom left.
         if self.centered:

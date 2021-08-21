@@ -52,14 +52,15 @@ class GridComposite(ShaderProgram):
         for x in grid.x_divisions:
             pos = int(min_bound[0] + x)
             textgl = TextGL(NullElement(), text=f'{pos}', scale=scale, centered=False,
-                            orientation='elevation', color=grid.text_color,
+                            rotation=[0.0, 0.0, 90.0], color=grid.text_color,
                             position=[pos, min_bound[1] - scale, min_bound[2]])
 
             # Ensure text doesn't overlap with grid
             textgl.initialize()
             tvs = textgl.text_vertices.reshape((-1, 3))
             ptp = np.ptp(tvs, axis=0)
-            tvs -= [ptp[0] / 2, ptp[1], 0.0]
+            # tvs -= [ptp[0] / 2, ptp[1], 0.0]  # If not rotated
+            tvs -= [-ptp[0] / 2, ptp[1], 0.0]   # If rotated
             textgl.text_vertices = tvs.reshape((len(textgl.text), -1))
 
             text_drawables.append(textgl)
@@ -68,7 +69,7 @@ class GridComposite(ShaderProgram):
         for y in grid.y_divisions:
             pos = int(min_bound[1] + y)
             textgl = TextGL(NullElement(), text=f'{pos}', scale=scale, centered=False,
-                            orientation='elevation', color=grid.text_color,
+                            rotation=[0.0, 0.0, 0.0], color=grid.text_color,
                             position=[min_bound[0], pos, min_bound[2]])
 
             # Ensure text doesn't overlap with grid
@@ -84,7 +85,7 @@ class GridComposite(ShaderProgram):
         for z in grid.z_divisions:
             pos = int(min_bound[2] + z)
             textgl = TextGL(NullElement(), text=f'{pos}', scale=scale, centered=False,
-                            orientation='east', color=grid.text_color,
+                            rotation=[90.0, 0.0, 0.0], color=grid.text_color,
                             position=[min_bound[0], min_bound[1], pos])
 
             # Ensure text doesn't overlap with grid
