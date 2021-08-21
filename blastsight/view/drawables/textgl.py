@@ -62,34 +62,12 @@ class TextGL(GLDrawable):
     def tex_scale(self) -> float:
         return self.scale / 48
 
-    @staticmethod
-    def _rendering_buffer(xpos, ypos, zpos) -> np.ndarray:
-        return np.asarray(4 * [xpos, ypos, zpos], np.float32)
-
     @classmethod
-    def _rendering_buffer_elevation(cls, xpos, ypos, zpos, w, h) -> np.ndarray:
-        return cls._rendering_buffer(xpos, ypos, zpos) + np.asarray([
+    def _rendering_buffer(cls, xpos, ypos, zpos, w, h) -> np.ndarray:
+        return np.asarray(4 * [xpos, ypos, zpos], np.float32) + np.asarray([
             0, h, 0,
             0, 0, 0,
             w, h, 0,
-            w, 0, 0,
-        ], np.float32)
-
-    @classmethod
-    def _rendering_buffer_north(cls, xpos, ypos, zpos, w, h) -> np.ndarray:
-        return cls._rendering_buffer(xpos, ypos, zpos) + np.array([
-            0, 0, h,
-            0, 0, 0,
-            0, w, h,
-            0, w, 0,
-        ], np.float32)
-
-    @classmethod
-    def _rendering_buffer_east(cls, xpos, ypos, zpos, w, h) -> np.ndarray:
-        return cls._rendering_buffer(xpos, ypos, zpos) + np.asarray([
-            0, 0, h,
-            0, 0, 0,
-            w, 0, h,
             w, 0, 0,
         ], np.float32)
 
@@ -115,7 +93,7 @@ class TextGL(GLDrawable):
             w = w * self.tex_scale
             h = h * self.tex_scale
 
-            text_vertices.append(self._rendering_buffer_elevation(x, y, z, w, h))
+            text_vertices.append(self._rendering_buffer(x, y, z, w, h))
             x += (ch.advance >> 6) * self.tex_scale
 
         tvs = np.array(text_vertices).reshape((-1, 3))
