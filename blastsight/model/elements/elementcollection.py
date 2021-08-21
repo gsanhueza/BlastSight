@@ -20,9 +20,12 @@ class ElementCollection:
         return list(self._collection.keys())[-1] if bool(self._collection) else -1
 
     def add(self, element: Element) -> None:
-        self._current_id += 1
-        self._collection[self._current_id] = element
-        element.id = self._current_id  # Auto-update on element add
+        if element.id == -1:  # Automatic ID
+            self._current_id += 1
+            self._collection[self._current_id] = element
+            element.id = self._current_id  # Auto-update on element add
+        else:  # Manual ID
+            self._collection[element.id] = element
 
     def get(self, _id: int) -> Element:
         return self._collection.get(_id)

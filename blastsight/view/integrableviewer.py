@@ -135,7 +135,7 @@ class IntegrableViewer(QOpenGLWidget):
         self.register_drawable(self.factory.background(id=0), self.pre_collection)
         self.register_drawable(self.factory.axis(id=1), self.post_collection)
         self.register_drawable(self.factory.grid(id=2, visible=False), self.post_collection)
-        self.register_drawable(self.factory.lines(id=0, vertices=np.zeros((2, 3)), color=[1.0, 0.8, 0.0],
+        self.register_drawable(self.factory.lines(id=3, vertices=np.zeros((2, 3)), color=[1.0, 0.8, 0.0],
                                                   visible=False), self.post_collection)
 
         # Signals
@@ -259,7 +259,7 @@ class IntegrableViewer(QOpenGLWidget):
 
     @property
     def flatline(self) -> GLDrawable:
-        return self.post_collection.get(0)
+        return self.post_collection.get(3)
 
     """
     Properties
