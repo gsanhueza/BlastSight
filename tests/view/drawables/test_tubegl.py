@@ -15,3 +15,12 @@ class TestTubeGL(TestGLDrawable):
     def test_empty(self):
         with pytest.raises(Exception):
             TubeGL()
+
+    def test_single_color(self, drawable):
+        drawable.initialize()
+        assert len(drawable.color.reshape((-1, 3))) == 1
+
+    def test_multiple_colors(self, drawable):
+        drawable.color = [[1.0, 0.0, 0.0], [1.0, 0.0, 0.0], [1.0, 0.0, 0.0]]
+        drawable.initialize()
+        assert len(drawable.color.reshape((-1, 3))) == 3
