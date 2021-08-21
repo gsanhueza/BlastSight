@@ -28,7 +28,8 @@ class GridWidget(QWidget):
         self.setWindowFlags(Qt.WindowStaysOnTopHint)
 
         # Status button
-        self.checkbox_visibility = QCheckBox()
+        self.button_visibility = QPushButton('Hidden', self)
+        self.button_visibility.setCheckable(True)
 
         # Color buttons
         self.button_grid_color = QPushButton('')  # Labels deliberately omitted
@@ -51,12 +52,12 @@ class GridWidget(QWidget):
         self.container = QWidget(self)
         self.grid = QGridLayout(self.container)
         self._add_to_grid(self.grid, 0,
-                          QLabel('Grid visibility'), self.checkbox_visibility,
+                          QLabel('Grid visibility'), self.button_visibility,
                           QLabel('Line separation'), self.separation)
         self._add_to_grid(self.grid, 1,
                           QLabel('Grid color'), self.button_grid_color,
                           QLabel('Text color'), self.button_text_color)
-        self._add_to_grid(self.grid, 2, QLabel('Start position'), self.origin_x, self.origin_y, self.origin_z)
+        self._add_to_grid(self.grid, 2, QLabel('Grid origin'), self.origin_x, self.origin_y, self.origin_z)
         self._add_to_grid(self.grid, 3, QLabel('Grid length'), self.length_x, self.length_y, self.length_z)
 
         self.layout = QVBoxLayout(self)
@@ -91,7 +92,7 @@ class GridWidget(QWidget):
         return spinbox
 
     def _connect_internal_signals(self) -> None:
-        self.checkbox_visibility.clicked.connect(self.signal_visibility_requested.emit)
+        self.button_visibility.clicked.connect(self.signal_visibility_requested.emit)
         self.button_grid_color.clicked.connect(self.signal_grid_color_requested.emit)
         self.button_text_color.clicked.connect(self.signal_text_color_requested.emit)
 
@@ -124,6 +125,7 @@ class GridWidget(QWidget):
         # Connect signals
         def handle_grid_visibility(status: bool) -> None:
             viewer.grid.is_visible = status
+            self.button_visibility.setText('Visible' if status else 'Hidden')
 
         def handle_color(title: str, original_color: iter) -> iter:
             dialog = QColorDialog()
@@ -184,7 +186,7 @@ class GridWidget(QWidget):
         self.signal_length_altered.connect(handle_grid_length)
 
     def get_visibility(self) -> bool:
-        return self.checkbox_visibility.isChecked()
+        return self.button_visibility.isChecked()
 
     def get_origin(self) -> list:
         return [self.origin_x.value(),
@@ -201,7 +203,7 @@ class GridWidget(QWidget):
 
     def set_visibility(self, value: bool) -> None:
         self.blockSignals(True)
-        self.checkbox_visibility.setChecked(value)
+        self.button_visibility.setChecked(value)
         self.blockSignals(False)
 
     def set_origin(self, value: list) -> None:
