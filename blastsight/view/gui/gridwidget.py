@@ -7,11 +7,17 @@
 
 from qtpy.QtCore import Qt
 from qtpy.QtCore import Signal
+from qtpy.QtGui import QColor
 from qtpy.QtWidgets import *
+
+from colour import Color
 
 
 class GridWidget(QWidget):
-    signal_visibility_altered = Signal(bool)
+    signal_visibility_requested = Signal(bool)
+    signal_grid_color_requested = Signal(bool)
+    signal_text_color_requested = Signal(bool)
+
     signal_origin_altered = Signal(object)
     signal_length_altered = Signal(object)
     signal_separation_altered = Signal(int)
@@ -24,6 +30,10 @@ class GridWidget(QWidget):
         # Status button
         self.checkbox_visibility = QCheckBox()
 
+        # Color buttons
+        self.button_grid_color = QPushButton('')  # Labels deliberately omitted
+        self.button_text_color = QPushButton('')
+
         # Line separation
         self.separation = self._generate_spinbox(lower=1, step=1)
 
@@ -32,7 +42,7 @@ class GridWidget(QWidget):
         self.origin_y = self._generate_spinbox()
         self.origin_z = self._generate_spinbox()
 
-        # Normal
+        # Length
         self.length_x = self._generate_spinbox(lower=0, decimals=0, step=1)
         self.length_y = self._generate_spinbox(lower=0, decimals=0, step=1)
         self.length_z = self._generate_spinbox(lower=0, decimals=0, step=1)
@@ -40,14 +50,23 @@ class GridWidget(QWidget):
         # Layout
         self.container = QWidget(self)
         self.grid = QGridLayout(self.container)
-        self._add_to_grid(self.grid, 0, QLabel('Grid visibility'), self.checkbox_visibility, QLabel('Line separation'), self.separation)
-        self._add_to_grid(self.grid, 1, QLabel('Start position'), self.origin_x, self.origin_y, self.origin_z)
-        self._add_to_grid(self.grid, 2, QLabel('Grid length'), self.length_x, self.length_y, self.length_z)
+        self._add_to_grid(self.grid, 0,
+                          QLabel('Grid visibility'), self.checkbox_visibility,
+                          QLabel('Line separation'), self.separation)
+        self._add_to_grid(self.grid, 1,
+                          QLabel('Grid color'), self.button_grid_color,
+                          QLabel('Text color'), self.button_text_color)
+        self._add_to_grid(self.grid, 2, QLabel('Start position'), self.origin_x, self.origin_y, self.origin_z)
+        self._add_to_grid(self.grid, 3, QLabel('Grid length'), self.length_x, self.length_y, self.length_z)
 
         self.layout = QVBoxLayout(self)
         self.layout.addWidget(self.container)
 
         self._connect_internal_signals()
+
+    @staticmethod
+    def _get_button_stylesheet(color: list) -> str:
+        return f'background-color: {Color(rgb=color[:3]).get_web()}; border: none;'
 
     @staticmethod
     def _add_to_grid(layout: QGridLayout, row: int, *widgets) -> None:
@@ -60,7 +79,7 @@ class GridWidget(QWidget):
 
         return button
 
-    def _generate_spinbox(self, lower: float = -10e6, upper: float = 10e6,
+    def _generate_spinbox(self, lower: float = -1e8, upper: float = 1e8,
                           decimals: int = 2, step: float = 1.0) -> QAbstractSpinBox:
         spinbox = QDoubleSpinBox(self)
         spinbox.setMinimum(lower)
@@ -72,7 +91,10 @@ class GridWidget(QWidget):
         return spinbox
 
     def _connect_internal_signals(self) -> None:
-        self.checkbox_visibility.clicked.connect(self.signal_visibility_altered.emit)
+        self.checkbox_visibility.clicked.connect(self.signal_visibility_requested.emit)
+        self.button_grid_color.clicked.connect(self.signal_grid_color_requested.emit)
+        self.button_text_color.clicked.connect(self.signal_text_color_requested.emit)
+
         self.separation.valueChanged.connect(self.signal_separation_altered.emit)
 
         def emit_origin(*args) -> None:
@@ -96,9 +118,44 @@ class GridWidget(QWidget):
         self.set_length([10, 10, 10])
         self.set_separation(1)
 
+        self.button_grid_color.setStyleSheet(self._get_button_stylesheet(viewer.grid.grid_color))
+        self.button_text_color.setStyleSheet(self._get_button_stylesheet(viewer.grid.text_color))
+
         # Connect signals
         def handle_grid_visibility(status: bool) -> None:
             viewer.grid.is_visible = status
+
+        def handle_color(title: str, original_color: iter) -> iter:
+            dialog = QColorDialog()
+            dialog.setOption(QColorDialog.DontUseNativeDialog)
+
+            dialog.setWindowTitle(title)
+            dialog.setCurrentColor(QColor.fromRgbF(*original_color))
+
+            status = dialog.exec()
+
+            if status:
+                return dialog.currentColor().getRgbF()[:3]
+
+            return original_color
+
+        def handle_grid_color() -> None:
+            color = handle_color('Grid Color', viewer.grid.grid_color)
+            viewer.grid.grid_color = color
+            self.button_grid_color.setStyleSheet(self._get_button_stylesheet(color))
+
+            viewer.makeCurrent()
+            viewer.grid.setup_attributes()
+            viewer.recreate()
+
+        def handle_text_color() -> None:
+            color = handle_color('Text Color', viewer.grid.text_color)
+            viewer.grid.text_color = color
+            self.button_text_color.setStyleSheet(self._get_button_stylesheet(color))
+
+            viewer.makeCurrent()
+            viewer.grid.setup_attributes()
+            viewer.recreate()
 
         def handle_grid_separation(value: float) -> None:
             viewer.grid.mark_separation = value
@@ -118,7 +175,10 @@ class GridWidget(QWidget):
             viewer.grid.reload()
             viewer.recreate()
 
-        self.signal_visibility_altered.connect(handle_grid_visibility)
+        self.signal_visibility_requested.connect(handle_grid_visibility)
+        self.signal_grid_color_requested.connect(handle_grid_color)
+        self.signal_text_color_requested.connect(handle_text_color)
+
         self.signal_separation_altered.connect(handle_grid_separation)
         self.signal_origin_altered.connect(handle_grid_origin)
         self.signal_length_altered.connect(handle_grid_length)

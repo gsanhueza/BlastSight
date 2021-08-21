@@ -18,7 +18,8 @@ class GridGL(GLDrawable):
         # Lines description
         self._origin = kwargs.get('origin', np.zeros(3))
         self._size = kwargs.get('size', 10 * np.ones(3))
-        self._color = kwargs.get('color', np.array([1.0, 0.8, 0.0]))
+        self._grid_color = kwargs.get('grid_color', np.array([1.0, 0.8, 0.0]))
+        self._text_color = kwargs.get('text_color', np.array([1.0, 1.0, 1.0]))
         self.mark_separation = kwargs.get('mark_separation', 1)
         self.total_lines = 0
 
@@ -39,12 +40,20 @@ class GridGL(GLDrawable):
         self._size = np.array(value, np.int32)
 
     @property
-    def color(self) -> np.array:
-        return self._color
+    def grid_color(self) -> np.array:
+        return self._grid_color
 
-    @color.setter
-    def color(self, value: iter) -> None:
-        self._color = np.array(value, np.float32)
+    @grid_color.setter
+    def grid_color(self, value: iter) -> None:
+        self._grid_color = np.array(value, np.float32)
+
+    @property
+    def text_color(self) -> np.array:
+        return self._text_color
+
+    @text_color.setter
+    def text_color(self, value: iter) -> None:
+        self._text_color = np.array(value, np.float32)
 
     """
     Utilities
@@ -158,7 +167,7 @@ class GridGL(GLDrawable):
         self.total_lines = len(vertices)
 
         # Color
-        colors = np.tile(self.color, self.total_lines).astype(np.float32)
+        colors = np.tile(self.grid_color, self.total_lines).astype(np.float32)
 
         glBindVertexArray(self.vao)
 

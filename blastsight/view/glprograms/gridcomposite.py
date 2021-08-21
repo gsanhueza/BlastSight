@@ -50,25 +50,22 @@ class GridComposite(ShaderProgram):
         # Remember to separate the number text from the grid
         for x in grid.x_divisions:
             pos = int(min_bound[0] + x)
-            textgl = TextGL(NullElement(), text=f'{pos}', scale=scale, centered=True, position=[pos,
-                                                                                                min_bound[1] - scale,
-                                                                                                min_bound[2]])
+            textgl = TextGL(NullElement(), text=f'{pos}', scale=scale, centered=True, color=grid.text_color,
+                            position=[pos, min_bound[1] - scale, min_bound[2]])
             text_drawables.append(textgl)
 
         # Labels in Y
         for y in grid.y_divisions:
             pos = int(min_bound[1] + y)
-            textgl = TextGL(NullElement(), text=f'{pos}', scale=scale, centered=True, position=[min_bound[0] - scale,
-                                                                                                pos,
-                                                                                                min_bound[2]],)
+            textgl = TextGL(NullElement(), text=f'{pos}', scale=scale, centered=True, color=grid.text_color,
+                            position=[min_bound[0] - scale, pos, min_bound[2]],)
             text_drawables.append(textgl)
 
         # Labels in Z
         for z in grid.z_divisions:
             pos = int(min_bound[2] + z)
-            textgl = TextGL(NullElement(), text=f'{pos}', scale=scale, centered=True, position=[min_bound[0] - 2 * scale,
-                                                                                                min_bound[1],
-                                                                                                pos])
+            textgl = TextGL(NullElement(), text=f'{pos}', scale=scale, centered=True, color=grid.text_color,
+                            position=[min_bound[0] - 2 * scale, min_bound[1], pos])
             text_drawables.append(textgl)
 
         return text_drawables
