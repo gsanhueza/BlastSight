@@ -10,7 +10,7 @@ from qtpy.QtGui import QMatrix4x4, QVector3D
 
 from OpenGL.GL import *
 from .gldrawable import GLDrawable
-from ..glprograms.textprogram import TextProgram
+from ..glprograms.text_management.textmanager import TextManager
 
 
 class TextGL(GLDrawable):
@@ -110,7 +110,7 @@ class TextGL(GLDrawable):
 
         # Setup text vertices
         for c in self.text:
-            ch = TextProgram.characters[c]
+            ch = TextManager.characters[c]
             w, h = ch.textureSize
             w = w * self.tex_scale
             h = h * self.tex_scale
@@ -165,7 +165,7 @@ class TextGL(GLDrawable):
         glBindVertexArray(self.vao)
 
         for i, c in enumerate(self.text):
-            ch = TextProgram.characters[c]
+            ch = TextManager.characters[c]
             vertices = self.text_vertices[i]
 
             # Render glyph texture over quad
