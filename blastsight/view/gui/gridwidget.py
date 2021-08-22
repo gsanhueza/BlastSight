@@ -15,8 +15,8 @@ from colour import Color
 
 class GridWidget(QWidget):
     signal_visibility_requested = Signal(bool)
-    signal_grid_color_requested = Signal(bool)
-    signal_text_color_requested = Signal(bool)
+    signal_grid_color_requested = Signal()
+    signal_text_color_requested = Signal()
 
     signal_origin_altered = Signal(object)
     signal_length_altered = Signal(object)
@@ -92,7 +92,7 @@ class GridWidget(QWidget):
         return spinbox
 
     def _connect_internal_signals(self) -> None:
-        self.button_visibility.clicked.connect(self.signal_visibility_requested.emit)
+        self.button_visibility.toggled.connect(self.signal_visibility_requested.emit)
         self.button_grid_color.clicked.connect(self.signal_grid_color_requested.emit)
         self.button_text_color.clicked.connect(self.signal_text_color_requested.emit)
 

@@ -97,9 +97,9 @@ class XSectionWidget(QWidget):
         return spinbox
 
     def _connect_internal_signals(self) -> None:
-        self.pushButton_controller.clicked.connect(self.signal_controller_requested.emit)
-        self.pushButton_status.clicked.connect(self.signal_status_altered.emit)
-        self.pushButton_phantom.clicked.connect(self.signal_phantom_altered.emit)
+        self.pushButton_controller.toggled.connect(self.signal_controller_requested.emit)
+        self.pushButton_status.toggled.connect(self.signal_status_altered.emit)
+        self.pushButton_phantom.toggled.connect(self.signal_phantom_altered.emit)
 
         self.button_plus.clicked.connect(lambda: self.signal_step_applied.emit(+1))
         self.button_minus.clicked.connect(lambda: self.signal_step_applied.emit(-1))
