@@ -107,8 +107,19 @@ class TextGL(GLDrawable):
         matrix.rotate(self.rotation[2], 0.0, 0.0, 1.0)
         matrix.translate(*-self.position)
 
-        tvs_rot3 = [matrix * QVector3D(*vec) for vec in tvs]
-        tvs = np.array([[vec.x(), vec.y(), vec.z()] for vec in tvs_rot3], np.float32).reshape((len(self.text), -1))
+        # PySide2 requires this workaround
+        tvs_response = []
+
+        for vec in tvs:
+            vec4 = vec.tolist() + [1.0]
+            temp_matrix = QMatrix4x4(*4 * vec4)
+
+            response = (matrix * temp_matrix.transposed()).column(0)
+            np_response = np.array([response.x(), response.y(), response.z()], np.float32)
+
+            tvs_response.append(np_response)
+
+        tvs = np.array(tvs_response, np.float32).reshape((len(self.text), -1))
 
         # Centered = Position represents center of the whole text, instead of the bottom left.
         if self.centered:
