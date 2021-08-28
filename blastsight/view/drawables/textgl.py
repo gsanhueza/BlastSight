@@ -99,6 +99,11 @@ class TextGL(GLDrawable):
 
         tvs = np.array(text_vertices).reshape((-1, 3))
 
+        # Centered = Position represents center of the whole text, instead of the bottom left.
+        if self.centered:
+            ptp = np.ptp(tvs, axis=0)
+            tvs -= ptp / 2
+
         # Rotate vertices as required
         matrix = QMatrix4x4()
 
@@ -121,11 +126,6 @@ class TextGL(GLDrawable):
             tvs_response.append(np_response)
 
         tvs = np.array(tvs_response, np.float32).reshape((len(self.text), -1))
-
-        # Centered = Position represents center of the whole text, instead of the bottom left.
-        if self.centered:
-            ptp = np.ptp(tvs, axis=0)
-            tvs -= ptp / 2
 
         self.text_vertices = tvs.reshape((len(self.text), -1))
 
