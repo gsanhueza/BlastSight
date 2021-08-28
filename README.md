@@ -13,13 +13,12 @@ You can install BlastSight with the following command:
 BlastSight requires the Python implementation of Qt5, and uses
 `qtpy` to abstract backends.
 
-You can install a backend yourself, or use one of the following commands
-to automatically install one for you:
+This means that you need to install a backend yourself, using either of these commands:
 
-- `pip install blastsight[pyqt5]` for the PyQt5 backend.
-- `pip install blastsight[pyside2]` for the PySide2 backend.
+- `pip install pyqt5`
+- `pip install pyside2`
 
-Both should work, but if you find errors using one backend, try with the other!
+Both backends should work, but if you find errors using one backend, try with the other!
 You can read the documentation from [qtpy](https://github.com/spyder-ide/qtpy)
 for more information.
 
