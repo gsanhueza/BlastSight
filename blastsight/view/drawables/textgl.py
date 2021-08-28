@@ -6,11 +6,12 @@
 #  See LICENSE for more info.
 
 import numpy as np
-from qtpy.QtGui import QMatrix4x4, QVector3D
+from qtpy.QtGui import QMatrix4x4
 
 from OpenGL.GL import *
+
 from .gldrawable import GLDrawable
-from ..glprograms.text_management.textmanager import TextManager
+from ..text.textmanager import TextManager
 
 
 class TextGL(GLDrawable):

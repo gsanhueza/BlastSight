@@ -25,7 +25,7 @@ class TextManager:
             fontfile = r'C:\Windows\Fonts\cour.ttf'
             face = freetype.Face(fontfile)
         except freetype.ft_errors.FT_Exception:
-            fontfile = f'{pathlib.Path(__file__).parent.parent}/gui/UI/fonts/NotoSans-Medium.ttf'
+            fontfile = f'{pathlib.Path(__file__).parent}/fonts/NotoSans-Medium.ttf'
             face = freetype.Face(fontfile)
 
     # Set character size

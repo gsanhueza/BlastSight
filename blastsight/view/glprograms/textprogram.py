@@ -7,7 +7,7 @@
 
 from OpenGL.GL import *
 from .shaderprogram import ShaderProgram
-from ..glprograms.text_management.textmanager import TextManager
+from ..text.textmanager import TextManager
 
 
 class TextProgram(ShaderProgram):
