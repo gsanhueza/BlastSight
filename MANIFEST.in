@@ -1,4 +1,4 @@
-include blastsight/view/glprograms/shaders/*/*
-include blastsight/view/gui/UI/*
-include blastsight/view/gui/UI/icons/*
-include blastsight/view/gui/UI/fonts/*
+recursive-include blastsight/view *.glsl
+recursive-include blastsight/view *.svg
+recursive-include blastsight/view *.ttf
+recursive-include blastsight/view *.ui
