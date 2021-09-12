@@ -17,16 +17,8 @@ class TextManager:
     characters = {}
 
     # Select font
-    try:
-        fontfile = r'/usr/share/fonts/TTF/cour.ttf'
-        face = freetype.Face(fontfile)
-    except freetype.ft_errors.FT_Exception:
-        try:
-            fontfile = r'C:\Windows\Fonts\cour.ttf'
-            face = freetype.Face(fontfile)
-        except freetype.ft_errors.FT_Exception:
-            fontfile = f'{pathlib.Path(__file__).parent}/fonts/NotoSans-Medium.ttf'
-            face = freetype.Face(fontfile)
+    fontfile = f'{pathlib.Path(__file__).parent}/fonts/NotoSans-Medium.ttf'
+    face = freetype.Face(fontfile)
 
     # Set character size
     face.set_char_size(48 * 64)
