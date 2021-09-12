@@ -40,10 +40,10 @@ class TubeLegacyGL(GLDrawable):
             for i in range(num_tubes):
                 # When loop=True, we will replicate the last tube color
                 index = min(i, len(self.element.color) - 1)
-                base_color = np.append(self.element.color[index], self.element.alpha)
+                base_color = np.append(self.element.color[index][:3], self.element.alpha)
                 colors.append(np.tile(base_color, triangles_per_tube))
         else:
-            base_color = np.append(self.element.color, self.element.alpha)
+            base_color = np.append(self.element.color[:3], self.element.alpha)
             colors = np.tile(base_color, self.num_vertices)
 
         colors = np.array(colors, np.float32)

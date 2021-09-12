@@ -37,10 +37,10 @@ class TubeGL(GLDrawable):
             for i in range(self.num_tubes):
                 # When loop=True, we will replicate the last tube color
                 index = min(i, len(self.element.color) - 1)
-                base_color = np.append(self.element.color[index], self.element.alpha)
+                base_color = np.append(self.element.color[index][:3], self.element.alpha)
                 colors.append(base_color)
         else:
-            base_color = np.append(self.element.color, self.element.alpha)
+            base_color = np.append(self.element.color[:3], self.element.alpha)
             colors = np.tile(base_color, self.num_tubes)
 
         colors = np.array(colors, np.float32)
