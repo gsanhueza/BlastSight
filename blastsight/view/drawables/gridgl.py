@@ -23,6 +23,9 @@ class GridGL(GLDrawable):
         self.mark_separation = kwargs.get('mark_separation', 1)
         self.total_lines = 0
 
+        # Grid rotation
+        self.rotation = np.zeros(3)
+
     @property
     def origin(self) -> np.array:
         return self._origin
@@ -56,31 +59,46 @@ class GridGL(GLDrawable):
         self._text_color = np.array(value, np.float32)
 
     """
-    Utilities
+    Utilities (Positions are relative to [0.0, 0.0, 0.0])
     """
     @property
-    def x_pos(self) -> np.array:
-        return self.origin + [self.size[0], 0.0, 0.0]
+    def x_ticks(self) -> np.array:
+        flat_divisions = np.ceil(np.arange(0.0, self.x_target[0], self.mark_separation))
+        return np.c_[flat_divisions, np.zeros(len(flat_divisions)), np.zeros(len(flat_divisions))]
 
     @property
-    def y_pos(self) -> np.array:
-        return self.origin + [0.0, self.size[1], 0.0]
+    def y_ticks(self) -> np.array:
+        flat_divisions = np.ceil(np.arange(0.0, self.y_target[1], self.mark_separation))
+        return np.c_[np.zeros(len(flat_divisions)), flat_divisions, np.zeros(len(flat_divisions))]
 
     @property
-    def z_pos(self) -> np.array:
-        return self.origin + [0.0, 0.0, self.size[2]]
+    def z_ticks(self) -> np.array:
+        flat_divisions = np.ceil(np.arange(0.0, self.z_target[2], self.mark_separation))
+        return np.c_[np.zeros(len(flat_divisions)), np.zeros(len(flat_divisions)), flat_divisions]
+
+    @property
+    def x_target(self) -> list:
+        return [self.size[0], 0.0, 0.0]
+
+    @property
+    def y_target(self) -> list:
+        return [0.0, self.size[1], 0.0]
+
+    @property
+    def z_target(self) -> list:
+        return [0.0, 0.0, self.size[2]]
 
     @property
     def x_divisions(self) -> np.ndarray:
-        return np.ceil(np.arange(self.origin[0], self.x_pos[0], self.mark_separation)) - self.origin[0]
+        return np.ceil(np.arange(self.origin[0], self.x_target[0], self.mark_separation)) - self.origin[0]
 
     @property
     def y_divisions(self) -> np.ndarray:
-        return np.ceil(np.arange(self.origin[1], self.y_pos[1], self.mark_separation)) - self.origin[1]
+        return np.ceil(np.arange(self.origin[1], self.y_target[1], self.mark_separation)) - self.origin[1]
 
     @property
     def z_divisions(self) -> np.ndarray:
-        return np.ceil(np.arange(self.origin[2], self.z_pos[2], self.mark_separation)) - self.origin[2]
+        return np.ceil(np.arange(self.origin[2], self.z_target[2], self.mark_separation)) - self.origin[2]
 
     @property
     def bounding_box(self) -> tuple:
@@ -106,7 +124,7 @@ class GridGL(GLDrawable):
             response.append(start)
             response.append(start + diff)
 
-        # "Horizontal section"
+        # "Horizontal" section
         diff = line_a[-1] - line_b[0]
         for start in line_b:
             response.append(start)
@@ -115,8 +133,8 @@ class GridGL(GLDrawable):
         return response
 
     def generate_corner(self, start: list, end_x: list, end_y: list, sep_x: int, sep_y: int) -> list:
-        line_x = self.origin + self.generate_line(start, end_x, sep_x)
-        line_y = self.origin + self.generate_line(start, end_y, sep_y)
+        line_x = self.generate_line(start, end_x, sep_x)
+        line_y = self.generate_line(start, end_y, sep_y)
 
         return self.generate_flat(line_x, line_y)
 
@@ -124,37 +142,40 @@ class GridGL(GLDrawable):
         marks = []
 
         # Grid
-        marks += self.xy_flat()
-        marks += self.xz_flat()
-        marks += self.yz_flat()
+        marks = np.append(marks, self.xy_flat())
+        marks = np.append(marks, self.xz_flat())
+        marks = np.append(marks, self.yz_flat())
 
-        return np.array(marks).reshape((-1, 3)).astype(np.float32)
+        # Finally, add true origin to generate the real grid
+        marks = self.origin + np.array(marks).reshape((-1, 3)).astype(np.float32)
+
+        return marks
 
     def xy_flat(self) -> list:
         return self.generate_corner(
             start=[0.0, 0.0, 0.0],
-            end_x=[self.size[0], 0.0, 0.0],
-            end_y=[0.0, self.size[1], 0.0],
-            sep_x=len(self.x_divisions),
-            sep_y=len(self.y_divisions)
+            end_x=self.x_target,
+            end_y=self.y_target,
+            sep_x=len(self.x_ticks),
+            sep_y=len(self.y_ticks),
         )
 
     def xz_flat(self) -> list:
         return self.generate_corner(
             start=[0.0, 0.0, 0.0],
-            end_x=[self.size[0], 0.0, 0.0],
-            end_y=[0.0, 0.0, self.size[2]],
-            sep_x=len(self.x_divisions),
-            sep_y=len(self.z_divisions)
+            end_x=self.x_target,
+            end_y=self.z_target,
+            sep_x=len(self.x_ticks),
+            sep_y=len(self.z_ticks),
         )
 
     def yz_flat(self) -> list:
         return self.generate_corner(
             start=[0.0, 0.0, 0.0],
-            end_x=[0.0, self.size[1], 0.0],
-            end_y=[0.0, 0.0, self.size[2]],
-            sep_x=len(self.y_divisions),
-            sep_y=len(self.z_divisions)
+            end_x=self.y_target,
+            end_y=self.z_target,
+            sep_x=len(self.y_ticks),
+            sep_y=len(self.z_ticks),
         )
 
     def setup_attributes(self) -> None:

@@ -41,7 +41,7 @@ class GridComposite(ShaderProgram):
     def generate_labels(grid: GridGL) -> list:
         text_drawables = []
 
-        min_bound, max_bound = grid.bounding_box
+        # FIXME grid.x_divisions should be deprecated
         all_divisions = grid.x_divisions.tolist() + grid.y_divisions.tolist() + grid.z_divisions.tolist()
         max_width = max(map(lambda i: len(str(int(i))), all_divisions))
 
@@ -49,11 +49,11 @@ class GridComposite(ShaderProgram):
 
         # Labels in X
         # Remember to separate the number text from the grid
-        for x in grid.x_divisions:
-            pos = int(min_bound[0] + x)
-            textgl = TextGL(NullElement(), text=f'{pos}', scale=scale, centered=False,
-                            rotation=[0.0, 0.0, 90.0], color=grid.text_color,
-                            position=[pos, min_bound[1], min_bound[2]])
+        for rel_pos in grid.x_ticks.tolist():
+            pos = grid.origin + rel_pos
+            textgl = TextGL(NullElement(), text=f'{pos[0]}', scale=scale, centered=False,
+                            rotation=grid.rotation + [0.0, 0.0, 90.0], color=grid.text_color,
+                            position=pos)
 
             # Ensure text doesn't overlap with grid
             textgl.initialize()
@@ -65,11 +65,11 @@ class GridComposite(ShaderProgram):
             text_drawables.append(textgl)
 
         # Labels in Y
-        for y in grid.y_divisions:
-            pos = int(min_bound[1] + y)
-            textgl = TextGL(NullElement(), text=f'{pos}', scale=scale, centered=False,
-                            rotation=[0.0, 0.0, 0.0], color=grid.text_color,
-                            position=[min_bound[0], pos, min_bound[2]])
+        for rel_pos in grid.y_ticks.tolist():
+            pos = grid.origin + rel_pos
+            textgl = TextGL(NullElement(), text=f'{pos[1]}', scale=scale, centered=False,
+                            rotation=grid.rotation + [0.0, 0.0, 0.0], color=grid.text_color,
+                            position=pos)
 
             # Ensure text doesn't overlap with grid
             textgl.initialize()
@@ -81,11 +81,11 @@ class GridComposite(ShaderProgram):
             text_drawables.append(textgl)
 
         # Labels in Z
-        for z in grid.z_divisions:
-            pos = int(min_bound[2] + z)
-            textgl = TextGL(NullElement(), text=f'{pos}', scale=scale, centered=False,
-                            rotation=[90.0, 0.0, 0.0], color=grid.text_color,
-                            position=[min_bound[0], min_bound[1], pos])
+        for rel_pos in grid.z_ticks.tolist():
+            pos = grid.origin + rel_pos
+            textgl = TextGL(NullElement(), text=f'{pos[2]}', scale=scale, centered=False,
+                            rotation=grid.rotation + [90.0, 0.0, 0.0], color=grid.text_color,
+                            position=pos)
 
             # Ensure text doesn't overlap with grid
             textgl.initialize()
