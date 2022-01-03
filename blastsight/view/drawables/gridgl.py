@@ -7,8 +7,11 @@
 
 import numpy as np
 
-from .gldrawable import GLDrawable
 from OpenGL.GL import *
+from qtpy.QtGui import QMatrix4x4
+from qtpy.QtGui import QVector3D
+
+from .gldrawable import GLDrawable
 
 
 class GridGL(GLDrawable):
@@ -25,6 +28,7 @@ class GridGL(GLDrawable):
 
         # Grid rotation
         self.rotation = np.zeros(3)
+        # self.rotation = np.array([45.0, 0.0, 0.0])
 
     @property
     def origin(self) -> np.array:
@@ -146,10 +150,35 @@ class GridGL(GLDrawable):
         marks = np.append(marks, self.xz_flat())
         marks = np.append(marks, self.yz_flat())
 
-        # Finally, add true origin to generate the real grid
+        # Add true origin to generate the real grid
         marks = self.origin + np.array(marks).reshape((-1, 3)).astype(np.float32)
 
-        return marks
+        # Finally, rotate the marks to fit current grid rotation
+        matrix = self.calculate_rotation_matrix()
+        rotated_marks = np.array(list(map(lambda mark: self.rotate_mark_with_qmatrix(matrix, mark), marks)))
+
+        return rotated_marks
+
+    def calculate_rotation_matrix(self) -> QMatrix4x4:
+        matrix = QMatrix4x4()
+
+        # Translate matrix (translation = rotation_center)
+        translation = self.origin
+        matrix.translate(*translation)
+
+        # Rotate matrix
+        matrix.rotate(self.rotation[0], 1.0, 0.0, 0.0)
+        matrix.rotate(self.rotation[1], 0.0, 1.0, 0.0)
+        matrix.rotate(self.rotation[2], 0.0, 0.0, 1.0)
+
+        # Restore matrix
+        matrix.translate(*-translation)
+
+        return matrix
+
+    def rotate_mark_with_qmatrix(self, matrix: QMatrix4x4, mark: iter) -> np.array:
+        response_3d = matrix * QVector3D(*mark)
+        return np.array([response_3d.x(), response_3d.y(), response_3d.z()])
 
     def xy_flat(self) -> list:
         return self.generate_corner(

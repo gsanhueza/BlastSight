@@ -49,7 +49,15 @@ class GridComposite(ShaderProgram):
 
         # Labels in X
         # Remember to separate the number text from the grid
-        for rel_pos in grid.x_ticks.tolist():
+        matrix = grid.calculate_rotation_matrix()
+        x_marks = np.array(
+            list(map(lambda mark: grid.rotate_mark_with_qmatrix(matrix, mark), grid.x_ticks.tolist())))
+        y_marks = np.array(
+            list(map(lambda mark: grid.rotate_mark_with_qmatrix(matrix, mark), grid.y_ticks.tolist())))
+        z_marks = np.array(
+            list(map(lambda mark: grid.rotate_mark_with_qmatrix(matrix, mark), grid.z_ticks.tolist())))
+
+        for rel_pos in x_marks:
             pos = grid.origin + rel_pos
             textgl = TextGL(NullElement(), text=f'{pos[0]}', scale=scale, centered=False,
                             rotation=grid.rotation + [0.0, 0.0, 90.0], color=grid.text_color,
@@ -65,7 +73,7 @@ class GridComposite(ShaderProgram):
             text_drawables.append(textgl)
 
         # Labels in Y
-        for rel_pos in grid.y_ticks.tolist():
+        for rel_pos in y_marks:
             pos = grid.origin + rel_pos
             textgl = TextGL(NullElement(), text=f'{pos[1]}', scale=scale, centered=False,
                             rotation=grid.rotation + [0.0, 0.0, 0.0], color=grid.text_color,
@@ -81,7 +89,7 @@ class GridComposite(ShaderProgram):
             text_drawables.append(textgl)
 
         # Labels in Z
-        for rel_pos in grid.z_ticks.tolist():
+        for rel_pos in z_marks:
             pos = grid.origin + rel_pos
             textgl = TextGL(NullElement(), text=f'{pos[2]}', scale=scale, centered=False,
                             rotation=grid.rotation + [90.0, 0.0, 0.0], color=grid.text_color,
