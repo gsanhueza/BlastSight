@@ -44,18 +44,17 @@ class GridComposite(ShaderProgram):
         # Labels in X
         # Remember to separate the number text from the grid
         matrix = grid.calculate_rotation_matrix()
-        x_marks = np.array(
-            list(map(lambda mark: GridGL.rotate_mark_with_qmatrix(matrix, mark), grid.x_ticks.tolist())))
-        y_marks = np.array(
-            list(map(lambda mark: GridGL.rotate_mark_with_qmatrix(matrix, mark), grid.y_ticks.tolist())))
-        z_marks = np.array(
-            list(map(lambda mark: GridGL.rotate_mark_with_qmatrix(matrix, mark), grid.z_ticks.tolist())))
+        x_marks = np.round(
+            list(map(lambda mark: GridGL.rotate_mark_with_qmatrix(matrix, mark), grid.x_ticks.tolist())), 4)
+        y_marks = np.round(
+            list(map(lambda mark: GridGL.rotate_mark_with_qmatrix(matrix, mark), grid.y_ticks.tolist())), 4)
+        z_marks = np.round(
+            list(map(lambda mark: GridGL.rotate_mark_with_qmatrix(matrix, mark), grid.z_ticks.tolist())), 4)
 
         # Setup scale of the text
         all_divisions = np.append(np.append(x_marks, y_marks), z_marks)
-        max_width = max(map(lambda i: len(str(int(i))), all_divisions))
-
-        scale = grid.mark_separation / max_width
+        max_width = max(map(lambda i: len(str(i)), all_divisions))
+        scale = grid.mark_separation / np.sqrt(max_width)
 
         for rel_pos in x_marks:
             pos = grid.origin + rel_pos
