@@ -9,7 +9,6 @@ import numpy as np
 
 from OpenGL.GL import *
 from qtpy.QtGui import QMatrix4x4
-from qtpy.QtGui import QVector3D
 
 from .gldrawable import GLDrawable
 
@@ -165,7 +164,12 @@ class GridGL(GLDrawable):
         return matrix
 
     def rotate_mark_with_qmatrix(self, matrix: QMatrix4x4, mark: iter) -> np.array:
-        response_3d = matrix * QVector3D(*mark)
+        # We'd use `QVector4D(*mark, 1.0)`, but PySide2
+        # hasn't implemented QMatrix4x4 * QVector4D yet.
+        vector = [*mark, 1.0]
+        temp_matrix = QMatrix4x4(*[e for e in vector for _ in range(4)])
+
+        response_3d = (matrix * temp_matrix).column(0)
         return np.array([response_3d.x(), response_3d.y(), response_3d.z()])
 
     def xy_flat(self) -> list:
