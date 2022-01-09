@@ -93,18 +93,6 @@ class GridGL(GLDrawable):
         return [0.0, 0.0, self.size[2]]
 
     @property
-    def x_divisions(self) -> np.ndarray:
-        return np.ceil(np.arange(self.origin[0], self.x_target[0], self.mark_separation)) - self.origin[0]
-
-    @property
-    def y_divisions(self) -> np.ndarray:
-        return np.ceil(np.arange(self.origin[1], self.y_target[1], self.mark_separation)) - self.origin[1]
-
-    @property
-    def z_divisions(self) -> np.ndarray:
-        return np.ceil(np.arange(self.origin[2], self.z_target[2], self.mark_separation)) - self.origin[2]
-
-    @property
     def bounding_box(self) -> tuple:
         # The bounding_box property is part of Element, but NullElement doesn't have it
         return self.origin, self.origin + self.size

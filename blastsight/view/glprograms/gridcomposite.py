@@ -41,12 +41,6 @@ class GridComposite(ShaderProgram):
     def generate_labels(grid: GridGL) -> list:
         text_drawables = []
 
-        # FIXME grid.x_divisions should be deprecated
-        all_divisions = grid.x_divisions.tolist() + grid.y_divisions.tolist() + grid.z_divisions.tolist()
-        max_width = max(map(lambda i: len(str(int(i))), all_divisions))
-
-        scale = grid.mark_separation / max_width
-
         # Labels in X
         # Remember to separate the number text from the grid
         matrix = grid.calculate_rotation_matrix()
@@ -56,6 +50,12 @@ class GridComposite(ShaderProgram):
             list(map(lambda mark: grid.rotate_mark_with_qmatrix(matrix, mark), grid.y_ticks.tolist())))
         z_marks = np.array(
             list(map(lambda mark: grid.rotate_mark_with_qmatrix(matrix, mark), grid.z_ticks.tolist())))
+
+        # Setup scale of the text
+        all_divisions = np.append(np.append(x_marks, y_marks), z_marks)
+        max_width = max(map(lambda i: len(str(int(i))), all_divisions))
+
+        scale = grid.mark_separation / max_width
 
         for rel_pos in x_marks:
             pos = grid.origin + rel_pos
