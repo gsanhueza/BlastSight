@@ -163,7 +163,8 @@ class GridGL(GLDrawable):
 
         return matrix
 
-    def rotate_mark_with_qmatrix(self, matrix: QMatrix4x4, mark: iter) -> np.array:
+    @staticmethod
+    def rotate_mark_with_qmatrix(matrix: QMatrix4x4, mark: iter) -> np.array:
         # We'd use `QVector4D(*mark, 1.0)`, but PySide2
         # hasn't implemented QMatrix4x4 * QVector4D yet.
         vector = [*mark, 1.0]
