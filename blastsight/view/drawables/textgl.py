@@ -84,17 +84,15 @@ class TextGL(GLDrawable):
     def _setup_text_vertices(self) -> None:
         text_vertices = []
 
-        # Retrieve initial position
-        x, y, z = self.position
-
-        # Setup text vertices
+        # Setup text vertices (using relative positions, we'll update the position at the end)
+        x = 0
         for c in self.text:
             ch = TextManager.characters[c]
             w, h = ch.textureSize
             w = w * self.tex_scale
             h = h * self.tex_scale
 
-            text_vertices.append(self._rendering_buffer(x, y, z, w, h))
+            text_vertices.append(self._rendering_buffer(x, 0, 0, w, h))
             x += (ch.advance >> 6) * self.tex_scale
 
         tvs = np.array(text_vertices).reshape((-1, 3))
@@ -107,11 +105,11 @@ class TextGL(GLDrawable):
         # Rotate vertices as required
         matrix = QMatrix4x4()
 
-        matrix.translate(*self.position)
+        # matrix.translate(*self.position)
         matrix.rotate(self.rotation[0], 1.0, 0.0, 0.0)
         matrix.rotate(self.rotation[1], 0.0, 1.0, 0.0)
         matrix.rotate(self.rotation[2], 0.0, 0.0, 1.0)
-        matrix.translate(*-self.position)
+        # matrix.translate(*-self.position)
 
         # PySide2 requires this workaround
         tvs_response = []
@@ -125,7 +123,8 @@ class TextGL(GLDrawable):
 
             tvs_response.append(np_response)
 
-        tvs = np.array(tvs_response, np.float32).reshape((len(self.text), -1))
+        # tvs = np.array(tvs_response, np.float32).reshape((len(self.text), -1))
+        tvs = np.array(tvs_response + self.position, np.float32).reshape((len(self.text), -1))
 
         self.text_vertices = tvs.reshape((len(self.text), -1))
 
