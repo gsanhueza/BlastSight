@@ -26,8 +26,7 @@ class GridGL(GLDrawable):
         self.total_lines = 0
 
         # Grid rotation
-        self.rotation = np.zeros(3)
-        # self.rotation = np.array([45.0, 0.0, 0.0])
+        self._rotation = np.zeros(3)
 
     @property
     def origin(self) -> np.array:
@@ -60,6 +59,14 @@ class GridGL(GLDrawable):
     @text_color.setter
     def text_color(self, value: iter) -> None:
         self._text_color = np.array(value, np.float32)
+
+    @property
+    def rotation(self) -> np.array:
+        return np.asarray(self._rotation)
+
+    @rotation.setter
+    def rotation(self, value: iter) -> None:
+        self._rotation = np.asarray(value, np.float32)
 
     """
     Utilities (Positions are relative to [0.0, 0.0, 0.0])
