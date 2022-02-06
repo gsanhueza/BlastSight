@@ -89,7 +89,8 @@ class Intersections:
             mask = (t > 1e-12) & mask  # Ray intersections
 
         # Here are the intersections.
-        return np.unique(origin + ray * t[mask].reshape(-1, 1), axis=0)
+        intersections = origin + ray * t[mask].reshape(-1, 1)
+        return np.unique(intersections, axis=0) if intersections.size > 0 else np.array(list())
 
     @staticmethod
     def ray_with_lines(origin: np.ndarray,
