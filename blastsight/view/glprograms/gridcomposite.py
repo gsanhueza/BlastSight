@@ -43,23 +43,28 @@ class GridComposite(ShaderProgram):
 
         # Labels in X
         # Remember to separate the number text from the grid
+        x_marks = grid.x_ticks.tolist()
+        y_marks = grid.y_ticks.tolist()
+        z_marks = grid.z_ticks.tolist()
+
+        # What the text says shall be known beforehand
         matrix = grid.calculate_rotation_matrix()
-        x_marks = np.round(
-            list(map(lambda mark: GridGL.rotate_mark_with_qmatrix(matrix, mark), grid.x_ticks.tolist())), 4)
-        y_marks = np.round(
-            list(map(lambda mark: GridGL.rotate_mark_with_qmatrix(matrix, mark), grid.y_ticks.tolist())), 4)
-        z_marks = np.round(
-            list(map(lambda mark: GridGL.rotate_mark_with_qmatrix(matrix, mark), grid.z_ticks.tolist())), 4)
+
+        x_text = np.round(list(map(lambda mark: GridGL.rotate_mark_with_qmatrix(matrix, mark), x_marks)), 4)
+        y_text = np.round(list(map(lambda mark: GridGL.rotate_mark_with_qmatrix(matrix, mark), y_marks)), 4)
+        z_text = np.round(list(map(lambda mark: GridGL.rotate_mark_with_qmatrix(matrix, mark), z_marks)), 4)
 
         # Setup scale of the text
         all_divisions = np.append(np.append(x_marks, y_marks), z_marks)
         max_width = max(map(lambda i: len(str(i)), all_divisions))
         scale = grid.mark_separation / np.sqrt(max_width)
 
-        for rel_pos in x_marks:
+        for rel_pos, rel_text in zip(x_marks, x_text):
             pos = grid.origin + rel_pos
-            textgl = TextGL(NullElement(), text=f'{pos[0]}', scale=scale, centered=False,
-                            rotation=grid.rotation + [0.0, 0.0, 90.0], color=grid.text_color,
+            text = grid.origin + rel_text
+
+            textgl = TextGL(NullElement(), text=f'{text[0]}', scale=scale, centered=False,
+                            rotation=[0.0, 0.0, 90.0], color=grid.text_color,
                             position=pos)
 
             # Ensure text doesn't overlap with grid
@@ -72,10 +77,12 @@ class GridComposite(ShaderProgram):
             text_drawables.append(textgl)
 
         # Labels in Y
-        for rel_pos in y_marks:
+        for rel_pos, rel_text in zip(y_marks, y_text):
             pos = grid.origin + rel_pos
-            textgl = TextGL(NullElement(), text=f'{pos[1]}', scale=scale, centered=False,
-                            rotation=grid.rotation + [0.0, 0.0, 0.0], color=grid.text_color,
+            text = grid.origin + rel_text
+
+            textgl = TextGL(NullElement(), text=f'{text[1]}', scale=scale, centered=False,
+                            rotation=[0.0, 0.0, 0.0], color=grid.text_color,
                             position=pos)
 
             # Ensure text doesn't overlap with grid
@@ -88,10 +95,12 @@ class GridComposite(ShaderProgram):
             text_drawables.append(textgl)
 
         # Labels in Z
-        for rel_pos in z_marks:
+        for rel_pos, rel_text in zip(z_marks, z_text):
             pos = grid.origin + rel_pos
-            textgl = TextGL(NullElement(), text=f'{pos[2]}', scale=scale, centered=False,
-                            rotation=grid.rotation + [90.0, 0.0, 0.0], color=grid.text_color,
+            text = grid.origin + rel_text
+
+            textgl = TextGL(NullElement(), text=f'{text[2]}', scale=scale, centered=False,
+                            rotation=[90.0, 0.0, 0.0], color=grid.text_color,
                             position=pos)
 
             # Ensure text doesn't overlap with grid
@@ -102,6 +111,17 @@ class GridComposite(ShaderProgram):
             textgl.text_vertices = tvs.reshape((len(textgl.text), -1))
 
             text_drawables.append(textgl)
+
+        # Finally, make the text rotation
+        for textgl in text_drawables:
+            final_vertices = list()
+            for vertices in textgl.text_vertices:
+                quad = vertices.reshape((-1, 3))
+                rotated_quad = np.array(list(map(lambda v: GridGL.rotate_mark_with_qmatrix(matrix, v), quad)))
+                final_vertices.append(rotated_quad.reshape(-1))
+
+            textgl.text_vertices = np.array(final_vertices, np.float32)
+            textgl.initialize()
 
         return text_drawables
 
