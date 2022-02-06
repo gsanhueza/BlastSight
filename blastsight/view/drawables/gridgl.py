@@ -149,7 +149,8 @@ class GridGL(GLDrawable):
 
         # Finally, rotate the marks to fit current grid rotation
         matrix = self.calculate_rotation_matrix()
-        rotated_marks = np.array(list(map(lambda mark: self.rotate_mark_with_qmatrix(matrix, mark), marks)))
+        rotated_marks = list(map(lambda mark: self.rotate_mark_with_qmatrix(matrix, mark), marks))
+        rotated_marks = np.array(rotated_marks)
 
         return rotated_marks
 
