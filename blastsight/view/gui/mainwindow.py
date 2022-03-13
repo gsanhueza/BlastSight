@@ -90,7 +90,7 @@ class MainWindow(QMainWindow):
         # Progress bar (hidden by default)
         self.progress_bar = QProgressBar(self.statusBar)
         self.progress_bar.setValue(0)
-        self.progress_bar.setMaximumWidth(self.width() / 5)
+        self.progress_bar.setMaximumWidth(self.width() // 5)
         self.progress_bar.hide()
         self.statusBar.addPermanentWidget(self.progress_bar)
 
