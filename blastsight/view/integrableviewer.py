@@ -418,7 +418,7 @@ class IntegrableViewer(QOpenGLWidget):
         counter = []
 
         def start_animation():
-            timer.start(milliseconds / steps)
+            timer.start(milliseconds // steps)
             self.signal_animation_started.emit()
 
         def update_animation():
