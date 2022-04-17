@@ -111,6 +111,10 @@ class TextGL(GLDrawable):
         matrix.rotate(self.rotation[2], 0.0, 0.0, 1.0)
         # matrix.translate(*-self.position)
 
+        self.text_vertices = self._rotate_text_vertices(matrix, tvs)
+
+    # Used to shift positions of vertices, when we want the text rotated
+    def _rotate_text_vertices(self, matrix: QMatrix4x4, tvs: np.array) -> np.array:
         # PySide2 requires this workaround
         tvs_response = []
 
@@ -123,29 +127,31 @@ class TextGL(GLDrawable):
 
             tvs_response.append(np_response)
 
-        # tvs = np.array(tvs_response, np.float32).reshape((len(self.text), -1))
-        tvs = np.array(tvs_response + self.position, np.float32).reshape((len(self.text), -1))
+        tvs = np.array(tvs_response, np.float32).reshape((len(self.text), -1))
 
-        self.text_vertices = tvs.reshape((len(self.text), -1))
+        return tvs
 
     def generate_buffers(self) -> None:
         self._vaos = [glGenVertexArrays(1)]
-        self._vbos = glGenBuffers(3)
+        self._vbos = glGenBuffers(4)
 
     def setup_attributes(self) -> None:
         _POSITION = 0
         _COLOR = 1
         _TEXTURE = 2
+        _ORIGIN = 3
 
         # Fill buffer (with empty data for now)
         glBindVertexArray(self.vao)
         self.fill_buffer(_POSITION, 3, np.zeros(4 * 3), GLfloat, GL_FLOAT, self._vbos[_POSITION])
         self.fill_buffer(_COLOR, 3, self.color, GLfloat, GL_FLOAT, self._vbos[_COLOR])
         self.fill_buffer(_TEXTURE, 2, self._get_rendering_texture(), GLfloat, GL_FLOAT, self._vbos[_TEXTURE])
+        self.fill_buffer(_ORIGIN, 3, self.position, GLfloat, GL_FLOAT, self._vbos[_ORIGIN])
         glBindBuffer(GL_ARRAY_BUFFER, 0)
 
         # Distribute along the whole instance
         glVertexAttribDivisor(_COLOR, 1)
+        glVertexAttribDivisor(_ORIGIN, 1)
 
         glBindVertexArray(0)
 
