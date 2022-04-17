@@ -7,7 +7,7 @@ with open('README.md', 'r') as fh:
 
 setuptools.setup(
     name='blastsight',
-    version='0.9.5',
+    version='0.9.6',
     author='Gabriel Sanhueza',
     description='A 3D visualization library oriented to mining applications',
     long_description=long_description,
@@ -30,6 +30,7 @@ setuptools.setup(
         'meshcut',
         'colour',
         'freetype-py',
+        'pyside2',
     ],
     tests_require=[
         'pytest',
