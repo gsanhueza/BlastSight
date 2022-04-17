@@ -289,7 +289,10 @@ class TreeWidget(QTreeWidget):
 
     def center_camera(self) -> None:
         row = min(map(self.indexOfTopLevelItem, self.selectedItems()), default=0)
-        drawable = self.topLevelItem(row).drawable
+        item = self.topLevelItem(row)
+        drawable = item.drawable
+
+        item.set_visible(True)
         self.viewer.show_drawable(drawable.id)
         self.viewer.camera_at(drawable.id)
 
