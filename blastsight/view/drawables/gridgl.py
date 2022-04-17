@@ -111,9 +111,24 @@ class GridGL(GLDrawable):
         self._vbos = glGenBuffers(2)
 
     def generate_line(self, start: iter, end: iter, separation: int) -> np.ndarray:
-        return np.linspace(start, end, separation + 1)
+        # Detect max difference and expand end
+        diff = np.diff([start, end], axis=0)[0]
+        diff_sep = diff / separation
+        ceil_diff_sep = np.ceil(diff_sep)
 
-    def generate_flat(self, line_a: np.array, line_b: np.array) -> list:
+        # Generate fake end
+        fake_end = separation * ceil_diff_sep
+
+        # Generate linspace
+        response = np.linspace(start, fake_end, separation + 1)
+
+        # Truncate last response to fit true end
+        response[-1] = end
+
+        return np.asarray(response)
+
+    # Generates a plane using two lines
+    def generate_plane(self, line_a: np.array, line_b: np.array) -> list:
         response = list()
 
         # "Vertical" section
@@ -130,11 +145,12 @@ class GridGL(GLDrawable):
 
         return response
 
+        # Generates XY/YZ/XZ plane
     def generate_corner(self, start: list, end_x: list, end_y: list, sep_x: int, sep_y: int) -> list:
         line_x = self.generate_line(start, end_x, sep_x)
         line_y = self.generate_line(start, end_y, sep_y)
 
-        return self.generate_flat(line_x, line_y)
+        return self.generate_plane(line_x, line_y)
 
     def generate_grid(self) -> np.ndarray:
         marks = []
