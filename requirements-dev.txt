@@ -1,7 +1,7 @@
 PyQt5==5.13.2
 PyOpenGL==3.1.0
 QtPy==1.9.0
-numpy==1.21.0
+numpy==1.22.0
 scipy==1.4.1
 pandas==0.25.3
 h5py==2.10.0
