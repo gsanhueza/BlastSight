@@ -16,8 +16,9 @@ from qtpy.QtGui import *
 class PropertiesDialog(QDialog):
     def __init__(self, parent=None):
         QDialog.__init__(self, parent)
-        self.setMinimumWidth(400)
         self.setWindowFlags(Qt.WindowStaysOnTopHint)
+        self.setMinimumWidth(360)
+        self.resize(360, self.height())
 
         # Color dialog (separated from the window)
         self.color_select = QColorDialog()
