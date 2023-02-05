@@ -20,11 +20,6 @@ class PropertiesDialog(QDialog):
         self.setMinimumWidth(360)
         self.resize(360, self.height())
 
-        # Color dialog (separated from the window)
-        self.color_select = QColorDialog()
-        self.color_select.setOption(QColorDialog.DontUseNativeDialog, True)
-        self.color_select.setWindowFlags(Qt.WindowStaysOnTopHint)
-
         # Labels (top)
         self.label_x = QLabel('X coordinate')
         self.label_y = QLabel('Y coordinate')
@@ -178,23 +173,20 @@ class PropertiesDialog(QDialog):
         return button
 
     def _spawn_color_dialog(self, button: QAbstractButton) -> None:
-        # Regenerate connections
-        try:
-            # Try to use PySide2's disconnect API
-            self.color_select.disconnect(self)
-        except TypeError:
-            # PyQt5 does not accept parameters
-            self.color_select.disconnect()
+        # Color dialog (separated from the window)
+        color_select = QColorDialog()
+        color_select.setOption(QColorDialog.DontUseNativeDialog, True)
+        color_select.setWindowFlags(Qt.WindowStaysOnTopHint)
 
-        self.color_select.accepted.connect(
-            lambda *args: self._update_button_color(button, self._qcolor_to_color(self.color_select.currentColor())))
+        color_select.accepted.connect(
+            lambda *args: self._update_button_color(button, self._qcolor_to_color(color_select.currentColor())))
 
         # Update current color
         color = self._parse_style_sheet(button.styleSheet())
         qcolor = self._color_to_qcolor(color)
-        self.color_select.setCurrentColor(qcolor)
+        color_select.setCurrentColor(qcolor)
 
-        self.color_select.show()
+        color_select.show()
 
     def _update_button_color(self, button: QAbstractButton, color: Color) -> None:
         button.setStyleSheet(f'background-color:{color.get_web()}')
