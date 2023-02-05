@@ -106,16 +106,15 @@ class TreeWidget(QTreeWidget):
         dialog.set_vmax(element.vmax)
 
         if hasattr(element, 'marker'):
-            dialog.enable_marker()
+            # PointElement
+            dialog.use_for_points()
             dialog.fill_markers(['square', 'sphere', 'circle'])
             dialog.set_marker(element.marker)
-
-        try:
-            # Assume it's a BlockElement
-            dialog.set_size(element.size.tolist())
-        except AttributeError:
-            # It was a PointElement
-            dialog.set_size(element.avg_size)
+            dialog.set_point_size(element.avg_size)
+        else:
+            # BlockElement
+            dialog.use_for_blocks()
+            dialog.set_block_size(element.size.tolist())
 
         def has_altered_coordinates() -> bool:
             return any(map(lambda x, y: x != y, element.headers[:3], dialog.get_current_headers()[:3]))
@@ -138,9 +137,9 @@ class TreeWidget(QTreeWidget):
 
                 # Update sizes
                 if hasattr(element, 'block_size'):
-                    element.block_size = dialog.get_size()
+                    element.block_size = dialog.get_block_size()
                 else:
-                    element.avg_size = dialog.get_size()
+                    element.avg_size = dialog.get_point_size()
 
             # Update marker
             if hasattr(element, 'marker'):

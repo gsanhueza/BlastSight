@@ -87,7 +87,7 @@ class DFElement(Element):
     def _fill_properties(self, *args, **kwargs) -> None:
         self.headers = kwargs.get('headers', list(self.data.keys())[:4])
         self.alpha = kwargs.get('alpha', 1.0)
-        self.colormap = kwargs.get('colormap', 'red-blue')  # red-blue (min is red, max is blue)
+        self.colormap = kwargs.get('colormap', '#FF0000-#0000FF')  # red-blue (min is red, max is blue)
         self.color = kwargs.get('color', [])
         self.is_slice = kwargs.get('is_slice', False)
 
