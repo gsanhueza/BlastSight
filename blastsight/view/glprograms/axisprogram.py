@@ -20,6 +20,6 @@ class AxisProgram(ShaderProgram):
 
     def draw(self) -> None:
         w, h = map(int, self.uniform_values.get('viewport'))
-        glViewport(w // 100, h // 100, h // 6, h // 6)
+        glViewport(w // 100, h // 100, h // 5, h // 5)
         super().draw()
         glViewport(0, 0, w, h)

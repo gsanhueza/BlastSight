@@ -17,6 +17,7 @@ void main()
                         mv[2][0], mv[2][1], mv[2][2], 0.0,
                         0.0, 0.0, 0.0, 1.0);
 
-    gl_Position = rot_mat * vec4(a_position, 1.0);
+    float scale = 0.7;
+    gl_Position = rot_mat * vec4(a_position * scale, 1.0);
     v_color = a_color;
 }
