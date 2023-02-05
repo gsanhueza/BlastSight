@@ -179,7 +179,13 @@ class PropertiesDialog(QDialog):
 
     def _spawn_color_dialog(self, button: QAbstractButton) -> None:
         # Regenerate connections
-        self.color_select.disconnect()
+        try:
+            # Try to use PySide2's disconnect API
+            self.color_select.disconnect(self)
+        except TypeError:
+            # PyQt5 does not accept parameters
+            self.color_select.disconnect()
+
         self.color_select.accepted.connect(
             lambda *args: self._update_button_color(button, self._qcolor_to_color(self.color_select.currentColor())))
 
