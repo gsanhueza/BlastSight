@@ -418,9 +418,11 @@ class MainWindow(QMainWindow):
 
     def _dialog_load_element(self, loader: classmethod, hint: str, *args, **kwargs) -> None:
         (paths, selected_filter) = QFileDialog.getOpenFileNames(
-            parent=self,
-            directory=self.last_dir,
-            filter=self.filters_dict.get(hint).get('load'))
+            self,  # parent
+            'Open files...',  # caption
+            self.last_dir,  # directory
+            self.filters_dict.get(hint).get('load')  # filter
+        )
 
         # If path == '', then bool(path) is False
         path_list = sorted(filter(bool, paths))
@@ -432,9 +434,11 @@ class MainWindow(QMainWindow):
 
     def _dialog_load_folder(self, loader: classmethod, *args, **kwargs) -> None:
         path = QFileDialog.getExistingDirectory(
-            parent=self,
-            directory=self.last_dir,
-            options=QFileDialog.ShowDirsOnly)
+            self,  # parent
+            'Open folder...',  # caption
+            self.last_dir,  # directory
+            QFileDialog.ShowDirsOnly  # options
+        )
 
         # Execute method
         if bool(path):
@@ -460,9 +464,11 @@ class MainWindow(QMainWindow):
     """
     def slot_screenshot(self) -> None:
         (path, selected_filter) = QFileDialog.getSaveFileName(
-            parent=self.viewer,
-            directory=f'BlastSight Screenshot ({datetime.now().strftime("%Y%m%d-%H%M%S")})',
-            filter='PNG image (*.png);;')
+            self.viewer,  # parent
+            'Save screenshot...',  # caption
+            f'BlastSight Screenshot ({datetime.now().strftime("%Y%m%d-%H%M%S")})',  # filename
+            'PNG image (*.png);;'  # filter
+        )
 
         self.viewer.take_screenshot(path)
 
