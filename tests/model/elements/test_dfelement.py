@@ -60,7 +60,7 @@ class TestDFElement:
 
     def test_colormap(self):
         element = DFElement(vertices=[[0, 1, 2], [3, 4, 5], [6, 7, 8]], values=[0, 1, 2])
-        assert element.colormap == 'red-blue'
+        assert element.colormap == '#FF0000-#0000FF'
         assert element.color[0][0] == 1.0
         assert element.color[0][1] == 0.0
         assert element.color[0][2] == 0.0
@@ -69,8 +69,8 @@ class TestDFElement:
         assert element.color[2][1] == 0.0
         assert element.color[2][2] == 1.0
 
-        element.colormap = 'lime-red'
-        assert element.colormap == 'lime-red'
+        element.colormap = '#00FF00-#FF0000'
+        assert element.colormap == '#00FF00-#FF0000'
         assert element.color[0][0] == 0.0
         assert element.color[0][1] == 1.0
         assert element.color[0][2] == 0.0
@@ -81,32 +81,32 @@ class TestDFElement:
 
     def test_wrong_colormap(self):
         element = DFElement(vertices=[[0, 1, 2], [3, 4, 5], [6, 7, 8]], values=[0, 1, 2])
-        assert element.colormap == 'red-blue'
+        assert element.colormap == '#FF0000-#0000FF'
 
-        element.colormap = 'red-green'
-        assert element.colormap == 'red-green'
+        element.colormap = '#FF0000-#00FF00'
+        assert element.colormap == '#FF0000-#00FF00'
 
-        element.colormap = 'pinnk-cyyan'
-        assert element.colormap == 'red-green'
+        element.colormap = '#GG0000-#FFGGHH'
+        assert element.colormap == '#FF0000-#00FF00'
 
-        element.colormap = 'turquoise-magenta'
-        assert element.colormap == 'turquoise-magenta'
+        element.colormap = '#AA0000-#BB0000'
+        assert element.colormap == '#AA0000-#BB0000'
 
         element.colormap = 'blah'
-        assert element.colormap == 'turquoise-magenta'
+        assert element.colormap == '#AA0000-#BB0000'
 
         element.colormap = 123
-        assert element.colormap == 'turquoise-magenta'
+        assert element.colormap == '#AA0000-#BB0000'
 
         element.colormap = '12-34'
-        assert element.colormap == 'turquoise-magenta'
+        assert element.colormap == '#AA0000-#BB0000'
 
     def test_vmin_vmax(self):
         element = DFElement(vertices=[[0, 1, 2], [3, 4, 5], [6, 7, 8]], values=[0, 1, 2], vmin=0, vmax=1)
         assert element.vmin == 0
         assert element.vmax == 1
 
-        assert element.colormap == 'red-blue'
+        assert element.colormap == '#FF0000-#0000FF'
         assert element.color[0][0] == 1.0
         assert element.color[0][1] == 0.0
         assert element.color[0][2] == 0.0
@@ -153,7 +153,7 @@ class TestDFElement:
                 'z': [0.0, 3.0, 3.0, 3.0, 3.0, 3.0],
                 'val': [0.0, 2.0, 4.0, 6.0, 8.0, 10.0]}
 
-        element = DFElement(data=data, vmin=4.0, vmax=8.0, colormap='red-blue')
+        element = DFElement(data=data, vmin=4.0, vmax=8.0, colormap='#FF0000-#0000FF')
 
         expected = [
                     [1.0, 0.0, 0.0],  # Red if val < min
