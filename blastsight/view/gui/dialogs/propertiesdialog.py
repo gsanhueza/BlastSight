@@ -5,9 +5,6 @@
 #  Distributed under the MIT License.
 #  See LICENSE for more info.
 
-import numpy as np
-
-from colour import Color
 from qtpy.QtCore import Qt
 from qtpy.QtWidgets import *
 from qtpy.QtGui import *
@@ -167,7 +164,7 @@ class PropertiesDialog(QDialog):
 
     def _generate_colored_button(self, text: str, color: list) -> QAbstractButton:
         button = QPushButton(text, self)
-        button.setStyleSheet(f'background-color:{Color(rgb=color).hex_l}')
+        button.setStyleSheet(f'background-color:{QColor.fromRgbF(*color).name()}')
         button.update()
 
         button.clicked.connect(lambda *args: self._spawn_color_dialog(button))
@@ -181,34 +178,20 @@ class PropertiesDialog(QDialog):
         color_select.setWindowFlags(Qt.WindowStaysOnTopHint)
 
         color_select.accepted.connect(
-            lambda *args: self._update_button_color(button, self._qcolor_to_color(color_select.currentColor())))
+            lambda *args: self._update_button_color(button, color_select.currentColor()))
 
         # Update current color
-        color = self._parse_style_sheet(button.styleSheet())
-        qcolor = self._color_to_qcolor(color)
+        qcolor = self._parse_style_sheet(button.styleSheet())
         color_select.setCurrentColor(qcolor)
 
         color_select.show()
 
-    def _update_button_color(self, button: QAbstractButton, color: Color) -> None:
-        button.setStyleSheet(f'background-color:{color.get_web()}')
+    def _update_button_color(self, button: QAbstractButton, qcolor: QColor) -> None:
+        button.setStyleSheet(f'background-color:{qcolor.name()}')
         button.update()
 
-    def _parse_style_sheet(self, styleSheet: str) -> Color:
-        return Color(styleSheet.split(':')[-1])
-
-    def _color_to_qcolor(self, color: Color) -> QColor:
-        qcolor = QColor()
-        qcolor.setRedF(color.rgb[0])
-        qcolor.setGreenF(color.rgb[1])
-        qcolor.setBlueF(color.rgb[2])
-
-        return qcolor
-
-    def _qcolor_to_color(self, qcolor: QColor) -> Color:
-        rgb = (qcolor.redF(), qcolor.greenF(), qcolor.blueF())
-
-        return Color(rgb=rgb)
+    def _parse_style_sheet(self, styleSheet: str) -> QColor:
+        return QColor(styleSheet.split(':')[-1])
 
     def use_for_blocks(self, value: bool = True) -> None:
         # Show widgets related to Blocks
@@ -252,7 +235,7 @@ class PropertiesDialog(QDialog):
     def get_colormap(self) -> str:
         color_low = self._parse_style_sheet(self.pushButton_color_start.styleSheet())
         color_high = self._parse_style_sheet(self.pushButton_color_end.styleSheet())
-        return f'{color_low.hex_l}-{color_high.hex_l}'
+        return f'{color_low.name()}-{color_high.name()}'
 
     def get_vmin(self) -> float:
         return self.doubleSpinBox_vmin.value()
@@ -286,8 +269,8 @@ class PropertiesDialog(QDialog):
     def set_colormap(self, value: str) -> None:
         low, high = value.split('-')
 
-        self._update_button_color(self.pushButton_color_start, Color(low))
-        self._update_button_color(self.pushButton_color_end, Color(high))
+        self._update_button_color(self.pushButton_color_start, QColor(low))
+        self._update_button_color(self.pushButton_color_end, QColor(high))
 
     def set_vmin(self, value: float) -> None:
         self.doubleSpinBox_vmin.setValue(value)
