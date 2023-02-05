@@ -5,7 +5,6 @@
 #  Distributed under the MIT License.
 #  See LICENSE for more info.
 
-from colour import Color
 from OpenGL.GL import *
 
 from .gldrawable import GLDrawable

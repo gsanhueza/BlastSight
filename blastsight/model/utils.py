@@ -6,9 +6,7 @@
 #  See LICENSE for more info.
 
 import numpy as np
-
-from colour import Color
-
+from qtpy.QtGui import QColor
 
 def magnitude(vector: np.ndarray) -> float:
     return np.linalg.norm(vector)
@@ -82,9 +80,14 @@ def values_to_rgb(values: np.ndarray, vmin: float, vmax: float, colormap: str) -
 def parse_colormap(colormap: str) -> list:
     try:
         initial_str, final_str = colormap.split('-')
-        initial = np.array(hsl_to_hsv(*Color(initial_str).get_hsl()))
-        final = np.array(hsl_to_hsv(*Color(final_str).get_hsl()))
+        if not (QColor.isValidColor(initial_str) or QColor.isValidColor(final_str)):
+            return []
+
+        initial = np.array(QColor(initial_str).getHsvF()[:3])
+        final = np.array(QColor(final_str).getHsvF()[:3])
+
         return [initial, final]
+
     except Exception:
         return []
 
