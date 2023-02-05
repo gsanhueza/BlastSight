@@ -10,8 +10,6 @@ from qtpy.QtCore import Signal
 from qtpy.QtGui import QColor
 from qtpy.QtWidgets import *
 
-from colour import Color
-
 
 class GridWidget(QWidget):
     signal_visibility_requested = Signal(bool)
@@ -67,7 +65,7 @@ class GridWidget(QWidget):
 
     @staticmethod
     def _get_button_stylesheet(color: list) -> str:
-        return f'background-color: {Color(rgb=color[:3]).get_web()}; border: none;'
+        return f'background-color: {QColor.fromRgbF(*color).name()}; border: none;'
 
     @staticmethod
     def _add_to_grid(layout: QGridLayout, row: int, *widgets) -> None:

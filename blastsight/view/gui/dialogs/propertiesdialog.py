@@ -14,8 +14,8 @@ class PropertiesDialog(QDialog):
     def __init__(self, parent=None):
         QDialog.__init__(self, parent)
         self.setWindowFlags(Qt.WindowStaysOnTopHint)
-        self.setMinimumWidth(360)
-        self.resize(360, self.height())
+        self.setMinimumSize(360, 440)
+        self.resize(360, 440)
 
         # Labels (top)
         self.label_x = QLabel('X coordinate')

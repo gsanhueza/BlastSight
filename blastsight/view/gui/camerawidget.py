@@ -9,7 +9,6 @@ from qtpy.QtCore import Qt
 from qtpy.QtCore import Signal
 from qtpy.QtGui import QColor
 from qtpy.QtWidgets import *
-from colour import Color
 
 
 class CameraWidget(QWidget):
@@ -112,7 +111,7 @@ class CameraWidget(QWidget):
 
     @staticmethod
     def _get_button_stylesheet(color: list) -> str:
-        return f'background-color: {Color(rgb=color[:3]).get_web()}; border: none;'
+        return f'background-color: {QColor.fromRgbF(*color).name()}; border: none;'
 
     def connect_viewer(self, viewer) -> None:
         # Connect viewer's signals to automatically update self
