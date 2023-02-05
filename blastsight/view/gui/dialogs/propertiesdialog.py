@@ -49,18 +49,20 @@ class PropertiesDialog(QDialog):
         self.doubleSpinBox_alpha = self._generate_spinbox(lower=0.0, upper=1.0, step=0.1)
         self.doubleSpinBox_vmin = self._generate_spinbox()
         self.doubleSpinBox_vmax = self._generate_spinbox()
-        self.comboBox_markers = QComboBox()
-        self.doubleSpinBox_pointsize = self._generate_spinbox(lower=0.0)
-        self.checkBox_recalculate = QCheckBox('Enable auto-calculation', self)
 
         # Colormap
         self.pushButton_color_start = self._generate_colored_button('Low', [1.0, 0.0, 0.0])
         self.pushButton_color_end = self._generate_colored_button('High', [0.0, 0.0, 1.0])
+        self.doubleSpinBox_pointsize = self._generate_spinbox(lower=0.0)
+        self.comboBox_markers = QComboBox(self)
 
         # Block size
         self.doubleSpinBox_xsize = self._generate_spinbox(lower=0.0)
         self.doubleSpinBox_ysize = self._generate_spinbox(lower=0.0)
         self.doubleSpinBox_zsize = self._generate_spinbox(lower=0.0)
+
+        # Recalculate
+        self.checkBox_recalculate = QCheckBox('Enable auto-calculation', self)
 
         # ButtonBox (Accept/Reject)
         self.buttonBox = QDialogButtonBox(self)
