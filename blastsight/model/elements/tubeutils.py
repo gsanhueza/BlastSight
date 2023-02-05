@@ -55,7 +55,7 @@ def cylinder(radius: float, resolution: int, segment: tuple) -> tuple:
     side_b[:, 1] = np.remainder(vec_resolution + 1, resolution) + 2
     side_b[:, 2] = np.remainder(vec_resolution + 1, resolution) + 2 + resolution
 
-    side = np.append(side_a, side_b).astype(np.int)
+    side = np.append(side_a, side_b).astype(int)
     side = side.reshape((-1, 3), order='C')
 
     indices = np.vstack([bottom_fan, top_fan, side])
