@@ -122,17 +122,17 @@ class ActionCollection:
         self.action_turbo_rendering.setShortcut('Shift+T')
         self.action_turbo_rendering.setCheckable(True)
 
-        self.action_normal_controller = QAction('&Normal controller', parent)
-        self.action_normal_controller.setIcon(IconCollection.get('rotate_camera.svg'))
-        self.action_normal_controller.setShortcut('Ctrl+N')
+        self.action_normal_interactor = QAction('&Normal interactor', parent)
+        self.action_normal_interactor.setIcon(IconCollection.get('rotate_camera.svg'))
+        self.action_normal_interactor.setShortcut('Ctrl+N')
 
-        self.action_measurement_controller = QAction('&Measure meshes', parent)
-        self.action_measurement_controller.setIcon(IconCollection.get('ruler.svg'))
-        self.action_measurement_controller.setShortcut('Ctrl+M')
+        self.action_measurement_interactor = QAction('&Measure meshes', parent)
+        self.action_measurement_interactor.setIcon(IconCollection.get('ruler.svg'))
+        self.action_measurement_interactor.setShortcut('Ctrl+M')
 
-        self.action_detection_controller = QAction('&Detect meshes/lines', parent)
-        self.action_detection_controller.setIcon(IconCollection.get('cursor.svg'))
-        self.action_detection_controller.setShortcut('Ctrl+D')
+        self.action_detection_interactor = QAction('&Detect meshes/lines', parent)
+        self.action_detection_interactor.setIcon(IconCollection.get('cursor.svg'))
+        self.action_detection_interactor.setShortcut('Ctrl+D')
 
         self.action_slice_meshes = QAction('&Slice meshes', parent)
         self.action_slice_meshes.setIcon(IconCollection.get('flash_on.svg'))

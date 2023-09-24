@@ -84,7 +84,7 @@ Slice mode means that you'll click two points in the screen,
 so BlastSight will automatically generate a plane that
 will pass through every visible mesh and block.
 """
-viewer.set_slice_controller()
+viewer.set_slice_interactor()
 viewer.signal_slice_description.connect(slice_elements)
 
 viewer.fit_to_screen()

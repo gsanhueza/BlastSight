@@ -7,10 +7,10 @@
 
 from qtpy.QtCore import Qt, QPoint
 from qtpy.QtGui import QMouseEvent
-from .basecontroller import BaseController
+from .base_interactor import BaseInteractor
 
 
-class NormalController(BaseController):
+class NormalInteractor(BaseInteractor):
     def __init__(self, viewer):
         super().__init__(viewer)
         self.name = 'Normal'

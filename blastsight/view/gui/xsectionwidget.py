@@ -11,7 +11,7 @@ from qtpy.QtWidgets import *
 
 
 class XSectionWidget(QWidget):
-    signal_controller_requested = Signal(bool)
+    signal_interactor_requested = Signal(bool)
     signal_status_altered = Signal(bool)
     signal_phantom_altered = Signal(bool)
 
@@ -25,8 +25,8 @@ class XSectionWidget(QWidget):
         self.setWindowFlags(Qt.WindowStaysOnTopHint)
 
         # Status buttons
-        self.pushButton_controller = QPushButton('Slice from screen')
-        self.pushButton_controller.setCheckable(True)
+        self.pushButton_interactor = QPushButton('Slice from screen')
+        self.pushButton_interactor.setCheckable(True)
 
         self.pushButton_status = QPushButton('Toggle cross-section')
         self.pushButton_status.setCheckable(True)
@@ -57,7 +57,7 @@ class XSectionWidget(QWidget):
         self._add_to_grid(self.grid, 2, QLabel('Step'), self.step, self.button_minus, self.button_plus)
 
         self.layout = QVBoxLayout(self)
-        self.layout.addWidget(self._generate_horizontal(self.pushButton_controller,
+        self.layout.addWidget(self._generate_horizontal(self.pushButton_interactor,
                                                         self.pushButton_status,
                                                         self.pushButton_phantom))
         self.layout.addWidget(self.container)
@@ -97,7 +97,7 @@ class XSectionWidget(QWidget):
         return spinbox
 
     def _connect_internal_signals(self) -> None:
-        self.pushButton_controller.toggled.connect(self.signal_controller_requested.emit)
+        self.pushButton_interactor.toggled.connect(self.signal_interactor_requested.emit)
         self.pushButton_status.toggled.connect(self.signal_status_altered.emit)
         self.pushButton_phantom.toggled.connect(self.signal_phantom_altered.emit)
 
@@ -136,7 +136,7 @@ class XSectionWidget(QWidget):
             self.set_origin(origin)
             viewer.cross_section(origin, normal)
 
-        # Connect controller
+        # Connect interactor
         def handle_screen_xsection(description: dict) -> None:
             # Retrieve description vectors
             origin = description.get('origin')
@@ -148,20 +148,20 @@ class XSectionWidget(QWidget):
             viewer.set_camera_from_vectors(normal, up)
 
             # Auto-pop button after cross-sectioning from screen
-            self.pushButton_controller.setChecked(False)
-            handle_controller(False)
+            self.pushButton_interactor.setChecked(False)
+            handle_interactor(False)
 
-        def handle_controller(status: bool) -> None:
+        def handle_interactor(status: bool) -> None:
             if status:
-                viewer.set_slice_controller()
+                viewer.set_slice_interactor()
                 viewer.signal_slice_description.connect(handle_screen_xsection)
             else:
-                viewer.set_normal_controller()
+                viewer.set_normal_interactor()
 
         # Connect signals
         viewer.signal_xsection_updated.connect(handle_xsection_updated)
 
-        self.signal_controller_requested.connect(handle_controller)
+        self.signal_interactor_requested.connect(handle_interactor)
         self.signal_status_altered.connect(viewer.set_cross_section)
         self.signal_phantom_altered.connect(viewer.set_phantom)
 

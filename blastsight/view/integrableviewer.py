@@ -37,11 +37,11 @@ from .drawables.textgl import TextGL
 from .drawablefactory import DrawableFactory
 from .fpscounter import FPSCounter
 
-from ..controller.basecontroller import BaseController
-from ..controller.detectioncontroller import DetectionController
-from ..controller.normalcontroller import NormalController
-from ..controller.slicecontroller import SliceController
-from ..controller.measurementcontroller import MeasurementController
+from ..interactors.base_interactor import BaseInteractor
+from ..interactors.detect_interactor import DetectInteractor
+from ..interactors.normal_interactor import NormalInteractor
+from ..interactors.slice_interactor import SliceInteractor
+from ..interactors.measure_interactor import MeasureInteractor
 
 from ..model import utils
 from ..model.model import Model
@@ -73,7 +73,7 @@ class IntegrableViewer(QOpenGLWidget):
     signal_screen_clicked = Signal(object)
     signal_ray_generated = Signal(object)
     signal_fps_updated = Signal(float)
-    signal_controller_updated = Signal(str)
+    signal_interactor_updated = Signal(str)
     signal_projection_updated = Signal(str)
 
     signal_xsection_updated = Signal()
@@ -98,9 +98,9 @@ class IntegrableViewer(QOpenGLWidget):
         self.pre_collection = GLPreCollection()
         self.post_collection = GLPostCollection()
 
-        # Controllers
-        self.current_controller = None
-        self.controllers = {}
+        # Interactors
+        self.current_interactor = None
+        self.interactors = {}
 
         # Model/View/Projection matrices
         self.model_matrix = QMatrix4x4()
@@ -144,12 +144,12 @@ class IntegrableViewer(QOpenGLWidget):
         self.signal_camera_translated.connect(self.update)
         self.signal_center_translated.connect(self.update)
 
-        # Controllers
-        self.add_controller(NormalController(self))
-        self.add_controller(DetectionController(self))
-        self.add_controller(SliceController(self))
-        self.add_controller(MeasurementController(self))
-        self.set_normal_controller()
+        # Interactors
+        self.add_interactor(NormalInteractor(self))
+        self.add_interactor(DetectInteractor(self))
+        self.add_interactor(SliceInteractor(self))
+        self.add_interactor(MeasureInteractor(self))
+        self.set_normal_interactor()
 
         # FPSCounter
         self.fps_counter.add_callback(self.signal_fps_updated.emit)
@@ -921,57 +921,57 @@ class IntegrableViewer(QOpenGLWidget):
         self.signal_phantom_updated.emit()
 
     """
-    Controller
+    Interactors
     """
-    def add_controller(self, controller: BaseController) -> None:
-        self.controllers[controller.name] = controller
+    def add_interactor(self, interactor: BaseInteractor) -> None:
+        self.interactors[interactor.name] = interactor
 
-    def set_controller(self, name: str) -> None:
-        self.current_controller = self.controllers.get(name)
-        self.signal_controller_updated.emit(name)
+    def set_interactor(self, name: str) -> None:
+        self.current_interactor = self.interactors.get(name)
+        self.signal_interactor_updated.emit(name)
         self.update()
 
-    def set_normal_controller(self) -> None:
-        self.set_controller('Normal')
+    def set_normal_interactor(self) -> None:
+        self.set_interactor('Normal')
 
-    def set_detection_controller(self) -> None:
-        self.set_controller('Detection')
+    def set_detection_interactor(self) -> None:
+        self.set_interactor('Detection')
 
-    def set_slice_controller(self) -> None:
-        self.set_controller('Slice')
+    def set_slice_interactor(self) -> None:
+        self.set_interactor('Slice')
 
-    def set_measurement_controller(self) -> None:
-        self.set_controller('Measurement')
+    def set_measurement_interactor(self) -> None:
+        self.set_interactor('Measurement')
 
     """
-    Events (dependent on current controller)
+    Events (dependent on current interactor)
     """
     def mouseMoveEvent(self, event, *args, **kwargs) -> None:
-        self.current_controller.mouseMoveEvent(event)
+        self.current_interactor.mouseMoveEvent(event)
         self.update()
 
     def mousePressEvent(self, event, *args, **kwargs) -> None:
-        self.current_controller.mousePressEvent(event)
+        self.current_interactor.mousePressEvent(event)
         self.update()
 
     def mouseDoubleClickEvent(self, event, *args, **kwargs) -> None:
-        self.current_controller.mouseDoubleClickEvent(event)
+        self.current_interactor.mouseDoubleClickEvent(event)
         self.update()
 
     def mouseReleaseEvent(self, event, *args, **kwargs) -> None:
-        self.current_controller.mouseReleaseEvent(event)
+        self.current_interactor.mouseReleaseEvent(event)
         self.update()
 
     def keyPressEvent(self, event, *args, **kwargs) -> None:
-        self.current_controller.keyPressEvent(event)
+        self.current_interactor.keyPressEvent(event)
         self.update()
 
     def keyReleaseEvent(self, event, *args, **kwargs) -> None:
-        self.current_controller.keyReleaseEvent(event)
+        self.current_interactor.keyReleaseEvent(event)
         self.update()
 
     def wheelEvent(self, event, *args, **kwargs) -> None:
-        self.current_controller.wheelEvent(event)
+        self.current_interactor.wheelEvent(event)
         self.update()
 
     def dragEnterEvent(self, event, *args, **kwargs) -> None:

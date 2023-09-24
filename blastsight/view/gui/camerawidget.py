@@ -36,7 +36,7 @@ class CameraWidget(QWidget):
         self.button_top = QPushButton('Top')
         self.button_bottom = QPushButton('Bottom')
 
-        self.current_controller = QLabel(self)
+        self.current_interactor = QLabel(self)
         self.current_projection = QLabel(self)
 
         # Layouts
@@ -59,7 +59,7 @@ class CameraWidget(QWidget):
             self._generate_horizontal(self.button_top, self.button_bottom),
             self._generate_separator(),
 
-            self._generate_horizontal(QLabel('Controller'), self.current_controller),
+            self._generate_horizontal(QLabel('Interactor'), self.current_interactor),
             self._generate_horizontal(QLabel('Projection'), self.current_projection),
         ])
 
@@ -119,7 +119,7 @@ class CameraWidget(QWidget):
         viewer.signal_camera_translated.connect(self.set_camera_position)
         viewer.signal_center_translated.connect(self.set_rotation_center)
 
-        viewer.signal_controller_updated.connect(self.set_current_controller)
+        viewer.signal_interactor_updated.connect(self.set_current_interactor)
         viewer.signal_projection_updated.connect(self.set_current_projection)
 
         # Connect signals to automatically update the viewer
@@ -140,7 +140,7 @@ class CameraWidget(QWidget):
         self.set_camera_position(viewer.get_camera_position())
         self.set_rotation_angle(viewer.get_rotation_angle())
         self.set_rotation_center(viewer.get_rotation_center())
-        self.set_current_controller(viewer.current_controller.name)
+        self.set_current_interactor(viewer.current_interactor.name)
         self.set_current_projection(viewer.current_projection)
 
         # Handle background colors
@@ -217,8 +217,8 @@ class CameraWidget(QWidget):
         self.center_z.setValue(center[2])
         self.blockSignals(False)
 
-    def set_current_controller(self, mode: str) -> None:
-        self.current_controller.setText(mode)
+    def set_current_interactor(self, mode: str) -> None:
+        self.current_interactor.setText(mode)
 
     def set_current_projection(self, projection: str) -> None:
         self.current_projection.setText(projection)

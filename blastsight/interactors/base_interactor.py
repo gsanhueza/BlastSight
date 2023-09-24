@@ -8,7 +8,7 @@
 from qtpy.QtGui import QMouseEvent, QWheelEvent, QKeyEvent
 
 
-class BaseController:
+class BaseInteractor:
     def __init__(self, viewer):
         self.name = 'Base'
         self.viewer = viewer

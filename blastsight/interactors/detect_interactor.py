@@ -6,10 +6,10 @@
 #  See LICENSE for more info.
 
 from qtpy.QtGui import QMouseEvent
-from .basecontroller import BaseController
+from .base_interactor import BaseInteractor
 
 
-class DetectionController(BaseController):
+class DetectInteractor(BaseInteractor):
     def __init__(self, viewer):
         super().__init__(viewer)
         self.name = 'Detection'

@@ -160,11 +160,11 @@ class MainWindow(QMainWindow):
         self.menu_Tools.addAction(actions.action_slice_meshes)
         self.menu_Tools.addAction(actions.action_slice_blocks)
         self.menu_Tools.addAction(actions.action_slice_points)
-        self.menu_Tools.addAction(actions.action_detection_controller)
-        self.menu_Tools.addAction(actions.action_measurement_controller)
+        self.menu_Tools.addAction(actions.action_detection_interactor)
+        self.menu_Tools.addAction(actions.action_measurement_interactor)
         self.menu_Tools.addSeparator()
         self.menu_Tools.addAction(actions.action_xsection)
-        self.menu_Tools.addAction(actions.action_normal_controller)
+        self.menu_Tools.addAction(actions.action_normal_interactor)
 
         # Settings
         self.menu_Settings.addAction(actions.action_autofit)
@@ -212,10 +212,10 @@ class MainWindow(QMainWindow):
         actions.action_slice_meshes.triggered.connect(self.slot_slice_meshes)
         actions.action_slice_blocks.triggered.connect(self.slot_slice_blocks)
         actions.action_slice_points.triggered.connect(self.slot_slice_points)
-        actions.action_detection_controller.triggered.connect(self.slot_detection_controller)
-        actions.action_measurement_controller.triggered.connect(self.slot_measurement_controller)
+        actions.action_detection_interactor.triggered.connect(self.slot_detection_interactor)
+        actions.action_measurement_interactor.triggered.connect(self.slot_measurement_interactor)
 
-        actions.action_normal_controller.triggered.connect(self.slot_normal_controller)
+        actions.action_normal_interactor.triggered.connect(self.slot_normal_interactor)
 
         # Help
         actions.action_help.triggered.connect(self.slot_help)
@@ -223,7 +223,7 @@ class MainWindow(QMainWindow):
 
         # Viewer signals
         self.viewer.signal_fps_updated.connect(self.print_fps)
-        self.viewer.signal_controller_updated.connect(self.slot_controller_updated)
+        self.viewer.signal_interactor_updated.connect(self.slot_interactor_updated)
         self.viewer.signal_elements_detected.connect(self.slot_elements_detected)
         self.viewer.signal_mesh_distances.connect(self.slot_mesh_distances)
 
@@ -267,8 +267,8 @@ class MainWindow(QMainWindow):
     def slot_element_export_failure(self) -> None:
         self.statusBar.showMessage(f'Failed to export.')
 
-    def slot_controller_updated(self, name: str) -> None:
-        self.statusBar.showMessage(f'Controller: {name}')
+    def slot_interactor_updated(self, name: str) -> None:
+        self.statusBar.showMessage(f'Interactor: {name}')
 
     def slot_mesh_distances(self, distance_dict: dict) -> None:
         self.statusBar.showMessage(f'Distance: {distance_dict.get("distance")}')
@@ -303,10 +303,10 @@ class MainWindow(QMainWindow):
             self.handle_slices(description, executer)
 
             # Disconnect
-            self.viewer.set_normal_controller()
+            self.viewer.set_normal_interactor()
             self.viewer.signal_slice_description.disconnect()
 
-        self.viewer.set_slice_controller()
+        self.viewer.set_slice_interactor()
         self.viewer.signal_slice_description.connect(handler)
 
     def slot_slice_blocks(self) -> None:
@@ -318,10 +318,10 @@ class MainWindow(QMainWindow):
             self.handle_slices(description, executer)
 
             # Disconnect
-            self.viewer.set_normal_controller()
+            self.viewer.set_normal_interactor()
             self.viewer.signal_slice_description.disconnect()
 
-        self.viewer.set_slice_controller()
+        self.viewer.set_slice_interactor()
         self.viewer.signal_slice_description.connect(handler)
 
     def slot_slice_points(self) -> None:
@@ -333,10 +333,10 @@ class MainWindow(QMainWindow):
             self.handle_slices(description, executer)
 
             # Disconnect
-            self.viewer.set_normal_controller()
+            self.viewer.set_normal_interactor()
             self.viewer.signal_slice_description.disconnect()
 
-        self.viewer.set_slice_controller()
+        self.viewer.set_slice_interactor()
         self.viewer.signal_slice_description.connect(handler)
 
     def add_mesh_slices(self, slice_list: list) -> None:
@@ -527,16 +527,16 @@ class MainWindow(QMainWindow):
             self._thread_runner(self.viewer.export_element, path, _id)
 
     """
-    Slots for modifying interaction controllers
+    Slots for modifying interaction interactors
     """
-    def slot_normal_controller(self) -> None:
-        self.viewer.set_normal_controller()
+    def slot_normal_interactor(self) -> None:
+        self.viewer.set_normal_interactor()
 
-    def slot_detection_controller(self) -> None:
-        self.viewer.set_detection_controller()
+    def slot_detection_interactor(self) -> None:
+        self.viewer.set_detection_interactor()
 
-    def slot_measurement_controller(self) -> None:
-        self.viewer.set_measurement_controller()
+    def slot_measurement_interactor(self) -> None:
+        self.viewer.set_measurement_interactor()
 
     """
     Slots for showing help/about dialogs

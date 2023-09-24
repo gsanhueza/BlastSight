@@ -14,9 +14,9 @@ from blastsight.view.drawables.tubegl import TubeGL
 
 from blastsight.view.integrableviewer import IntegrableViewer
 
-from blastsight.controller.normalcontroller import NormalController
-from blastsight.controller.slicecontroller import SliceController
-from blastsight.controller.detectioncontroller import DetectionController
+from blastsight.interactors.normal_interactor import NormalInteractor
+from blastsight.interactors.slice_interactor import SliceInteractor
+from blastsight.interactors.detect_interactor import DetectInteractor
 
 from tests.globals import *
 
@@ -42,7 +42,7 @@ class TestIntegrableViewer:
         assert viewer.axis
         assert viewer.background
 
-        assert len(viewer.controllers) > 0
+        assert len(viewer.interactors) > 0
 
         expected = [0.0, 0.0, 0.0]
         assert self.equal_list(expected, viewer.rotation_angle)
@@ -392,18 +392,18 @@ class TestIntegrableViewer:
         expected = [270.0, 0.0, 0.0]
         assert self.equal_list(expected, viewer.rotation_angle)
 
-    def test_controller_modes(self):
+    def test_interactor_modes(self):
         viewer = IntegrableViewer()
-        assert type(viewer.current_controller) is NormalController
+        assert type(viewer.current_interactor) is NormalInteractor
 
-        viewer.set_slice_controller()
-        assert type(viewer.current_controller) is SliceController
+        viewer.set_slice_interactor()
+        assert type(viewer.current_interactor) is SliceInteractor
 
-        viewer.set_detection_controller()
-        assert type(viewer.current_controller) is DetectionController
+        viewer.set_detection_interactor()
+        assert type(viewer.current_interactor) is DetectInteractor
 
-        viewer.set_normal_controller()
-        assert type(viewer.current_controller) is NormalController
+        viewer.set_normal_interactor()
+        assert type(viewer.current_interactor) is NormalInteractor
 
     def test_projections(self):
         viewer = IntegrableViewer()

@@ -7,10 +7,10 @@
 
 from qtpy.QtCore import Qt
 from qtpy.QtGui import QMouseEvent
-from .basecontroller import BaseController
+from .base_interactor import BaseInteractor
 
 
-class SliceController(BaseController):
+class SliceInteractor(BaseInteractor):
     def __init__(self, viewer):
         super().__init__(viewer)
         self.name = 'Slice'
