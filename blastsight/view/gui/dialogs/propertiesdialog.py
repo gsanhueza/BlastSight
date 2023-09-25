@@ -9,6 +9,11 @@ from qtpy.QtCore import Qt
 from qtpy.QtWidgets import *
 from qtpy.QtGui import *
 
+from ..customwidgets.coloredbutton import ColoredButton
+from ..customwidgets.colordialog import ColorDialog
+from ..customwidgets.doublespinbox import DoubleSpinBox
+from ..customwidgets.separatorframe import SeparatorFrame
+
 
 class PropertiesDialog(QDialog):
     def __init__(self, parent=None):
@@ -30,7 +35,7 @@ class PropertiesDialog(QDialog):
         self.comboBox_value = QComboBox(self)
 
         # Line separator
-        self.line = self._generate_separator()
+        self.line = SeparatorFrame(self)
 
         # Labels (bottom)
         self.label_alpha = QLabel('Alpha')
@@ -43,20 +48,24 @@ class PropertiesDialog(QDialog):
         self.label_recalculate = QLabel('Re-calculate limits')
 
         # Right column (Spinbox/buttons/etc) (bottom)
-        self.doubleSpinBox_alpha = self._generate_spinbox(lower=0.0, upper=1.0, step=0.1)
-        self.doubleSpinBox_vmin = self._generate_spinbox()
-        self.doubleSpinBox_vmax = self._generate_spinbox()
+        self.doubleSpinBox_alpha = DoubleSpinBox(self, lower=0.0, upper=1.0, step=0.1)
+        self.doubleSpinBox_vmin = DoubleSpinBox(self)
+        self.doubleSpinBox_vmax = DoubleSpinBox(self)
 
         # Colormap
-        self.pushButton_color_start = self._generate_colored_button('Low', [1.0, 0.0, 0.0])
-        self.pushButton_color_end = self._generate_colored_button('High', [0.0, 0.0, 1.0])
-        self.doubleSpinBox_pointsize = self._generate_spinbox(lower=0.0)
+        self.pushButton_color_low = ColoredButton(self, 'Low', (1.0, 0.0, 0.0, 1.0))
+        self.pushButton_color_low.clicked.connect(self.show_colordialog_low)
+
+        self.pushButton_color_high = ColoredButton(self, 'High', (0.0, 0.0, 1.0, 1.0))
+        self.pushButton_color_high.clicked.connect(self.show_colordialog_high)
+
+        self.doubleSpinBox_pointsize = DoubleSpinBox(self, lower=0.0)
         self.comboBox_markers = QComboBox(self)
 
         # Block size
-        self.doubleSpinBox_xsize = self._generate_spinbox(lower=0.0)
-        self.doubleSpinBox_ysize = self._generate_spinbox(lower=0.0)
-        self.doubleSpinBox_zsize = self._generate_spinbox(lower=0.0)
+        self.doubleSpinBox_xsize = DoubleSpinBox(self, lower=0.0)
+        self.doubleSpinBox_ysize = DoubleSpinBox(self, lower=0.0)
+        self.doubleSpinBox_zsize = DoubleSpinBox(self, lower=0.0)
 
         # Recalculate
         self.checkBox_recalculate = QCheckBox('Enable auto-calculation', self)
@@ -107,8 +116,8 @@ class PropertiesDialog(QDialog):
         self.horizontalLayout_blocksize.addWidget(self.doubleSpinBox_zsize)
 
         # Accomodate colormap buttons
-        self.horizontalLayout_colormap.addWidget(self.pushButton_color_start)
-        self.horizontalLayout_colormap.addWidget(self.pushButton_color_end)
+        self.horizontalLayout_colormap.addWidget(self.pushButton_color_low)
+        self.horizontalLayout_colormap.addWidget(self.pushButton_color_high)
 
         # Accomodate right column (bottom)
         self.gridLayout_bottom.addWidget(self.doubleSpinBox_alpha, 0, 1, 1, 1)
@@ -144,54 +153,17 @@ class PropertiesDialog(QDialog):
         self.label_markers.setVisible(False)
         self.comboBox_markers.setVisible(False)
 
-    def _generate_separator(self) -> QFrame:
-        line_separator = QFrame(self)
-        line_separator.setFrameShape(QFrame.HLine)
-        line_separator.setFrameShadow(QFrame.Sunken)
+    def show_colordialog_low(self) -> None:
+        dialog = ColorDialog()
+        dialog.setCurrentColor(self.pushButton_color_low.qcolor)
+        dialog.accepted.connect(lambda *_: self.pushButton_color_low.set_qcolor(dialog.currentColor()))
+        dialog.show()
 
-        return line_separator
-
-    def _generate_spinbox(self, lower: float = -10e6, upper: float = 10e6,
-                          decimals: int = 2, step: float = 1.0) -> QAbstractSpinBox:
-        spinbox = QDoubleSpinBox(self)
-        spinbox.setMinimum(lower)
-        spinbox.setMaximum(upper)
-        spinbox.setDecimals(decimals)
-        spinbox.setSingleStep(step)
-        spinbox.setMinimumWidth(10)
-
-        return spinbox
-
-    def _generate_colored_button(self, text: str, color: list) -> QAbstractButton:
-        button = QPushButton(text, self)
-        button.setStyleSheet(f'background-color:{QColor.fromRgbF(*color).name()}')
-        button.update()
-
-        button.clicked.connect(lambda *args: self._spawn_color_dialog(button))
-
-        return button
-
-    def _spawn_color_dialog(self, button: QAbstractButton) -> None:
-        # Color dialog (separated from the window)
-        color_select = QColorDialog()
-        color_select.setOption(QColorDialog.DontUseNativeDialog, True)
-        color_select.setWindowFlags(Qt.WindowStaysOnTopHint)
-
-        color_select.accepted.connect(
-            lambda *args: self._update_button_color(button, color_select.currentColor()))
-
-        # Update current color
-        qcolor = self._parse_style_sheet(button.styleSheet())
-        color_select.setCurrentColor(qcolor)
-
-        color_select.show()
-
-    def _update_button_color(self, button: QAbstractButton, qcolor: QColor) -> None:
-        button.setStyleSheet(f'background-color:{qcolor.name()}')
-        button.update()
-
-    def _parse_style_sheet(self, styleSheet: str) -> QColor:
-        return QColor(styleSheet.split(':')[-1])
+    def show_colordialog_high(self) -> None:
+        dialog = ColorDialog()
+        dialog.setCurrentColor(self.pushButton_color_high.qcolor)
+        dialog.accepted.connect(lambda *_: self.pushButton_color_high.set_qcolor(dialog.currentColor()))
+        dialog.show()
 
     def use_for_blocks(self, value: bool = True) -> None:
         # Show widgets related to Blocks
@@ -233,9 +205,9 @@ class PropertiesDialog(QDialog):
         return self.doubleSpinBox_alpha.value()
 
     def get_colormap(self) -> str:
-        color_low = self._parse_style_sheet(self.pushButton_color_start.styleSheet())
-        color_high = self._parse_style_sheet(self.pushButton_color_end.styleSheet())
-        return f'{color_low.name()}-{color_high.name()}'
+        color_low = self.pushButton_color_low.qcolor.name()
+        color_high = self.pushButton_color_high.qcolor.name()
+        return f'{color_low}-{color_high}'
 
     def get_vmin(self) -> float:
         return self.doubleSpinBox_vmin.value()
@@ -268,9 +240,8 @@ class PropertiesDialog(QDialog):
 
     def set_colormap(self, value: str) -> None:
         low, high = value.split('-')
-
-        self._update_button_color(self.pushButton_color_start, QColor(low))
-        self._update_button_color(self.pushButton_color_end, QColor(high))
+        self.pushButton_color_low.set_color(QColor(low).getRgbF())
+        self.pushButton_color_high.set_color(QColor(high).getRgbF())
 
     def set_vmin(self, value: float) -> None:
         self.doubleSpinBox_vmin.setValue(value)
