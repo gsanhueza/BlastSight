@@ -10,6 +10,11 @@ from qtpy.QtCore import Signal
 from qtpy.QtGui import QColor
 from qtpy.QtWidgets import *
 
+from .customwidgets.coloredbutton import ColoredButton
+from .customwidgets.colordialog import ColorDialog
+from .customwidgets.doublespinbox import DoubleSpinBox
+from .customwidgets.separatorframe import SeparatorFrame
+
 
 class CameraWidget(QWidget):
     signal_camera_translated = Signal(object)
@@ -21,20 +26,20 @@ class CameraWidget(QWidget):
         self.setWindowTitle('Viewer Properties')
         self.setWindowFlags(Qt.WindowStaysOnTopHint)
 
-        self.position_x = self._generate_spinbox()
-        self.position_y = self._generate_spinbox()
-        self.position_z = self._generate_spinbox()
+        self.position_x = DoubleSpinBox(self)
+        self.position_y = DoubleSpinBox(self)
+        self.position_z = DoubleSpinBox(self)
 
-        self.center_x = self._generate_spinbox()
-        self.center_y = self._generate_spinbox()
-        self.center_z = self._generate_spinbox()
+        self.center_x = DoubleSpinBox(self)
+        self.center_y = DoubleSpinBox(self)
+        self.center_z = DoubleSpinBox(self)
 
-        self.rotation_x = self._generate_spinbox(-360, 360)
-        self.rotation_y = self._generate_spinbox(-360, 360)
-        self.rotation_z = self._generate_spinbox(-360, 360)
+        self.rotation_x = DoubleSpinBox(self, lower=-360, upper=360)
+        self.rotation_y = DoubleSpinBox(self, lower=-360, upper=360)
+        self.rotation_z = DoubleSpinBox(self, lower=-360, upper=360)
 
-        self.button_top = QPushButton('Top')
-        self.button_bottom = QPushButton('Bottom')
+        self.button_top = ColoredButton(self, 'Top', (0.1, 0.2, 0.3, 1.0))
+        self.button_bottom = ColoredButton(self, 'Bottom', (0.4, 0.5, 0.6, 1.0))
 
         self.current_interactor = QLabel(self)
         self.current_projection = QLabel(self)
@@ -45,19 +50,19 @@ class CameraWidget(QWidget):
         self._add_to_layout(self.layout, [
             QLabel('Camera position (location)'),
             self._generate_horizontal(self.position_x, self.position_y, self.position_z),
-            self._generate_separator(),
+            SeparatorFrame(self),
 
             QLabel('Rotation center (location)'),
             self._generate_horizontal(self.center_x, self.center_y, self.center_z),
-            self._generate_separator(),
+            SeparatorFrame(self),
 
             QLabel('Rotation angle (degrees)'),
             self._generate_horizontal(self.rotation_x, self.rotation_y, self.rotation_z),
-            self._generate_separator(),
+            SeparatorFrame(self),
 
             QLabel('Background color'),
             self._generate_horizontal(self.button_top, self.button_bottom),
-            self._generate_separator(),
+            SeparatorFrame(self),
 
             self._generate_horizontal(QLabel('Interactor'), self.current_interactor),
             self._generate_horizontal(QLabel('Projection'), self.current_projection),
@@ -70,21 +75,6 @@ class CameraWidget(QWidget):
     def _add_to_layout(layout, widgets: list) -> None:
         for widget in widgets:
             layout.addWidget(widget)
-
-    def _generate_spinbox(self, lower: float = -10e6, upper: float = 10e6) -> QAbstractSpinBox:
-        spinbox = QDoubleSpinBox(self)
-        spinbox.setMinimum(lower)
-        spinbox.setMaximum(upper)
-        spinbox.setMinimumWidth(10)
-
-        return spinbox
-
-    def _generate_separator(self) -> QFrame:
-        line_separator = QFrame(self)
-        line_separator.setFrameShape(QFrame.HLine)
-        line_separator.setFrameShadow(QFrame.Sunken)
-
-        return line_separator
 
     def _generate_horizontal(self, *widgets) -> QWidget:
         container = QWidget(self)
@@ -108,10 +98,6 @@ class CameraWidget(QWidget):
         self.center_x.valueChanged.connect(self.signal_center_translated.emit)
         self.center_y.valueChanged.connect(self.signal_center_translated.emit)
         self.center_z.valueChanged.connect(self.signal_center_translated.emit)
-
-    @staticmethod
-    def _get_button_stylesheet(color: list) -> str:
-        return f'background-color: {QColor.fromRgbF(*color).name()}; border: none;'
 
     def connect_viewer(self, viewer) -> None:
         # Connect viewer's signals to automatically update self
@@ -143,44 +129,40 @@ class CameraWidget(QWidget):
         self.set_current_interactor(viewer.current_interactor.name)
         self.set_current_projection(viewer.current_projection)
 
-        # Handle background colors
-        def handle_color(color: list, updater: callable = lambda *args: None) -> None:
-            dialog = QColorDialog()
-            dialog.setCurrentColor(QColor.fromRgbF(*color))
-
-            dialog.accepted.connect(lambda *args: updater(dialog))
-            dialog.show()
-
-        def handle_background_top() -> None:
-            def updater(dialog) -> None:
-                color = dialog.currentColor().getRgbF()
-                self.button_top.setStyleSheet(self._get_button_stylesheet(color))
-
-                viewer.background.top_color = color
-                viewer.update()
-
-            # Execute handler
-            handle_color(viewer.background.top_color, updater)
-
-        def handle_background_bottom() -> None:
-            def updater(dialog) -> None:
-                color = dialog.currentColor().getRgbF()
-                self.button_bottom.setStyleSheet(self._get_button_stylesheet(color))
-
-                viewer.background.bottom_color = color
-                viewer.update()
-
-            # Execute handler
-            handle_color(viewer.background.bottom_color, updater)
-
         # Set-up initial colors
-        self.button_top.setStyleSheet(self._get_button_stylesheet(viewer.background.top_color))
-        self.button_bottom.setStyleSheet(self._get_button_stylesheet(viewer.background.bottom_color))
+        self.button_top.set_color(viewer.background.top_color)
+        self.button_bottom.set_color(viewer.background.bottom_color)
 
         # Connect button handlers
-        self.button_top.clicked.connect(handle_background_top)
-        self.button_bottom.clicked.connect(handle_background_bottom)
+        self.button_bottom.clicked.connect(lambda *_: self.show_colordialog_bottom(viewer))
+        self.button_top.clicked.connect(lambda *_: self.show_colordialog_top(viewer))
 
+    def show_colordialog_bottom(self, viewer) -> None:
+        def set_background_color(*_):
+            self.button_bottom.set_qcolor(dialog.currentColor())
+            viewer.background.bottom_color = self.button_bottom.get_color()
+            viewer.update()
+
+        dialog = ColorDialog()
+        dialog.setCurrentColor(self.button_bottom.qcolor)
+        dialog.accepted.connect(set_background_color)
+
+        dialog.show()
+
+    def show_colordialog_top(self, viewer) -> None:
+        def set_background_color(*_):
+            self.button_top.set_qcolor(dialog.currentColor())
+            viewer.background.top_color = self.button_top.get_color()
+            viewer.update()
+
+        dialog = ColorDialog()
+        dialog.setCurrentColor(self.button_top.qcolor)
+        dialog.accepted.connect(set_background_color)
+        dialog.show()
+
+    """
+    Getters/Setters
+    """
     def get_camera_position(self) -> list:
         return [self.position_x.value(),
                 self.position_y.value(),
