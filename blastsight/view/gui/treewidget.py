@@ -7,18 +7,15 @@
 
 from qtpy.QtCore import Qt
 from qtpy.QtCore import Signal
-from qtpy.QtGui import QColor
 from qtpy.QtGui import QKeyEvent
 from qtpy.QtWidgets import QAbstractItemView
-from qtpy.QtWidgets import QColorDialog
 from qtpy.QtWidgets import QMenu
 from qtpy.QtWidgets import QTreeWidget
 from qtpy.QtWidgets import QTreeWidgetItemIterator
 
-from .treewidgetitem import TreeWidgetItem
+from .customwidgets.colordialog import ColorDialog
 from .actioncollection import ActionCollection
-
-from .dialogs.propertiesdialog import PropertiesDialog
+from .treewidgetitem import TreeWidgetItem
 
 from ..drawables.meshgl import MeshGL
 from ..drawables.blockgl import BlockGL
@@ -57,102 +54,14 @@ class TreeWidget(QTreeWidget):
     def handle_elements_detected(self, attributes: list) -> None:
         self.select_by_id_list(list(map(lambda attr: attr.get('id', -1), attributes)))
 
-    def handle_color(self, item: TreeWidgetItem) -> None:
-        dialog = QColorDialog()
-        dialog.setOption(QColorDialog.ShowAlphaChannel)
-        dialog.setOption(QColorDialog.DontUseNativeDialog)
-
-        element = self.viewer.get_drawable(item.id)
-        dialog.setWindowTitle(f'{dialog.windowTitle()} ({element.name}.{element.extension})')
-        dialog.setCurrentColor(QColor.fromRgbF(*element.rgba))
-
-        def update_color() -> None:
-            element.rgba = dialog.currentColor().getRgbF()
-            self.viewer.update_drawable(element.id)
-
-        dialog.accepted.connect(update_color)
-        dialog.show()
-
     def handle_multiple(self, item_list: list) -> None:
-        dialog = QColorDialog()
-        dialog.setOption(QColorDialog.ShowAlphaChannel)
-        dialog.setOption(QColorDialog.DontUseNativeDialog)
-
-        def update_color(item: TreeWidgetItem) -> None:
-            element = self.viewer.get_drawable(item.id)
-            element.rgba = dialog.currentColor().getRgbF()
-            self.viewer.update_drawable(element.id)
-
-        def update_multiple():
+        def update_multiple(color: iter):
             for item in item_list:
-                update_color(item)
+                item.update_color(self.viewer, color)
 
-        dialog.accepted.connect(update_multiple)
-        dialog.show()
+        dialog = ColorDialog()
+        dialog.accepted.connect(lambda *_: update_multiple(dialog.currentColor().getRgbF()))
 
-    def handle_properties(self, item: TreeWidgetItem) -> None:
-        element = self.viewer.get_drawable(item.id)
-        dialog = PropertiesDialog()
-        dialog.setWindowTitle(f'Set properties ({element.name}.{element.extension})')
-
-        # Fill headers and set current ones
-        dialog.fill_headers(element.all_headers)
-        dialog.set_current_headers(element.headers)
-
-        # Fill properties
-        dialog.set_alpha(element.alpha)
-        dialog.set_colormap(element.colormap)
-        dialog.set_vmin(element.vmin)
-        dialog.set_vmax(element.vmax)
-
-        if hasattr(element, 'marker'):
-            # PointElement
-            dialog.use_for_points()
-            dialog.fill_markers(['square', 'sphere', 'circle'])
-            dialog.set_marker(element.marker)
-            dialog.set_point_size(element.avg_size)
-        else:
-            # BlockElement
-            dialog.use_for_blocks()
-            dialog.set_block_size(element.size.tolist())
-
-        def has_altered_coordinates() -> bool:
-            return any(map(lambda x, y: x != y, element.headers[:3], dialog.get_current_headers()[:3]))
-
-        def update_properties() -> None:
-            # Update headers
-            altered_coordinates = has_altered_coordinates()
-            element.headers = dialog.get_current_headers()
-
-            # Update properties
-            element.alpha = dialog.get_alpha()
-            element.colormap = dialog.get_colormap()
-
-            # Update limits
-            if dialog.is_recalculate_checked():
-                element.recalculate_limits()
-            else:
-                element.vmin = dialog.get_vmin()
-                element.vmax = dialog.get_vmax()
-
-                # Update sizes
-                if hasattr(element, 'block_size'):
-                    element.block_size = dialog.get_block_size()
-                else:
-                    element.avg_size = dialog.get_point_size()
-
-            # Update marker
-            if hasattr(element, 'marker'):
-                element.marker = dialog.get_marker()
-
-            # If coordinates were altered, call fit_to_screen()
-            if altered_coordinates:
-                self.viewer.fit_to_screen()
-
-            # Finally, recreate instance with the "new" data
-            self.viewer.update_drawable(element.id)
-
-        dialog.accepted.connect(update_properties)
         dialog.show()
 
     def enable_exportability(self, value: bool) -> None:
@@ -191,12 +100,12 @@ class TreeWidget(QTreeWidget):
         actions.action_highlight.triggered.connect(item.toggle_highlighting)
         actions.action_wireframe.triggered.connect(item.toggle_wireframe)
 
-        actions.action_setup_colors.triggered.connect(lambda: self.handle_color(item))
-        actions.action_properties.triggered.connect(lambda: self.handle_properties(item))
+        actions.action_setup_colors.triggered.connect(lambda: item.handle_color(self.viewer))
+        actions.action_properties.triggered.connect(lambda: item.handle_properties(self.viewer))
 
         actions.action_export_element.triggered.connect(lambda: self.signal_export_element.emit(item.id))
 
-    def generate_multiple_menu(self, action_squeezer: callable = lambda *args: None) -> QMenu:
+    def generate_multiple_menu(self, action_squeezer: callable = lambda *_: None) -> QMenu:
         menu = QMenu()
         actions = ActionCollection(self)
 
