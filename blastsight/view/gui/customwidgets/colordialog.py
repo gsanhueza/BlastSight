@@ -12,5 +12,6 @@ from qtpy.QtWidgets import QColorDialog, QWidget
 class ColorDialog(QColorDialog):
     def __init__(self, parent: QWidget = None) -> None:
         super().__init__(parent)
+        self.setOption(QColorDialog.ShowAlphaChannel)
         self.setOption(QColorDialog.DontUseNativeDialog, True)
         self.setWindowFlags(Qt.WindowStaysOnTopHint)
