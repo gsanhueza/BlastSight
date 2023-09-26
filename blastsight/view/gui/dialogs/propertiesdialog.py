@@ -73,7 +73,8 @@ class PropertiesDialog(QDialog):
         # ButtonBox (Accept/Reject)
         self.buttonBox = QDialogButtonBox(self)
         self.buttonBox.setOrientation(Qt.Horizontal)
-        self.buttonBox.setStandardButtons(QDialogButtonBox.Cancel | QDialogButtonBox.Ok)
+        self.buttonBox.addButton(QDialogButtonBox.Cancel)
+        self.buttonBox.addButton(QDialogButtonBox.Ok)
         self.buttonBox.accepted.connect(self.accept)
         self.buttonBox.rejected.connect(self.reject)
 
