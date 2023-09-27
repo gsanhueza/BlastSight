@@ -15,7 +15,10 @@ from qtpy.QtWidgets import QTreeWidgetItemIterator
 
 from .customwidgets.colordialog import ColorDialog
 from .actioncollection import ActionCollection
+
 from .treewidgetitem import TreeWidgetItem
+from .meshtreewidgetitem import MeshTreeWidgetItem
+from .blocktreewidgetitem import BlockTreeWidgetItem
 
 from ..drawables.meshgl import MeshGL
 from ..drawables.blockgl import BlockGL
@@ -71,13 +74,17 @@ class TreeWidget(QTreeWidget):
         self.clear()
 
         for drawable in self.available_drawables():
-            self.addTopLevelItem(self.generate_item(drawable))
+            if isinstance(drawable, MeshGL):
+                item_widget = MeshTreeWidgetItem(self, drawable)
+            elif isinstance(drawable, BlockGL) or isinstance(drawable, PointGL):
+                item_widget = BlockTreeWidgetItem(self, drawable)
+            else:
+                item_widget = TreeWidgetItem(self, drawable)
+
+            self.addTopLevelItem(item_widget)
 
     def available_drawables(self) -> list:
         return self.viewer.get_all_drawables()
-
-    def generate_item(self, drawable) -> TreeWidgetItem:
-        return TreeWidgetItem(self, drawable)
 
     def context_menu(self, event) -> None:
         # Pop-up the context menu on current position, if an item is there
