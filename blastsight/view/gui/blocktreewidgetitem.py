@@ -80,3 +80,10 @@ class BlockTreeWidgetItem(TreeWidgetItem):
 
         dialog.accepted.connect(update_properties)
         dialog.show()
+
+    """
+    Actions
+    """
+    def connect_actions(self, actions: list, viewer) -> None:
+        super().connect_actions(actions)
+        actions.action_properties.triggered.connect(lambda: self.handle_properties(viewer))

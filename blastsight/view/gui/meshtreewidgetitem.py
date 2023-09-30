@@ -39,3 +39,13 @@ class MeshTreeWidgetItem(TreeWidgetItem):
         dialog.setCurrentColor(QColor.fromRgbF(*element.rgba))
         dialog.accepted.connect(lambda: self.update_color(viewer, dialog.currentColor().getRgbF()))
         dialog.show()
+
+        """
+    Actions
+    """
+    def connect_actions(self, actions: list, viewer) -> None:
+        super().connect_actions(actions)
+
+        actions.action_highlight.triggered.connect(self.toggle_highlighting)
+        actions.action_wireframe.triggered.connect(self.toggle_wireframe)
+        actions.action_setup_colors.triggered.connect(lambda: self.handle_color(viewer))

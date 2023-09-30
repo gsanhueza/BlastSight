@@ -74,17 +74,19 @@ class TreeWidget(QTreeWidget):
         self.clear()
 
         for drawable in self.available_drawables():
-            if isinstance(drawable, MeshGL):
-                item_widget = MeshTreeWidgetItem(self, drawable)
-            elif isinstance(drawable, BlockGL) or isinstance(drawable, PointGL):
-                item_widget = BlockTreeWidgetItem(self, drawable)
-            else:
-                item_widget = TreeWidgetItem(self, drawable)
-
+            item_widget = self.generate_item(drawable)
             self.addTopLevelItem(item_widget)
 
     def available_drawables(self) -> list:
         return self.viewer.get_all_drawables()
+
+    def generate_item(self, drawable) -> TreeWidgetItem:
+        if isinstance(drawable, MeshGL):
+            return MeshTreeWidgetItem(self, drawable)
+        elif isinstance(drawable, BlockGL) or isinstance(drawable, PointGL):
+            return BlockTreeWidgetItem(self, drawable)
+        else:
+            return TreeWidgetItem(self, drawable)
 
     def context_menu(self, event) -> None:
         # Pop-up the context menu on current position, if an item is there
@@ -95,22 +97,13 @@ class TreeWidget(QTreeWidget):
 
     def connect_actions(self, actions: ActionCollection, item: TreeWidgetItem) -> None:
         self._connect_standalone_actions(actions)
-        self._connect_item_actions(actions, item)
+        item.connect_actions(actions, self.viewer)
 
     def _connect_standalone_actions(self, actions: ActionCollection) -> None:
         actions.action_show.triggered.connect(self.show_items)
         actions.action_hide.triggered.connect(self.hide_items)
         actions.action_delete.triggered.connect(self.delete_items)
         actions.action_focus_camera.triggered.connect(self.center_camera)
-
-    def _connect_item_actions(self, actions: ActionCollection, item: TreeWidgetItem) -> None:
-        actions.action_highlight.triggered.connect(item.toggle_highlighting)
-        actions.action_wireframe.triggered.connect(item.toggle_wireframe)
-
-        actions.action_setup_colors.triggered.connect(lambda: item.handle_color(self.viewer))
-        actions.action_properties.triggered.connect(lambda: item.handle_properties(self.viewer))
-
-        actions.action_export_element.triggered.connect(lambda: self.signal_export_element.emit(item.id))
 
     def generate_multiple_menu(self, action_squeezer: callable = lambda *_: None) -> QMenu:
         menu = QMenu()

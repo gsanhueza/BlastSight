@@ -5,6 +5,7 @@
 #  Distributed under the MIT License.
 #  See LICENSE for more info.
 
+from qtpy.QtCore import Signal
 from qtpy.QtGui import QColor
 from qtpy.QtGui import QFont
 from qtpy.QtWidgets import QTreeWidgetItem
@@ -13,6 +14,8 @@ from .customwidgets.colordialog import ColorDialog
 
 
 class TreeWidgetItem(QTreeWidgetItem):
+    signal_export_element = Signal()
+
     def __init__(self, parent=None, drawable=None):
         super().__init__(parent)
         self.drawable = drawable
@@ -56,3 +59,9 @@ class TreeWidgetItem(QTreeWidgetItem):
         dialog.setCurrentColor(QColor.fromRgbF(*element.rgba))
         dialog.accepted.connect(lambda: self.update_color(viewer, dialog.currentColor().getRgbF()))
         dialog.show()
+
+    """
+    Actions
+    """
+    def connect_actions(self, actions: list) -> None:
+        actions.action_export_element.triggered.connect(lambda: self.signal_export_element.emit(self.id))
