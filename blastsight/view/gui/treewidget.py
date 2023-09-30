@@ -42,7 +42,6 @@ class TreeWidget(QTreeWidget):
         self.setWindowTitle('Element list')
         self.headerItem().setText(0, 'Elements')
 
-        self.is_export_enabled = False
         self.viewer = viewer
 
     def connect_viewer(self, viewer=None) -> None:
@@ -66,9 +65,6 @@ class TreeWidget(QTreeWidget):
         dialog.accepted.connect(lambda *_: update_multiple(dialog.currentColor().getRgbF()))
 
         dialog.show()
-
-    def enable_exportability(self, value: bool) -> None:
-        self.is_export_enabled = value
 
     def auto_refill(self) -> None:
         self.clear()
@@ -95,21 +91,14 @@ class TreeWidget(QTreeWidget):
         if item:
             self.show_context_menu(item, self.viewport().mapToGlobal(event))
 
-    def connect_actions(self, actions: ActionCollection, item: TreeWidgetItem) -> None:
-        self._connect_standalone_actions(actions)
-        item.connect_actions(actions, self.viewer)
+    def generate_multiple_menu(self, action_squeezer: callable) -> QMenu:
+        menu = QMenu()
+        actions = ActionCollection(self)
 
-    def _connect_standalone_actions(self, actions: ActionCollection) -> None:
         actions.action_show.triggered.connect(self.show_items)
         actions.action_hide.triggered.connect(self.hide_items)
         actions.action_delete.triggered.connect(self.delete_items)
         actions.action_focus_camera.triggered.connect(self.center_camera)
-
-    def generate_multiple_menu(self, action_squeezer: callable = lambda *_: None) -> QMenu:
-        menu = QMenu()
-        actions = ActionCollection(self)
-
-        self._connect_standalone_actions(actions)
         actions.action_setup_multiple.triggered.connect(
             lambda: self.handle_multiple(self.selectedItems()))
 
@@ -124,62 +113,7 @@ class TreeWidget(QTreeWidget):
 
         return menu
 
-    def generate_single_menu(self, item: TreeWidgetItem, action_squeezer: callable) -> QMenu:
-        menu = QMenu()
-        actions = ActionCollection(self)
-        self.connect_actions(actions, item)
-
-        menu.addAction(actions.action_show)
-        menu.addAction(actions.action_hide)
-        menu.addAction(actions.action_focus_camera)
-        menu.addSeparator()
-
-        # Call the method that squeezes more actions before the export/delete ones
-        action_squeezer(menu, actions)
-
-        if self.is_export_enabled:
-            menu.addAction(actions.action_export_element)
-        menu.addAction(actions.action_delete)
-
-        return menu
-
-    def generate_mesh_menu(self, item: TreeWidgetItem) -> QMenu:
-        def action_squeezer(menu: QMenu, actions: ActionCollection) -> None:
-            # Dynamic checkbox in actions
-            actions.action_highlight.setChecked(item.drawable.is_highlighted)
-            actions.action_wireframe.setChecked(item.drawable.is_wireframed)
-
-            menu.addAction(actions.action_highlight)
-            menu.addAction(actions.action_wireframe)
-
-            menu.addAction(actions.action_setup_colors)
-            menu.addSeparator()
-
-        return self.generate_single_menu(item, action_squeezer)
-
-    def generate_standard_menu(self, item: TreeWidgetItem) -> QMenu:
-        def action_squeezer(menu: QMenu, actions: ActionCollection) -> None:
-            menu.addAction(actions.action_setup_colors)
-            menu.addSeparator()
-
-        return self.generate_single_menu(item, action_squeezer)
-
-    def generate_dataframe_menu(self, item: TreeWidgetItem) -> QMenu:
-        def action_squeezer(menu: QMenu, actions: ActionCollection) -> None:
-            menu.addAction(actions.action_properties)
-            menu.addSeparator()
-
-        return self.generate_single_menu(item, action_squeezer)
-
     def show_context_menu(self, item, global_pos) -> None:
-        menus_dict = {
-            MeshGL: lambda: self.generate_mesh_menu(item),
-            BlockGL: lambda: self.generate_dataframe_menu(item),
-            PointGL: lambda: self.generate_dataframe_menu(item),
-            LineGL: lambda: self.generate_standard_menu(item),
-            TubeGL: lambda: self.generate_standard_menu(item),
-        }
-
         def action_squeezer(menu: QMenu, actions: ActionCollection) -> None:
             menu.addAction(actions.action_setup_multiple)
             menu.addSeparator()
@@ -189,20 +123,17 @@ class TreeWidget(QTreeWidget):
             if all(map(lambda it: type(it.drawable) in [MeshGL, LineGL, TubeGL], self.selectedItems())):
                 ctx_menu = self.generate_multiple_menu(action_squeezer)
             else:
-                ctx_menu = self.generate_multiple_menu()
+                ctx_menu = self.generate_multiple_menu(lambda *_: None)
         else:
-            ctx_menu = menus_dict.get(type(item.drawable))()
+            # Else, we'll show the item's menu
+            ctx_menu = item.generate_context_menu(self.viewer, self)
 
         ctx_menu.exec_(global_pos)
 
     def center_camera(self) -> None:
         row = min(map(self.indexOfTopLevelItem, self.selectedItems()), default=0)
         item = self.topLevelItem(row)
-        drawable = item.drawable
-
-        item.set_visible(True)
-        self.viewer.show_drawable(drawable.id)
-        self.viewer.camera_at(drawable.id)
+        item.center_camera(self.viewer)
 
     def select_item(self, row: int) -> None:
         row = max(min(row, self.topLevelItemCount() - 1), 0)

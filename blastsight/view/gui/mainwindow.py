@@ -188,7 +188,6 @@ class MainWindow(QMainWindow):
 
         self.cameraWidget.connect_viewer(self.viewer)
         self.treeWidget.connect_viewer(self.viewer)
-        self.treeWidget.enable_exportability(True)
 
         # File
         actions.action_load_mesh.triggered.connect(self.dialog_load_mesh)

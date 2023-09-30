@@ -6,9 +6,11 @@
 #  See LICENSE for more info.
 
 from qtpy.QtGui import QColor
+from qtpy.QtWidgets import QMenu
 
-from .treewidgetitem import TreeWidgetItem
+from .actioncollection import ActionCollection
 from .customwidgets.colordialog import ColorDialog
+from .treewidgetitem import TreeWidgetItem
 
 
 class MeshTreeWidgetItem(TreeWidgetItem):
@@ -20,10 +22,6 @@ class MeshTreeWidgetItem(TreeWidgetItem):
 
     def toggle_wireframe(self) -> None:
         self.drawable.toggle_wireframe()
-
-    def toggle_visibility(self) -> None:
-        self.drawable.toggle_visibility()
-        self.set_visible(self.drawable.is_visible)
 
     """
     Element properties handling
@@ -40,12 +38,39 @@ class MeshTreeWidgetItem(TreeWidgetItem):
         dialog.accepted.connect(lambda: self.update_color(viewer, dialog.currentColor().getRgbF()))
         dialog.show()
 
-        """
+    """
+    Context menu
+    """
+    def generate_context_menu(self, viewer, tree) -> QMenu:
+        menu = QMenu()
+        actions = ActionCollection(tree)
+
+        menu.addAction(actions.action_show)
+        menu.addAction(actions.action_hide)
+        menu.addAction(actions.action_focus_camera)
+        menu.addSeparator()
+
+        # Dynamic checkbox in actions
+        actions.action_highlight.setChecked(self.drawable.is_highlighted)
+        actions.action_wireframe.setChecked(self.drawable.is_wireframed)
+
+        menu.addAction(actions.action_highlight)
+        menu.addAction(actions.action_wireframe)
+
+        menu.addAction(actions.action_setup_colors)
+        menu.addSeparator()
+
+        menu.addAction(actions.action_export_element)
+        menu.addAction(actions.action_delete)
+
+        self.connect_actions(actions, viewer, tree)
+        return menu
+
+    """
     Actions
     """
-    def connect_actions(self, actions: list, viewer) -> None:
-        super().connect_actions(actions)
+    def connect_actions(self, actions: list, viewer, tree) -> None:
+        super().connect_actions(actions, viewer, tree)
 
         actions.action_highlight.triggered.connect(self.toggle_highlighting)
         actions.action_wireframe.triggered.connect(self.toggle_wireframe)
-        actions.action_setup_colors.triggered.connect(lambda: self.handle_color(viewer))

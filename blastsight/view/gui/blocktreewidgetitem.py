@@ -5,6 +5,9 @@
 #  Distributed under the MIT License.
 #  See LICENSE for more info.
 
+from qtpy.QtWidgets import QMenu
+
+from .actioncollection import ActionCollection
 from .dialogs.propertiesdialog import PropertiesDialog
 from .treewidgetitem import TreeWidgetItem
 
@@ -82,8 +85,29 @@ class BlockTreeWidgetItem(TreeWidgetItem):
         dialog.show()
 
     """
+    Context menu
+    """
+    def generate_context_menu(self, viewer, tree) -> QMenu:
+        menu = QMenu()
+        actions = ActionCollection(tree)
+
+        menu.addAction(actions.action_show)
+        menu.addAction(actions.action_hide)
+        menu.addAction(actions.action_focus_camera)
+        menu.addSeparator()
+
+        menu.addAction(actions.action_properties)
+        menu.addSeparator()
+
+        menu.addAction(actions.action_export_element)
+        menu.addAction(actions.action_delete)
+
+        self.connect_actions(actions, viewer, tree)
+        return menu
+
+    """
     Actions
     """
-    def connect_actions(self, actions: list, viewer) -> None:
-        super().connect_actions(actions)
+    def connect_actions(self, actions: list, viewer, tree) -> None:
+        super().connect_actions(actions, viewer, tree)
         actions.action_properties.triggered.connect(lambda: self.handle_properties(viewer))

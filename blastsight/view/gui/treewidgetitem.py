@@ -5,17 +5,17 @@
 #  Distributed under the MIT License.
 #  See LICENSE for more info.
 
-from qtpy.QtCore import Signal
 from qtpy.QtGui import QColor
 from qtpy.QtGui import QFont
+
+from qtpy.QtWidgets import QMenu
 from qtpy.QtWidgets import QTreeWidgetItem
 
+from .actioncollection import ActionCollection
 from .customwidgets.colordialog import ColorDialog
 
 
 class TreeWidgetItem(QTreeWidgetItem):
-    signal_export_element = Signal()
-
     def __init__(self, parent=None, drawable=None):
         super().__init__(parent)
         self.drawable = drawable
@@ -45,6 +45,14 @@ class TreeWidgetItem(QTreeWidgetItem):
         self.drawable.toggle_visibility()
         self.set_visible(self.drawable.is_visible)
 
+    def center_camera(self, viewer) -> None:
+        self.show()
+        viewer.show_drawable(self.id)
+        viewer.camera_at(self.id)
+
+    def delete(self, viewer) -> None:
+        viewer.delete(self.id)
+
     """
     Element properties handling
     """
@@ -63,5 +71,32 @@ class TreeWidgetItem(QTreeWidgetItem):
     """
     Actions
     """
-    def connect_actions(self, actions: list) -> None:
-        actions.action_export_element.triggered.connect(lambda: self.signal_export_element.emit(self.id))
+    def connect_actions(self, actions: list, viewer, tree) -> None:
+        actions.action_show.triggered.connect(self.show)
+        actions.action_hide.triggered.connect(self.hide)
+        actions.action_focus_camera.triggered.connect(lambda: self.center_camera(viewer))
+        actions.action_setup_colors.triggered.connect(lambda: self.handle_color(viewer))
+
+        actions.action_export_element.triggered.connect(lambda: tree.signal_export_element.emit(self.id))
+        actions.action_delete.triggered.connect(lambda: self.delete(viewer))
+
+    """
+    Context menu
+    """
+    def generate_context_menu(self, viewer, tree) -> QMenu:
+        menu = QMenu()
+        actions = ActionCollection(tree)
+
+        menu.addAction(actions.action_show)
+        menu.addAction(actions.action_hide)
+        menu.addAction(actions.action_focus_camera)
+        menu.addSeparator()
+
+        menu.addAction(actions.action_setup_colors)
+        menu.addSeparator()
+
+        menu.addAction(actions.action_export_element)
+        menu.addAction(actions.action_delete)
+
+        self.connect_actions(actions, viewer, tree)
+        return menu
