@@ -1,6 +1,7 @@
 PyQt5
 PyOpenGL
 QtPy
+qtinter
 numpy
 scipy
 pandas

@@ -27,6 +27,7 @@ dependencies = [
     "PyOpenGL",
     "pandas",
     "qtpy",
+    "qtinter",
     "h5py",
     "tables",
     "meshcut",

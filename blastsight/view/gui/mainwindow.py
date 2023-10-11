@@ -5,14 +5,15 @@
 #  Distributed under the MIT License.
 #  See LICENSE for more info.
 
+import asyncio
 import pathlib
 
 from datetime import datetime
+from qtinter import asyncslot
 from qtpy.QtCore import QDir
 from qtpy.QtCore import Qt
 from qtpy.QtCore import QFileInfo
 from qtpy.QtCore import QSettings
-from qtpy.QtCore import QThreadPool
 from qtpy.QtWidgets import QFileDialog
 from qtpy.QtWidgets import QMainWindow
 from qtpy.QtWidgets import QProgressBar
@@ -24,7 +25,6 @@ from .gridwidget import GridWidget
 from .xsectionwidget import XSectionWidget
 
 from .tools import uic
-from ..threadworker import ThreadWorker
 
 
 class MainWindow(QMainWindow):
@@ -410,13 +410,8 @@ class MainWindow(QMainWindow):
     """
     Common functionality for loading
     """
-    @staticmethod
-    def _thread_runner(method: callable, *args, **kwargs) -> None:
-        worker = ThreadWorker(method, *args, **kwargs)
-        QThreadPool.globalInstance().start(worker)
-
-    def _dialog_load_element(self, loader: classmethod, hint: str, *args, **kwargs) -> None:
-        (paths, selected_filter) = QFileDialog.getOpenFileNames(
+    async def _dialog_load_element(self, loader: classmethod, hint: str, *args, **kwargs) -> None:
+        (paths, _) = QFileDialog.getOpenFileNames(
             self,  # parent
             'Open files...',  # caption
             self.last_dir,  # directory
@@ -426,12 +421,14 @@ class MainWindow(QMainWindow):
         # If path == '', then bool(path) is False
         path_list = sorted(filter(bool, paths))
 
-        if len(path_list) > 0:
-            self.statusBar.showMessage(f'Loading {len(path_list)} element(s)...')
-            self._thread_runner(self.viewer.load_multiple, path_list, loader, *args, **kwargs)
-            self.last_dir = QFileInfo(path_list[-1]).absoluteDir().absolutePath()
+        if len(path_list) == 0:
+            return
 
-    def _dialog_load_folder(self, loader: classmethod, *args, **kwargs) -> None:
+        self.statusBar.showMessage(f'Loading {len(path_list)} element(s)...')
+        self.last_dir = QFileInfo(path_list[-1]).absoluteDir().absolutePath()
+        await asyncio.get_running_loop().run_in_executor(None, self.viewer.load_multiple, path_list, loader, *args, **kwargs)
+
+    async def _dialog_load_folder(self, loader: classmethod, *args, **kwargs) -> None:
         path = QFileDialog.getExistingDirectory(
             self,  # parent
             'Open folder...',  # caption
@@ -440,10 +437,12 @@ class MainWindow(QMainWindow):
         )
 
         # Execute method
-        if bool(path):
-            self.statusBar.showMessage('Loading folder...')
-            self._thread_runner(loader, path, *args, **kwargs)
-            self.last_dir = path
+        if not bool(path):
+            return
+
+        self.statusBar.showMessage('Loading folder...')
+        self.last_dir = path
+        await asyncio.get_running_loop().run_in_executor(None, loader, path, *args, **kwargs)
 
     """
     Slots for progress updates
@@ -474,35 +473,45 @@ class MainWindow(QMainWindow):
     """
     Slots for loading files
     """
-    def dialog_load_mesh(self) -> None:
-        self._dialog_load_element(loader=self.viewer.load_mesh, hint='mesh')
+    @asyncslot
+    async def dialog_load_mesh(self) -> None:
+        await self._dialog_load_element(loader=self.viewer.load_mesh, hint='mesh')
 
-    def dialog_load_blocks(self) -> None:
-        self._dialog_load_element(loader=self.viewer.load_blocks, hint='block')
+    @asyncslot
+    async def dialog_load_blocks(self) -> None:
+        await self._dialog_load_element(loader=self.viewer.load_blocks, hint='block')
 
-    def dialog_load_points(self) -> None:
-        self._dialog_load_element(loader=self.viewer.load_points, hint='point')
+    @asyncslot
+    async def dialog_load_points(self) -> None:
+        await self._dialog_load_element(loader=self.viewer.load_points, hint='point')
 
-    def dialog_load_lines(self) -> None:
-        self._dialog_load_element(loader=self.viewer.load_lines, hint='line')
+    @asyncslot
+    async def dialog_load_lines(self) -> None:
+        await self._dialog_load_element(loader=self.viewer.load_lines, hint='line')
 
-    def dialog_load_tubes(self) -> None:
-        self._dialog_load_element(loader=self.viewer.load_tubes, hint='tube')
+    @asyncslot
+    async def dialog_load_tubes(self) -> None:
+        await self._dialog_load_element(loader=self.viewer.load_tubes, hint='tube')
 
-    def dialog_load_mesh_folder(self) -> None:
-        self._dialog_load_folder(loader=self.viewer.load_mesh_folder)
+    @asyncslot
+    async def dialog_load_mesh_folder(self) -> None:
+        await self._dialog_load_folder(loader=self.viewer.load_mesh_folder)
 
-    def dialog_load_blocks_folder(self) -> None:
-        self._dialog_load_folder(loader=self.viewer.load_blocks_folder)
+    @asyncslot
+    async def dialog_load_blocks_folder(self) -> None:
+        await self._dialog_load_folder(loader=self.viewer.load_blocks_folder)
 
-    def dialog_load_points_folder(self) -> None:
-        self._dialog_load_folder(loader=self.viewer.load_points_folder)
+    @asyncslot
+    async def dialog_load_points_folder(self) -> None:
+        await self._dialog_load_folder(loader=self.viewer.load_points_folder)
 
-    def dialog_load_lines_folder(self) -> None:
-        self._dialog_load_folder(loader=self.viewer.load_lines_folder)
+    @asyncslot
+    async def dialog_load_lines_folder(self) -> None:
+        await self._dialog_load_folder(loader=self.viewer.load_lines_folder)
 
-    def dialog_load_tubes_folder(self) -> None:
-        self._dialog_load_folder(loader=self.viewer.load_tubes_folder)
+    @asyncslot
+    async def dialog_load_tubes_folder(self) -> None:
+        await self._dialog_load_folder(loader=self.viewer.load_tubes_folder)
 
     """
     Slots for exporting elements

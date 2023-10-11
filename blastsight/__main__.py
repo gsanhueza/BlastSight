@@ -6,6 +6,7 @@
 #  See LICENSE for more info.
 
 import argparse
+import qtinter
 import sys
 
 
@@ -21,7 +22,8 @@ def application(paths: list) -> None:
     # Auto-load files when called from CLI or using "Open with..." from OS
     w.viewer.load_multiple(paths, w.viewer.load_mesh)
 
-    sys.exit(qt_app.exec_())
+    with qtinter.using_asyncio_from_qt():
+        sys.exit(qt_app.exec_())
 
 
 def container(paths: list) -> None:
