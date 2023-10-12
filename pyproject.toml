@@ -1,0 +1,47 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "blastsight"
+version = "0.11.0"
+authors = [
+    { name="Gabriel Sanhueza", email="gsanhuez@dcc.uchile.cl" }
+]
+description = "A 3D visualization library oriented to mining applications"
+license = { file = "LICENSE" }
+readme = "README.md"
+requires-python = ">=3.7"
+keywords = ["opengl", "qt", "blastsight"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Environment :: X11 Applications :: Qt",
+    "Topic :: Multimedia :: Graphics :: 3D Rendering",
+    "Development Status :: 4 - Beta",
+]
+dependencies = [
+    "numpy",
+    "dxfgrabber",
+    "PyOpenGL",
+    "pandas",
+    "qtpy",
+    "h5py",
+    "tables",
+    "meshcut",
+    "freetype-py",
+]
+
+[project.optional-dependencies]
+PyQt5 = ["PyQt5"]
+PyQt6 = ["PyQt6"]
+PySide2 = ["PySide2"]
+PySide6 = ["PySide6"]
+
+[project.urls]
+"Homepage" = "https://github.com/gsanhueza/blastsight"
+"Bug Tracker" = "https://github.com/gsanhueza/blastsight/issues"
+
+[tool.setuptools.packages.find]
+where = ["blastsight"]
