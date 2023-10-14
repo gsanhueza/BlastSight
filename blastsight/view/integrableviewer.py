@@ -412,14 +412,13 @@ class IntegrableViewer(QOpenGLWidget):
     def animate(self, start, end, method: callable, **kwargs) -> callable:
         milliseconds = int(kwargs.get('milliseconds', 300))
         steps = int(kwargs.get('steps', 20))
+        interval = milliseconds // steps
 
-        timer = QTimer(self)
         linspace = iter(np.linspace(start, end, steps))
         counter = []
 
-        def start_animation():
-            timer.start(milliseconds // steps)
-            self.signal_animation_started.emit()
+        timer = QTimer(self)
+        timer.setInterval(interval)
 
         def update_animation():
             try:
@@ -429,14 +428,12 @@ class IntegrableViewer(QOpenGLWidget):
                 counter.append(None)
                 self.signal_animation_updated.emit(100.0 * len(counter) / steps)
             except StopIteration:
-                end_animation()
-
-        def end_animation():
-            timer.stop()
-            self.signal_animation_finished.emit()
+                timer.stop()
+                self.signal_animation_finished.emit()
 
         timer.timeout.connect(update_animation)
-        start_animation()
+        self.signal_animation_started.emit()
+        timer.start()
 
     """
     Projections
