@@ -17,6 +17,7 @@ from qtpy.QtCore import QSettings
 from qtpy.QtWidgets import QFileDialog
 from qtpy.QtWidgets import QMainWindow
 from qtpy.QtWidgets import QProgressBar
+from typing import Callable
 
 from .dialogs.aboutdialog import AboutDialog
 from .dialogs.helpdialog import HelpDialog
@@ -410,7 +411,7 @@ class MainWindow(QMainWindow):
     """
     Common functionality for loading
     """
-    async def _dialog_load_element(self, loader: classmethod, hint: str, *args, **kwargs) -> None:
+    async def _dialog_load_element(self, loader: Callable, hint: str, *args, **kwargs) -> None:
         (paths, _) = QFileDialog.getOpenFileNames(
             self,  # parent
             'Open files...',  # caption
@@ -426,9 +427,11 @@ class MainWindow(QMainWindow):
 
         self.statusBar.showMessage(f'Loading {len(path_list)} element(s)...')
         self.last_dir = QFileInfo(path_list[-1]).absoluteDir().absolutePath()
-        await asyncio.get_running_loop().run_in_executor(None, self.viewer.load_multiple, path_list, loader, *args, **kwargs)
 
-    async def _dialog_load_folder(self, loader: classmethod, *args, **kwargs) -> None:
+        loop = asyncio.get_running_loop()
+        await loop.run_in_executor(None, self.viewer.load_multiple, path_list, loader, *args, **kwargs)
+
+    async def _dialog_load_folder(self, loader: Callable, *args, **kwargs) -> None:
         path = QFileDialog.getExistingDirectory(
             self,  # parent
             'Open folder...',  # caption
@@ -442,7 +445,9 @@ class MainWindow(QMainWindow):
 
         self.statusBar.showMessage('Loading folder...')
         self.last_dir = path
-        await asyncio.get_running_loop().run_in_executor(None, loader, path, *args, **kwargs)
+
+        loop = asyncio.get_running_loop()
+        await loop.run_in_executor(None, loader, path, *args, **kwargs)
 
     """
     Slots for progress updates
