@@ -30,7 +30,7 @@ class DrawableFactory:
         self.engine = engine
 
     @staticmethod
-    def generate_drawable(d_class: type, generator: callable, *args, **kwargs) -> GLDrawable or None:
+    def generate_drawable(d_class: type, generator: callable, *args, **kwargs) -> GLDrawable | None:
         try:
             element = generator(*args, **kwargs)
             drawable = d_class(element, *args, **kwargs)

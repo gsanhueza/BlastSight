@@ -685,7 +685,7 @@ class IntegrableViewer(QOpenGLWidget):
         if bounds is not None:
             self.fit_to_bounds(*bounds)
 
-    def bounding_box(self) -> tuple or None:
+    def bounding_box(self) -> tuple | None:
         drawables = list(filter(lambda d: d.is_visible, self.get_all_drawables()))
 
         if len(drawables) == 0:

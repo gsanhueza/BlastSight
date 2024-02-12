@@ -29,8 +29,8 @@ class TubeElement(Element):
             },
             'metadata': {
                 'id': int,
-                'name': str or None,
-                'extension': str or None
+                'name': str | None,
+                'extension': str | None
             }
         }
         """

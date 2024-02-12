@@ -224,9 +224,9 @@ class Model:
         Returns a dict with the following structure:
 
         {
-            'point_a': list(float) or None,
-            'point_b': list(float) or None',
-            'distance': float or None
+            'point_a': list(float) | None,
+            'point_b': list(float) | None',
+            'distance': float | None
         }
         """
         points_A = []

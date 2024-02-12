@@ -35,7 +35,7 @@ def magnitude_by_row(vectors: np.ndarray) -> np.ndarray:
     return np.sqrt(magnitude2_by_row(vectors))
 
 
-def closest_point_to(origin: np.ndarray, points: np.ndarray) -> np.ndarray or None:
+def closest_point_to(origin: np.ndarray, points: np.ndarray) -> np.ndarray | None:
     if points.size == 0:
         return None
 
@@ -45,7 +45,7 @@ def closest_point_to(origin: np.ndarray, points: np.ndarray) -> np.ndarray or No
     return points[mask][0]
 
 
-def distances_between(origin: np.ndarray, points: np.ndarray) -> np.ndarray or None:
+def distances_between(origin: np.ndarray, points: np.ndarray) -> np.ndarray | None:
     if points.size == 0:
         return None
 
