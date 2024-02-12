@@ -5,10 +5,12 @@
 #  Distributed under the MIT License.
 #  See LICENSE for more info.
 
+import functools
 import numpy as np
 
 from . import utils
 
+from concurrent.futures import ThreadPoolExecutor
 from qtpy.QtCore import QDirIterator
 from qtpy.QtCore import QFileInfo
 from qtpy.QtCore import QMutex
@@ -269,18 +271,33 @@ class Model:
         }
 
     @staticmethod
-    def intersect_meshes(origin: np.ndarray, ray: np.ndarray, meshes: list) -> list:
-        attributes_list = []
+    def intersect_element(origin: np.ndarray, ray: np.ndarray, element: Element) -> dict:
+        """
+        Detects the intersection of a single element
+        """
+        intersections = element.intersect_with_ray(origin, ray)
+        closest_point = utils.closest_point_to(origin, intersections)
+        attributes = element.attributes
 
-        for mesh in meshes:
-            intersections = mesh.intersect_with_ray(origin, ray)
-            closest_point = utils.closest_point_to(origin, intersections)
-            if closest_point is not None:
-                attributes = {**mesh.attributes,
-                              'intersections': intersections,
-                              'closest_point': closest_point,
-                              }
-                attributes_list.append(attributes)
+        if closest_point is not None:
+            attributes['intersections'] = intersections
+            attributes['closest_point'] = closest_point
+
+        return attributes
+
+    @staticmethod
+    def intersect_elements(origin: np.ndarray, ray: np.ndarray, elements: list) -> list:
+        """
+        Parallelizes the intersection of multiple elements
+        """
+        with ThreadPoolExecutor() as pool:
+            do_intersect = functools.partial(Model.intersect_element, origin, ray)
+            return list(filter(lambda attr: attr.get('closest_point') is not None,
+                               pool.map(do_intersect, elements)))
+
+    @staticmethod
+    def intersect_meshes(origin: np.ndarray, ray: np.ndarray, meshes: list) -> list:
+        attributes_list = Model.intersect_elements(origin, ray, meshes)
 
         def sort_by_distance(x: dict) -> float:
             return utils.magnitude(x.get('closest_point') - origin)
@@ -289,16 +306,4 @@ class Model:
 
     @staticmethod
     def intersect_lines(origin: np.ndarray, ray: np.ndarray, lines: list) -> list:
-        attributes_list = []
-
-        for line in lines:
-            intersections = line.intersect_with_ray(origin, ray)
-            closest_point = utils.closest_point_to(origin, intersections)
-            if closest_point is not None:
-                attributes = {**line.attributes,
-                              'intersections': intersections,
-                              'closest_point': closest_point,
-                              }
-                attributes_list.append(attributes)
-
-        return attributes_list
+        return Model.intersect_elements(origin, ray, lines)
