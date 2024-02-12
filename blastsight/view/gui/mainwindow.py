@@ -17,7 +17,6 @@ from qtpy.QtCore import QSettings
 from qtpy.QtWidgets import QFileDialog
 from qtpy.QtWidgets import QMainWindow
 from qtpy.QtWidgets import QProgressBar
-from typing import Callable
 
 from .dialogs.aboutdialog import AboutDialog
 from .dialogs.helpdialog import HelpDialog
@@ -97,11 +96,9 @@ class MainWindow(QMainWindow):
 
         # Grid Widget
         self.grid_widget = GridWidget()
-        self.grid_widget.connect_viewer(self.viewer)
 
         # XSection Widget
         self.xsection_widget = XSectionWidget()
-        self.xsection_widget.connect_viewer(self.viewer)
 
         # Extra actions
         actions = self.toolbar.action_collection
@@ -110,6 +107,7 @@ class MainWindow(QMainWindow):
 
         self.generate_menubar()
         self.connect_actions()
+        self.connect_widgets()
 
         # Set auto-fit as True when starting the app
         if not actions.action_autofit.isChecked():
@@ -180,16 +178,6 @@ class MainWindow(QMainWindow):
     def connect_actions(self) -> None:
         actions = self.toolbar.action_collection
 
-        # Toolbar/Tree/Camera
-        self.toolbar.connect_viewer(self.viewer)
-        self.toolbar.connect_tree(self.dockWidget_tree)
-        self.toolbar.connect_camera(self.dockWidget_camera)
-        self.toolbar.connect_xsection(self.xsection_widget)
-        self.toolbar.connect_grid(self.grid_widget)
-
-        self.cameraWidget.connect_viewer(self.viewer)
-        self.treeWidget.connect_viewer(self.viewer)
-
         # File
         actions.action_load_mesh.triggered.connect(self.dialog_load_mesh)
         actions.action_load_blocks.triggered.connect(self.dialog_load_blocks)
@@ -238,6 +226,20 @@ class MainWindow(QMainWindow):
 
         # TreeWidget actions
         self.treeWidget.signal_export_element.connect(self._dialog_export_element)
+
+    def connect_widgets(self):
+        # Toolbar
+        self.toolbar.connect_viewer(self.viewer)
+        self.toolbar.connect_tree(self.dockWidget_tree)
+        self.toolbar.connect_camera(self.dockWidget_camera)
+        self.toolbar.connect_xsection(self.xsection_widget)
+        self.toolbar.connect_grid(self.grid_widget)
+
+        # Grid/Cross-section/Camera/Tree
+        self.grid_widget.connect_viewer(self.viewer)
+        self.xsection_widget.connect_viewer(self.viewer)
+        self.cameraWidget.connect_viewer(self.viewer)
+        self.treeWidget.connect_viewer(self.viewer)
 
     @property
     def last_dir(self) -> str:
@@ -411,7 +413,7 @@ class MainWindow(QMainWindow):
     """
     Common functionality for loading
     """
-    async def _dialog_load_element(self, loader: Callable, hint: str, *args, **kwargs) -> None:
+    async def _dialog_load_element(self, loader: callable, hint: str, *args, **kwargs) -> None:
         (paths, _) = QFileDialog.getOpenFileNames(
             self,  # parent
             'Open files...',  # caption
@@ -431,7 +433,7 @@ class MainWindow(QMainWindow):
         loop = asyncio.get_running_loop()
         await loop.run_in_executor(None, self.viewer.load_multiple, path_list, loader, *args, **kwargs)
 
-    async def _dialog_load_folder(self, loader: Callable, *args, **kwargs) -> None:
+    async def _dialog_load_folder(self, loader: callable, *args, **kwargs) -> None:
         path = QFileDialog.getExistingDirectory(
             self,  # parent
             'Open folder...',  # caption
