@@ -44,5 +44,5 @@ PySide6 = ["PySide6"]
 "Homepage" = "https://github.com/gsanhueza/blastsight"
 "Bug Tracker" = "https://github.com/gsanhueza/blastsight/issues"
 
-[tool.setuptools.packages.find]
-where = ["blastsight"]
+[tool.setuptools.packages]
+find = {namespaces = false, exclude = ["tests"] }
