@@ -20,7 +20,7 @@ class BlockProgram(ShaderProgram):
 
     def generate_shaders(self) -> list:
         shaders = super().generate_shaders()
-        shaders.append(self.generate_shader(QOpenGLShader.Geometry, self.geometry_path))
+        shaders.append(self.generate_shader(QOpenGLShader.ShaderTypeBit.Geometry, self.geometry_path))
 
         return shaders
 

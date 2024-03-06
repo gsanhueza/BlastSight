@@ -52,7 +52,7 @@ class ShaderProgram:
         self.add_uniform_handler('proj_matrix')
         self.add_uniform_handler('rendering_offset')
 
-    def generate_shader(self, shader_type, shader_path: str) -> QOpenGLShader:
+    def generate_shader(self, shader_type: QOpenGLShader.ShaderTypeBit, shader_path: str) -> QOpenGLShader:
         shader = QOpenGLShader(shader_type)
         shader.compileSourceFile(shader_path)
         self.shader_program.addShader(shader)
@@ -61,8 +61,8 @@ class ShaderProgram:
 
     def generate_shaders(self) -> list:
         shaders = list()
-        shaders.append(self.generate_shader(QOpenGLShader.Vertex, self.vertex_path))
-        shaders.append(self.generate_shader(QOpenGLShader.Fragment, self.fragment_path))
+        shaders.append(self.generate_shader(QOpenGLShader.ShaderTypeBit.Vertex, self.vertex_path))
+        shaders.append(self.generate_shader(QOpenGLShader.ShaderTypeBit.Fragment, self.fragment_path))
 
         return shaders
 
